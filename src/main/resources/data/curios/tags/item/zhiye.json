@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "panlingre:warrior",
+    "panlingre:archer",
+    "panlingre:warlock"
+  ]
+}

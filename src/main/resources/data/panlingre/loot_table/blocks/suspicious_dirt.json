@@ -1,0 +1,57 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "alternatives",
+          "children": [
+            {
+              "type": "minecraft:loot_table",
+              "value": "panlingre:blocks/suspicious_dirt/1",
+              "conditions": [
+                {
+              "condition": "minecraft:match_tool",
+              "predicate": {
+                "items": [
+                  "minecraft:iron_shovel"
+                ]
+              }
+            }
+              ]
+            },
+            {
+              "type": "minecraft:loot_table",
+              "value": "panlingre:blocks/suspicious_dirt/2",
+              "conditions": [
+                {
+              "condition": "minecraft:match_tool",
+              "predicate": {
+                "items": [
+                  "minecraft:diamond_shovel"
+                ]
+              }
+            }
+              ]
+            },
+            {
+              "type": "minecraft:loot_table",
+              "value": "panlingre:blocks/suspicious_dirt/3",
+              "conditions": [
+                {
+                  "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "items": [
+                      "minecraft:netherite_shovel"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+          ]
+        }
+  ]
+}

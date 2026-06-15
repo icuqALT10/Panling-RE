@@ -1,0 +1,30 @@
+{
+  "type": "panlingre:dzt_crafting",
+  "ingredients": [
+    {
+      "slot": 0,
+      "ingredient": {
+        "item": "panlingre:ys2_tu",
+        "count": 40
+      }
+    },
+    {
+      "slot": 1,
+      "ingredient": {
+        "item": "panlingre:rare4_yuanhe",
+        "count": 1
+      }
+    },
+    {
+      "slot": 2,
+      "ingredient": {
+        "item": "panlingre:xuan_tie",
+        "count": 4
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "panlingre:tai_ji_jian"
+  }
+}

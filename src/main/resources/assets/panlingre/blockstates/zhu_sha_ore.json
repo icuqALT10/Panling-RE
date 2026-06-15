@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "has_ore=true": { "model": "panlingre:block/ore/zhu_sha_ore" },
+    "has_ore=false": { "model": "minecraft:block/stone" }
+  }
+}

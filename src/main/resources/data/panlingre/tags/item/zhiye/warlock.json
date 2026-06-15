@@ -1,0 +1,44 @@
+{
+  "values": [
+    "panlingre:hui_chun_1",
+    "panlingre:hui_chun_2",
+    "panlingre:hui_chun_3",
+    "panlingre:tian_shen_1",
+    "panlingre:tian_shen_2",
+    "panlingre:tian_shen_3",
+    "panlingre:jiu_zhuan_1",
+    "panlingre:jiu_zhuan_2",
+    "panlingre:jiu_zhuan_3",
+    "panlingre:qi_si",
+    "panlingre:feng_hou_1",
+    "panlingre:feng_hou_2",
+    "panlingre:feng_hou_3",
+    "panlingre:jian_xue",
+
+    "panlingre:huang_tong_lu",
+    "panlingre:jing_tie_lu",
+    "panlingre:chi_tong_lu",
+    "panlingre:suo_hun_lu",
+    "panlingre:qi_sha_din",
+
+    "panlingre:gong_fu_helmet",
+    "panlingre:gong_fu_chestplate",
+    "panlingre:gong_fu_leggings",
+    "panlingre:gong_fu_boots",
+
+    "panlingre:hua_tuo_helmet",
+    "panlingre:hua_tuo_chestplate",
+    "panlingre:hua_tuo_leggings",
+    "panlingre:hua_tuo_boots",
+
+    "panlingre:cao_yao_helmet",
+    "panlingre:cao_yao_chestplate",
+    "panlingre:cao_yao_leggings",
+    "panlingre:cao_yao_boots",
+
+    "panlingre:yun_xing_helmet",
+    "panlingre:yun_xing_chestplate",
+    "panlingre:yun_xing_leggings",
+    "panlingre:yun_xing_boots"
+  ]
+}

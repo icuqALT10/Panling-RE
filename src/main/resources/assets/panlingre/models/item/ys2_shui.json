@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "panlingre:item/ys2_shui"
+    }
+}

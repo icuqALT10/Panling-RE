@@ -1,0 +1,30 @@
+{
+  "type": "panlingre:dzt_crafting",
+  "ingredients": [
+    {
+      "slot": 0,
+      "ingredient": {
+        "item": "panlingre:ys2_mu",
+        "count": 10
+      }
+    },
+    {
+      "slot": 1,
+      "ingredient": {
+        "item": "panlingre:rare3_yuanhe",
+        "count": 1
+      }
+    },
+    {
+      "slot": 2,
+      "ingredient": {
+        "item": "panlingre:jin_jing",
+        "count": 8
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "panlingre:hua_tuo_chestplate"
+  }
+}

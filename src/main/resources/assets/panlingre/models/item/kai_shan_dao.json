@@ -1,0 +1,6 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "panlingre:item/kai_shan_dao"
+    }
+}

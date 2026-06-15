@@ -1,0 +1,39 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "panlingre:item/ding_hai_shen_zhen"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "panlingre:powered": 1.0
+      },
+      "model": "panlingre:item/ding_hai_shen_zhen_powered"
+    }
+  ],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0, 90, 35],
+			"translation": [0, 4, 0.5],
+			"scale": [1.7, 1.7, 0.85]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0, -90, -35],
+			"translation": [0, 4, 0.5],
+			"scale": [1.7, 1.7, 0.85]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 90, 25],
+			"translation": [1.13, 3.2, 1.13],
+			"scale": [1.36, 1.36, 0.68]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, -90, -25],
+			"translation": [1.13, 3.2, 1.13],
+			"scale": [1.36, 1.36, 0.68]
+		},
+		"ground": {
+			"scale": [1, 1, 0.5]
+		}
+	}
+}

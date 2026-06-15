@@ -1,0 +1,125 @@
+package icu.icuqalt10.panlingre.item.archer;
+
+import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.attachment.LingQiData;
+import icu.icuqalt10.panlingre.entity.FeiXianJianZhenEntity;
+import icu.icuqalt10.panlingre.entity.XingHaiEntity;
+import icu.icuqalt10.panlingre.init.ModAttachments;
+import icu.icuqalt10.panlingre.init.ModAttributes;
+import icu.icuqalt10.panlingre.init.ModEffects;
+import icu.icuqalt10.panlingre.init.ModEntities;
+import icu.icuqalt10.panlingre.item.skill_1_key;
+import icu.icuqalt10.panlingre.mixin.AbstractArrowMixin;
+import icu.icuqalt10.panlingre.util.SafeClientAccess;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+public class liu_xing_nu extends CrossbowItem implements skill_1_key {
+
+    public liu_xing_nu() {
+        super(
+                new Properties()
+                        .stacksTo(1)
+                        .fireResistant()
+        );
+    }
+
+    @Override
+    public ItemAttributeModifiers getDefaultAttributeModifiers() {
+        ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
+        ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "liu_xing_nu");
+
+        builder.add(
+                ModAttributes.ARROW_DAMAGE,
+                new AttributeModifier(
+                        UID,
+                        18,
+                        AttributeModifier.Operation.ADD_VALUE
+                ),
+                EquipmentSlotGroup.MAINHAND
+        );
+        builder.add(
+                Attributes.MOVEMENT_SPEED,
+                new AttributeModifier(
+                        UID,
+                        0.3,
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                ),
+                EquipmentSlotGroup.MAINHAND
+        );
+
+        return builder.build();
+    }
+
+    //技能 skill_1
+    @Override
+    public boolean skill_1_trigger(Level level, Player player, ItemStack stack) {
+
+        LingQiData data = player.getData(ModAttachments.LINGQI);
+        float cost = 30.0f;
+        //如果灵气不足
+        if (!data.consume(player,cost)) return false;
+        //释放技能
+        if (!level.isClientSide) {
+            XingHaiEntity entity = new XingHaiEntity(ModEntities.XING_HAI.get(), level);
+            entity.moveTo(player.getX(), player.getY(), player.getZ());
+            entity.setOwner(player);
+            entity.setSummonerArrow((float) player.getAttributeValue(ModAttributes.ARROW_DAMAGE));
+
+            level.addFreshEntity(entity);
+
+            //音效
+            level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.ANVIL_DESTROY, SoundSource.PLAYERS, 0.5f,1.0f);
+            //播报
+            player.displayClientMessage(Component.translatable("item.PanlingRE.liu_xing_nu.skill.success"), true);
+        }
+
+        return true;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+
+        // 检测Shift键
+        if (SafeClientAccess.isShiftPressed()) {
+            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare5"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit1"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.lore1"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.lore2"));
+            tooltipComponents.add(Component.empty());
+            tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.skill1.2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.skill2"
+                    ,Component.keybind("key.PanlingRE.skill_1").withStyle(ChatFormatting.GOLD)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.skill3"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.skill4"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.skill5"));
+        } else {
+            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare5"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit1"));
+            tooltipComponents.add(Component.empty());
+            tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.skill1.1"));
+        }
+
+        super.appendHoverText(stack, context, tooltipComponents, flag);
+    }
+}

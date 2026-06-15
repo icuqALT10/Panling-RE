@@ -1,0 +1,39 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "yao_yin",
+  "show_notification": false,
+  "ingredients": [
+    {
+      "item":"panlingre:yao_yin_2"
+    },
+    {
+      "item":"panlingre:ren_shen"
+    },
+    {
+      "item":"panlingre:ren_shen"
+    },
+    {
+      "item":"panlingre:ren_shen"
+    },
+    {
+      "item":"panlingre:ren_shen"
+    },
+    {
+      "item":"panlingre:lan_cao"
+    },
+    {
+      "item":"panlingre:lan_cao"
+    },
+    {
+      "item":"panlingre:lan_cao"
+    },
+    {
+      "item":"panlingre:lan_cao"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "panlingre:yao_yin_3"
+  }
+}

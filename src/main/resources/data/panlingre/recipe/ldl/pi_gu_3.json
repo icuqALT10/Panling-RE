@@ -1,0 +1,30 @@
+{
+  "type": "panlingre:ldl_crafting",
+  "ingredients": [
+    {
+      "slot": 0,
+      "ingredient": {
+        "item": "panlingre:yao_yin_3",
+        "count": 1
+      }
+    },
+    {
+      "slot": 1,
+      "ingredient": {
+        "item": "panlingre:ys1_mu",
+        "count": 30
+      }
+    },
+    {
+      "slot": 2,
+      "ingredient": {
+        "item": "panlingre:ys1_tu",
+        "count": 30
+      }
+    }
+  ],
+  "result": {
+    "count": 16,
+    "id": "panlingre:pi_gu_3"
+  }
+}

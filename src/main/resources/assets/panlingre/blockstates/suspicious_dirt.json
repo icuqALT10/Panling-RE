@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "has_grass=true": { "model": "panlingre:block/suspicious_dirt_true" },
+    "has_grass=false": { "model": "panlingre:block/suspicious_dirt_false" }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "values": [
+    "panlingre:tao_mu_jian",
+    "panlingre:kai_shan_dao",
+    "panlingre:jing_tie_jian",
+    "panlingre:chi_tong_jian",
+    "panlingre:ju_tong_chui",
+    "panlingre:po_kong_fu",
+    "panlingre:tai_ji_jian",
+    "panlingre:yu_ru_yi",
+    "panlingre:fei_xian_jian",
+
+    "panlingre:zhan_lang_helmet",
+    "panlingre:zhan_lang_chestplate",
+    "panlingre:zhan_lang_leggings",
+    "panlingre:zhan_lang_boots",
+
+    "panlingre:xiong_shou_helmet",
+    "panlingre:xiong_shou_chestplate",
+    "panlingre:xiong_shou_leggings",
+    "panlingre:xiong_shou_boots",
+
+    "panlingre:ling_gui_helmet",
+    "panlingre:ling_gui_chestplate",
+    "panlingre:ling_gui_leggings",
+    "panlingre:ling_gui_boots",
+
+    "panlingre:long_lin_helmet",
+    "panlingre:long_lin_chestplate",
+    "panlingre:long_lin_leggings",
+    "panlingre:long_lin_boots"
+  ]
+}

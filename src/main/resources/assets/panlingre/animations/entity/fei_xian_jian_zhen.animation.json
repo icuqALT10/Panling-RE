@@ -1,0 +1,92 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"jian_zhen": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 180, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"scale": {
+						"0.0": {
+							"vector": [40, 40, 40]
+						},
+						"2.0": {
+							"vector": [40, 40, 40]
+						}
+					}
+				},
+				"sword": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, -180, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"scale": {
+						"0.0": {
+							"vector": [40, 40, 40]
+						},
+						"2.0": {
+							"vector": [40, 40, 40]
+						}
+					}
+				},
+				"middle": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 94.5, 0]
+						},
+						"1.0": {
+							"vector": [0, 81, 0]
+						},
+						"2.0": {
+							"vector": [0, 94.5, 0]
+						}
+					},
+					"scale": {
+						"0.0": {
+							"vector": [30, 30, 30]
+						},
+						"2.0": {
+							"vector": [30, 30, 30]
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,37 @@
+{
+  "type": "panlingre:zft_crafting",
+  "ingredients": [
+    {
+      "slot": 0,
+      "ingredient": {
+        "item": "panlingre:zhu_sha_1",
+        "count": 8
+      }
+    },
+    {
+      "slot": 1,
+      "ingredient": {
+        "item": "panlingre:fu_zhi",
+        "count": 16
+      }
+    },
+    {
+      "slot": 2,
+      "ingredient": {
+        "item": "panlingre:ys1_jin",
+        "count": 20
+      }
+    },
+    {
+      "slot": 3,
+      "ingredient": {
+        "item": "panlingre:ys1_huo",
+        "count": 10
+      }
+    }
+  ],
+  "result": {
+    "count": 16,
+    "id": "panlingre:po_di_fu"
+  }
+}

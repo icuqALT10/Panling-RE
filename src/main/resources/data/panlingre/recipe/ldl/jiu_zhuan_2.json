@@ -1,0 +1,44 @@
+{
+  "type": "panlingre:ldl_crafting",
+  "ingredients": [
+    {
+      "slot": 0,
+      "ingredient": {
+        "item": "panlingre:yao_yin_2",
+        "count": 1
+      }
+    },
+    {
+      "slot": 1,
+      "ingredient": {
+        "item": "panlingre:ys1_mu",
+        "count": 10
+      }
+    },
+    {
+      "slot": 2,
+      "ingredient": {
+        "item": "panlingre:ys1_shui",
+        "count": 10
+      }
+    },
+    {
+      "slot": 3,
+      "ingredient": {
+        "item": "panlingre:ys1_huo",
+        "count": 10
+      }
+    },
+    {
+      "slot": 4,
+      "ingredient": {
+        "item": "panlingre:ys1_tu",
+        "count": 10
+      }
+    }
+  ],
+  "result": {
+    "count": 10,
+    "id": "panlingre:jiu_zhuan_2"
+  }
+}

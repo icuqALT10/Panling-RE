@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "is_sapling=true": { "model": "panlingre:block/ore/bamboo_true" },
+    "is_sapling=false": { "model": "panlingre:block/ore/bamboo_false" }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "type": "panlingre:dzt_crafting",
+  "ingredients": [
+    {
+      "slot": 0,
+      "ingredient": {
+        "item": "panlingre:ys2_shui",
+        "count": 45
+      }
+    },
+    {
+      "slot": 1,
+      "ingredient": {
+        "item": "panlingre:rare5_yuanhe",
+        "count": 1
+      }
+    },
+    {
+      "slot": 2,
+      "ingredient": {
+        "item": "panlingre:ling_yu_jian",
+        "count": 8
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "panlingre:liu_xing_nu",
+    "components": {"enchantments":{"levels":{"quick_charge":3,"multishot":1},"show_in_tooltip":false}}
+  }
+}

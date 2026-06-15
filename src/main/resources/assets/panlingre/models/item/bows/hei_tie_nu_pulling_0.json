@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/crossbow",
+  "textures": {
+    "layer0": "panlingre:item/bows/hei_tie_nu_pulling_0"
+  }
+}

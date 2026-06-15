@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "has_ore=true": { "model": "panlingre:block/ore/bi_hai_ore" },
+    "has_ore=false": { "model": "minecraft:block/sandstone" }
+  }
+}

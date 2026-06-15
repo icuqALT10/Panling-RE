@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "show_notification": false,
+  "ingredients": [
+    {
+      "item":"panlingre:ys1_huo"
+    },
+    {
+      "item":"panlingre:ys1_huo"
+    },
+    {
+      "item":"panlingre:ys1_huo"
+    },
+    {
+      "item":"panlingre:ys1_huo"
+    },
+    {
+      "item":"panlingre:ys1_huo"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "panlingre:ys2_huo"
+  }
+}

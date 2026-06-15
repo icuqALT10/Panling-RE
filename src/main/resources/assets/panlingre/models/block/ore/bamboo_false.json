@@ -1,0 +1,23 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "panlingre:block/bamboo_false",
+		"particle": "panlingre:block/bamboo_false"
+	},
+	"elements": [
+		{
+			"from": [6.5, 0, 6.5],
+			"to": [9.5, 16, 9.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7.5, 0, 6.5]},
+			"faces": {
+				"north": {"uv": [9, 0, 12, 16], "texture": "#0"},
+				"east": {"uv": [9, 0, 12, 16], "texture": "#0"},
+				"south": {"uv": [9, 0, 12, 16], "texture": "#0"},
+				"west": {"uv": [9, 0, 12, 16], "texture": "#0"},
+				"up": {"uv": [12.875, 0, 16, 3.125], "texture": "#0"},
+				"down": {"uv": [13, 3.875, 16, 6.875], "texture": "#0"}
+			}
+		}
+	]
+}

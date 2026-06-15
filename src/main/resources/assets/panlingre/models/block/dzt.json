@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "panlingre:block/dzt_top",
+    "side": "panlingre:block/dzt_side"
+  }
+}

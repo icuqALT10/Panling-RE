@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/bow",
+  "textures": {
+    "layer0": "panlingre:item/bows/yan_tie_gong_pulling_0"
+  }
+}

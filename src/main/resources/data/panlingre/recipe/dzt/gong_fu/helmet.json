@@ -1,0 +1,30 @@
+{
+  "type": "panlingre:dzt_crafting",
+  "ingredients": [
+    {
+      "slot": 0,
+      "ingredient": {
+        "item": "panlingre:ys2_tu",
+        "count": 5
+      }
+    },
+    {
+      "slot": 1,
+      "ingredient": {
+        "item": "panlingre:rare2_yuanhe",
+        "count": 1
+      }
+    },
+    {
+      "slot": 2,
+      "ingredient": {
+        "item": "panlingre:jing_shou_pi",
+        "count": 5
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "panlingre:gong_fu_helmet"
+  }
+}

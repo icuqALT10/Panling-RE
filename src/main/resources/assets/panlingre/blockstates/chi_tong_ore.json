@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "has_ore=true": { "model": "panlingre:block/ore/chi_tong_ore" },
+    "has_ore=false": { "model": "minecraft:block/blackstone" }
+  }
+}

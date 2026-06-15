@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/crossbow",
+  "textures": {
+    "layer0": "panlingre:item/bows/hong_ling_nu_pulling_2"
+  }
+}

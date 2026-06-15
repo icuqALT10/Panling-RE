@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "panlingre:block/suspicious_dirt_false"
+  }
+}

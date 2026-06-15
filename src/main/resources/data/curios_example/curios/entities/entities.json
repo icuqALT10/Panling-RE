@@ -1,0 +1,12 @@
+{
+  "entities": [
+	"minecraft:player"
+  ],
+  "slots": [
+    "race",
+    "zhiye",
+    "ldl",
+    "fabao",
+    "bless"
+  ]
+}

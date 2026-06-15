@@ -1,0 +1,6 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "panlingre:item/yu_ru_yi"
+    }
+}

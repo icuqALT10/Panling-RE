@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "has_ore=true": { "model": "panlingre:block/ore/jing_tie_ore" },
+    "has_ore=false": { "model": "minecraft:block/stone" }
+  }
+}
