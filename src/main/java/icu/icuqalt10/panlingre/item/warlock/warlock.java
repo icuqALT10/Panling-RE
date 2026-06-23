@@ -25,7 +25,7 @@ public class warlock extends Item implements ICurioItem {
         return slotContext.entity() instanceof Player player && player.isCreative();
     }
 /*
-    //法力值转化为阵法强度
+    //法力值转化为炼化强度
     @Override
     public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
         Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
