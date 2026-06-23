@@ -14,8 +14,11 @@ import icu.icuqalt10.panlingre.world.inventory.ldlMenu;
 import icu.icuqalt10.panlingre.world.inventory.zftMenu;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -40,7 +43,7 @@ public class PanlingREJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        net.minecraft.client.multiplayer.ClientLevel level = net.minecraft.client.Minecraft.getInstance().level;
+        ClientLevel level = Minecraft.getInstance().level;
 
         if (level != null) {
             RecipeManager recipeManager = level.getRecipeManager();
@@ -80,5 +83,22 @@ public class PanlingREJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.zft.get()), ZFT_TYPE);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.dzt.get()), DZT_TYPE);
 
+    }
+    @Override
+    public void onRuntimeAvailable(mezz.jei.api.runtime.IJeiRuntime jeiRuntime) {
+        var recipeManager = jeiRuntime.getRecipeManager();
+
+        recipeManager.hideRecipeCategory(RecipeTypes.GRINDSTONE);
+        recipeManager.hideRecipeCategory(RecipeTypes.ANVIL);
+        recipeManager.hideRecipeCategory(RecipeTypes.BLASTING);
+        recipeManager.hideRecipeCategory(RecipeTypes.BREWING);
+        recipeManager.hideRecipeCategory(RecipeTypes.CAMPFIRE_COOKING);
+        recipeManager.hideRecipeCategory(RecipeTypes.COMPOSTING);
+        recipeManager.hideRecipeCategory(RecipeTypes.FUELING);
+        recipeManager.hideRecipeCategory(RecipeTypes.INFORMATION);
+        recipeManager.hideRecipeCategory(RecipeTypes.SMELTING);
+        recipeManager.hideRecipeCategory(RecipeTypes.SMITHING);
+        recipeManager.hideRecipeCategory(RecipeTypes.SMOKING);
+        recipeManager.hideRecipeCategory(RecipeTypes.STONECUTTING);
     }
 }

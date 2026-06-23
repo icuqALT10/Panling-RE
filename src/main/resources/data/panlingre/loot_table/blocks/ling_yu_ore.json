@@ -11,15 +11,15 @@
             {
               "type": "minecraft:item",
               "name": "panlingre:ling_yu_jian",
-              "functions": [
+              "conditions": [
                 {
-                  "function": "minecraft:apply_bonus",
-                  "enchantment": "minecraft:fortune",
-                  "formula": "minecraft:ore_drops"
-                },
-                {
-                  "function": "minecraft:explosion_decay"
-                }
+              "condition": "minecraft:match_tool",
+              "predicate": {
+                "items": [
+                  "minecraft:netherite_pickaxe"
+                ]
+              }
+            }
               ]
             }
           ]

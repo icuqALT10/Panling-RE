@@ -1,0 +1,12 @@
+{
+  "title": {"text": "神秘商人2", "color": "aqua", "bold": true},
+  "offers": [
+    {
+      "buy":  { "item": "minecraft:emerald", "count": 1 },
+      "sell": { "item": "minecraft:diamond", "count": 1 },
+      "maxUses": 10,
+      "xp": 5,
+      "priceMultiplier": 0.05
+    }
+  ]
+}

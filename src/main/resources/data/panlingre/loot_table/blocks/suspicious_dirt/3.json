@@ -6,13 +6,24 @@
       "entries": [
             {
               "type": "minecraft:item",
-              "name": "panlingre:he_shou_wu",
+              "name": "panlingre:he_shou_wu"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "panlingre:ling_zhi"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "panlingre:ren_shen"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "panlingre:lan_cao"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "panlingre:zhen_zhu",
               "functions": [
-                {
-                  "function": "minecraft:apply_bonus",
-                  "enchantment": "minecraft:fortune",
-                  "formula": "minecraft:ore_drops"
-                },
                 {
                   "function": "minecraft:explosion_decay"
                 }
@@ -20,41 +31,8 @@
             },
             {
               "type": "minecraft:item",
-              "name": "panlingre:ling_zhi",
+              "name": "panlingre:pu_ti_zi",
               "functions": [
-                {
-                  "function": "minecraft:apply_bonus",
-                  "enchantment": "minecraft:fortune",
-                  "formula": "minecraft:ore_drops"
-                },
-                {
-                  "function": "minecraft:explosion_decay"
-                }
-              ]
-            },
-            {
-              "type": "minecraft:item",
-              "name": "panlingre:ren_shen",
-              "functions": [
-                {
-                  "function": "minecraft:apply_bonus",
-                  "enchantment": "minecraft:fortune",
-                  "formula": "minecraft:ore_drops"
-                },
-                {
-                  "function": "minecraft:explosion_decay"
-                }
-              ]
-            },
-            {
-              "type": "minecraft:item",
-              "name": "panlingre:lan_cao",
-              "functions": [
-                {
-                  "function": "minecraft:apply_bonus",
-                  "enchantment": "minecraft:fortune",
-                  "formula": "minecraft:ore_drops"
-                },
                 {
                   "function": "minecraft:explosion_decay"
                 }

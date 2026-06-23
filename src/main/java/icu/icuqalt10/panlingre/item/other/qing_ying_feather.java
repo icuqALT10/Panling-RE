@@ -54,6 +54,7 @@ public class qing_ying_feather extends Item implements ICurioItem {
 
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
 
+            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.qing_ying_feather.lore1"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.qing_ying_feather.lore2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.qing_ying_feather.lore3"));

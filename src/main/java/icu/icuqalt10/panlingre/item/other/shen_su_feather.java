@@ -53,6 +53,7 @@ public class shen_su_feather extends Item implements ICurioItem {
 
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
 
+            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.shen_su_feather.lore1"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.shen_su_feather.lore2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.shen_su_feather.lore3"));

@@ -10,17 +10,7 @@
           "children": [
             {
               "type": "minecraft:item",
-              "name": "panlingre:chi_tong_ding",
-              "functions": [
-                {
-                  "function": "minecraft:apply_bonus",
-                  "enchantment": "minecraft:fortune",
-                  "formula": "minecraft:ore_drops"
-                },
-                {
-                  "function": "minecraft:explosion_decay"
-                }
-              ]
+              "name": "panlingre:chi_tong_ding"
             }
           ]
         }

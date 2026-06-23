@@ -4,10 +4,12 @@ import com.mojang.logging.LogUtils;
 import icu.icuqalt10.panlingre.client.ClientModEvents;
 import icu.icuqalt10.panlingre.event.ModBusEvents;
 import icu.icuqalt10.panlingre.init.*;
+import icu.icuqalt10.panlingre.subtool.opengui.OpenGuiSubTool;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import org.slf4j.Logger;
 
@@ -40,6 +42,9 @@ public class PanlingRE {
         }
 
         modEventBus.addListener(ModNetworks::register);
+
+        //子功能
+        OpenGuiSubTool.init(modEventBus);
     }
 
 

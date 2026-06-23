@@ -25,14 +25,6 @@ public class ModTabs {
                         output.accept(ModItems.yin_piao.get());
                         output.accept(ModItems.ys_dhq.get());
 
-                        output.accept(ModItems.qing_ying_feather.get());
-                        output.accept(ModItems.shen_su_feather.get());
-                        output.accept(ModItems.ye_ming_zhu.get());
-                        output.accept(ModItems.qian_jin_suo.get());
-                        output.accept(ModItems.kong_ming_shi.get());
-                        output.accept(ModItems.shen_su_fu.get());
-                        output.accept(ModItems.ling_shi.get());
-
                         output.accept(ModItems.ldl.get());
                         output.accept(ModItems.zft.get());
                         output.accept(ModItems.dzt.get());
@@ -130,6 +122,14 @@ public class ModTabs {
                         output.accept(ModItems.race_yao.get());
                         output.accept(ModItems.race_zhan.get());
                         output.accept(ModItems.bless_shengshou.get());
+
+                        output.accept(ModItems.qing_ying_feather.get());
+                        output.accept(ModItems.shen_su_feather.get());
+                        output.accept(ModItems.ye_ming_zhu.get());
+                        output.accept(ModItems.qian_jin_suo.get());
+                        output.accept(ModItems.kong_ming_shi.get());
+                        output.accept(ModItems.shen_su_fu.get());
+                        output.accept(ModItems.ling_shi.get());
 
                         output.accept(ModItems.tao_mu_jian.get());
                         output.accept(ModItems.kai_shan_dao.get());

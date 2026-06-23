@@ -9,14 +9,18 @@ import icu.icuqalt10.panlingre.renderer.FeiXianJianZhenRenderer;
 import icu.icuqalt10.panlingre.renderer.XingHaiRenderer;
 import icu.icuqalt10.panlingre.renderer.ldlCurioRenderer;
 import icu.icuqalt10.panlingre.renderer.ldlRenderer;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -27,7 +31,10 @@ import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
+
+import java.util.List;
 
 @EventBusSubscriber(modid = "panlingre", value = Dist.CLIENT)
 public class ClientModEvents {
@@ -113,6 +120,75 @@ public class ClientModEvents {
         CuriosRendererRegistry.register(ModItems.qi_sha_din.get(), ldlCurioRenderer::new);
         CuriosRendererRegistry.register(ModItems.hun_yuan_shen_din.get(), ldlCurioRenderer::new);
     }
+
+    /**
+     * 处理can_break提示 - Shift显示详细列表，否则显示简略提示
+     */
+    @SubscribeEvent
+    public static void onItemTooltip(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+
+        // 检查物品是否有can_break组件
+        if (!stack.has(DataComponents.CAN_BREAK)) {
+            return;
+        }
+
+        List<Component> tooltip = event.getToolTip();
+        boolean isShiftPressed = Screen.hasShiftDown();
+
+        if (isShiftPressed) {
+            // Shift按下：保持原样显示详细列表
+            return;
+        }
+
+        // 未按Shift：用简略提示替换详细列表
+        // 查找"能破坏："这一行的索引
+        int canBreakIndex = -1;
+        for (int i = 0; i < tooltip.size(); i++) {
+            String text = tooltip.get(i).getString();
+            if (text.contains("能破坏")) {
+                canBreakIndex = i;
+                break;
+            }
+        }
+
+        if (canBreakIndex != -1) {
+            // 找到了"能破坏："这一行
+            // 计算后面有多少个矿石列表项
+            int blockCount = 0;
+            int removeEndIndex = canBreakIndex;
+
+            // 向后遍历找出所有矿石列表项
+            for (int i = canBreakIndex + 1; i < tooltip.size(); i++) {
+                String text = tooltip.get(i).getString();
+                // 判断是否是矿石列表项（通常会以矿石名称的格式出现）
+                if (text.contains("矿") || text.matches(".*[^：]+矿.*")) {
+                    blockCount++;
+                    removeEndIndex = i;
+                } else if (text.startsWith("minecraft:") || text.contains("_can_break")) {
+                    // 如果遇到其他组件或非矿石相关的内容，停止
+                    break;
+                } else if (text.trim().isEmpty()) {
+                    // 空行继续
+                    continue;
+                } else {
+                    // 其他文本内容，停止计数
+                    break;
+                }
+            }
+
+            if (blockCount > 0) {
+                // 删除从"能破坏："开始到矿石列表结束的所有行
+                for (int i = removeEndIndex; i >= canBreakIndex; i--) {
+                    tooltip.remove(i);
+                }
+
+                // 插入简略提示
+                tooltip.add(canBreakIndex, Component.literal("§6[按住 Shift 查看可破坏方块]"));
+            }
+        }
+    }
+
     private static void registerBowProperties(Item item) {
         ItemProperties.register(item, ResourceLocation.withDefaultNamespace("pull"),
                 (stack, level, entity, seed) -> {
@@ -126,6 +202,7 @@ public class ClientModEvents {
                     return entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
                 });
     }
+
     public static void registerCrossbowProperties(Item item) {
         ItemProperties.register(item, ResourceLocation.withDefaultNamespace("pull"), (stack, level, entity, seed) -> {
             if (entity == null) return 0.0F;
