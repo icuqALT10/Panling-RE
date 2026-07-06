@@ -686,5 +686,7 @@
   "item.PanlingRE.qi_sha_din.skill3": "§f对指向的敌对生物发射§e<炼化强度*3>§f的伤害",
   "item.PanlingRE.qi_sha_din.skill.success": "§e[鼎火] §a释放成功！",
 
-  "item.panlingre.hysd": "§c混元神鼎"
+  "item.panlingre.hysd": "§c混元神鼎",
+
+  "entity.panlingre.pan_gu": "§4盘古（？）元神形态"
 }

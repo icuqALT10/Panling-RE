@@ -1,10 +1,8 @@
 package icu.icuqalt10.panlingre.init;
 
 import icu.icuqalt10.panlingre.PanlingRE;
-import icu.icuqalt10.panlingre.entity.CustomPelletEntity;
-import icu.icuqalt10.panlingre.entity.FeiXianJianZhenEntity;
-import icu.icuqalt10.panlingre.entity.PoDiFuEntity;
-import icu.icuqalt10.panlingre.entity.XingHaiEntity;
+import icu.icuqalt10.panlingre.entity.*;
+import icu.icuqalt10.panlingre.entity.boss.PanGuEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -39,6 +37,22 @@ public class ModEntities {
             ENTITIES.register("xing_hai", () -> EntityType.Builder.of(XingHaiEntity::new, MobCategory.MISC)
                     .sized(0.1f, 0.1f)
                     .build("xing_hai"));
+
+    //生物
+    //boss
+    public static final DeferredHolder<EntityType<?>, EntityType<PanGuEntity>> PAN_GU =
+            ENTITIES.register("pan_gu", () -> EntityType.Builder.of(PanGuEntity::new, MobCategory.MISC)
+                    .sized(0.8F, 1.9F)
+                    .clientTrackingRange(8)
+                    .updateInterval(1)
+                    .build("pan_gu"));
+
+    /*public static final DeferredHolder<EntityType<?>, EntityType<PanGuLargeEntity>> PAN_GU_LARGE =
+            ENTITIES.register("pan_gu_large", () -> EntityType.Builder.of(PanGuLargeEntity::new, MobCategory.MISC)
+                    .sized(4.0F, 8.0F)        // 大形态实际碰撞箱,按真实体型量,不要图省事用默认值
+                    .clientTrackingRange(16)  // 体型大,玩家更早就该看到,不然走近了才突然渲染出来很突兀
+                    .updateInterval(1)
+                    .build("pan_gu_large"));*/
 
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);

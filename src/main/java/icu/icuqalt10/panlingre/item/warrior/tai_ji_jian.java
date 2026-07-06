@@ -7,36 +7,45 @@ import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModEffects;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class tai_ji_jian extends Item {
+public class tai_ji_jian extends SwordItem {
 
     public tai_ji_jian() {
         super(
+                Tiers.DIAMOND,
                 new Properties()
                         .stacksTo(1)
                         .fireResistant()
         );
     }
+
+    //拦截扣除耐久 无法破坏
+    @Override
+    public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {}
 
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers() {

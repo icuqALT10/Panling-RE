@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.init;
 
+import icu.icuqalt10.panlingre.network.AttackInstructionPayload;
 import icu.icuqalt10.panlingre.network.LingQiSyncPacket;
 import icu.icuqalt10.panlingre.network.SkillPayload;
 import icu.icuqalt10.panlingre.network.SyncBlessPayload;
@@ -27,6 +28,12 @@ public class ModNetworks {
                 SyncBlessPayload.TYPE,
                 SyncBlessPayload.STREAM_CODEC,
                 SyncBlessPayload::handleClient
+        );
+
+        registrar.playToServer(
+                AttackInstructionPayload.TYPE,
+                AttackInstructionPayload.STREAM_CODEC,
+                (payload, context) -> ServerPayloadHandler.handleAttackInstruction(payload, context)
         );
 
     }

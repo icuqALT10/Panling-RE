@@ -1,8 +1,10 @@
 package icu.icuqalt10.panlingre.server;
 
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
+import icu.icuqalt10.panlingre.entity.boss.PanGuEntity;
 import icu.icuqalt10.panlingre.item.skill_1_key;
 import icu.icuqalt10.panlingre.item.skill_2_key;
+import icu.icuqalt10.panlingre.network.AttackInstructionPayload;
 import icu.icuqalt10.panlingre.network.SkillPayload;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -91,6 +93,15 @@ public class ServerPayloadHandler {
 
                     }
                 }
+            }
+        });
+    }
+
+    public static void handleAttackInstruction(AttackInstructionPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Player player = context.player(); // 发包的玩家
+            if (player.level().getEntity(payload.entityId()) instanceof PanGuEntity boss) {
+                boss.serverHandleInstruction(payload.instruction());
             }
         });
     }

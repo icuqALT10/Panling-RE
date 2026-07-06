@@ -647,7 +647,7 @@
   "item.PanlingRE.huang_tong_lu.skill1.1": "§f[炉火] §7<shift查看详情>",
   "item.PanlingRE.huang_tong_lu.skill1.2": "§f[炉火] §7<技能1>",
   "item.PanlingRE.huang_tong_lu.skill2": "§6[%s§6] §f冷却：§b1§f秒 §f灵气：§b5§f点",
-  "item.PanlingRE.huang_tong_lu.skill3": "§f对指向的敌对生物发射§e<炼化强度*2.5>§f的伤害",
+  "item.PanlingRE.huang_tong_lu.skill3": "§f对指向的敌对生物造成§e<炼化强度*2.5>§f的伤害",
   "item.PanlingRE.huang_tong_lu.skill.success": "§f[炉火] §a释放成功！",
 
   "item.panlingre.jing_tie_lu": "§a精铁炉",
@@ -656,7 +656,7 @@
   "item.PanlingRE.jing_tie_lu.skill1.1": "§a[炉火] §7<shift查看详情>",
   "item.PanlingRE.jing_tie_lu.skill1.2": "§a[炉火] §7<技能1>",
   "item.PanlingRE.jing_tie_lu.skill2": "§6[%s§6] §f冷却：§b1§f秒 §f灵气：§b5§f点",
-  "item.PanlingRE.jing_tie_lu.skill3": "§f对指向的敌对生物发射§e<炼化强度*2.5>§f的伤害",
+  "item.PanlingRE.jing_tie_lu.skill3": "§f对指向的敌对生物造成§e<炼化强度*2.5>§f的伤害",
   "item.PanlingRE.jing_tie_lu.skill.success": "§a[炉火] §a释放成功！",
 
   "item.panlingre.chi_tong_lu": "§9赤铜炉",
@@ -665,7 +665,7 @@
   "item.PanlingRE.chi_tong_lu.skill1.1": "§9[炉火] §7<shift查看详情>",
   "item.PanlingRE.chi_tong_lu.skill1.2": "§9[炉火] §7<技能1>",
   "item.PanlingRE.chi_tong_lu.skill2": "§6[%s§6] §f冷却：§b1§f秒 §f灵气：§b10§f点",
-  "item.PanlingRE.chi_tong_lu.skill3": "§f对指向的敌对生物发射§e<炼化强度*2.5>§f的伤害",
+  "item.PanlingRE.chi_tong_lu.skill3": "§f对指向的敌对生物造成§e<炼化强度*2.5>§f的伤害",
   "item.PanlingRE.chi_tong_lu.skill.success": "§9[炉火] §a释放成功！",
 
   "item.panlingre.suo_hun_lu": "§d锁魂炉",
@@ -674,7 +674,7 @@
   "item.PanlingRE.suo_hun_lu.skill1.1": "§d[炉火] §7<shift查看详情>",
   "item.PanlingRE.suo_hun_lu.skill1.2": "§d[炉火] §7<技能1>",
   "item.PanlingRE.suo_hun_lu.skill2": "§6[%s§6] §f冷却：§b1§f秒 §f灵气：§b15§f点",
-  "item.PanlingRE.suo_hun_lu.skill3": "§f对指向的敌对生物发射§e<炼化强度*2.5>§f的伤害",
+  "item.PanlingRE.suo_hun_lu.skill3": "§f对指向的敌对生物造成§e<炼化强度*2.5>§f的伤害",
   "item.PanlingRE.suo_hun_lu.skill.success": "§d[炉火] §a释放成功！",
 
   "item.panlingre.qi_sha_din": "§e七煞鼎",
@@ -683,8 +683,10 @@
   "item.PanlingRE.qi_sha_din.skill1.1": "§e[鼎火] §7<shift查看详情>",
   "item.PanlingRE.qi_sha_din.skill1.2": "§e[鼎火] §7<技能1>",
   "item.PanlingRE.qi_sha_din.skill2": "§6[%s§6] §f冷却：§b1§f秒 §f灵气：§b20§f点",
-  "item.PanlingRE.qi_sha_din.skill3": "§f对指向的敌对生物发射§e<炼化强度*3>§f的伤害",
+  "item.PanlingRE.qi_sha_din.skill3": "§f对指向的敌对生物造成§e<炼化强度*3>§f的伤害",
   "item.PanlingRE.qi_sha_din.skill.success": "§e[鼎火] §a释放成功！",
 
-  "item.panlingre.hysd": "§c混元神鼎"
+  "item.panlingre.hysd": "§c混元神鼎",
+
+  "entity.panlingre.pan_gu": "§4盘古（？）§e[元神]"
 }

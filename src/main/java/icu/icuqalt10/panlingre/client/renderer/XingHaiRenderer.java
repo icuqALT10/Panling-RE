@@ -1,4 +1,4 @@
-package icu.icuqalt10.panlingre.renderer;
+package icu.icuqalt10.panlingre.client.renderer;
 
 import icu.icuqalt10.panlingre.client.models.XingHaiModel;
 import icu.icuqalt10.panlingre.entity.XingHaiEntity;

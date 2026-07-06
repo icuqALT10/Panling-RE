@@ -26,15 +26,20 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class tao_mu_jian extends Item {
+public class tao_mu_jian extends SwordItem {
 
     public tao_mu_jian() {
         super(
-                new Item.Properties()
+                Tiers.DIAMOND,
+                new Properties()
                         .stacksTo(1)
                         .fireResistant()
         );
     }
+
+    //拦截扣除耐久 无法破坏
+    @Override
+    public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {}
 
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers() {

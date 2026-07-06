@@ -18,27 +18,31 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class fei_xian_jian extends Item {
+public class fei_xian_jian extends SwordItem {
 
     public fei_xian_jian() {
         super(
+                Tiers.DIAMOND,
                 new Properties()
                         .stacksTo(1)
                         .fireResistant()
         );
     }
+
+    //拦截扣除耐久 无法破坏
+    @Override
+    public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {}
 
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers() {

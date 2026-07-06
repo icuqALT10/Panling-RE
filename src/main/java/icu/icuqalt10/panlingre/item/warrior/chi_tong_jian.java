@@ -14,12 +14,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -27,15 +26,20 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class chi_tong_jian extends Item {
+public class chi_tong_jian extends SwordItem {
 
     public chi_tong_jian() {
         super(
+                Tiers.DIAMOND,
                 new Properties()
                         .stacksTo(1)
                         .fireResistant()
         );
     }
+
+    //拦截扣除耐久 无法破坏
+    @Override
+    public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {}
 
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers() {

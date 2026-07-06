@@ -1,9 +1,7 @@
-package icu.icuqalt10.panlingre.renderer;
+package icu.icuqalt10.panlingre.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import icu.icuqalt10.panlingre.block.ldl.ldlEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;

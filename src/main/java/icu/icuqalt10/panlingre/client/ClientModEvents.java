@@ -4,11 +4,8 @@ import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.client.gui.dztScreen;
 import icu.icuqalt10.panlingre.client.gui.ldlScreen;
 import icu.icuqalt10.panlingre.client.gui.zftScreen;
+import icu.icuqalt10.panlingre.client.renderer.*;
 import icu.icuqalt10.panlingre.init.*;
-import icu.icuqalt10.panlingre.renderer.FeiXianJianZhenRenderer;
-import icu.icuqalt10.panlingre.renderer.XingHaiRenderer;
-import icu.icuqalt10.panlingre.renderer.ldlCurioRenderer;
-import icu.icuqalt10.panlingre.renderer.ldlRenderer;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -51,6 +48,9 @@ public class ClientModEvents {
 
         event.registerEntityRenderer(ModEntities.FEI_XIAN_JIAN_ZHEN.get(), FeiXianJianZhenRenderer::new);
         event.registerEntityRenderer(ModEntities.XING_HAI.get(), XingHaiRenderer::new);
+
+        event.registerEntityRenderer(ModEntities.PAN_GU.get(), PanGuRenderer::new);
+        //event.registerEntityRenderer(ModEntities.PAN_GU_LARGE.get(), PanGuLargeRenderer::new);
     }
 
     @SubscribeEvent
