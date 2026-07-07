@@ -49,20 +49,20 @@ public class RpgHudOverlay implements LayeredDraw.Layer {
         float abs = player.getAbsorptionAmount();
         String hpBase = String.format("%.0f/%.0f", player.getHealth(), player.getMaxHealth());
         String hpExtra = abs > 0 ? " §e+" + (int)abs : "";
-        drawBar(guiGraphics, leftX, rowBottomY, player.getHealth(), player.getMaxHealth(),
+        drawBarBottom(guiGraphics, leftX, rowBottomY, player.getHealth(), player.getMaxHealth(),
                 HEALTH_E, HEALTH_F, hpBase + hpExtra);
 
         // --- 2. 右下：饥饿值 + 饱和度 ---
         float sat = player.getFoodData().getSaturationLevel();
         String foodBase = String.format("%d/20", player.getFoodData().getFoodLevel());
         String foodExtra = sat > 0 ? " §e+" + (int)sat : "";
-        drawBar(guiGraphics, rightX, rowBottomY, (float)player.getFoodData().getFoodLevel(), 20f,
+        drawBarBottom(guiGraphics, rightX, rowBottomY, (float)player.getFoodData().getFoodLevel(), 20f,
                 HUNGRY_E, HUNGRY_F, foodBase + foodExtra);
 
         // --- 3. 右上：灵气值 (通过 Attachment 获取) ---
         float currentLq = LingQiData.ClientLingQiData.getCurrent();
         float maxLq = LingQiData.ClientLingQiData.getMax();
-        drawBar(guiGraphics, rightX, rowTopY, currentLq, maxLq, LINGQI_E, LINGQI_F,
+        drawBarTop(guiGraphics, rightX, rowTopY, currentLq, maxLq, LINGQI_E, LINGQI_F,
                 String.format("%.0f/%.0f", currentLq, maxLq));
 
         // --- 4. 左上：图标数值组 (缩小显示) ---
@@ -77,12 +77,20 @@ public class RpgHudOverlay implements LayeredDraw.Layer {
         }
     }
 
-    private void drawBar(GuiGraphics g, int x, int y, float cur, float max, ResourceLocation e, ResourceLocation f, String text) {
+    private void drawBarBottom(GuiGraphics g, int x, int y, float cur, float max, ResourceLocation e, ResourceLocation f, String text) {
         g.blit(e, x, y, 0, 0, 81, 9, 81, 9);
         int w = (int)(Math.min(cur / max, 1.0f) * 81);
         if (w > 0) g.blit(f, x, y, 0, 0, w, 9, 81, 9);
 
         renderScaledText(g, text, x, y, 81);
+    }
+
+    private void drawBarTop(GuiGraphics g, int x, int y, float cur, float max, ResourceLocation e, ResourceLocation f, String text) {
+        g.blit(e, x, y, 0, 0, 81, 9, 81, 9);
+        int w = (int)(Math.min(cur / max, 1.0f) * 81);
+        if (w > 0) g.blit(f, x, y, 0, 0, w, 9, 81, 9);
+
+        renderScaledText(g, text, x, y+1, 81);
     }
 
     private void drawIconValue(GuiGraphics g, int x, int y, ResourceLocation icon, String val) {

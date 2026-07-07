@@ -7,6 +7,7 @@ import icu.icuqalt10.panlingre.entity.boss.PanGu.PostAttackBehaviorGoal;
 import icu.icuqalt10.panlingre.network.AttackInstructionPayload;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -92,14 +93,14 @@ public class PanGuEntity extends Monster implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     // ===== 状态机字段 =====
-    public enum ActionState { INTRO, IDLE_OR_WALK, ATTACKING, TRANSFORMING, DYING }
+    public enum ActionState { INTRO, IDLE_OR_WALK, ATTACKING, SKILL, DYING }
     private static final EntityDataAccessor<Integer> DATA_ACTION_STATE =
             SynchedEntityData.defineId(PanGuEntity.class, EntityDataSerializers.INT);
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(DATA_ACTION_STATE, ActionState.INTRO.ordinal());
+        builder.define(DATA_ACTION_STATE, ActionState.IDLE_OR_WALK.ordinal());
     }
 
     public ActionState getActionState() {
@@ -131,19 +132,41 @@ public class PanGuEntity extends Monster implements GeoEntity {
                 .add(Attributes.FOLLOW_RANGE, 32.0);
     }
 
+    @Override
+    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
+        return false; // 返回 false 表示无论玩家离得多远，该实体都不会被系统自动清除
+    }
+
     // ===== 头部转动限制在[-90,90] =====
     @Override
     public int getMaxHeadYRot() {
         return 90;
     }
 
-    private int introTicks = 75;          // 对应intro动画3.75s = 75tick,出生时倒数
-    private boolean intro_check = true;
+    private int introTicks = 115;          // 出生时倒数
+    private boolean firstSpawnInitialized = false;
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        // 将状态写入 NBT 存档，这样区块卸载、服务器重启都能存下来
+        compound.putBoolean("FirstSpawnInitialized", this.firstSpawnInitialized);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        // 当区块重新加载、读取 NBT 时，把之前存的状态读出来
+        if (compound.contains("FirstSpawnInitialized")) {
+            this.firstSpawnInitialized = compound.getBoolean("FirstSpawnInitialized");
+        }
+    }
     // ===== 生成时:禁止AI,播intro,倒数结束才正式开始战斗 =====
     @Override
     public void onAddedToLevel() {
         super.onAddedToLevel();
-        if (!this.level().isClientSide && intro_check) {
+        if (!this.level().isClientSide && !this.firstSpawnInitialized) {
+            this.firstSpawnInitialized = true;
             this.setActionState(ActionState.INTRO);
             this.setNoAi(true);          // intro期间完全不跑goal逻辑
             this.setInvulnerable(true);  // intro期间无敌,避免被打断
@@ -224,7 +247,6 @@ public class PanGuEntity extends Monster implements GeoEntity {
                 this.setNoAi(false);
                 this.setInvulnerable(false);
                 this.setActionState(ActionState.IDLE_OR_WALK);
-                intro_check = false;
             }
         }
     }
@@ -325,8 +347,8 @@ public class PanGuEntity extends Monster implements GeoEntity {
             case DYING -> {
                 return state.setAndContinue(RawAnimation.begin().then("died", Animation.LoopType.HOLD_ON_LAST_FRAME));
             }
-            case TRANSFORMING -> {
-                return state.setAndContinue(RawAnimation.begin().then("transform", Animation.LoopType.HOLD_ON_LAST_FRAME));
+            case SKILL -> {
+                return state.setAndContinue(RawAnimation.begin().then("skill.start", Animation.LoopType.HOLD_ON_LAST_FRAME));
             }
             default -> {
                 if (state.isMoving()) {

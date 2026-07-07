@@ -1,8 +1,10 @@
 package icu.icuqalt10.panlingre.client.renderer;
 
 import icu.icuqalt10.panlingre.client.models.boss.PanGuModel;
+import icu.icuqalt10.panlingre.entity.XingHaiEntity;
 import icu.icuqalt10.panlingre.entity.boss.PanGuEntity;
 import icu.icuqalt10.panlingre.init.ModItems;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -40,5 +42,10 @@ public class PanGuRenderer extends GeoEntityRenderer<PanGuEntity> {
                 return ItemStack.EMPTY;
             }
         });
+    }
+
+    @Override
+    public boolean shouldRender(PanGuEntity entity, Frustum frustum, double x, double y, double z) {
+        return true;
     }
 }

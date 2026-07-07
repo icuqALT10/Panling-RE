@@ -15,7 +15,7 @@ public class PanGuModel extends GeoModel<PanGuEntity> {
 
     @Override
     public ResourceLocation getTextureResource(PanGuEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "textures/entity/boss/pangu_small.png");
+        return ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "textures/entity/boss/pangu.png");
     }
 
     @Override

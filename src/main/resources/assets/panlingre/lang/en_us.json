@@ -43,7 +43,7 @@
   "zhiye.cant_use.2": "§c职业不符：该装备仅限§6炼丹师§c使用！",
 
   "itemGroup.PanlingRE.item_tab.other": "盘灵：RE 其他物品",
-  "itemGroup.PanlingRE.item_tab.weapon": "盘灵：RE 武器",
+  "itemGroup.PanlingRE.item_tab.weapon": "盘灵：RE 手持物",
   "itemGroup.PanlingRE.item_tab.armor": "盘灵：RE 防具",
   "itemGroup.PanlingRE.item_tab.material": "盘灵：RE 材料",
   "itemGroup.PanlingRE.item_tab.potion": "盘灵：RE 丹药",
@@ -110,10 +110,10 @@
   "item.panlingre.ys3_shui": "§8水结晶",
   "item.panlingre.ys3_huo": "§c火结晶",
   "item.panlingre.ys3_tu": "§6土结晶",
-  "item.panlingre.yao_yin_1": "§a药引(初级)",
-  "item.panlingre.yao_yin_2": "§9药引(中级)",
-  "item.panlingre.yao_yin_3": "§d药引(高级)",
-  "item.panlingre.yao_yin_4": "§e药引(究级)",
+  "item.panlingre.yao_yin_1": "§9药引(初级)",
+  "item.panlingre.yao_yin_2": "§d药引(中级)",
+  "item.panlingre.yao_yin_3": "§e药引(高级)",
+  "item.panlingre.yao_yin_4": "§c药引(究级)",
   "item.panlingre.yao_yin.lore1.1": "§7§o由妖族内丹为主",
   "item.panlingre.yao_yin.lore1.2": "§7§o结合各种草药制成的药引",
   "item.panlingre.yao_yin.lore2": "§7§o由各种草药制成的药引",
@@ -647,7 +647,7 @@
   "item.PanlingRE.huang_tong_lu.skill1.1": "§f[炉火] §7<shift查看详情>",
   "item.PanlingRE.huang_tong_lu.skill1.2": "§f[炉火] §7<技能1>",
   "item.PanlingRE.huang_tong_lu.skill2": "§6[%s§6] §f冷却：§b1§f秒 §f灵气：§b5§f点",
-  "item.PanlingRE.huang_tong_lu.skill3": "§f对指向的敌对生物发射§e<炼化强度*2.5>§f的伤害",
+  "item.PanlingRE.huang_tong_lu.skill3": "§f对指向的敌对生物造成§e<炼化强度*2.5>§f的伤害",
   "item.PanlingRE.huang_tong_lu.skill.success": "§f[炉火] §a释放成功！",
 
   "item.panlingre.jing_tie_lu": "§a精铁炉",
@@ -656,7 +656,7 @@
   "item.PanlingRE.jing_tie_lu.skill1.1": "§a[炉火] §7<shift查看详情>",
   "item.PanlingRE.jing_tie_lu.skill1.2": "§a[炉火] §7<技能1>",
   "item.PanlingRE.jing_tie_lu.skill2": "§6[%s§6] §f冷却：§b1§f秒 §f灵气：§b5§f点",
-  "item.PanlingRE.jing_tie_lu.skill3": "§f对指向的敌对生物发射§e<炼化强度*2.5>§f的伤害",
+  "item.PanlingRE.jing_tie_lu.skill3": "§f对指向的敌对生物造成§e<炼化强度*2.5>§f的伤害",
   "item.PanlingRE.jing_tie_lu.skill.success": "§a[炉火] §a释放成功！",
 
   "item.panlingre.chi_tong_lu": "§9赤铜炉",
@@ -665,7 +665,7 @@
   "item.PanlingRE.chi_tong_lu.skill1.1": "§9[炉火] §7<shift查看详情>",
   "item.PanlingRE.chi_tong_lu.skill1.2": "§9[炉火] §7<技能1>",
   "item.PanlingRE.chi_tong_lu.skill2": "§6[%s§6] §f冷却：§b1§f秒 §f灵气：§b10§f点",
-  "item.PanlingRE.chi_tong_lu.skill3": "§f对指向的敌对生物发射§e<炼化强度*2.5>§f的伤害",
+  "item.PanlingRE.chi_tong_lu.skill3": "§f对指向的敌对生物造成§e<炼化强度*2.5>§f的伤害",
   "item.PanlingRE.chi_tong_lu.skill.success": "§9[炉火] §a释放成功！",
 
   "item.panlingre.suo_hun_lu": "§d锁魂炉",
@@ -674,7 +674,7 @@
   "item.PanlingRE.suo_hun_lu.skill1.1": "§d[炉火] §7<shift查看详情>",
   "item.PanlingRE.suo_hun_lu.skill1.2": "§d[炉火] §7<技能1>",
   "item.PanlingRE.suo_hun_lu.skill2": "§6[%s§6] §f冷却：§b1§f秒 §f灵气：§b15§f点",
-  "item.PanlingRE.suo_hun_lu.skill3": "§f对指向的敌对生物发射§e<炼化强度*2.5>§f的伤害",
+  "item.PanlingRE.suo_hun_lu.skill3": "§f对指向的敌对生物造成§e<炼化强度*2.5>§f的伤害",
   "item.PanlingRE.suo_hun_lu.skill.success": "§d[炉火] §a释放成功！",
 
   "item.panlingre.qi_sha_din": "§e七煞鼎",
@@ -683,10 +683,10 @@
   "item.PanlingRE.qi_sha_din.skill1.1": "§e[鼎火] §7<shift查看详情>",
   "item.PanlingRE.qi_sha_din.skill1.2": "§e[鼎火] §7<技能1>",
   "item.PanlingRE.qi_sha_din.skill2": "§6[%s§6] §f冷却：§b1§f秒 §f灵气：§b20§f点",
-  "item.PanlingRE.qi_sha_din.skill3": "§f对指向的敌对生物发射§e<炼化强度*3>§f的伤害",
+  "item.PanlingRE.qi_sha_din.skill3": "§f对指向的敌对生物造成§e<炼化强度*3>§f的伤害",
   "item.PanlingRE.qi_sha_din.skill.success": "§e[鼎火] §a释放成功！",
 
   "item.panlingre.hysd": "§c混元神鼎",
 
-  "entity.panlingre.pan_gu": "§4盘古（？）元神形态"
+  "entity.panlingre.pan_gu": "§4盘古（？）§e[元神]"
 }
