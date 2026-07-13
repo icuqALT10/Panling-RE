@@ -6,7 +6,8 @@
     "LivingEntityMixin",
     "RangedAttributeMixin",
     "AbstractArrowMixin",
-    "SlimeSplitMixin"
+    "SlimeSplitMixin",
+    "BiomeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

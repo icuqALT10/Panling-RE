@@ -13,9 +13,6 @@ public class DashAttackGoal extends Goal {
     private final PanGuEntity boss;
     private int totalTicks; // 整个attack.throw动画长度,3s=60tick
 
-    private static final double MIN_DISTANCE = 5.0;
-    private static final double MAX_DISTANCE = 15.0;
-
     public DashAttackGoal(PanGuEntity boss) {
         this.boss = boss;
         this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
@@ -28,11 +25,13 @@ public class DashAttackGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        if (boss.getActionState() != PanGuEntity.ActionState.IDLE_OR_WALK
+        && boss.getActionState() != PanGuEntity.ActionState.ATTACK_COOLDOWN) return false;
         if (boss.isInAttackCooldown() || boss.isAttacking()) return false;
         LivingEntity target = boss.getTarget();
         if (target == null) return false;
         double dist = boss.distanceTo(target);
-        if (dist < MIN_DISTANCE || dist > MAX_DISTANCE) return false;
+        if (dist < 5 || dist > 15) return false;
         return !isBlocked(target);
     }
 
@@ -53,7 +52,7 @@ public class DashAttackGoal extends Goal {
         boss.getNavigation().stop();
         totalTicks = 45;
         boss.getLookControl().setLookAt(target);
-        boss.triggerAnim("attack_controller", "attack.throw");
+        boss.triggerAnim("action_controller", "attack.throw");
     }
 
     @Override
@@ -71,13 +70,17 @@ public class DashAttackGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        return totalTicks > 0 && !boss.cooldownStartedThisAttack;
+        return boss.getActionState() == PanGuEntity.ActionState.ATTACKING
+                && totalTicks > 0
+                && !boss.cooldownStartedThisAttack;
     }
 
     @Override
     public void stop() {
-        boss.setAttacking(false);
-        boss.endAttack();
-        boss.startAttackCooldown();
+        if (boss.getActionState() == PanGuEntity.ActionState.ATTACKING) {
+            boss.setAttacking(false);
+            boss.endAttack();
+            boss.startAttackCooldown();
+        }
     }
 }

@@ -23,12 +23,10 @@ public class MeleeComboGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        boolean cd = boss.isInAttackCooldown();
-        boolean atk = boss.isAttacking();
+        if (boss.getActionState() != PanGuEntity.ActionState.IDLE_OR_WALK
+        && boss.getActionState() != PanGuEntity.ActionState.ATTACK_COOLDOWN) return false;
         LivingEntity target = boss.getTarget();
-        boolean dist = target != null && boss.distanceTo(target) < 5.0;
-        boolean result = !cd && !atk && dist;
-        return result;
+        return !boss.isInAttackCooldown() && !boss.isAttacking() && (target != null && boss.distanceTo(target) < 5.0);
     }
 
     @Override
@@ -44,9 +42,48 @@ public class MeleeComboGoal extends Goal {
         boss.setYRot(yaw);
         boss.setYBodyRot(yaw);
 
-        boolean heavy = boss.getRandom().nextBoolean();
-        ticksLeft = heavy ? 35 : 45; // 略大于动画长度,留余量
-        boss.triggerAnim("attack_controller", heavy ? "attack.heavy" : "attack.combo");
+        if (boss.SkillPhase2Triggered) frenzied();
+        else common();
+    }
+
+    private void common() {
+        int random = boss.getRandom().nextInt(100);
+        if (random >= 0 && random <= 29) {
+            ticksLeft = 35;
+            boss.triggerAnim("action_controller","attack.heavy");
+        }
+        else if (random >= 30 && random <= 59) {
+            ticksLeft = 45;
+            boss.triggerAnim("action_controller","attack.combo");
+        }
+        else if (random >= 60 && random <= 79) {
+            ticksLeft = 50;
+            boss.triggerAnim("action_controller","attack.skill3");
+        }
+        else if (random >= 80 && random <= 99) {
+            ticksLeft = 50;
+            boss.triggerAnim("action_controller","attack.skill4");
+        }
+    }
+
+    private void frenzied() {
+        int random = boss.getRandom().nextInt(100);
+        if (random >= 0 && random <= 29) {
+            ticksLeft = 35;
+            boss.triggerAnim("action_controller","attack.skill3");
+        }
+        else if (random >= 30 && random <= 59) {
+            ticksLeft = 45;
+            boss.triggerAnim("action_controller","attack.skill4");
+        }
+        else if (random >= 60 && random <= 79) {
+            ticksLeft = 50;
+            boss.triggerAnim("action_controller","attack.heavy");
+        }
+        else if (random >= 80 && random <= 99) {
+            ticksLeft = 50;
+            boss.triggerAnim("action_controller","attack.combo");
+        }
     }
 
     @Override
@@ -56,13 +93,17 @@ public class MeleeComboGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        return ticksLeft > 0 && !boss.cooldownStartedThisAttack;
+        return boss.getActionState() == PanGuEntity.ActionState.ATTACKING
+                && ticksLeft > 0
+                && !boss.cooldownStartedThisAttack;
     }
 
     @Override
     public void stop() {
-        boss.setAttacking(false);
-        boss.endAttack();
-        boss.startAttackCooldown();
+        if (boss.getActionState() == PanGuEntity.ActionState.ATTACKING) {
+            boss.setAttacking(false);
+            boss.endAttack();
+            boss.startAttackCooldown();
+        }
     }
 }

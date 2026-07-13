@@ -152,14 +152,14 @@ public class ldlMenu extends AbstractContainerMenu {
     @Override
     public void removed(Player player) {
         super.removed(player);
-        this.access.execute((level, pos) -> {
+        if (!player.level().isClientSide) {
             for (int i = 0; i < 5; i++) {
-                ItemStack stack = this.container.removeItem(i, container.getItem(i).getCount());
+                ItemStack stack = this.container.removeItem(i, this.container.getItem(i).getCount());
                 if (!stack.isEmpty()) {
                     player.getInventory().placeItemBackInInventory(stack);
                 }
             }
-        });
+        }
     }
 
     @Override

@@ -1,0 +1,20 @@
+{
+  "id": "boss_gangu_intro_2",
+  "type": "OVERLAY",
+  "start": "start",
+  "entries": [
+    {
+      "id": "1",
+      "speaker": "",
+      "text": [
+        {
+          "translate": "dialog.panlingre.entity.pan_gu.intro.2"
+        }
+      ],
+      "portraits": [
+      ],
+      "command": [
+      ]
+    }
+  ]
+}

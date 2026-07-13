@@ -4,7 +4,10 @@ import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.client.gui.dztScreen;
 import icu.icuqalt10.panlingre.client.gui.ldlScreen;
 import icu.icuqalt10.panlingre.client.gui.zftScreen;
+import icu.icuqalt10.panlingre.client.layer.FireTornadoWindLayer;
+import icu.icuqalt10.panlingre.client.models.FireTornadoModel;
 import icu.icuqalt10.panlingre.client.renderer.*;
+import icu.icuqalt10.panlingre.client.renderer.boss.PanGuRenderer;
 import icu.icuqalt10.panlingre.init.*;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -19,22 +22,38 @@ import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@EventBusSubscriber(modid = "panlingre", value = Dist.CLIENT)
+@EventBusSubscriber(modid = PanlingRE.MODID, value = Dist.CLIENT)
 public class ClientModEvents {
+
+    //视场角抖动
+    private static final List<ShakeEffect> shakeEffects = new ArrayList<>();
+
+    private static class ShakeEffect {
+        Vec3 center;
+        double radius;
+        int remainingTicks;
+        float intensity;
+
+        ShakeEffect(Vec3 center, double radius, int ticks, float intensity) {
+            this.center = center;
+            this.radius = radius;
+            this.remainingTicks = ticks;
+            this.intensity = intensity;
+        }
+    }
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -119,6 +138,18 @@ public class ClientModEvents {
         CuriosRendererRegistry.register(ModItems.suo_hun_lu.get(), ldlCurioRenderer::new);
         CuriosRendererRegistry.register(ModItems.qi_sha_din.get(), ldlCurioRenderer::new);
         CuriosRendererRegistry.register(ModItems.hun_yuan_shen_din.get(), ldlCurioRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        // 注册火龙卷模型
+        event.registerLayerDefinition(FireTornadoWindLayer.FIRE_TORNADO_LAYER, FireTornadoModel::createBodyLayer);
+    }
+
+    @SubscribeEvent
+    public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        // 注册火龙卷渲染器
+        event.registerEntityRenderer(ModEntities.FIRE_TORNADO.get(), FireTornadoRenderer::new);
     }
 
     /**
@@ -228,5 +259,44 @@ public class ClientModEvents {
             }
             return 0.0F;
         });
+    }
+
+
+
+    // 视场角抖动
+    public static void startShake(Vec3 center, double radius, int ticks, float intensity) {
+        shakeEffects.add(new ShakeEffect(center, radius, ticks, intensity));
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        shakeEffects.removeIf(effect -> {
+            effect.remainingTicks--;
+            return effect.remainingTicks <= 0;
+        });
+    }
+
+    @SubscribeEvent
+    public static void onComputeCameraAngles(ViewportEvent.ComputeCameraAngles event) {
+        if (shakeEffects.isEmpty()) {
+            return;
+        }
+
+        Vec3 cameraPos = event.getCamera().getPosition();
+        float totalDelta = 0.0f;
+        float totalDeltaPitch = 0.0f;
+
+        for (ShakeEffect effect : shakeEffects) {
+            double distance = cameraPos.distanceTo(effect.center);
+            if (distance <= effect.radius) {
+                totalDelta += (float) Math.random() * effect.intensity - (effect.intensity / 2.0f);
+                totalDeltaPitch += (float) Math.random() * effect.intensity - (effect.intensity / 2.0f);
+            }
+        }
+
+        if (totalDelta != 0.0f || totalDeltaPitch != 0.0f) {
+            event.setPitch(event.getPitch() + totalDeltaPitch * 1.5f);
+            event.setYaw(event.getYaw() + totalDelta);
+        }
     }
 }

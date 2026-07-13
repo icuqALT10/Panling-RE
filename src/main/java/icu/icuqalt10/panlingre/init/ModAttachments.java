@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.init;
 import com.mojang.serialization.Codec;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.BlessData;
+import icu.icuqalt10.panlingre.attachment.FreezeData;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -28,6 +29,13 @@ public class ModAttachments {
             () -> AttachmentType.builder(BlessData::new)
                     .serialize(BlessData.CODEC)
                     .copyOnDeath()
+                    .build()
+    );
+
+    public static final Supplier<AttachmentType<FreezeData>> FREEZE_DATA = ATTACHMENT_TYPES.register(
+            "freeze_data",
+            () -> AttachmentType.builder(FreezeData::new)
+                    .serialize(FreezeData.CODEC)
                     .build()
     );
 

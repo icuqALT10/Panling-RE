@@ -13,8 +13,10 @@
   "curios.modifiers.bless": "佩戴在[圣兽祝福]栏时：",
 
   "key.categories.PanlingRE": "盘灵古域：RE",
+  "key.PanlingRE.gongfa": "功法",
   "key.PanlingRE.skill_1": "技能1",
   "key.PanlingRE.skill_2": "技能2",
+  "key.PanlingRE.liandan": "炼丹",
 
   "description.PanlingRE.max_lingqi": "最大灵气",
   "description.PanlingRE.current_lingqi": "§b当前灵气",
@@ -688,5 +690,16 @@
 
   "item.panlingre.hysd": "§c混元神鼎",
 
-  "entity.panlingre.pan_gu": "§4盘古（？）§e[元神]"
+  "entity.panlingre.pan_gu": "§4盘古(?) §e[元神]",
+  "entity.panlingre.pan_gu.creeper": "§b§l滚地雷",
+  "dialog.panlingre.entity.pan_gu.intro.1": "§c§l啊啊啊啊啊啊啊啊啊啊啊啊啊！！！",
+  "dialog.panlingre.entity.pan_gu.intro.2": "§7盘古骤然缩小，化作神族模样的元神",
+  "dialog.panlingre.entity.pan_gu.intro.3": "§c§l开天斧！",
+  "dialog.panlingre.entity.pan_gu.skill_end": "§c§l咳咳咳咳咳咳咳咳咳......",
+  "dialog.panlingre.entity.pan_gu.skill_phase1.1": "§7盘古回到场地中央，唤出支撑自身的八卦阵",
+  "dialog.panlingre.entity.pan_gu.skill_phase2.1": "§7盘古再次回到场地中央，唤出支撑自身的八卦阵",
+  "dialog.panlingre.entity.pan_gu.skill.1": "§6「§b坎水§7☯§9兑泽§6」 §b玄渊寒泽！",
+  "dialog.panlingre.entity.pan_gu.skill.2": "§6「§a巽风§7☯§c离火§6」 §c焚天烈风！",
+  "dialog.panlingre.entity.pan_gu.skill.3": "§6「§f乾天§7☯§e震雷§6」 §e苍天浩劫！",
+  "dialog.panlingre.entity.pan_gu.skill.4": "§6「§6艮山§7☯§7坤地§6」 §6撼山震狱！"
 }

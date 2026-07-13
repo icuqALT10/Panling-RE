@@ -1,0 +1,26 @@
+{
+  "id": "boss_pangu_skill_phase1_2",
+  "type": "OVERLAY",
+  "start": "start",
+  "entries": [
+    {
+      "id": "1",
+      "speaker": "",
+      "text": [
+        {
+          "translate": "dialog.panlingre.entity.pan_gu.skill.1"
+        },
+        {
+          "text": "\n"
+        },
+        {
+          "translate": "dialog.panlingre.entity.pan_gu.skill.2"
+        }
+      ],
+      "portraits": [
+      ],
+      "command": [
+      ]
+    }
+  ]
+}

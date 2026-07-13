@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 public interface skill_1_key {
      boolean skill_1_trigger(Level level, Player player, ItemStack stack);
 
-    default long getCD_1(String skillId) {
+    default long getCD_11(String skillId) {
         return switch (skillId) {
             case "cd.panlingre:teng_mu_gong.skill_1" -> 5000L;
             case "cd.panlingre:jing_tie_gong.skill_1" -> 5000L;

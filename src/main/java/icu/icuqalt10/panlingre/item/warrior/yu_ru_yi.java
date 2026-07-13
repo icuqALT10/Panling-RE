@@ -5,6 +5,8 @@ import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModEffects;
+import icu.icuqalt10.panlingre.network.ShockwaveUpdatePayload;
+import icu.icuqalt10.panlingre.network.particle.ParticleLighting;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -33,6 +35,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -123,22 +126,14 @@ public class yu_ru_yi extends Item {
             // 4. 局部视觉效果：仅发送给半径16格内的玩家
             if (level instanceof ServerLevel serverLevel) {
                 double radiusSq = 16.0 * 16.0;
+
+                //闪电粒子
+                ParticleLighting particlePayload = new ParticleLighting(targetPos);
+
                 for (ServerPlayer sp : serverLevel.players()) {
                     if (sp.distanceToSqr(targetPos) <= radiusSq) {
-                        // 发送雷击音效
-                        sp.connection.send(new ClientboundSoundPacket(
-                                BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.LIGHTNING_BOLT_IMPACT),
-                                SoundSource.WEATHER,
-                                targetPos.x, targetPos.y, targetPos.z,
-                                1.0f, 1.0f, serverLevel.getRandom().nextLong()
-                        ));
-                        // 发送闪烁粒子模拟视觉冲击
-                        for (double y = 0; y < 10; y += 0.5) {
-                            serverLevel.sendParticles(sp, net.minecraft.core.particles.ParticleTypes.ELECTRIC_SPARK, true,
-                                    targetPos.x, targetPos.y + y, targetPos.z, 5, 0.1, 0.1, 0.1, 0.05);
-                        }
-                        serverLevel.sendParticles(sp, ParticleTypes.FLASH, true,
-                                targetPos.x, targetPos.y, targetPos.z, 2, 0.1, 0.1, 0.1, 0.0);
+                        //发送闪击粒子
+                        PacketDistributor.sendToPlayer(sp, particlePayload);
                     }
                 }
             }

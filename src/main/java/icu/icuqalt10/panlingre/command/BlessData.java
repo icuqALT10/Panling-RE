@@ -1,11 +1,9 @@
-package icu.icuqalt10.panlingre.event;
+package icu.icuqalt10.panlingre.command;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import icu.icuqalt10.panlingre.PanlingRE;
-import icu.icuqalt10.panlingre.attachment.BlessData;
-import icu.icuqalt10.panlingre.init.ModAttachments;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument; // 新增导入
@@ -22,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber(modid = PanlingRE.MODID)
-public class CommandEventHandler {
+public class BlessData {
 
     private static final List<String> VALID_BLESSES = List.of("qinglong", "zhuque", "baihu", "xuanwu");
 
@@ -110,7 +108,7 @@ public class CommandEventHandler {
         return builder.buildFuture();
     }
 
-    private static int handleBless(net.minecraft.commands.CommandSourceStack source, ServerPlayer target, String blessType, String action) {
+    private static int handleBless(CommandSourceStack source, ServerPlayer target, String blessType, String action) {
         String type = blessType.toLowerCase();
 
         if (!VALID_BLESSES.contains(type)) {
@@ -122,12 +120,12 @@ public class CommandEventHandler {
 
         switch (action) {
             case "query" -> {
-                boolean isEnabled = BlessData.hasBless(target, type);
+                boolean isEnabled = icu.icuqalt10.panlingre.attachment.BlessData.hasBless(target, type);
                 source.sendSuccess(() -> Component.literal(String.format("§a[PanlingRE] 玩家 %s 的 %s 状态为: %b", targetName, type, isEnabled)), false);
                 return isEnabled ? 1 : 0;
             }
             case "add" -> {
-                if (BlessData.addBless(target, type)) {
+                if (icu.icuqalt10.panlingre.attachment.BlessData.addBless(target, type)) {
                     source.sendSuccess(() -> Component.literal(String.format("§a[PanlingRE] 已成功为 %s 开启 %s 祝福", targetName, type)), true);
                     return 1;
                 } else {
@@ -136,7 +134,7 @@ public class CommandEventHandler {
                 }
             }
             case "remove" -> {
-                if (BlessData.removeBless(target, type)) {
+                if (icu.icuqalt10.panlingre.attachment.BlessData.removeBless(target, type)) {
                     source.sendSuccess(() -> Component.literal(String.format("§a[PanlingRE] 已成功移除 %s 的 %s 祝福", targetName, type)), true);
                     return 1;
                 } else {

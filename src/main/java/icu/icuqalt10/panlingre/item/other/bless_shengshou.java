@@ -46,37 +46,29 @@ public class bless_shengshou extends Item implements ICurioItem {
             return modifiers;
         }
 
-        if (BlessData.hasBless(player, "qinglong")) {
             modifiers.put(ModAttributes.MAX_LINGQI, new AttributeModifier(
                     ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bless_qinglong"),
-                    5,
+                    BlessData.hasBless(player, "qinglong") ? 5.0 : 0.0,
                     AttributeModifier.Operation.ADD_VALUE
             ));
-        }
 
-        if (BlessData.hasBless(player, "zhuque")) {
             modifiers.put(Attributes.MAX_HEALTH, new AttributeModifier(
                     ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bless_zhuque"),
-                    5,
+                    BlessData.hasBless(player, "zhuque") ? 5.0 : 0.0,
                     AttributeModifier.Operation.ADD_VALUE
             ));
-        }
 
-        if (BlessData.hasBless(player, "baihu")) {
             modifiers.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(
                     ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bless_baihu"),
-                    0.25,
+                    BlessData.hasBless(player, "baihu") ? 0.25 : 0.0,
                     AttributeModifier.Operation.ADD_VALUE
             ));
-        }
 
-        if (BlessData.hasBless(player, "xuanwu")) {
             modifiers.put(ModAttributes.COOLDOWN_REMOVE, new AttributeModifier(
                     ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bless_xuanwu"),
-                    0.1,
+                    BlessData.hasBless(player, "xuanwu") ? 0.1 : 0.0,
                     AttributeModifier.Operation.ADD_MULTIPLIED_BASE
             ));
-        }
 
         return modifiers;
     }

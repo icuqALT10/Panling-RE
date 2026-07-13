@@ -17,8 +17,11 @@ public class ApproachTargetGoal extends Goal {
     @Override
     public boolean canUse() {
         LivingEntity target = boss.getTarget();
-        return target != null && !boss.isInAttackCooldown() && !boss.isAttacking()
-                && boss.distanceTo(target) > 5.0;
+        return target != null
+                && (boss.getActionState() == PanGuEntity.ActionState.IDLE_OR_WALK || boss.getActionState() == PanGuEntity.ActionState.ATTACK_COOLDOWN)
+                && !boss.isInAttackCooldown()
+                && !boss.isAttacking()
+                && boss.distanceTo(target) > 15;
     }
 
     @Override
@@ -26,7 +29,7 @@ public class ApproachTargetGoal extends Goal {
         LivingEntity target = boss.getTarget();
         if (target == null) return;
         boss.getLookControl().setLookAt(target);
-        boss.getNavigation().moveTo(target, 1.0);
+        boss.getNavigation().moveTo(target, 2.5);
     }
 
     @Override

@@ -8,11 +8,10 @@ import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.item.skill_1_key;
-import icu.icuqalt10.panlingre.item.skill_2_key;
+import icu.icuqalt10.panlingre.item.liandan;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import icu.icuqalt10.panlingre.world.inventory.ldlMenu;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -40,7 +39,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class chi_tong_lu extends Item implements ICurioItem,skill_1_key, skill_2_key {
+public class chi_tong_lu extends Item implements ICurioItem,skill_1_key, liandan {
 
     public chi_tong_lu() {
         super(
@@ -203,7 +202,7 @@ public class chi_tong_lu extends Item implements ICurioItem,skill_1_key, skill_2
     }
 
     @Override
-    public boolean skill_2_trigger(Level level, Player player, ItemStack stack) {
+    public boolean liandan_trigger(Level level, Player player, ItemStack stack) {
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             serverPlayer.openMenu(new SimpleMenuProvider((id, inv, p) ->
                             new ldlMenu(id, inv, ContainerLevelAccess.NULL),

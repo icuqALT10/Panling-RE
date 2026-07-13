@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.network;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.BlessData;
+import icu.icuqalt10.panlingre.init.ModAttachments;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -22,11 +23,11 @@ public record SyncBlessPayload(BlessData data) implements CustomPacketPayload {
         return TYPE;
     }
 
-    public static void handleClient(final SyncBlessPayload payload, final IPayloadContext context) {
+    public static void handle(final SyncBlessPayload payload, final IPayloadContext context) {
         context.enqueueWork(() -> {
             net.minecraft.world.entity.player.Player player = context.player();
             if (player != null) {
-                player.setData(icu.icuqalt10.panlingre.init.ModAttachments.BLESS.get(), payload.data());
+                player.setData(ModAttachments.BLESS.get(), payload.data());
             }
         });
     }

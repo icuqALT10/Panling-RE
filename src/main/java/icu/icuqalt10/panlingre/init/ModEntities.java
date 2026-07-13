@@ -10,6 +10,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.function.Supplier;
+
 public class ModEntities {
     // 1. 创建注册表容器
     public static final DeferredRegister<EntityType<?>> ENTITIES =
@@ -43,16 +45,20 @@ public class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<PanGuEntity>> PAN_GU =
             ENTITIES.register("pan_gu", () -> EntityType.Builder.of(PanGuEntity::new, MobCategory.MISC)
                     .sized(0.8F, 1.9F)
-                    .clientTrackingRange(8)
+                    .clientTrackingRange(12)
                     .updateInterval(1)
                     .build("pan_gu"));
 
-    /*public static final DeferredHolder<EntityType<?>, EntityType<PanGuLargeEntity>> PAN_GU_LARGE =
-            ENTITIES.register("pan_gu_large", () -> EntityType.Builder.of(PanGuLargeEntity::new, MobCategory.MISC)
-                    .sized(4.0F, 8.0F)        // 大形态实际碰撞箱,按真实体型量,不要图省事用默认值
-                    .clientTrackingRange(16)  // 体型大,玩家更早就该看到,不然走近了才突然渲染出来很突兀
-                    .updateInterval(1)
-                    .build("pan_gu_large"));*/
+    // 注册火龙卷实体
+    public static final Supplier<EntityType<FireTornadoEntity>> FIRE_TORNADO =
+            ENTITIES.register("fire_tornado",
+                    () -> EntityType.Builder.of(FireTornadoEntity::new, MobCategory.MISC)
+                            .sized(3.0f, 9.0f)          // 碰撞箱大小（宽，高）
+                            .clientTrackingRange(10)     // 客户端追踪范围（区块）
+                            .updateInterval(1)           // 更新间隔（tick）
+                            .fireImmune()                // 免疫火焰伤害（可选）
+                            .build("fire_tornado")
+            );
 
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);

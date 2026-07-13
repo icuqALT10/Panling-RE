@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.client;
 
+import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModItems;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,7 +14,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingGetProjectileEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
-@EventBusSubscriber(modid = "panlingre")
+@EventBusSubscriber(modid = PanlingRE.MODID)
 public class ArcherWeaponHandler {
 
     //给玩家自带无限

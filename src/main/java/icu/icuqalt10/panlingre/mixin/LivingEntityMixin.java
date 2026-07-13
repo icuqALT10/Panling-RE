@@ -4,6 +4,7 @@ import icu.icuqalt10.panlingre.init.ModComponents;
 import icu.icuqalt10.panlingre.item.warrior.ding_hai_shen_zhen;
 import icu.icuqalt10.panlingre.util.DamageRecord;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -35,9 +36,6 @@ public abstract class LivingEntityMixin extends Entity {
     // --- 1. 护甲计算公式修改 ---
     @Inject(method = "getDamageAfterArmorAbsorb", at = @At("HEAD"), cancellable = true)
     private void panlingre$modifyArmorCalculation(DamageSource source, float amount, CallbackInfoReturnable<Float> cir) {
-        if (source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_ARMOR)) {
-            return;
-        }
 
         LivingEntity entity = (LivingEntity) (Object) this;
         double armor = entity.getAttributeValue(Attributes.ARMOR);

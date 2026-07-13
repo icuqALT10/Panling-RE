@@ -3,10 +3,16 @@ package icu.icuqalt10.panlingre.attachment;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import icu.icuqalt10.panlingre.init.ModAttachments;
+import icu.icuqalt10.panlingre.item.other.bless_shengshou;
 import icu.icuqalt10.panlingre.network.SyncBlessPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+
+import java.util.Optional;
 
 public record BlessData(boolean qinglong, boolean zhuque, boolean baihu, boolean xuanwu) {
 

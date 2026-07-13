@@ -24,7 +24,7 @@ public class OpenGuiCommand {
 
     private static final SuggestionProvider<CommandSourceStack> FILE_SUGGESTIONS =
             (ctx, builder) -> SharedSuggestionProvider.suggest(
-                    List.of("panlingre:example_trades"),
+                    List.of("example_trades"),
                     builder
             );
 

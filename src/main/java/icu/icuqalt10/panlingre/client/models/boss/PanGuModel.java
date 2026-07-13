@@ -3,9 +3,13 @@ package icu.icuqalt10.panlingre.client.models.boss;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.entity.boss.PanGuEntity;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
 public class PanGuModel extends GeoModel<PanGuEntity> {
     @Override
@@ -27,29 +31,28 @@ public class PanGuModel extends GeoModel<PanGuEntity> {
     public void setCustomAnimations(PanGuEntity animatable, long instanceId, AnimationState<PanGuEntity> animationState) {
         super.setCustomAnimations(animatable, instanceId, animationState);
 
-        GeoBone hand = getAnimationProcessor().getBone("hand_right");
-        if (hand != null) {
-            hand.setHidden(true);
-        }
-        GeoBone jin = getAnimationProcessor().getBone("jin");
-        if (jin != null) {
-            jin.setHidden(true);
-        }
-        GeoBone mu = getAnimationProcessor().getBone("mu");
-        if (mu != null) {
-            mu.setHidden(true);
-        }
-        GeoBone shui = getAnimationProcessor().getBone("shui");
-        if (shui != null) {
-            shui.setHidden(true);
-        }
-        GeoBone huo = getAnimationProcessor().getBone("huo");
-        if (huo != null) {
-            huo.setHidden(true);
-        }
-        GeoBone tu = getAnimationProcessor().getBone("tu");
-        if (tu != null) {
-            tu.setHidden(true);
+            getAnimationProcessor().getBone("hand_right").setHidden(true);
+            getAnimationProcessor().getBone("axe").setHidden(true);
+
+        GeoBone head = getAnimationProcessor().getBone("head");
+
+        if (head != null) {
+            Player nearest = animatable.level().getNearestPlayer(
+                    animatable.getX(), animatable.getY(), animatable.getZ(),
+                    80.0D, false
+            );
+
+            boolean isPlayingWalkAnim = false;
+            if (nearest != null) {
+                isPlayingWalkAnim = (animatable.getActionState() == PanGuEntity.ActionState.ATTACK_COOLDOWN ||
+                        animatable.getActionState() == PanGuEntity.ActionState.IDLE_OR_WALK) && animatable.distanceToSqr(nearest) <= 400.0D;
+            }
+
+            if (isPlayingWalkAnim) {
+                EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+                head.setRotY(entityData.netHeadYaw() * Mth.DEG_TO_RAD);
+                head.setRotX(entityData.headPitch() * Mth.DEG_TO_RAD);
+            }
         }
     }
 }
