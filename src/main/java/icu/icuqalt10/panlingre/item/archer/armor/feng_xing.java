@@ -38,6 +38,11 @@ public class feng_xing extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("feng_xing_helmet"),
                             0.1,
                             AttributeModifier.Operation.ADD_MULTIPLIED_BASE), slot);
+            builder.add(Attributes.MAX_HEALTH,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("feng_xing_helmet"),
+                            2,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("feng_xing_helmet"),
@@ -58,7 +63,7 @@ public class feng_xing extends ArmorItem {
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("feng_xing_chestplate"),
-                            4,
+                            5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -80,7 +85,7 @@ public class feng_xing extends ArmorItem {
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("feng_xing_leggings"),
-                            2,
+                            3,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(

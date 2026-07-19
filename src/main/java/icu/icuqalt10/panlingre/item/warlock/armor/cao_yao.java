@@ -35,11 +35,6 @@ public class cao_yao extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("cao_yao_helmet"),
                             8,
                             AttributeModifier.Operation.ADD_VALUE), slot);
-            builder.add(Attributes.MAX_HEALTH,
-                    new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("cao_yao_helmet"),
-                            8,
-                            AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("cao_yao_helmet"),
@@ -65,7 +60,7 @@ public class cao_yao extends ArmorItem {
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("cao_yao_chestplate"),
-                            12,
+                            10,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -92,7 +87,7 @@ public class cao_yao extends ArmorItem {
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("cao_yao_leggings"),
-                            10,
+                            6,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(

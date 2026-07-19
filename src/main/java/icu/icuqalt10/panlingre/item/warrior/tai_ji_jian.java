@@ -5,6 +5,7 @@ import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModEffects;
+import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -32,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class tai_ji_jian extends SwordItem {
+public class tai_ji_jian extends SwordItem implements skill_trigger {
 
     public tai_ji_jian() {
         super(
@@ -62,6 +63,16 @@ public class tai_ji_jian extends SwordItem {
         );
 
         builder.add(
+                Attributes.MOVEMENT_SPEED,
+                new AttributeModifier(
+                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "tai_ji_jian"),
+                        -0.15,
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                ),
+                EquipmentSlotGroup.MAINHAND
+        );
+
+        builder.add(
                 Attributes.ATTACK_DAMAGE,
                 new AttributeModifier(
                         BASE_ATTACK_DAMAGE_ID,
@@ -85,13 +96,7 @@ public class tai_ji_jian extends SwordItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 10.0f;
-        //如果灵气不足
-        if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
+    public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
         //释放技能
         if (!level.isClientSide) {
             if (level.isDay()) {
@@ -104,15 +109,36 @@ public class tai_ji_jian extends SwordItem {
                 player.displayClientMessage(Component.translatable("item.PanlingRE.tai_ji_jian.skill.success.night"), true);
             }
 
-            //cd
-            cooldown_remove.cd_remove(player,this,100);
             //音效
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 0.5f,1.0f);
             }
 
-            return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+        return true;
+    }
 
+    @Override
+    public long getSkillCD(int skillIndex) {
+        return 5000L;
+    }
+
+    @Override
+    public String getSkillNameKey(int skillIndex) {
+        return "item.PanlingRE.tai_ji_jian.skill1.2";
+    }
+
+    @Override
+    public float getSkillLingQiCost(int skillIndex) {
+        return 10;
+    }
+
+    @Override
+    public String[] getSkillDescription(int skillIndex) {
+        return new String[]{
+                "item.PanlingRE.tai_ji_jian.skill3",
+                "item.PanlingRE.tai_ji_jian.skill4",
+                "item.PanlingRE.tai_ji_jian.skill5"
+        };
     }
 
     @Override
@@ -126,8 +152,7 @@ public class tai_ji_jian extends SwordItem {
             tooltipComponents.add(Component.translatable("item.PanlingRE.tai_ji_jian.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.tai_ji_jian.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.tai_ji_jian.skill2"
-                    ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.tai_ji_jian.skill2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.tai_ji_jian.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.tai_ji_jian.skill4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.tai_ji_jian.skill5"));

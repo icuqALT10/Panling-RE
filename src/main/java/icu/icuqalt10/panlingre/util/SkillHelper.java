@@ -2,11 +2,14 @@ package icu.icuqalt10.panlingre.util;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.FreezeData;
+import icu.icuqalt10.panlingre.entity.PanLingEntities;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.network.SyncFreezeDataPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
@@ -90,10 +93,24 @@ public class SkillHelper {
             return;
         }
 
+        //实体处于无敌 不冻结
+        if (entity.isInvulnerable()) return;
+
+        //实体为有AI的生物 且NoAI=false 消除AI
+        if (entity instanceof Mob mob) {
+            //没有AI 不继续执行
+            if (mob.isNoAi()) return;
+
+            mob.setNoAi(true);
+        }
+
         // 使用附件数据存储冻结状态
         FreezeData freezeData = entity.getData(ModAttachments.FREEZE_DATA.get());
         freezeData.setFrozen(true);
         freezeData.setDuration(duration);
+
+        //如果是特殊生物 触发其冻结附加条件
+        if (entity instanceof PanLingEntities mob) mob.whenFroozen();
 
         // 添加属性修改器
         entity.getAttribute(Attributes.MOVEMENT_SPEED).addTransientModifier(
@@ -103,12 +120,13 @@ public class SkillHelper {
                 new AttributeModifier(FREEZE_JUMP_MODIFIER_ID, -1.0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         );
 
-        // 同步到客户端
+        // 同步到客户端（追踪者 + 自己）
         if (entity.level() instanceof ServerLevel) {
-            PacketDistributor.sendToPlayersTrackingEntity(
-                    entity,
-                    new SyncFreezeDataPayload(entity.getId(), true, duration)
-            );
+            var packet = new SyncFreezeDataPayload(entity.getId(), true, duration);
+            PacketDistributor.sendToPlayersTrackingEntity(entity, packet);
+            if (entity instanceof ServerPlayer sp) {
+                PacketDistributor.sendToPlayer(sp, packet);
+            }
         }
     }
 
@@ -124,16 +142,23 @@ public class SkillHelper {
         freezeData.setFrozen(false);
         freezeData.setDuration(0);
 
+        //恢复AI
+        if (entity instanceof Mob mob) mob.setNoAi(false);
+
+        //如果是特殊生物 触发其冻结附加条件
+        if (entity instanceof PanLingEntities mob) mob.whenUnFroozen();
+
         // 移除属性修改器
         entity.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(FREEZE_MODIFIER_ID);
         entity.getAttribute(Attributes.JUMP_STRENGTH).removeModifier(FREEZE_JUMP_MODIFIER_ID);
 
-        // 同步到客户端
+        // 同步到客户端（追踪者 + 自己）
         if (entity.level() instanceof ServerLevel) {
-            PacketDistributor.sendToPlayersTrackingEntity(
-                    entity,
-                    new SyncFreezeDataPayload(entity.getId(), false, 0)
-            );
+            var packet = new SyncFreezeDataPayload(entity.getId(), false, 0);
+            PacketDistributor.sendToPlayersTrackingEntity(entity, packet);
+            if (entity instanceof ServerPlayer sp) {
+                PacketDistributor.sendToPlayer(sp, packet);
+            }
         }
     }
 

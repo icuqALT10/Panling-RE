@@ -1,4 +1,4 @@
-package icu.icuqalt10.panlingre.client;
+package icu.icuqalt10.panlingre.event;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.init.ModAttributes;

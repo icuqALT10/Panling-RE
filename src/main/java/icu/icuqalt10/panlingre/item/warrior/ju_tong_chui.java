@@ -4,6 +4,7 @@ import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.init.ModAttachments;
+import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ju_tong_chui extends Item {
+public class ju_tong_chui extends Item implements skill_trigger {
 
     public ju_tong_chui() {
         super(
@@ -49,6 +50,16 @@ public class ju_tong_chui extends Item {
                         ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ju_tong_chui"),
                         10.0,
                         AttributeModifier.Operation.ADD_VALUE
+                ),
+                EquipmentSlotGroup.MAINHAND
+        );
+
+        builder.add(
+                Attributes.MOVEMENT_SPEED,
+                new AttributeModifier(
+                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ju_tong_chui"),
+                        -0.15,
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
                 EquipmentSlotGroup.MAINHAND
         );
@@ -77,13 +88,7 @@ public class ju_tong_chui extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 20.0f;
-        //如果灵气不足
-        if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
+    public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
             //释放技能
         if (!level.isClientSide) {
             int duration = (int) (player.getAttributeValue(Attributes.ARMOR) * 0.5 * 20);
@@ -91,8 +96,6 @@ public class ju_tong_chui extends Item {
             player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 600, 0,false,false,true));
             player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1200, 0,false,false,true));
 
-            //cd
-            cooldown_remove.cd_remove(player,this,400);
             //音效
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 0.5f,1.0f);
@@ -106,8 +109,30 @@ public class ju_tong_chui extends Item {
             }
             }
 
-            return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+        return true;
+    }
 
+    @Override
+    public long getSkillCD(int skillIndex) {
+        return 20000L;
+    }
+
+    @Override
+    public String getSkillNameKey(int skillIndex) {
+        return "item.PanlingRE.ju_tong_chui.skill1.2";
+    }
+
+    @Override
+    public float getSkillLingQiCost(int skillIndex) {
+        return 20;
+    }
+
+    @Override
+    public String[] getSkillDescription(int skillIndex) {
+        return new String[]{
+                "item.PanlingRE.ju_tong_chui.skill3",
+                "item.PanlingRE.ju_tong_chui.skill4"
+        };
     }
 
     @Override
@@ -121,8 +146,7 @@ public class ju_tong_chui extends Item {
             tooltipComponents.add(Component.translatable("item.PanlingRE.ju_tong_chui.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.ju_tong_chui.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ju_tong_chui.skill2"
-                    ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.ju_tong_chui.skill2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.ju_tong_chui.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.ju_tong_chui.skill4"));
         } else {

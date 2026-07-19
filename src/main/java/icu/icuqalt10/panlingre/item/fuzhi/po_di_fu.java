@@ -63,7 +63,7 @@ public class po_di_fu extends Item{
         //释放技能
         if (!level.isClientSide) {
 
-            PoDiFuEntity projectile = new PoDiFuEntity(level, player, 4f);
+            PoDiFuEntity projectile = new PoDiFuEntity(level, player, 1.5f);
             projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
             level.addFreshEntity(projectile);
 

@@ -38,6 +38,11 @@ public class chi_ying extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("chi_ying_helmet"),
                             0.2,
                             AttributeModifier.Operation.ADD_MULTIPLIED_BASE), slot);
+            builder.add(Attributes.MAX_HEALTH,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("chi_ying_helmet"),
+                            10,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("chi_ying_helmet"),
@@ -63,7 +68,7 @@ public class chi_ying extends ArmorItem {
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("chi_ying_chestplate"),
-                            12,
+                            14,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(

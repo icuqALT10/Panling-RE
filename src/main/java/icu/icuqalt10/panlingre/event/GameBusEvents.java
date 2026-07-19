@@ -9,7 +9,9 @@ import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.network.SyncBlessPayload;
 import icu.icuqalt10.panlingre.player.check;
+import icu.icuqalt10.panlingre.util.Shockwave;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -19,6 +21,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
@@ -41,8 +44,10 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 @EventBusSubscriber(modid = PanlingRE.MODID)
 public class GameBusEvents {
@@ -64,10 +69,23 @@ public class GameBusEvents {
     }
     // =============================================================
 
+    // ==================== 震动波管理器 ====================
+    private static final Map<LivingEntity, List<Shockwave>> ENTITY_SHOCKWAVES = new HashMap<>();
+
+    public static void addShockwave(LivingEntity entity, Shockwave wave) {
+        ENTITY_SHOCKWAVES.computeIfAbsent(entity, k -> new ArrayList<>()).add(wave);
+    }
+    // =============================================================
+
     // 定义标签常量
-    public static final TagKey<Item> WARRIOR_TAG = ItemTags.create(ResourceLocation.fromNamespaceAndPath("panlingre", "zhiye/warrior"));
-    public static final TagKey<Item> ARCHER_TAG = ItemTags.create(ResourceLocation.fromNamespaceAndPath("panlingre", "zhiye/archer"));
-    public static final TagKey<Item> WARLOCK_TAG = ItemTags.create(ResourceLocation.fromNamespaceAndPath("panlingre", "zhiye/warlock"));
+    public static final TagKey<Item> WARRIOR_TAG =
+            ItemTags.create(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "zhiye/warrior"));
+    public static final TagKey<Item> ARCHER_TAG =
+            ItemTags.create(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "zhiye/archer"));
+    public static final TagKey<Item> WARLOCK_TAG =
+            ItemTags.create(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "zhiye/warlock"));
+    public static final TagKey<EntityType<?>> BOSS_TAG =
+            TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "boss"));
 
     //玩家进入服务器
     @SubscribeEvent
@@ -225,6 +243,26 @@ public class GameBusEvents {
 
         // 更新服务端火焰轨迹数据
         FireTrailTracker.tick();
+
+        // 更新震动波（来自物品技能等非实体来源）
+        if (!ENTITY_SHOCKWAVES.isEmpty()) {
+            Iterator<Map.Entry<LivingEntity, List<Shockwave>>> waveIter = ENTITY_SHOCKWAVES.entrySet().iterator();
+            while (waveIter.hasNext()) {
+                Map.Entry<LivingEntity, List<Shockwave>> entry = waveIter.next();
+                LivingEntity entity = entry.getKey();
+                List<Shockwave> waves = entry.getValue();
+                if (!entity.isAlive() || entity.isRemoved()) {
+                    waveIter.remove();
+                    continue;
+                }
+                if (entity.level() instanceof ServerLevel serverLevel) {
+                    waves.removeIf(wave -> !wave.tick(serverLevel, entity));
+                }
+                if (waves.isEmpty()) {
+                    waveIter.remove();
+                }
+            }
+        }
     }
 
     @SubscribeEvent
@@ -245,29 +283,38 @@ public class GameBusEvents {
                 creeper.getPersistentData().putInt("GundileiTicks", remainingTicks);
 
                 // 2. 检测周围是否有碰到的玩家 (碰撞箱略微放大 0.3 格做碰撞区域)
-                List<ServerPlayer> bumpedPlayers = creeper.level().getEntitiesOfClass(
-                        ServerPlayer.class,
+                List<LivingEntity> bumpedEntyties = creeper.level().getEntitiesOfClass(
+                        LivingEntity.class,
                         creeper.getBoundingBox().inflate(0.3)
                 );
 
-                if (!bumpedPlayers.isEmpty()) {
+                if (!bumpedEntyties.isEmpty()) {
+                    float damage = creeper.getPersistentData().getInt("GundileiDamage");
+                    boolean SuccessCheck = false;
                     ServerLevel serverLevel = (ServerLevel) creeper.level();
+
+                    for (LivingEntity bumpedentity : bumpedEntyties) {
+                        if (bumpedentity == creeper) continue;
+                        if (creeper.getTeam() != null && creeper.getTeam() == bumpedentity.getTeam()) continue;
+
+                        // 扣除精确的 10 点爆炸伤害
+                        bumpedentity.hurt(serverLevel.damageSources().explosion(creeper, creeper), damage);
+
+                        // 计算击飞向量 (由苦力怕指向玩家的方向，给予 XZ 方向冲量，并给予稳定的向上速度)
+                        if (entity.getType().is(BOSS_TAG)) {
+                            Vec3 moveDirection = bumpedentity.position().subtract(creeper.position()).normalize().scale(1.4);
+                            bumpedentity.setDeltaMovement(moveDirection.x, 0.65, moveDirection.z);
+                            bumpedentity.hurtMarked = true;
+                        }
+
+                        SuccessCheck = true;
+                    }
+
+                    if (!SuccessCheck) return;
 
                     // 纯视觉和声音的爆炸效果（不会真正破坏地形，也不会产生原版的窒息/火焰伤害）
                     serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, creeper.getX(), creeper.getY(), creeper.getZ(), 1, 0.0, 0.0, 0.0, 0.0);
                     serverLevel.playSound(null, creeper.getX(), creeper.getY(), creeper.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 1.0F, 1.0F);
-
-                    for (ServerPlayer player : bumpedPlayers) {
-                        // 扣除精确的 10 点爆炸伤害
-                        player.hurt(serverLevel.damageSources().explosion(creeper, creeper), 10.0F);
-
-                        // 计算击飞向量 (由苦力怕指向玩家的方向，给予 XZ 方向冲量，并给予稳定的向上速度)
-                        Vec3 moveDirection = player.position().subtract(creeper.position()).normalize().scale(1.4);
-                        player.setDeltaMovement(moveDirection.x, 0.65, moveDirection.z);
-
-                        // 必须加这一步！告诉服务端强制把位移数据包同步发给客户端玩家，否则会产生严重的拉回和不同步
-                        player.hurtMarked = true;
-                    }
 
                     // 触发爆炸后滚地雷立刻退场
                     creeper.discard();

@@ -151,12 +151,14 @@ public class ModTabs {
                         output.accept(ModItems.jiao_long_nu.get());
                         output.accept(ModItems.bei_dou_gong.get());
                         output.accept(ModItems.liu_xing_nu.get());
+                        output.accept(ModItems.zhu_ri.get());
 
                         output.accept(ModItems.huang_tong_lu.get());
                         output.accept(ModItems.jing_tie_lu.get());
                         output.accept(ModItems.chi_tong_lu.get());
                         output.accept(ModItems.suo_hun_lu.get());
                         output.accept(ModItems.qi_sha_din.get());
+                        output.accept(ModItems.hun_yuan_shen_din.get());
                     })
                     .build()
             );

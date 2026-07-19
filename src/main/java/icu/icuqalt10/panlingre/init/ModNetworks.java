@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.init;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.network.*;
 import icu.icuqalt10.panlingre.network.particle.GatherBall;
+import icu.icuqalt10.panlingre.network.ShakePayload;
 import icu.icuqalt10.panlingre.network.particle.ParticleCluster;
 import icu.icuqalt10.panlingre.network.particle.ParticleLighting;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -19,6 +20,12 @@ public class ModNetworks {
                 SkillPayload::handle
         );
 
+        registrar.playToServer(
+                SkillWheelPayload.TYPE,
+                SkillWheelPayload.STREAM_CODEC,
+                SkillWheelPayload::handle
+        );
+
         registrar.playToClient(
                 LingQiSyncPacket.TYPE,
                 LingQiSyncPacket.STREAM_CODEC,
@@ -31,16 +38,16 @@ public class ModNetworks {
                 SyncBlessPayload::handle
         );
 
-        registrar.playToServer(
-                AttackInstructionPayload.TYPE,
-                AttackInstructionPayload.STREAM_CODEC,
-                AttackInstructionPayload::handle
-        );
-
         registrar.playToClient(
                 ShockwaveUpdatePayload.TYPE,
                 ShockwaveUpdatePayload.STREAM_CODEC,
                 ShockwaveUpdatePayload::handle
+        );
+
+        registrar.playToClient(
+                GroundSmashPayload.TYPE,
+                GroundSmashPayload.STREAM_CODEC,
+                GroundSmashPayload::handle
         );
 
         registrar.playToClient(
@@ -71,6 +78,12 @@ public class ModNetworks {
                 SyncFreezeDataPayload.TYPE,
                 SyncFreezeDataPayload.STREAM_CODEC,
                 SyncFreezeDataPayload::handle
+        );
+
+        registrar.playToClient(
+                ShakePayload.TYPE,
+                ShakePayload.STREAM_CODEC,
+                ShakePayload::handle
         );
 
 

@@ -1,10 +1,8 @@
 package icu.icuqalt10.panlingre.item.archer;
 
 import icu.icuqalt10.panlingre.PanlingRE;
-import icu.icuqalt10.panlingre.attachment.LingQiData;
-import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
-import icu.icuqalt10.panlingre.item.skill_1_key;
+import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -28,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class teng_mu_gong extends BowItem implements skill_1_key {
+public class teng_mu_gong extends BowItem implements skill_trigger {
 
     public teng_mu_gong() {
         super(
@@ -67,12 +65,8 @@ public class teng_mu_gong extends BowItem implements skill_1_key {
 
     //技能 skill_1
     @Override
-    public boolean skill_1_trigger(Level level, Player player, ItemStack stack) {
+    public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
 
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 10.0f;
-        //如果灵气不足
-        if (!data.consume(player,cost)) return false;
         //释放技能
         if (!level.isClientSide) {
             Arrow arrowEntity = new Arrow(level, player, new ItemStack(Items.ARROW), stack);
@@ -101,6 +95,29 @@ public class teng_mu_gong extends BowItem implements skill_1_key {
     }
 
     @Override
+    public long getSkillCD(int skillIndex) {
+        return 5000L;
+    }
+
+    @Override
+    public String getSkillNameKey(int skillIndex) {
+        return "item.PanlingRE.teng_mu_gong.skill1.2";
+    }
+
+    @Override
+    public float getSkillLingQiCost(int skillIndex) {
+        return 10;
+    }
+
+    @Override
+    public String[] getSkillDescription(int skillIndex) {
+        return new String[]{
+                "item.PanlingRE.teng_mu_gong.skill3",
+                "item.PanlingRE.teng_mu_gong.skill4"
+        };
+    }
+
+    @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
 
         // 检测Shift键
@@ -111,8 +128,7 @@ public class teng_mu_gong extends BowItem implements skill_1_key {
             tooltipComponents.add(Component.translatable("item.PanlingRE.teng_mu_gong.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.teng_mu_gong.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.teng_mu_gong.skill2"
-                    ,Component.keybind("key.PanlingRE.skill_1").withStyle(ChatFormatting.GOLD)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.teng_mu_gong.skill2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.teng_mu_gong.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.teng_mu_gong.skill4"));
         } else {

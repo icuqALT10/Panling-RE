@@ -33,11 +33,6 @@ public class hua_tuo extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("hua_tuo_helmet"),
                             5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
-            builder.add(Attributes.MAX_HEALTH,
-                    new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_helmet"),
-                            5,
-                            AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("hua_tuo_helmet"),
@@ -90,7 +85,7 @@ public class hua_tuo extends ArmorItem {
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("hua_tuo_leggings"),
-                            6,
+                            4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(

@@ -1,0 +1,50 @@
+{
+  "parent": "minecraft:item/bow",
+  "textures": {
+    "layer0": "panlingre:item/bows/zhu_ri/zhuri1"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "panlingre:powered": 1.0
+      },
+      "model": "panlingre:item/bows/zhu_ri/zhuri9"
+    },
+    {
+      "predicate": { "pulling": 1 },
+      "model": "panlingre:item/bows/zhu_ri/zhuri1"
+    },
+    {
+      "predicate": { "pulling": 1, "pull": 0.1 },
+      "model": "panlingre:item/bows/zhu_ri/zhuri2"
+    },
+    {
+      "predicate": { "pulling": 1, "pull": 0.2 },
+      "model": "panlingre:item/bows/zhu_ri/zhuri3"
+    },
+    {
+      "predicate": { "pulling": 1, "pull": 0.3 },
+      "model": "panlingre:item/bows/zhu_ri/zhuri4"
+    },
+    {
+      "predicate": { "pulling": 1, "pull": 0.4 },
+      "model": "panlingre:item/bows/zhu_ri/zhuri5"
+    },
+    {
+      "predicate": { "pulling": 1, "pull": 0.5 },
+      "model": "panlingre:item/bows/zhu_ri/zhuri6"
+    },
+    {
+      "predicate": { "pulling": 1, "pull": 0.6 },
+      "model": "panlingre:item/bows/zhu_ri/zhuri7"
+    },
+    {
+      "predicate": { "pulling": 1, "pull": 0.7 },
+      "model": "panlingre:item/bows/zhu_ri/zhuri8"
+    },
+    {
+      "predicate": { "pulling": 1, "pull": 0.8 },
+      "model": "panlingre:item/bows/zhu_ri/zhuri9"
+    }
+  ]
+}

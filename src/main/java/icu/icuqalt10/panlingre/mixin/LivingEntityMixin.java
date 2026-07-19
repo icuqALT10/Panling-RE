@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.mixin;
 
+import icu.icuqalt10.panlingre.entity.ZhuRiArrowEntity;
 import icu.icuqalt10.panlingre.init.ModComponents;
 import icu.icuqalt10.panlingre.item.warrior.ding_hai_shen_zhen;
 import icu.icuqalt10.panlingre.util.DamageRecord;
@@ -125,6 +126,10 @@ public abstract class LivingEntityMixin extends Entity {
                             weapon.getOrDefault(ModComponents.IS_POWERED.get(), false)) {
                         newInvulTime = 13;
                     }
+                }
+
+                if (source.getDirectEntity() instanceof ZhuRiArrowEntity) {
+                    newInvulTime = 10;
                 }
             }
 

@@ -285,6 +285,8 @@ public class ModItems {
             ITEMS.register("bei_dou_gong", bei_dou_gong::new);
     public static final DeferredItem<Item> liu_xing_nu =
             ITEMS.register("liu_xing_nu", liu_xing_nu::new);
+    public static final DeferredItem<Item> zhu_ri =
+            ITEMS.register("zhu_ri", zhu_ri::new);
 
     public static final DeferredItem<Item> huang_tong_lu =
             ITEMS.register("huang_tong_lu", huang_tong_lu::new);

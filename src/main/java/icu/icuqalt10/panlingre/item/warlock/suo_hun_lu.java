@@ -3,11 +3,8 @@ package icu.icuqalt10.panlingre.item.warlock;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import icu.icuqalt10.panlingre.PanlingRE;
-import icu.icuqalt10.panlingre.attachment.LingQiData;
-import icu.icuqalt10.panlingre.attribute.cooldown_remove;
-import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
-import icu.icuqalt10.panlingre.item.skill_1_key;
+import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.item.liandan;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import icu.icuqalt10.panlingre.world.inventory.ldlMenu;
@@ -39,7 +36,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class suo_hun_lu extends Item implements ICurioItem,skill_1_key, liandan {
+public class suo_hun_lu extends Item implements ICurioItem,skill_trigger, liandan {
 
     public suo_hun_lu() {
         super(
@@ -75,12 +72,8 @@ public class suo_hun_lu extends Item implements ICurioItem,skill_1_key, liandan 
 
     //技能 skill_1
     @Override
-    public boolean skill_1_trigger(Level level, Player player, ItemStack stack) {
+    public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
 
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 15f;
-        //如果灵气不足
-        if (!data.consume(player,cost)) return false;
         //释放技能
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             LivingEntity target = findAlchemistTarget(serverPlayer, 5.0);
@@ -111,8 +104,6 @@ public class suo_hun_lu extends Item implements ICurioItem,skill_1_key, liandan 
                 drawSpellLine(serverPlayer, furnaceSource, targetDest);
 
             }
-            //cd
-            cooldown_remove.cd_remove(player,this,20);
             //音效
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 0.5f,1.0f);
@@ -121,6 +112,28 @@ public class suo_hun_lu extends Item implements ICurioItem,skill_1_key, liandan 
         }
 
         return true;
+    }
+
+    @Override
+    public long getSkillCD(int skillIndex) {
+        return 1000L;
+    }
+
+    @Override
+    public String getSkillNameKey(int skillIndex) {
+        return "item.PanlingRE.suo_hun_lu.skill1.2";
+    }
+
+    @Override
+    public float getSkillLingQiCost(int skillIndex) {
+        return 10;
+    }
+
+    @Override
+    public String[] getSkillDescription(int skillIndex) {
+        return new String[]{
+                "item.PanlingRE.suo_hun_lu.skill3"
+        };
     }
 
     private static LivingEntity findAlchemistTarget(ServerPlayer player, double range) {
@@ -183,18 +196,18 @@ public class suo_hun_lu extends Item implements ICurioItem,skill_1_key, liandan 
             tooltipComponents.add(Component.translatable("item.PanlingRE.suo_hun_lu.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.suo_hun_lu.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.suo_hun_lu.skill2"
-                    ,Component.keybind("key.PanlingRE.skill_1").withStyle(ChatFormatting.GOLD)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.suo_hun_lu.skill2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.suo_hun_lu.skill3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill2"
-                    ,Component.keybind("key.PanlingRE.skill_2").withStyle(ChatFormatting.GOLD)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill3"));
+            tooltipComponents.add(Component.empty());
+            tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill1.2"
+                    ,Component.keybind("key.PanlingRE.liandan").withStyle(ChatFormatting.GOLD)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill2"));
         } else {
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.suo_hun_lu.skill1.1"));
+            tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill1.1"));
         }
 
@@ -208,8 +221,6 @@ public class suo_hun_lu extends Item implements ICurioItem,skill_1_key, liandan 
                             new ldlMenu(id, inv, ContainerLevelAccess.NULL),
                             Component.translatable("block.panlingre.ldl")),
                     buf -> buf.writeBlockPos(player.blockPosition()));
-
-            cooldown_remove.cd_remove(player, this, 20);
         }
         return true;
     }

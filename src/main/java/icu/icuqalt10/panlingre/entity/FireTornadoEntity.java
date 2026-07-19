@@ -1,8 +1,13 @@
 package icu.icuqalt10.panlingre.entity;
 
+import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.client.FireTrailRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import icu.icuqalt10.panlingre.init.ModDamageTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.PlayerTeam;
 
 import java.util.List;
 
@@ -24,12 +30,54 @@ public class FireTornadoEntity extends Mob {
     private int lifespan = 40;              // 总寿命（tick）
     private int age = 0;                    // 已存活 tick
     private boolean initialized = false;    // 是否已设置参数
+    private float damage = 15 ;
 
-    public FireTornadoEntity(EntityType<FireTornadoEntity> entityType, Level level) {
+    // 获取boss列表 对boss不击飞
+    public static final TagKey<EntityType<?>> BOSS_TAG =
+            TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "boss"));
+
+    public FireTornadoEntity(
+            EntityType<? extends Mob> entityType, Level level) {
         super(entityType, level);
         this.noPhysics = true;
         this.setInvulnerable(true);
         this.setNoGravity(true);
+    }
+
+    public FireTornadoEntity(
+            EntityType<FireTornadoEntity> entityType, Level level,
+            Vec3 spawnPos, Vec3 targetPos, int lifeSpanTicks, float damage) {
+        super(entityType, level);
+        this.noPhysics = true;
+        this.setInvulnerable(true);
+        this.setNoGravity(true);
+
+        this.setPos(spawnPos);
+        this.damage = damage;
+
+        this.targetPos = targetPos;
+        this.lifespan = Math.max(1, lifeSpanTicks);
+        this.age = 0;
+        this.initialized = true;
+    }
+
+    public FireTornadoEntity(
+            EntityType<FireTornadoEntity> entityType, Level level,
+            Vec3 spawnPos, Vec3 targetPos, int lifeSpanTicks, float damage, PlayerTeam team) {
+        super(entityType, level);
+        this.noPhysics = true;
+        this.setInvulnerable(true);
+        this.setNoGravity(true);
+
+        this.setPos(spawnPos);
+        this.damage = damage;
+
+        if (team != null) this.level().getScoreboard().addPlayerToTeam(this.getStringUUID(), team);
+
+        this.targetPos = targetPos;
+        this.lifespan = Math.max(1, lifeSpanTicks);
+        this.age = 0;
+        this.initialized = true;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -37,14 +85,6 @@ public class FireTornadoEntity extends Mob {
                 .add(Attributes.MAX_HEALTH, 20.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.0D)
                 .add(Attributes.FOLLOW_RANGE, 16.0D);
-    }
-
-    // ---------- 外部设置参数（供指令调用） ----------
-    public void setMovementParameters(Vec3 target, int lifespanTicks) {
-        this.targetPos = target;
-        this.lifespan = Math.max(1, lifespanTicks);
-        this.age = 0;
-        this.initialized = true;
     }
 
     // ---------- 核心 tick ----------
@@ -58,10 +98,15 @@ public class FireTornadoEntity extends Mob {
         double z = position().z;
         List<BlockPos> belowPoses = List.of(
                 BlockPos.containing(x, y, z),
-                BlockPos.containing(x + 1, y, z),
-                BlockPos.containing(x, y, z + 1),
-                BlockPos.containing(x - 1, y, z),
-                BlockPos.containing(x, y, z - 1));
+                BlockPos.containing(x + 0.75, y, z),
+                BlockPos.containing(x, y, z + 0.75),
+                BlockPos.containing(x - 0.75, y, z),
+                BlockPos.containing(x, y, z - 0.75),
+                BlockPos.containing(x + 0.75, y, z + 0.75),
+                BlockPos.containing(x - 0.75, y, z + 0.75),
+                BlockPos.containing(x + 0.75, y, z - 0.75),
+                BlockPos.containing(x - 0.75, y, z - 0.75)
+        );
 
         for (BlockPos pos : belowPoses) {
             BlockState state = level().getBlockState(pos);
@@ -134,17 +179,20 @@ public class FireTornadoEntity extends Mob {
             }
 
             // 击飞（所有生物均适用）
-            Vec3 pushDir = entity.position().subtract(position()).normalize();
-            Vec3 push = pushDir.scale(1.5).add(0, 0.6, 0);
-            entity.setDeltaMovement(push);
+            if (!entity.getType().is(BOSS_TAG)) {
+                Vec3 pushDir = entity.position().subtract(position()).normalize();
+                Vec3 push = pushDir.scale(1.5).add(0, 0.5, 0);
+                entity.setDeltaMovement(push);
+            }
+
+            // 造成伤害
+            entity.hurt(this.damageSources().source(ModDamageTypes.FIRE_TORNADO, this), this.damage);
+            //清除冰冻值
+            entity.setTicksFrozen(0);
+
             if (entity instanceof Player) {
                 entity.hurtMarked = true; // 玩家需要标记
             }
-
-            // 造成 30 点伤害
-            entity.hurt(this.damageSources().inFire(), 30.0F);
-            //清除冰冻值
-            entity.setTicksFrozen(0);
         }
     }
 

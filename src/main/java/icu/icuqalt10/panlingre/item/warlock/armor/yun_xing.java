@@ -33,11 +33,6 @@ public class yun_xing extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("yun_xing_helmet"),
                             12,
                             AttributeModifier.Operation.ADD_VALUE), slot);
-            builder.add(Attributes.MAX_HEALTH,
-                    new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("yun_xing_helmet"),
-                            10,
-                            AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("yun_xing_helmet"),
@@ -63,7 +58,7 @@ public class yun_xing extends ArmorItem {
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("yun_xing_chestplate"),
-                            14,
+                            12,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(

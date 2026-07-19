@@ -49,14 +49,21 @@ public class ModEntities {
                     .updateInterval(1)
                     .build("pan_gu"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<ZhuRiArrowEntity>> ZHU_RI_ARROW =
+            ENTITIES.register("zhu_ri_arrow", () -> EntityType.Builder.<ZhuRiArrowEntity>of(ZhuRiArrowEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(4)
+                    .updateInterval(1)
+                    .build("zhu_ri_arrow"));
+
     // 注册火龙卷实体
-    public static final Supplier<EntityType<FireTornadoEntity>> FIRE_TORNADO =
+    public static final DeferredHolder<EntityType<?>, EntityType<FireTornadoEntity>> FIRE_TORNADO =
             ENTITIES.register("fire_tornado",
-                    () -> EntityType.Builder.of(FireTornadoEntity::new, MobCategory.MISC)
-                            .sized(3.0f, 9.0f)          // 碰撞箱大小（宽，高）
-                            .clientTrackingRange(10)     // 客户端追踪范围（区块）
-                            .updateInterval(1)           // 更新间隔（tick）
-                            .fireImmune()                // 免疫火焰伤害（可选）
+                    () -> EntityType.Builder.<FireTornadoEntity>of(FireTornadoEntity::new, MobCategory.MISC)
+                            .sized(3.0f, 9.0f)
+                            .clientTrackingRange(10)
+                            .updateInterval(1)
+                            .fireImmune()
                             .build("fire_tornado")
             );
 

@@ -99,7 +99,7 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             if (owner instanceof Player player) {
                 double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
 
-                float finalDamage = (float) (magic_damage * 2);
+                float finalDamage = (float) (magic_damage * 1);
                 target.hurt(this.damageSources().indirectMagic(owner,owner), finalDamage);
             }
         }
@@ -110,7 +110,7 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             if (owner instanceof Player player) {
                 double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
 
-                float finalDamage = (float) (magic_damage * 3);
+                float finalDamage = (float) (magic_damage * 2);
                 target.hurt(this.damageSources().indirectMagic(owner,owner), finalDamage);
             }
         }
@@ -121,7 +121,7 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             if (owner instanceof Player player) {
                 double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
 
-                float finalDamage = (float) (magic_damage * 4);
+                float finalDamage = (float) (magic_damage * 3);
                 target.hurt(this.damageSources().indirectMagic(owner,owner), finalDamage);
             }
         }
@@ -132,7 +132,7 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             if (owner instanceof Player player) {
                 double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
 
-                float finalDamage = (float) (magic_damage * 10);
+                float finalDamage = (float) (magic_damage * 5);
                 target.hurt(this.damageSources().indirectMagic(owner,owner), finalDamage);
             }
         }
@@ -145,7 +145,7 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             if (owner instanceof Player player) {
                 double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
 
-                float finalDamage = (float) (magic_damage * 1);
+                float finalDamage = (float) (magic_damage * 0.5);
                 target.heal(finalDamage);
             }
         }
@@ -156,7 +156,7 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             if (owner instanceof Player player) {
                 double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
 
-                float finalDamage = (float) (magic_damage * 1.5);
+                float finalDamage = (float) (magic_damage * 1);
                 target.heal(finalDamage);
             }
         }
@@ -167,7 +167,7 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             if (owner instanceof Player player) {
                 double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
 
-                float finalDamage = (float) (magic_damage * 2);
+                float finalDamage = (float) (magic_damage * 1.5);
                 target.heal(finalDamage);
             }
         }
@@ -178,7 +178,7 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             if (owner instanceof Player player) {
                 double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
 
-                float finalDamage = (float) (magic_damage * 5);
+                float finalDamage = (float) (magic_damage * 2.5);
                 target.heal(finalDamage);
             }
         }

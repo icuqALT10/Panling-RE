@@ -61,7 +61,7 @@ public class shou_yu_fu extends Item{
         if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
         //释放技能
         if (!level.isClientSide) {
-            float healAmount = (float) (3 * player.getAttributeValue(ModAttributes.FALIZHI));
+            float healAmount = (float) player.getAttributeValue(ModAttributes.FALIZHI);
             player.heal(healAmount);
 
             //消耗

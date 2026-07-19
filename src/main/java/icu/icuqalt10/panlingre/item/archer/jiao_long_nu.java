@@ -1,11 +1,9 @@
 package icu.icuqalt10.panlingre.item.archer;
 
 import icu.icuqalt10.panlingre.PanlingRE;
-import icu.icuqalt10.panlingre.attachment.LingQiData;
-import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModEffects;
-import icu.icuqalt10.panlingre.item.skill_1_key;
+import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.mixin.AbstractArrowMixin;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import net.minecraft.ChatFormatting;
@@ -31,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class jiao_long_nu extends CrossbowItem implements skill_1_key {
+public class jiao_long_nu extends CrossbowItem implements skill_trigger {
 
     public jiao_long_nu() {
         super(
@@ -70,12 +68,8 @@ public class jiao_long_nu extends CrossbowItem implements skill_1_key {
 
     //技能 skill_1
     @Override
-    public boolean skill_1_trigger(Level level, Player player, ItemStack stack) {
+    public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
 
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 10.0f;
-        //如果灵气不足
-        if (!data.consume(player,cost)) return false;
         //释放技能
         if (!level.isClientSide) {
             float[] angles = {-10.0F, 0.0F, 10.0F};
@@ -110,6 +104,30 @@ public class jiao_long_nu extends CrossbowItem implements skill_1_key {
     }
 
     @Override
+    public long getSkillCD(int skillIndex) {
+        return 500L;
+    }
+
+    @Override
+    public String getSkillNameKey(int skillIndex) {
+        return "item.PanlingRE.jiao_long_nu.skill1.2";
+    }
+
+    @Override
+    public float getSkillLingQiCost(int skillIndex) {
+        return 10;
+    }
+
+    @Override
+    public String[] getSkillDescription(int skillIndex) {
+        return new String[]{
+                "item.PanlingRE.jiao_long_nu.skill3",
+                "item.PanlingRE.jiao_long_nu.skill4",
+                "item.PanlingRE.jiao_long_nu.skill5"
+        };
+    }
+
+    @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
 
         // 检测Shift键
@@ -120,8 +138,7 @@ public class jiao_long_nu extends CrossbowItem implements skill_1_key {
             tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.skill2"
-                    ,Component.keybind("key.PanlingRE.skill_1").withStyle(ChatFormatting.GOLD)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.skill2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.skill4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.skill5"));

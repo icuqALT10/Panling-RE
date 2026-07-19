@@ -5,7 +5,7 @@ import com.google.common.collect.Multimap;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.BlessData;
 import icu.icuqalt10.panlingre.init.ModAttributes;
-import net.minecraft.client.Minecraft;
+import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,8 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -80,22 +78,19 @@ public class bless_shengshou extends Item implements ICurioItem {
         tooltipComponents.add(Component.empty());
         tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill"));
 
-        if (FMLEnvironment.dist == Dist.CLIENT) {
-            Player player = Minecraft.getInstance().player;
+        Player player = SafeClientAccess.getClientPlayer();
+        if (player != null) {
+            if (BlessData.hasBless(player, "qinglong"))
+                tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill1"));
 
-            if (player != null) {
-                if (BlessData.hasBless(player, "qinglong"))
-                    tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill1"));
+            if (BlessData.hasBless(player, "zhuque"))
+                tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill2"));
 
-                if (BlessData.hasBless(player, "zhuque"))
-                    tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill2"));
+            if (BlessData.hasBless(player, "baihu"))
+                tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill3"));
 
-                if (BlessData.hasBless(player, "baihu"))
-                    tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill3"));
-
-                if (BlessData.hasBless(player, "xuanwu"))
-                    tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill4"));
-            }
+            if (BlessData.hasBless(player, "xuanwu"))
+                tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill4"));
         }
 
         super.appendHoverText(stack, context, tooltipComponents, flag);

@@ -31,7 +31,7 @@ public class DashAttackGoal extends Goal {
         LivingEntity target = boss.getTarget();
         if (target == null) return false;
         double dist = boss.distanceTo(target);
-        if (dist < 5 || dist > 15) return false;
+        if (dist < 10 || dist > 20) return false;
         return !isBlocked(target);
     }
 
@@ -52,7 +52,9 @@ public class DashAttackGoal extends Goal {
         boss.getNavigation().stop();
         totalTicks = 45;
         boss.getLookControl().setLookAt(target);
-        boss.triggerAnim("action_controller", "attack.throw");
+        boss.startAnimation("attack.throw");
+
+        boss.setActionState(PanGuEntity.ActionState.ATTACKING);
     }
 
     @Override
@@ -77,10 +79,8 @@ public class DashAttackGoal extends Goal {
 
     @Override
     public void stop() {
-        if (boss.getActionState() == PanGuEntity.ActionState.ATTACKING) {
             boss.setAttacking(false);
             boss.endAttack();
             boss.startAttackCooldown();
-        }
     }
 }

@@ -26,7 +26,7 @@ public class Heavy2Goal extends Goal {
         if (boss.getActionState() != PanGuEntity.ActionState.IDLE_OR_WALK
                 && boss.getActionState() != PanGuEntity.ActionState.ATTACK_COOLDOWN) return false;
         LivingEntity target = boss.getTarget();
-        return !boss.isInAttackCooldown() && !boss.isAttacking() && target != null && boss.distanceTo(target) >= 5.0 && boss.distanceTo(target) <= 15.0 && boss.LastAttackIsCommon;
+        return !boss.isInAttackCooldown() && !boss.isAttacking() && target != null && boss.distanceTo(target) >= 10.0 && boss.distanceTo(target) <= 20.0 && boss.LastAttackIsCommon;
     }
 
     @Override
@@ -45,14 +45,16 @@ public class Heavy2Goal extends Goal {
         ticksLeft = 50;
         int random = boss.getRandom().nextInt(100);
         if (random >= 0 && random <= 29) {
-            boss.triggerAnim("action_controller","attack.heavy2");
+            boss.startAnimation("attack.heavy2");
         }
         else if (random >= 30 && random <= 64) {
-            boss.triggerAnim("action_controller","attack.skill1");
+            boss.startAnimation("attack.skill1");
         }
         else if (random >= 65 && random <= 99) {
-            boss.triggerAnim("action_controller","attack.skill2");
+            boss.startAnimation("attack.skill2");
         }
+
+        boss.setActionState(PanGuEntity.ActionState.ATTACKING);
     }
 
     @Override
@@ -69,10 +71,8 @@ public class Heavy2Goal extends Goal {
 
     @Override
     public void stop() {
-        if (boss.getActionState() == PanGuEntity.ActionState.ATTACKING) {
             boss.setAttacking(false);
             boss.endAttack();
             boss.startAttackCooldown();
-        }
     }
 }

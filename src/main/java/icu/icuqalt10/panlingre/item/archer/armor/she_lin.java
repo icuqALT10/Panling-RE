@@ -38,6 +38,11 @@ public class she_lin extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("she_lin_helmet"),
                             0.15,
                             AttributeModifier.Operation.ADD_MULTIPLIED_BASE), slot);
+            builder.add(Attributes.MAX_HEALTH,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("she_lin_helmet"),
+                            8,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("she_lin_helmet"),
@@ -63,7 +68,7 @@ public class she_lin extends ArmorItem {
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("she_lin_chestplate"),
-                            10,
+                            12,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -90,7 +95,7 @@ public class she_lin extends ArmorItem {
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("she_lin_leggings"),
-                            6,
+                            10,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(

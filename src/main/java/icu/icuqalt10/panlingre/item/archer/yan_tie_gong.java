@@ -1,10 +1,8 @@
 package icu.icuqalt10.panlingre.item.archer;
 
 import icu.icuqalt10.panlingre.PanlingRE;
-import icu.icuqalt10.panlingre.attachment.LingQiData;
-import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
-import icu.icuqalt10.panlingre.item.skill_1_key;
+import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.mixin.AbstractArrowMixin;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import net.minecraft.ChatFormatting;
@@ -28,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class yan_tie_gong extends BowItem implements skill_1_key {
+public class yan_tie_gong extends BowItem implements skill_trigger {
 
     public yan_tie_gong() {
         super(
@@ -67,12 +65,8 @@ public class yan_tie_gong extends BowItem implements skill_1_key {
 
     //技能 skill_1
     @Override
-    public boolean skill_1_trigger(Level level, Player player, ItemStack stack) {
+    public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
 
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 20.0f;
-        //如果灵气不足
-        if (!data.consume(player,cost)) return false;
         //释放技能
         if (!level.isClientSide) {
             AbstractArrow arrowEntity = ProjectileUtil.getMobArrow(player, new ItemStack(Items.ARROW), 2.0F, stack);
@@ -100,6 +94,29 @@ public class yan_tie_gong extends BowItem implements skill_1_key {
     }
 
     @Override
+    public long getSkillCD(int skillIndex) {
+        return 5000L;
+    }
+
+    @Override
+    public String getSkillNameKey(int skillIndex) {
+        return "item.PanlingRE.yan_tie_gong.skill1.2";
+    }
+
+    @Override
+    public float getSkillLingQiCost(int skillIndex) {
+        return 20;
+    }
+
+    @Override
+    public String[] getSkillDescription(int skillIndex) {
+        return new String[]{
+                "item.PanlingRE.yan_tie_gong.skill3",
+                "item.PanlingRE.yan_tie_gong.skill4"
+        };
+    }
+
+    @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
 
         // 检测Shift键
@@ -110,8 +127,7 @@ public class yan_tie_gong extends BowItem implements skill_1_key {
             tooltipComponents.add(Component.translatable("item.PanlingRE.yan_tie_gong.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.yan_tie_gong.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.yan_tie_gong.skill2"
-                    ,Component.keybind("key.PanlingRE.skill_1").withStyle(ChatFormatting.GOLD)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.yan_tie_gong.skill2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.yan_tie_gong.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.yan_tie_gong.skill4"));
         } else {

@@ -7,6 +7,7 @@ import icu.icuqalt10.panlingre.entity.FeiXianJianZhenEntity;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModComponents;
 import icu.icuqalt10.panlingre.init.ModEntities;
+import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ding_hai_shen_zhen extends SwordItem {
+public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
 
     public ding_hai_shen_zhen() {
         super(
@@ -75,7 +76,7 @@ public class ding_hai_shen_zhen extends SwordItem {
                 Attributes.ATTACK_DAMAGE,
                 new AttributeModifier(
                         BASE_ATTACK_DAMAGE_ID,
-                        isPowered ? 20 : 40,
+                        isPowered ? 15 : 40,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -95,20 +96,12 @@ public class ding_hai_shen_zhen extends SwordItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 50.0f;
-        //如果灵气不足
-        if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
+    public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
         //释放技能
         if (!level.isClientSide) {
-            itemstack.set(ModComponents.IS_POWERED.get(), true);
-            itemstack.set(ModComponents.POWERED_TIMER.get(), level.getGameTime());
+            stack.set(ModComponents.IS_POWERED.get(), true);
+            stack.set(ModComponents.POWERED_TIMER.get(), level.getGameTime());
 
-            //cd
-            cooldown_remove.cd_remove(player,this,400);
             //音效
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 0.5f,1.0f);
@@ -116,8 +109,7 @@ public class ding_hai_shen_zhen extends SwordItem {
             player.displayClientMessage(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill.success"), true);
             }
 
-            return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
-
+        return true;
     }
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
@@ -133,6 +125,30 @@ public class ding_hai_shen_zhen extends SwordItem {
     }
 
     @Override
+    public long getSkillCD(int skillIndex) {
+        return 20000L;
+    }
+
+    @Override
+    public String getSkillNameKey(int skillIndex) {
+        return "item.PanlingRE.ding_hai_shen_zhen.skill1.2";
+    }
+
+    @Override
+    public float getSkillLingQiCost(int skillIndex) {
+        return 50;
+    }
+
+    @Override
+    public String[] getSkillDescription(int skillIndex) {
+        return new String[]{
+                "item.PanlingRE.ding_hai_shen_zhen.skill3",
+                "item.PanlingRE.ding_hai_shen_zhen.skill4",
+                "item.PanlingRE.ding_hai_shen_zhen.skill5"
+        };
+    }
+
+    @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
 
         // 检测Shift键
@@ -145,8 +161,7 @@ public class ding_hai_shen_zhen extends SwordItem {
             tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.lore4"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill2"
-                    ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill5"));

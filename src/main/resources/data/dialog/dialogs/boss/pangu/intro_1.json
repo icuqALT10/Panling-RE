@@ -5,7 +5,7 @@
   "entries": [
     {
       "id": "1",
-      "speaker": {"translate":"entity.panlingre.pan_gu"},
+      "speaker": "",
       "text": [
         {
           "translate": "dialog.panlingre.entity.pan_gu.intro.1"

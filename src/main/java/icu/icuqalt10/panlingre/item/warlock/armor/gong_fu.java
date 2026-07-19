@@ -33,11 +33,6 @@ public class gong_fu extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("gong_fu_helmet"),
                             3,
                             AttributeModifier.Operation.ADD_VALUE), slot);
-            builder.add(Attributes.MAX_HEALTH,
-                    new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("gong_fu_helmet"),
-                            2,
-                            AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("gong_fu_helmet"),
@@ -58,7 +53,7 @@ public class gong_fu extends ArmorItem {
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("gong_fu_chestplate"),
-                            5,
+                            4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -80,7 +75,7 @@ public class gong_fu extends ArmorItem {
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("gong_fu_leggings"),
-                            3,
+                            2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(

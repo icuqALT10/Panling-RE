@@ -89,6 +89,18 @@ public class ClientModEvents {
                 ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "lingqi_hud"),
                 new RpgHudOverlay()
         );
+
+        event.registerAbove(
+                VanillaGuiLayers.FOOD_LEVEL,
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "skill_icon_overlay"),
+                new SkillIconOverlay()
+        );
+
+        event.registerAbove(
+                VanillaGuiLayers.FOOD_LEVEL,
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "skill_wheel_overlay"),
+                SkillWheelOverlay.INSTANCE
+        );
     }
 
     @SubscribeEvent
@@ -130,6 +142,26 @@ public class ClientModEvents {
                     (stack, level, entity, seed) ->
                             stack.getOrDefault(ModComponents.IS_POWERED.get(), false) ? 1.0F : 0.0F
             );
+            //逐日 长虹
+            ItemProperties.register(
+                    ModItems.zhu_ri.get(),
+                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "powered"),
+                    (stack, level, entity, seed) ->
+                            stack.getOrDefault(ModComponents.IS_POWERED.get(), false) ? 1.0F : 0.0F
+            );
+            //逐日 powered状态下拉弓动画10倍速
+            ItemProperties.register(
+                    ModItems.zhu_ri.get(),
+                    ResourceLocation.withDefaultNamespace("pull"),
+                    (stack, level, entity, seed) -> {
+                        if (entity == null) return 0.0F;
+                        if (entity.getUseItem() != stack) return 0.0F;
+                        boolean powered = stack.getOrDefault(ModComponents.IS_POWERED.get(), false);
+                        float divisor = powered ? 10.0F : 20.0F;
+                        return (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / divisor;
+                    }
+            );
+
         });
         //炼丹炉渲染
         CuriosRendererRegistry.register(ModItems.huang_tong_lu.get(), ldlCurioRenderer::new);
@@ -150,6 +182,8 @@ public class ClientModEvents {
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         // 注册火龙卷渲染器
         event.registerEntityRenderer(ModEntities.FIRE_TORNADO.get(), FireTornadoRenderer::new);
+        // 注册朱日流光箭渲染器
+        event.registerEntityRenderer(ModEntities.ZHU_RI_ARROW.get(), ZhuRiArrowRenderer::new);
     }
 
     /**

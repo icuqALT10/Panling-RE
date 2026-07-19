@@ -4,6 +4,7 @@ import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.init.ModAttachments;
+import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class chi_tong_jian extends SwordItem {
+public class chi_tong_jian extends SwordItem implements skill_trigger {
 
     public chi_tong_jian() {
         super(
@@ -56,6 +57,16 @@ public class chi_tong_jian extends SwordItem {
         );
 
         builder.add(
+                Attributes.ARMOR,
+                new AttributeModifier(
+                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "chi_tong_jian"),
+                        -10,
+                        AttributeModifier.Operation.ADD_VALUE
+                ),
+                EquipmentSlotGroup.MAINHAND
+        );
+
+        builder.add(
                 Attributes.ATTACK_DAMAGE,
                 new AttributeModifier(
                         BASE_ATTACK_DAMAGE_ID,
@@ -79,13 +90,7 @@ public class chi_tong_jian extends SwordItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 20.0f;
-        //如果灵气不足
-        if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
+    public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
             //释放技能
         if (!level.isClientSide) {
                 AABB area = player.getBoundingBox().inflate(3.0);
@@ -98,8 +103,6 @@ public class chi_tong_jian extends SwordItem {
                         entity.hurt(player.damageSources().playerAttack(player), attack_damage);
                     }
                 }
-            //cd
-            cooldown_remove.cd_remove(player,this,200);
             //音效
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 0.5f,1.0f);
@@ -107,8 +110,29 @@ public class chi_tong_jian extends SwordItem {
             player.displayClientMessage(Component.translatable("item.PanlingRE.chi_tong_jian.skill.success"), true);
             }
 
-            return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+        return true;
+    }
 
+    @Override
+    public long getSkillCD(int skillIndex) {
+        return 10000L;
+    }
+
+    @Override
+    public String getSkillNameKey(int skillIndex) {
+        return "item.PanlingRE.chi_tong_jian.skill1.2";
+    }
+
+    @Override
+    public float getSkillLingQiCost(int skillIndex) {
+        return 20;
+    }
+
+    @Override
+    public String[] getSkillDescription(int skillIndex) {
+        return new String[]{
+                "item.PanlingRE.chi_tong_jian.skill3"
+        };
     }
 
     @Override
@@ -122,8 +146,7 @@ public class chi_tong_jian extends SwordItem {
             tooltipComponents.add(Component.translatable("item.PanlingRE.chi_tong_jian.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.chi_tong_jian.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.chi_tong_jian.skill2"
-                    ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.chi_tong_jian.skill2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.chi_tong_jian.skill3"));
         } else {
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));

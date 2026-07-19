@@ -5,6 +5,7 @@ import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModEffects;
+import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.network.ShockwaveUpdatePayload;
 import icu.icuqalt10.panlingre.network.particle.ParticleLighting;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
@@ -40,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class yu_ru_yi extends Item {
+public class yu_ru_yi extends Item implements skill_trigger {
 
     public yu_ru_yi() {
         super(
@@ -60,6 +61,16 @@ public class yu_ru_yi extends Item {
                         ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "yu_ru_yi"),
                         0.25,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                ),
+                EquipmentSlotGroup.MAINHAND
+        );
+
+        builder.add(
+                Attributes.ARMOR,
+                new AttributeModifier(
+                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "yu_ru_yi"),
+                        -15,
+                        AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND
         );
@@ -88,13 +99,7 @@ public class yu_ru_yi extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 30.0f;
-        //如果灵气不足
-        if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
+    public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
         //释放技能
         if (!level.isClientSide) {
             double baseDamage = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
@@ -137,15 +142,36 @@ public class yu_ru_yi extends Item {
                     }
                 }
             }
-
-            //cd
-            cooldown_remove.cd_remove(player,this,100);
             //播报
             player.displayClientMessage(Component.translatable("item.PanlingRE.yu_ru_yi.skill.success"), true);
             }
 
-            return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+        return true;
 
+    }
+
+    @Override
+    public long getSkillCD(int skillIndex) {
+        return 5000L;
+    }
+
+    @Override
+    public String getSkillNameKey(int skillIndex) {
+        return "item.PanlingRE.yu_ru_yi.skill1.2";
+    }
+
+    @Override
+    public float getSkillLingQiCost(int skillIndex) {
+        return 30;
+    }
+
+    @Override
+    public String[] getSkillDescription(int skillIndex) {
+        return new String[]{
+                "item.PanlingRE.yu_ru_yi.skill3",
+                "item.PanlingRE.yu_ru_yi.skill4",
+                "item.PanlingRE.yu_ru_yi.skill5"
+        };
     }
 
     @Override
@@ -159,8 +185,7 @@ public class yu_ru_yi extends Item {
             tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.skill2"
-                    ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.skill2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.skill4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.skill5"));

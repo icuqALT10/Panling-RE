@@ -1,0 +1,180 @@
+共 14 个动画, 105 条指令
+
+动画指令关键帧 (秒 -> tick)
+公式: tick = 秒 x 20
+============================================================
+
+"intro": {
+  "timeline": {
+    "20": "execute as @a[distance=..80] run dialog show boss_gangu_intro_1;";
+    "80": "execute as @a[distance=..80] run dialog show boss_gangu_intro_2;";
+    "122": "playsound item.firecharge.use hostile @a[distance=..80];particle minecraft:white_smoke ~ ~1 ~ 0.5 0.5 0.5 0.1 100;";
+    "152": "execute as @a[distance=..80] run dialog show boss_gangu_intro_3;";
+    "154": "playsound block.anvil.place hostile @a[distance=..80];";
+    "172": "intro.end;";
+  }
+}
+
+"attack.heavy": {
+  "timeline": {
+    "7": "teleport;";
+    "15": "damage.heavy;";
+    "30": "damage.finish;";
+  }
+}
+
+"attack.heavy2": {
+  "timeline": {
+    "6": "attack.transform;";
+    "18": "damage.heavy2;";
+    "25": "attack.weakness;";
+    "45": "attack.finish;";
+  }
+}
+
+"attack.skill1": {
+  "timeline": {
+    "6": "attack.transform;";
+    "18": "damage.skill1;";
+    "25": "attack.weakness;";
+    "45": "attack.finish;";
+  }
+}
+
+"attack.skill2": {
+  "timeline": {
+    "6": "attack.transform;";
+    "18": "damage.skill2;";
+    "25": "attack.weakness;";
+    "45": "attack.finish;";
+  }
+}
+
+"attack.skill3": {
+  "timeline": {
+    "6": "attack.transform;";
+    "18": "damage.skill3;";
+    "25": "attack.weakness;";
+    "45": "attack.finish;";
+  }
+}
+
+"attack.skill4": {
+  "timeline": {
+    "6": "attack.transform;";
+    "18": "damage.skill4;";
+    "25": "attack.weakness;";
+    "45": "attack.finish;";
+  }
+}
+
+"attack.combo": {
+  "timeline": {
+    "2": "teleport;";
+    "5": "damage.combo.1;";
+    "12": "teleport;";
+    "15": "damage.combo.2;";
+    "22": "teleport;";
+    "25": "damage.combo.3;playsound entity.player.attack.sweep hostile @a[distance=..10];";
+    "35": "damage.finish;";
+  }
+}
+
+"attack.throw": {
+  "timeline": {
+    "7": "throw.start;";
+    "17": "throw.end;";
+  }
+}
+
+"attack.throw.catch": {
+  "timeline": {
+    "0": "catch.start;";
+    "8": "damage.catch;";
+    "12": "catch.end;";
+    "19": "damage.finish;";
+  }
+}
+
+"attack.throw.end": {
+  "timeline": {
+    "15": "damage.finish;";
+  }
+}
+
+"died": {
+  "timeline": {
+    "56": "died;";
+  }
+}
+
+"skill.phase1": {
+  "timeline": {
+    "0": "execute as @a[distance=..80] run dialog show boss_pangu_skill_phase1_1;";
+    "10": "playsound item.firecharge.use hostile @a[distance=..80];";
+    "30": "execute as @a[distance=..80] run dialog show boss_pangu_skill_phase1_2;";
+    "80": "skill.phase1.particle.cold;";
+    "83": "skill.phase1.particle.cold;";
+    "85": "skill.phase1.particle.cold;";
+    "88": "skill.phase1.particle.cold;";
+    "90": "skill.phase1.particle.cold;";
+    "93": "skill.phase1.particle.cold;";
+    "95": "skill.phase1.particle.cold;";
+    "98": "skill.phase1.particle.cold;";
+    "100": "skill.phase1.particle.cold;";
+    "103": "skill.phase1.particle.cold;";
+    "105": "skill.phase1.particle.cold;";
+    "108": "skill.phase1.particle.cold;";
+    "110": "skill.phase1.particle.cold;";
+    "121": "skill.phase1.weather;";
+    "145": "skill.phase1.start_snow;";
+    "163": "skill.phase1.fire;";
+    "223": "skill.phase1.fire;";
+    "283": "skill.phase1.fire;";
+    "343": "skill.phase1.fire;";
+    "403": "skill.phase1.fire;";
+    "463": "skill.phase1.fire;";
+    "535": "skill.phase1.finish;";
+    "555": "skill.transform;";
+    "618": "skill.end;";
+  }
+}
+
+"skill.phase2": {
+  "timeline": {
+    "0": "execute as @a[distance=..80] run dialog show boss_pangu_skill_phase2_1;";
+    "10": "playsound item.firecharge.use hostile @a[distance=..80];";
+    "30": "execute as @a[distance=..80] run dialog show boss_pangu_skill_phase2_2;";
+    "60": "skill.phase2.weather;";
+    "90": "skill.phase2.start_attack;";
+    "120": "skill.phase2.lighting;";
+    "140": "skill.phase2.lighting;";
+    "150": "skill.phase2.attack;";
+    "160": "skill.phase2.lighting;";
+    "180": "skill.phase2.lighting;";
+    "200": "skill.phase2.lighting;";
+    "210": "skill.phase2.attack;";
+    "220": "skill.phase2.lighting;";
+    "240": "skill.phase2.lighting;";
+    "260": "skill.phase2.lighting;";
+    "270": "skill.phase2.attack;";
+    "280": "skill.phase2.lighting;";
+    "300": "skill.phase2.lighting;";
+    "320": "skill.phase2.lighting;";
+    "330": "skill.phase2.attack;";
+    "340": "skill.phase2.lighting;";
+    "360": "skill.phase2.lighting;";
+    "380": "skill.phase2.lighting;";
+    "390": "skill.phase2.attack;";
+    "400": "skill.phase2.lighting;";
+    "420": "skill.phase2.lighting;";
+    "440": "skill.phase2.lighting;";
+    "450": "skill.phase2.attack;";
+    "460": "skill.phase2.lighting;";
+    "480": "skill.phase2.lighting;";
+    "500": "skill.phase2.lighting;";
+    "520": "skill.phase2.finish;";
+    "530": "skill.transform;";
+    "593": "skill.end;";
+  }
+}

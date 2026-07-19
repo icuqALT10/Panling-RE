@@ -38,6 +38,11 @@ public class hu_pi extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("hu_pi_helmet"),
                             0.1,
                             AttributeModifier.Operation.ADD_MULTIPLIED_BASE), slot);
+            builder.add(Attributes.MAX_HEALTH,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("hu_pi_helmet"),
+                            5,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("hu_pi_helmet"),
@@ -90,7 +95,7 @@ public class hu_pi extends ArmorItem {
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("hu_pi_leggings"),
-                            4,
+                            6,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(

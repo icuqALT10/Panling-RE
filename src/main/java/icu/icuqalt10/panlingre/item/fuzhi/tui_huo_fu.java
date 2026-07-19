@@ -63,7 +63,7 @@ public class tui_huo_fu extends Item{
         if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
         //释放技能
         if (!level.isClientSide) {
-            int duration = (int) (10 * player.getAttributeValue(ModAttributes.FALIZHI) * 20);
+            int duration = (int) (5 * player.getAttributeValue(ModAttributes.FALIZHI) * 20);
             player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, duration, 0,false,false,true));
 
             //消耗

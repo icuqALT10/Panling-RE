@@ -3,11 +3,8 @@ package icu.icuqalt10.panlingre.item.warlock;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import icu.icuqalt10.panlingre.PanlingRE;
-import icu.icuqalt10.panlingre.attachment.LingQiData;
-import icu.icuqalt10.panlingre.attribute.cooldown_remove;
-import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
-import icu.icuqalt10.panlingre.item.skill_1_key;
+import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -35,7 +32,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class jing_tie_lu extends Item implements ICurioItem,skill_1_key {
+public class jing_tie_lu extends Item implements ICurioItem,skill_trigger {
 
     public jing_tie_lu() {
         super(
@@ -71,12 +68,8 @@ public class jing_tie_lu extends Item implements ICurioItem,skill_1_key {
 
     //技能 skill_1
     @Override
-    public boolean skill_1_trigger(Level level, Player player, ItemStack stack) {
+    public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
 
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 5.0f;
-        //如果灵气不足
-        if (!data.consume(player,cost)) return false;
         //释放技能
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             LivingEntity target = findAlchemistTarget(serverPlayer, 5.0);
@@ -107,8 +100,6 @@ public class jing_tie_lu extends Item implements ICurioItem,skill_1_key {
                 drawSpellLine(serverPlayer, furnaceSource, targetDest);
 
             }
-            //cd
-            cooldown_remove.cd_remove(player,this,20);
             //音效
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 0.5f,1.0f);
@@ -117,6 +108,28 @@ public class jing_tie_lu extends Item implements ICurioItem,skill_1_key {
         }
 
         return true;
+    }
+
+    @Override
+    public long getSkillCD(int skillIndex) {
+        return 1000L;
+    }
+
+    @Override
+    public String getSkillNameKey(int skillIndex) {
+        return "item.PanlingRE.jing_tie_lu.skill1.2";
+    }
+
+    @Override
+    public float getSkillLingQiCost(int skillIndex) {
+        return 5;
+    }
+
+    @Override
+    public String[] getSkillDescription(int skillIndex) {
+        return new String[]{
+                "item.PanlingRE.jing_tie_lu.skill3"
+        };
     }
 
     private static LivingEntity findAlchemistTarget(ServerPlayer player, double range) {
@@ -179,8 +192,7 @@ public class jing_tie_lu extends Item implements ICurioItem,skill_1_key {
             tooltipComponents.add(Component.translatable("item.PanlingRE.jing_tie_lu.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.jing_tie_lu.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.jing_tie_lu.skill2"
-                    ,Component.keybind("key.PanlingRE.skill_1").withStyle(ChatFormatting.GOLD)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.jing_tie_lu.skill2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.jing_tie_lu.skill3"));
         } else {
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare2"));
