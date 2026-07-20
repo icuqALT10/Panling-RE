@@ -1,8 +1,9 @@
 package icu.icuqalt10.panlingre.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -67,26 +68,38 @@ public class FireTrailTracker {
 
     /**
      * 检查玩家是否站在火焰轨迹上
-     * @param player 要检查的玩家
+     * @param entity 要检查的玩家
      * @return 如果玩家脚下的任何位置在龙卷风轨迹中返回 true
      */
-    public static boolean isPlayerInTrail(Player player) {
-        BlockPos playerPos = player.blockPosition();
+    public static boolean isEntityInTrail(Entity entity) {
+        BlockPos entityPos = entity.blockPosition();
 
         // 检查玩家脚下的位置
-        if (isPositionInTrail(playerPos)) {
+        if (isPositionInTrail(entityPos)) {
             return true;
         }
 
         // 检查玩家脚下一格的位置
-        if (isPositionInTrail(playerPos.below())) {
+        if (isPositionInTrail(entityPos.below())) {
             return true;
         }
 
         // 检查玩家周围的位置（玩家碰撞箱可能跨越多个方块）
-        double x = player.getX();
-        double z = player.getZ();
-        double y = player.getY();
+        BlockPos[] checkPositions = getBlockPos(entity);
+
+        for (BlockPos pos : checkPositions) {
+            if (isPositionInTrail(pos)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static BlockPos @NotNull [] getBlockPos(Entity entity) {
+        double x = entity.getX();
+        double z = entity.getZ();
+        double y = entity.getY();
 
         BlockPos[] checkPositions = {
             BlockPos.containing(x + 0.3, y, z + 0.3),
@@ -98,14 +111,7 @@ public class FireTrailTracker {
             BlockPos.containing(x - 0.3, y - 1, z + 0.3),
             BlockPos.containing(x - 0.3, y - 1, z - 0.3)
         };
-
-        for (BlockPos pos : checkPositions) {
-            if (isPositionInTrail(pos)) {
-                return true;
-            }
-        }
-
-        return false;
+        return checkPositions;
     }
 
     /**

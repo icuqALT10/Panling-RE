@@ -27,4 +27,20 @@ public class ModComponents {
                             .persistent(Codec.LONG)
                             .build()
             );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> KEY_TYPE =
+            COMPONENTS.register("key_type", () ->
+                    DataComponentType.<String>builder()
+                            .persistent(Codec.STRING)
+                            .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+                            .build()
+            );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> KEY_ID =
+            COMPONENTS.register("key_id", () ->
+                    DataComponentType.<String>builder()
+                            .persistent(Codec.STRING)
+                            .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+                            .build()
+            );
 }

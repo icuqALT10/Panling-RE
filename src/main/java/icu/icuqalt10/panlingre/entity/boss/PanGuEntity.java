@@ -296,7 +296,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
                         player.hurt(this.damageSources().freeze(), player.getMaxHealth()*0.3f);
                     }
                     //增加冰冻值
-                    else if (FireTrailTracker.isPlayerInTrail(player)) {
+                    else if (FireTrailTracker.isEntityInTrail(player)) {
                         player.setTicksFrozen(frozenTicks-3);
                     } else {
                         player.setTicksFrozen(frozenTicks+5);}

@@ -1,0 +1,16 @@
+{
+    "variants": {
+        "facing=south,chest_type=golden": { "model": "panlingre:block/chest/golden" },
+        "facing=north,chest_type=golden": { "model": "panlingre:block/chest/golden", "y": 180 },
+        "facing=east,chest_type=golden":  { "model": "panlingre:block/chest/golden", "y": 270 },
+        "facing=west,chest_type=golden":  { "model": "panlingre:block/chest/golden", "y": 90 },
+        "facing=south,chest_type=silver": { "model": "panlingre:block/chest/silver" },
+        "facing=north,chest_type=silver": { "model": "panlingre:block/chest/silver", "y": 180 },
+        "facing=east,chest_type=silver":  { "model": "panlingre:block/chest/silver", "y": 270 },
+        "facing=west,chest_type=silver":  { "model": "panlingre:block/chest/silver", "y": 90 },
+        "facing=south,chest_type=copper": { "model": "panlingre:block/chest/copper" },
+        "facing=north,chest_type=copper": { "model": "panlingre:block/chest/copper", "y": 180 },
+        "facing=east,chest_type=copper":  { "model": "panlingre:block/chest/copper", "y": 270 },
+        "facing=west,chest_type=copper":  { "model": "panlingre:block/chest/copper", "y": 90 }
+    }
+}

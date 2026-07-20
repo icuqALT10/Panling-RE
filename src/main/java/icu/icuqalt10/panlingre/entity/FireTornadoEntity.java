@@ -33,8 +33,8 @@ public class FireTornadoEntity extends Mob {
     private float damage = 15 ;
 
     // 获取boss列表 对boss不击飞
-    public static final TagKey<EntityType<?>> BOSS_TAG =
-            TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "boss"));
+    public static final TagKey<EntityType<?>> CantKnockAway_TAG =
+            TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "cant_knockaway"));
 
     public FireTornadoEntity(
             EntityType<? extends Mob> entityType, Level level) {
@@ -179,7 +179,7 @@ public class FireTornadoEntity extends Mob {
             }
 
             // 击飞（所有生物均适用）
-            if (!entity.getType().is(BOSS_TAG)) {
+            if (!entity.getType().is(CantKnockAway_TAG)) {
                 Vec3 pushDir = entity.position().subtract(position()).normalize();
                 Vec3 push = pushDir.scale(1.5).add(0, 0.5, 0);
                 entity.setDeltaMovement(push);

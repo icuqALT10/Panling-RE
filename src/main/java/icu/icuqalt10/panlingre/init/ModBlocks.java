@@ -1,6 +1,7 @@
 package icu.icuqalt10.panlingre.init;
 
 import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.block.chest.LootChestBlock;
 import icu.icuqalt10.panlingre.block.dzt;
 import icu.icuqalt10.panlingre.block.ldl.ldl;
 import icu.icuqalt10.panlingre.block.ldl.ldlProxyBlock;
@@ -40,6 +41,13 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> dzt = BLOCKS.register("dzt",
             () -> new dzt(BlockBehaviour.Properties.of()
+                    .strength(3.0f)
+                    .noOcclusion()
+                    .dynamicShape()
+            ));
+    //宝箱
+    public static final DeferredBlock<Block> loot_chest = BLOCKS.register("loot_chest",
+            () -> new LootChestBlock(BlockBehaviour.Properties.of()
                     .strength(3.0f)
                     .noOcclusion()
                     .dynamicShape()

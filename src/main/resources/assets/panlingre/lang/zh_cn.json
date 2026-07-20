@@ -658,7 +658,7 @@
   "item.PanlingRE.zhu_ri.skill.expired": "§c「长虹贯日」§b效果结束！",
 
   "item.PanlingRE.ldl.skill1.1": "§6「炼丹」§7<shift查看详情>",
-  "item.PanlingRE.ldl.skill1.2": "§6[§e%s键§6] 「炼丹」",
+  "item.PanlingRE.ldl.skill1.2": "§6[§e%s§6键]「炼丹」",
   "item.PanlingRE.ldl.skill2": "§f使用该§6<炼丹炉>§f开始炼丹",
   "item.panlingre.huang_tong_lu": "§f黄铜炉",
   "item.PanlingRE.huang_tong_lu.lore1": "§7§o最基础的炼丹炉",
@@ -749,5 +749,19 @@
   "dialog.panlingre.entity.pan_gu.skill.1": "§6「§b坎水§7☯§9兑泽§6」§b玄渊寒泽！",
   "dialog.panlingre.entity.pan_gu.skill.2": "§6「§a巽风§7☯§c离火§6」§c焚天烈风！",
   "dialog.panlingre.entity.pan_gu.skill.3": "§6「§f乾天§7☯§e震雷§6」§e苍天浩劫！",
-  "dialog.panlingre.entity.pan_gu.skill.4": "§6「§6艮山§7☯§7坤地§6」§6撼山震狱！"
+  "dialog.panlingre.entity.pan_gu.skill.4": "§6「§6艮山§7☯§7坤地§6」§6撼山震狱！",
+
+  "item.panlingre.loot_key.golden": "§e金钥匙§6「%s§6」",
+  "item.panlingre.loot_key.silver": "§d银钥匙§6「%s§6」",
+  "item.panlingre.loot_key.copper": "§9铜钥匙§6「%s§6」",
+  "item.panlingre.loot_key.lore1": "§7§o玄奥的钥匙,可以破开一些禁制",
+  "item.panlingre.loot_key.lore2.golden": "§f可以破开对应副本中§e金箱子§f上的部分禁制",
+  "item.panlingre.loot_key.lore2.silver": "§f可以破开对应副本中§d银箱子§f上的部分禁制",
+  "item.panlingre.loot_key.lore2.copper": "§f可以破开对应副本中§9铜箱子§f上的部分禁制",
+  "item.panlingre.loot_key.lore3": "§f以获得禁制中封存的物品",
+
+  "item.panlingre.loot_chest": "宝箱",
+  "block.panlingre.loot_chest": "宝箱",
+  "plre.loot_chest.broadcast": "§6§l恭喜 §e%s §6§l在 %s §6§l获得了 %s",
+  "plre.loot_chest.instance_name.sheng_shan": "§b§l圣山"
 }

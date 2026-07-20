@@ -1,0 +1,10 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "panlingre:item/golden_key"
+    },
+    "overrides": [
+        { "predicate": { "panlingre:key_type": 1.0 }, "model": "panlingre:item/silver_key" },
+        { "predicate": { "panlingre:key_type": 2.0 }, "model": "panlingre:item/copper_key" }
+    ]
+}

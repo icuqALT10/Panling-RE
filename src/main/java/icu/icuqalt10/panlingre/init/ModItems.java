@@ -10,6 +10,7 @@ import icu.icuqalt10.panlingre.item.fuzhi.ju_li_fu;
 import icu.icuqalt10.panlingre.item.fuzhi.po_di_fu;
 import icu.icuqalt10.panlingre.item.fuzhi.shou_yu_fu;
 import icu.icuqalt10.panlingre.item.fuzhi.tui_huo_fu;
+import icu.icuqalt10.panlingre.item.other.LootKeyItem;
 import icu.icuqalt10.panlingre.item.other.*;
 import icu.icuqalt10.panlingre.item.potions.*;
 import icu.icuqalt10.panlingre.item.race.*;
@@ -78,6 +79,15 @@ public class ModItems {
             () -> new BlockItem(ModBlocks.bamboo_block.get(), new Item.Properties()));
     public static final DeferredItem<Item> suspicious_dirt = ITEMS.register("suspicious_dirt",
             () -> new BlockItem(ModBlocks.suspicious_dirt.get(), new Item.Properties()));
+
+    //钥匙与宝箱
+    public static final DeferredItem<Item> loot_key = ITEMS.register("loot_key",
+            () -> new LootKeyItem(new Item.Properties()
+                    .component(ModComponents.KEY_TYPE.get(), "")
+                    .component(ModComponents.KEY_ID.get(), "")
+            ));
+    public static final DeferredItem<Item> loot_chest = ITEMS.register("loot_chest",
+            () -> new BlockItem(ModBlocks.loot_chest.get(), new Item.Properties()));
 
     //材料
     public static final DeferredItem<Item> ys1_jin = ITEMS.register("ys1_jin",() -> new Item(new Item.Properties()));

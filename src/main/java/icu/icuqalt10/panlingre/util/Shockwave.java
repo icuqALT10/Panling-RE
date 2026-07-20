@@ -40,8 +40,8 @@ public class Shockwave {
     private long blockedMask2;
 
     // 获取boss列表 对boss不击飞
-    public static final TagKey<EntityType<?>> BOSS_TAG =
-            TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "boss"));
+    public static final TagKey<EntityType<?>> CantKnockAway_TAG =
+            TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "cant_knockaway"));
 
     /**
      * 初始化震动波
@@ -145,7 +145,7 @@ public class Shockwave {
                 if (raycast.getType() == HitResult.Type.MISS) {
                     this.hitEntities.add(entity.getUUID());
                     entity.hurt(level.damageSources().mobAttack(attacker), this.damage);
-                    if (!entity.getType().is(BOSS_TAG)) {
+                    if (!entity.getType().is(CantKnockAway_TAG)) {
                         Vec3 launchDir = centerToEntityHoriz.normalize();
                         entity.setDeltaMovement(launchDir.scale(1.5).add(0, 0.5, 0));
                         entity.hurtMarked = true;

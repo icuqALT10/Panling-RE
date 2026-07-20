@@ -12,7 +12,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -29,7 +29,7 @@ public class FireTornado {
                         .requires(source -> source.hasPermission(2))
                         .then(Commands.literal("firetornado")
                         .then(Commands.literal("check")
-                                .then(Commands.argument("target", EntityArgument.player())
+                                .then(Commands.argument("entity", EntityArgument.entity())
                                         .executes(FireTornado::checkPlayerOnLava)
                                 )
                         )
@@ -42,18 +42,19 @@ public class FireTornado {
                                                                 FloatArgumentType.getFloat(context, "lifetime"), 15,
                                                                 null
                                                         ))
-                                                        .then (Commands.argument("damage", FloatArgumentType.floatArg(0)))
-                                                        .executes(context -> summonFireTornado(context,
-                                                                FloatArgumentType.getFloat(context, "lifetime"),
-                                                                FloatArgumentType.getFloat(context, "damage"),
-                                                                null))
-                                                        .then(Commands.argument("team", StringArgumentType.word())
-                                                                .executes(context -> summonFireTornado(
-                                                                        context,
-                                                                        FloatArgumentType.getFloat(context, "lifetime"),
-                                                                        FloatArgumentType.getFloat(context, "damage"),
-                                                                        StringArgumentType.getString(context, "team")
-                                                                ))
+                                                        .then (Commands.argument("damage", FloatArgumentType.floatArg(0))
+                                                            .executes(context -> summonFireTornado(context,
+                                                                    FloatArgumentType.getFloat(context, "lifetime"),
+                                                                    FloatArgumentType.getFloat(context, "damage"),
+                                                                    null))
+                                                                .then(Commands.argument("team", StringArgumentType.word())
+                                                                        .executes(context -> summonFireTornado(
+                                                                                context,
+                                                                                FloatArgumentType.getFloat(context, "lifetime"),
+                                                                                FloatArgumentType.getFloat(context, "damage"),
+                                                                                StringArgumentType.getString(context, "team")
+                                                                        ))
+                                                                )
                                                         )
                                                 )
                                         )
@@ -66,22 +67,22 @@ public class FireTornado {
         CommandSourceStack source = context.getSource();
 
         try {
-            Player targetPlayer = EntityArgument.getPlayer(context, "target");
+            Entity targetEntity = EntityArgument.getEntity(context, "entity");
 
-            if (FireTrailTracker.isPlayerInTrail(targetPlayer)) {
+            if (FireTrailTracker.isEntityInTrail(targetEntity)) {
                 source.sendSuccess(
-                        () -> Component.literal("§c玩家 " + targetPlayer.getName().getString() + " 正站在火龙卷岩浆块上！"),
+                        () -> Component.literal("§c实体 " + targetEntity.getName().getString() + " 正站在火龙卷岩浆块上！"),
                         false
                 );
             } else {
                 source.sendSuccess(
-                        () -> Component.literal("§7玩家 " + targetPlayer.getName().getString() + " 不在火龙卷岩浆块上。"),
+                        () -> Component.literal("§7实体 " + targetEntity.getName().getString() + " 不在火龙卷岩浆块上。"),
                         false
                 );
             }
             return 1;
         } catch (Exception e) {
-            source.sendFailure(Component.literal("无法找到该玩家"));
+            source.sendFailure(Component.literal("无法找到该实体"));
             return 0;
         }
     }

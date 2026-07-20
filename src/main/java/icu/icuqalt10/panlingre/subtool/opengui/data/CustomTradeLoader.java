@@ -92,9 +92,9 @@ public class CustomTradeLoader {
                     continue;
                 }
 
-                int   maxUses    = o.has("maxUses")         ? o.get("maxUses").getAsInt()           : 12;
-                int   xp         = o.has("xp")              ? o.get("xp").getAsInt()                : 1;
-                float priceMulti = o.has("priceMultiplier") ? o.get("priceMultiplier").getAsFloat() : 0.05f;
+                int   maxUses    = o.has("maxUses")         ? o.get("maxUses").getAsInt()           : 2100000000;
+                int   xp         = o.has("xp")              ? o.get("xp").getAsInt()                : 0;
+                float priceMulti = o.has("priceMultiplier") ? o.get("priceMultiplier").getAsFloat() : 0;
 
                 offers.add(new MerchantOffer(buy.get(), buyB, sell, maxUses, xp, priceMulti));
 

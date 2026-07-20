@@ -149,6 +149,7 @@ public class ClientModEvents {
                     (stack, level, entity, seed) ->
                             stack.getOrDefault(ModComponents.IS_POWERED.get(), false) ? 1.0F : 0.0F
             );
+
             //逐日 powered状态下拉弓动画10倍速
             ItemProperties.register(
                     ModItems.zhu_ri.get(),
@@ -159,6 +160,20 @@ public class ClientModEvents {
                         boolean powered = stack.getOrDefault(ModComponents.IS_POWERED.get(), false);
                         float divisor = powered ? 10.0F : 20.0F;
                         return (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / divisor;
+                    }
+            );
+
+            // loot_key 根据 key_type 切换模型
+            ItemProperties.register(
+                    ModItems.loot_key.get(),
+                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "key_type"),
+                    (stack, level, entity, seed) -> {
+                        String type = stack.getOrDefault(ModComponents.KEY_TYPE.get(), "golden");
+                        return switch (type) {
+                            case "silver" -> 1.0f;
+                            case "copper" -> 2.0f;
+                            default -> 0.0f;
+                        };
                     }
             );
 
@@ -333,4 +348,5 @@ public class ClientModEvents {
             event.setYaw(event.getYaw() + totalDelta);
         }
     }
+
 }

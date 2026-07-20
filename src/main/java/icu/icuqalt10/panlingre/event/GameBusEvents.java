@@ -84,8 +84,8 @@ public class GameBusEvents {
             ItemTags.create(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "zhiye/archer"));
     public static final TagKey<Item> WARLOCK_TAG =
             ItemTags.create(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "zhiye/warlock"));
-    public static final TagKey<EntityType<?>> BOSS_TAG =
-            TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "boss"));
+    public static final TagKey<EntityType<?>> CantKnockAway_TAG =
+            TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "cant_knockaway"));
 
     //玩家进入服务器
     @SubscribeEvent
@@ -301,7 +301,7 @@ public class GameBusEvents {
                         bumpedentity.hurt(serverLevel.damageSources().explosion(creeper, creeper), damage);
 
                         // 计算击飞向量 (由苦力怕指向玩家的方向，给予 XZ 方向冲量，并给予稳定的向上速度)
-                        if (entity.getType().is(BOSS_TAG)) {
+                        if (entity.getType().is(CantKnockAway_TAG)) {
                             Vec3 moveDirection = bumpedentity.position().subtract(creeper.position()).normalize().scale(1.4);
                             bumpedentity.setDeltaMovement(moveDirection.x, 0.65, moveDirection.z);
                             bumpedentity.hurtMarked = true;

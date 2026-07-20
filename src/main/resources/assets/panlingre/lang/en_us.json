@@ -749,5 +749,18 @@
   "dialog.panlingre.entity.pan_gu.skill.1": "§6「§b坎水§7☯§9兑泽§6」§b玄渊寒泽！",
   "dialog.panlingre.entity.pan_gu.skill.2": "§6「§a巽风§7☯§c离火§6」§c焚天烈风！",
   "dialog.panlingre.entity.pan_gu.skill.3": "§6「§f乾天§7☯§e震雷§6」§e苍天浩劫！",
-  "dialog.panlingre.entity.pan_gu.skill.4": "§6「§6艮山§7☯§7坤地§6」§6撼山震狱！"
+  "dialog.panlingre.entity.pan_gu.skill.4": "§6「§6艮山§7☯§7坤地§6」§6撼山震狱！",
+
+  "item.panlingre.loot_key.golden": "§eGolden Key §6「%s§6」",
+  "item.panlingre.loot_key.silver": "§dSilver Key §6「%s§6」",
+  "item.panlingre.loot_key.copper": "§9Copper Key §6「%s§6」",
+  "item.panlingre.loot_key.lore1": "§7§oA mysterious key that can break certain seals",
+  "item.panlingre.loot_key.lore2.golden": "§fCan break some seals on §eGolden Chests §fin the corresponding instance",
+  "item.panlingre.loot_key.lore2.silver": "§fCan break some seals on §dSilver Chests §fin the corresponding instance",
+  "item.panlingre.loot_key.lore2.copper": "§fCan break some seals on §9Copper Chests §fin the corresponding instance",
+  "item.panlingre.loot_key.lore3": "§fto obtain the items sealed within",
+  "item.panlingre.loot_chest": "Loot Chest",
+  "block.panlingre.loot_chest": "Loot Chest",
+  "plre.loot_chest.broadcast": "§6§lCongratulations §e%s §6§lobtained %s in %s",
+  "plre.loot_chest.instance_name.sheng_shan": "§b§lSheng Shan"
 }

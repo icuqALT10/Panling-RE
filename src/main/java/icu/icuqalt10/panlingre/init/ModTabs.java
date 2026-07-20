@@ -1,11 +1,14 @@
 package icu.icuqalt10.panlingre.init;
 
 import icu.icuqalt10.panlingre.PanlingRE;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -13,6 +16,24 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, PanlingRE.MODID);
+
+    private static ItemStack makeLootKey(String keyType, String keyId) {
+        ItemStack stack = new ItemStack(ModItems.loot_key.get());
+        stack.set(ModComponents.KEY_TYPE.get(), keyType);
+        stack.set(ModComponents.KEY_ID.get(), keyId);
+        return stack;
+    }
+
+    private static ItemStack makeLootChest(String chestType, String chestId, String lootTableId) {
+        ItemStack stack = new ItemStack(ModItems.loot_chest.get());
+        CompoundTag beData = new CompoundTag();
+        beData.putString("id", "panlingre:loot_chest_be");
+        beData.putString("chestType", chestType);
+        beData.putString("chestId", chestId);
+        beData.putString("lootTableId", lootTableId);
+        stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(beData));
+        return stack;
+    }
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> other =
             CREATIVE_MODE_TABS.register("other", () -> CreativeModeTab.builder()
@@ -39,6 +60,16 @@ public class ModTabs {
                         output.accept(ModItems.ling_yu_ore.get());
                         output.accept(ModItems.bi_hai_ore.get());
                         output.accept(ModItems.bamboo.get());
+
+                        // 默认钥匙（空key_type，空key_id）
+                        output.accept(ModItems.loot_key.get());
+                        // 圣山金钥匙示例
+                        output.accept(makeLootKey("golden", "sheng_shan"));
+
+                        // 默认宝箱
+                        output.accept(ModItems.loot_chest.get());
+                        // 圣山金宝箱示例
+                        output.accept(makeLootChest("golden", "sheng_shan", "test"));
                     })
                     .build()
             );

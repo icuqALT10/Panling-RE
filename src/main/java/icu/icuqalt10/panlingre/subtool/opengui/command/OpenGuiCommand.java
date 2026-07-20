@@ -34,12 +34,12 @@ public class OpenGuiCommand {
                         .requires(src -> src.hasPermission(2))
                         .then(Commands.literal("opengui")
                             .then(Commands.literal("villager")
-                                    .then(Commands.argument("target", EntityArgument.player())
+                                    .then(Commands.argument("player", EntityArgument.player())
                                             .then(Commands.argument("trade_file", StringArgumentType.string())
                                                     .suggests(FILE_SUGGESTIONS)
                                                     .executes(ctx -> execute(
                                                             ctx.getSource(),
-                                                            EntityArgument.getPlayer(ctx, "target"),
+                                                            EntityArgument.getPlayer(ctx, "player"),
                                                             StringArgumentType.getString(ctx, "trade_file")
                                                     ))
                                             )
@@ -49,7 +49,7 @@ public class OpenGuiCommand {
         );
     }
 
-    private static int execute(CommandSourceStack source, ServerPlayer target, String tradeFile) {
+    private static int execute(CommandSourceStack source, ServerPlayer player, String tradeFile) {
         TradeData data = CustomTradeLoader.load(source.getServer(), tradeFile);
 
         if (data == null || data.offers().isEmpty()) {
@@ -65,19 +65,19 @@ public class OpenGuiCommand {
 
         // 用原版 SimpleMenuProvider + MerchantMenu 走完整的服务端 openMenu 流程
         // 这样 containerId 真实存在，交易物品操作完全正常
-        target.openMenu(new SimpleMenuProvider(
-                (containerId, playerInventory, player) -> {
-                    merchant.setTradingPlayer(player);
+        player.openMenu(new SimpleMenuProvider(
+                (containerId, playerInventory, p) -> {
+                    merchant.setTradingPlayer(p);
                     return new MerchantMenu(containerId, playerInventory, merchant);
                 },
                 title
         ));
 
         // openMenu 是同步的，完成后再发包让客户端覆盖 offers 数据和 title
-        PacketDistributor.sendToPlayer(target, new OpenVillagerGuiPacket(offers, title));
+        PacketDistributor.sendToPlayer(player, new OpenVillagerGuiPacket(offers, title));
 
         source.sendSuccess(() -> Component.literal(
-                "§a已为 §e" + target.getName().getString() +
+                "§a已为 §e" + player.getName().getString() +
                         " §a打开自定义村民交易界面（共 §e" + offers.size() + " §a项）"
         ), true);
 
