@@ -321,9 +321,9 @@
   "item.PanlingRE.ju_li_fu.skill2": "§6[%s§6] §6冷却：§b30§f秒 §b灵气：§b15§f点",
   "item.PanlingRE.ju_li_fu.skill3": "§f给予自身§4<力量|壹>§b法力值*5§f秒",
 
-  "item.panlingre.ba_fang_yi": "§6八方归位仪",
+  "item.panlingre.ba_fang_yi": "§9八方归位仪",
   "item.PanlingRE.ba_fang_yi.lore1": "§7§o一件特殊的法器,联通着重华镜",
-  "item.PanlingRE.ba_fang_yi.lore2": "§7§o能以重华镜的将自己瞬息送至千里之外",
+  "item.PanlingRE.ba_fang_yi.lore2": "§7§o能以重华镜的力量将自己瞬息送至千里之外",
   "item.PanlingRE.ba_fang_yi.skill1.1": "§9「八方归位」§7<shift查看详情>",
   "item.PanlingRE.ba_fang_yi.skill1.2": "§9「八方归位」§7<技能>",
   "item.PanlingRE.ba_fang_yi.skill2": "§6[%s§6] §6冷却：§b30§f秒 §a经验：§b10§f点",

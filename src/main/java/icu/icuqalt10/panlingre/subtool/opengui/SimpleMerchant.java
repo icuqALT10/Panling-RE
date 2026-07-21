@@ -10,7 +10,7 @@ import net.minecraft.world.item.trading.MerchantOffers;
 
 public class SimpleMerchant implements Merchant {
 
-    private final MerchantOffers offers;
+    private MerchantOffers offers;
     private Player tradingPlayer;
 
     public SimpleMerchant(MerchantOffers offers) {
@@ -20,12 +20,12 @@ public class SimpleMerchant implements Merchant {
     @Override public void setTradingPlayer(Player player) { this.tradingPlayer = player; }
     @Override public Player getTradingPlayer() { return tradingPlayer; }
     @Override public MerchantOffers getOffers() { return offers; }
-    @Override public void overrideOffers(MerchantOffers newOffers) {}
+    @Override public void overrideOffers(MerchantOffers newOffers) { this.offers = newOffers; }
     @Override public void notifyTrade(MerchantOffer offer) { offer.increaseUses(); }
     @Override public void notifyTradeUpdated(ItemStack stack) {}
     @Override public int getVillagerXp() { return 0; }
     @Override public void overrideXp(int xp) {}
-    @Override public boolean showProgressBar() { return false; }
+    @Override public boolean showProgressBar() { return true; }
     @Override public SoundEvent getNotifyTradeSound() { return SoundEvents.VILLAGER_YES; }
     @Override public boolean isClientSide() { return false; }
 }

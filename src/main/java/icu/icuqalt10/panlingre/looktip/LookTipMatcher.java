@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.looktip;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -132,6 +133,81 @@ public class LookTipMatcher {
 
         return true;
     }
+
+    // ========== 客户端匹配（不含 nbt）==========
+
+    public static boolean matchesEntityClient(Entity entity, LookTipData.EntityCondition condition) {
+        if (!"entity".equals(condition.type())) {
+            return false;
+        }
+
+        ResourceLocation entityId = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
+        boolean nameMatches = condition.name().stream()
+                .anyMatch(name -> {
+                    ResourceLocation conditionId = ResourceLocation.tryParse(name);
+                    if (conditionId == null) {
+                        conditionId = ResourceLocation.withDefaultNamespace(name);
+                    }
+                    return entityId.equals(conditionId);
+                });
+
+        if (!nameMatches) {
+            return false;
+        }
+
+        if (condition.pos().isPresent()) {
+            var pos = entity.blockPosition();
+            if (!condition.pos().get().matches(pos.getX(), pos.getY(), pos.getZ())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean matchesBlockClient(BlockState blockState, BlockPos blockPos, LookTipData.EntityCondition condition) {
+        if (!"block".equals(condition.type())) {
+            return false;
+        }
+
+        ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(blockState.getBlock());
+        boolean nameMatches = condition.name().stream()
+                .anyMatch(name -> {
+                    ResourceLocation conditionId = ResourceLocation.tryParse(name);
+                    if (conditionId == null) {
+                        conditionId = ResourceLocation.withDefaultNamespace(name);
+                    }
+                    return blockId.equals(conditionId);
+                });
+
+        if (!nameMatches) {
+            return false;
+        }
+
+        if (condition.pos().isPresent()) {
+            if (!condition.pos().get().matches(blockPos.getX(), blockPos.getY(), blockPos.getZ())) {
+                return false;
+            }
+        }
+
+        if (condition.blockState().isPresent()) {
+            Map<String, String> requiredStates = condition.blockState().get();
+            for (Map.Entry<String, String> entry : requiredStates.entrySet()) {
+                Property<?> property = blockState.getBlock().getStateDefinition().getProperty(entry.getKey());
+                if (property == null) {
+                    return false;
+                }
+                String actualValue = blockState.getValue(property).toString();
+                if (!actualValue.equals(entry.getValue())) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    // ========== NBT 匹配（仅服务端调用）==========
 
     private static boolean nbtContains(CompoundTag actual, CompoundTag required) {
         for (String key : required.getAllKeys()) {

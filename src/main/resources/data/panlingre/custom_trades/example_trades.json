@@ -4,6 +4,31 @@
     {
       "buy":  { "item": "minecraft:emerald", "count": 1 },
       "sell": { "item": "minecraft:diamond", "count": 1 }
+    },
+    {
+      "buy":  { "item": "minecraft:emerald", "count": 5 },
+      "sell": {
+        "item": "minecraft:diamond_sword",
+        "count": 1,
+        "components": {
+          "minecraft:enchantments": {
+            "levels": {
+              "minecraft:sharpness": 3
+            }
+          },
+          "minecraft:custom_name": "{\"text\":\"神剑\",\"color\":\"gold\",\"italic\":false}"
+        }
+      }
+    },
+    {
+      "buy": {
+        "item": "minecraft:diamond_sword",
+        "count": 1,
+        "components": {
+          "minecraft:damage": 0
+        }
+      },
+      "sell": { "item": "minecraft:emerald", "count": 3 }
     }
   ]
 }

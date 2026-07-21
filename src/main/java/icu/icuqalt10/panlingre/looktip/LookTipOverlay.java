@@ -18,7 +18,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.Objects;
+import java.util.Map;
 import java.util.UUID;
 
 public class LookTipOverlay implements LayeredDraw.Layer {
@@ -39,10 +39,8 @@ public class LookTipOverlay implements LayeredDraw.Layer {
             return;
         }
 
-        // 每tick检查目标
         checkTarget(mc);
 
-        // 渲染当前提示
         if (currentTip != null) {
             renderTip(guiGraphics, currentTip, mc);
         }
@@ -52,22 +50,13 @@ public class LookTipOverlay implements LayeredDraw.Layer {
         HitResult hitResult = getPlayerLookTarget(mc);
 
         if (hitResult == null || hitResult.getType() == HitResult.Type.MISS) {
-            // 没有看向任何东西
             if (lastEntityUuid != null || lastBlockPos != null) {
-                // 目标变化了
                 lastEntityUuid = null;
                 lastBlockPos = null;
                 lastBlockId = null;
                 lastBlockState = null;
-
-                // 发送请求
-                PacketDistributor.sendToServer(LookTipRequestPayload.create(
-                        LookTipRequestPayload.TargetType.NONE,
-                        new UUID(0, 0),
-                        BlockPos.ZERO
-                ));
+                doMatch(mc, hitResult);
             }
-            // 否则目标没变（依然是空），保持上次结果
             return;
         }
 
@@ -76,22 +65,13 @@ public class LookTipOverlay implements LayeredDraw.Layer {
             Entity entity = entityHit.getEntity();
             UUID entityUuid = entity.getUUID();
 
-            // 检查是否与上一tick相同
             if (!entityUuid.equals(lastEntityUuid)) {
-                // 目标变化了
                 lastEntityUuid = entityUuid;
                 lastBlockPos = null;
                 lastBlockId = null;
                 lastBlockState = null;
-
-                // 发送请求
-                PacketDistributor.sendToServer(LookTipRequestPayload.create(
-                        LookTipRequestPayload.TargetType.ENTITY,
-                        entityUuid,
-                        BlockPos.ZERO
-                ));
+                doMatch(mc, hitResult);
             }
-            // 否则目标没变，保持上次结果
         } else if (hitResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHit = (BlockHitResult) hitResult;
             BlockPos blockPos = blockHit.getBlockPos();
@@ -100,23 +80,89 @@ public class LookTipOverlay implements LayeredDraw.Layer {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
             String blockStateStr = blockState.toString();
 
-            // 检查是否与上一tick相同（BlockPos + BlockId + BlockState）
             if (!blockPos.equals(lastBlockPos) || !blockId.equals(lastBlockId) || !blockStateStr.equals(lastBlockState)) {
-                // 目标变化了
                 lastBlockPos = blockPos;
                 lastBlockId = blockId;
                 lastBlockState = blockStateStr;
                 lastEntityUuid = null;
-
-                // 发送请求
-                PacketDistributor.sendToServer(LookTipRequestPayload.create(
-                        LookTipRequestPayload.TargetType.BLOCK,
-                        new UUID(0, 0),
-                        blockPos
-                ));
+                doMatch(mc, hitResult);
             }
-            // 否则目标没变，保持上次结果
         }
+    }
+
+    /**
+     * 执行匹配：先在客户端匹配 name/pos/block_state，
+     * 如果没有 nbt 则直接显示，有 nbt 则发包给服务端
+     */
+    private void doMatch(Minecraft mc, HitResult hitResult) {
+        Map<ResourceLocation, LookTipData> lookTips = LookTipLoader.getLookTips();
+
+        if (hitResult == null || hitResult.getType() == HitResult.Type.MISS) {
+            currentTip = null;
+            return;
+        }
+
+        if (hitResult.getType() == HitResult.Type.ENTITY) {
+            EntityHitResult entityHit = (EntityHitResult) hitResult;
+            Entity entity = entityHit.getEntity();
+
+            for (LookTipData data : lookTips.values()) {
+                for (LookTipData.EntityCondition condition : data.entities()) {
+                    if (!"entity".equals(condition.type())) continue;
+
+                    if (LookTipMatcher.matchesEntityClient(entity, condition)) {
+                        // 客户端条件通过，检查是否需要 nbt
+                        if (needsNbt(condition)) {
+                            // 发包给服务端验证 nbt
+                            PacketDistributor.sendToServer(LookTipRequestPayload.create(
+                                    LookTipRequestPayload.TargetType.ENTITY,
+                                    entity.getUUID(),
+                                    BlockPos.ZERO
+                            ));
+                            return;
+                        } else {
+                            // 不需要 nbt，直接显示
+                            currentTip = data.title();
+                            return;
+                        }
+                    }
+                }
+            }
+        } else if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockHit = (BlockHitResult) hitResult;
+            BlockPos blockPos = blockHit.getBlockPos();
+            var blockState = mc.level.getBlockState(blockPos);
+
+            for (LookTipData data : lookTips.values()) {
+                for (LookTipData.EntityCondition condition : data.entities()) {
+                    if (!"block".equals(condition.type())) continue;
+
+                    if (LookTipMatcher.matchesBlockClient(blockState, blockPos, condition)) {
+                        // 客户端条件通过，检查是否需要 nbt
+                        if (needsNbt(condition)) {
+                            // 发包给服务端验证 nbt
+                            PacketDistributor.sendToServer(LookTipRequestPayload.create(
+                                    LookTipRequestPayload.TargetType.BLOCK,
+                                    new UUID(0, 0),
+                                    blockPos
+                            ));
+                            return;
+                        } else {
+                            // 不需要 nbt，直接显示
+                            currentTip = data.title();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 没有匹配到任何条件
+        currentTip = null;
+    }
+
+    private boolean needsNbt(LookTipData.EntityCondition condition) {
+        return condition.nbt().isPresent() && !condition.nbt().get().isEmpty();
     }
 
     // 处理服务端响应
