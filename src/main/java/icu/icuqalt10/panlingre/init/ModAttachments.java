@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.init;
 
 import com.mojang.serialization.Codec;
 import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.attachment.BaFangYiData;
 import icu.icuqalt10.panlingre.attachment.BlessData;
 import icu.icuqalt10.panlingre.attachment.FreezeData;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
@@ -36,6 +37,14 @@ public class ModAttachments {
             "freeze_data",
             () -> AttachmentType.builder(FreezeData::new)
                     .serialize(FreezeData.CODEC)
+                    .build()
+    );
+
+    public static final Supplier<AttachmentType<BaFangYiData>> BA_FANG_YI_DATA = ATTACHMENT_TYPES.register(
+            "ba_fang_yi_data",
+            () -> AttachmentType.builder(BaFangYiData::new)
+                    .serialize(BaFangYiData.CODEC)
+                    .copyOnDeath()
                     .build()
     );
 

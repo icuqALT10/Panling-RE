@@ -1,0 +1,19 @@
+﻿{
+    "title": "下界堡垒",
+    "id": "test_nether",
+    "texture": "panlingre:textures/gui/teleport/default_icon.png",
+    "poses": [
+        {
+            "title": "烈焰人刷怪笼",
+            "id": "test_blaze_spawner",
+            "texture": "panlingre:textures/gui/teleport/default_icon.png",
+            "pos": { "x": 10, "y": 60, "z": -20 }
+        },
+        {
+            "title": "下界要塞大门",
+            "id": "test_fortress_gate",
+            "texture": "panlingre:textures/gui/teleport/default_icon.png",
+            "pos": { "x": -50, "y": 70, "z": 100 }
+        }
+    ]
+}

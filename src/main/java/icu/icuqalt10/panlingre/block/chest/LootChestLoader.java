@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import icu.icuqalt10.panlingre.PanlingRE;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -21,7 +22,7 @@ public class LootChestLoader {
 
     public static List<LootEntry> load(String lootId, ServerLevel serverLevel) {
         List<LootEntry> entries = new ArrayList<>();
-        ResourceLocation path = ResourceLocation.fromNamespaceAndPath("panlingre", "loot_chest/" + lootId + ".json");
+        ResourceLocation path = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "loot_chest/" + lootId + ".json");
         try {
             var opt = serverLevel.getServer().getResourceManager().getResource(path);
             if (opt.isEmpty()) return entries;

@@ -1,6 +1,10 @@
 package icu.icuqalt10.panlingre.init;
 
 import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.command.BaFangYiCommand;
+import icu.icuqalt10.panlingre.looktip.LookTipNetworkHandler;
+import icu.icuqalt10.panlingre.looktip.LookTipRequestPayload;
+import icu.icuqalt10.panlingre.looktip.LookTipResponsePayload;
 import icu.icuqalt10.panlingre.network.*;
 import icu.icuqalt10.panlingre.network.particle.GatherBall;
 import icu.icuqalt10.panlingre.network.ShakePayload;
@@ -86,6 +90,39 @@ public class ModNetworks {
                 ShakePayload::handle
         );
 
+        // Look Tip 网络包
+        registrar.playToServer(
+                LookTipRequestPayload.TYPE,
+                LookTipRequestPayload.STREAM_CODEC,
+                LookTipNetworkHandler::handleRequest
+        );
+
+        registrar.playToClient(
+                LookTipResponsePayload.TYPE,
+                LookTipResponsePayload.STREAM_CODEC,
+                (payload, context) -> {
+                    context.enqueueWork(() -> {
+                        icu.icuqalt10.panlingre.looktip.LookTipOverlay.handleResponse(payload);
+                    });
+                }
+        );
+
+        // 八方仪传送
+        registrar.playToClient(
+                BaFangYiOpenPayload.TYPE,
+                BaFangYiOpenPayload.STREAM_CODEC,
+                (payload, context) -> {
+                    context.enqueueWork(() -> {
+                        icu.icuqalt10.panlingre.client.gui.BaFangYiScreen.openWith(payload.majors());
+                    });
+                }
+        );
+
+        registrar.playToServer(
+                BaFangYiTeleportPayload.TYPE,
+                BaFangYiTeleportPayload.STREAM_CODEC,
+                BaFangYiCommand::handleTeleportRequest
+        );
 
     }
 }

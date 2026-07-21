@@ -80,6 +80,9 @@ public class ModItems {
     public static final DeferredItem<Item> suspicious_dirt = ITEMS.register("suspicious_dirt",
             () -> new BlockItem(ModBlocks.suspicious_dirt.get(), new Item.Properties()));
 
+    //八方仪
+    public static final DeferredItem<Item> ba_fang_yi = ITEMS.register("ba_fang_yi",ba_fang_yi::new);
+
     //钥匙与宝箱
     public static final DeferredItem<Item> loot_key = ITEMS.register("loot_key",
             () -> new LootKeyItem(new Item.Properties()

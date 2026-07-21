@@ -9,6 +9,7 @@ import icu.icuqalt10.panlingre.client.models.FireTornadoModel;
 import icu.icuqalt10.panlingre.client.renderer.*;
 import icu.icuqalt10.panlingre.client.renderer.boss.PanGuRenderer;
 import icu.icuqalt10.panlingre.init.*;
+import icu.icuqalt10.panlingre.looktip.LookTipOverlay;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -100,6 +101,11 @@ public class ClientModEvents {
                 VanillaGuiLayers.FOOD_LEVEL,
                 ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "skill_wheel_overlay"),
                 SkillWheelOverlay.INSTANCE
+        );
+
+        event.registerAboveAll(
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "look_tip_overlay"),
+                LookTipOverlay.INSTANCE
         );
     }
 

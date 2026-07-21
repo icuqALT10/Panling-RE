@@ -1,0 +1,13 @@
+{
+    "title": {
+        "text": "§6带有 test 标签的实体",
+        "color": "gold"
+    },
+    "entities": [
+        {
+            "type": "entity",
+            "name": ["minecraft:creeper"],
+            "nbt": "{Tags:[\"test\"]}"
+        }
+    ]
+}

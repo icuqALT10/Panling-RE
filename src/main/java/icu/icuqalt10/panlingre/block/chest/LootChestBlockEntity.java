@@ -1,14 +1,19 @@
 package icu.icuqalt10.panlingre.block.chest;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import icu.icuqalt10.panlingre.init.ModBlockEntities;
 import icu.icuqalt10.panlingre.init.ModComponents;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -73,8 +78,8 @@ public class LootChestBlockEntity extends BlockEntity {
     }
 
     @Override
-    public net.minecraft.network.protocol.Packet<net.minecraft.network.protocol.game.ClientGamePacketListener> getUpdatePacket() {
-        return net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket.create(this);
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     public String getChestType() { return chestType; }
@@ -192,7 +197,7 @@ public class LootChestBlockEntity extends BlockEntity {
                     if (result > 0) {
                         filtered.add(e);
                     }
-                } catch (com.mojang.brigadier.exceptions.CommandSyntaxException ignored) {
+                } catch (CommandSyntaxException ignored) {
                 }
             }
         }
@@ -225,9 +230,9 @@ public class LootChestBlockEntity extends BlockEntity {
     private void broadcast(ServerLevel serverLevel, ItemStack drop) {
         String dungeonKey = "plre.loot_chest.instance_name." + chestId;
         Component msg = Component.translatable("plre.loot_chest.broadcast",
-                Component.literal(openerName),
+                Component.literal(openerName).withStyle(ChatFormatting.YELLOW),
                 Component.translatable(dungeonKey),
-                drop.getDisplayName());
+                drop.getDisplayName().copy().withStyle(ChatFormatting.GOLD));
         serverLevel.getServer().getPlayerList().broadcastSystemMessage(msg, false);
     }
 

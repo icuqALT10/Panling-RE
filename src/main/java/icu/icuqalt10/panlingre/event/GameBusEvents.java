@@ -7,6 +7,7 @@ import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.entity.FireTrailTracker;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
+import icu.icuqalt10.panlingre.looktip.LookTipLoader;
 import icu.icuqalt10.panlingre.network.SyncBlessPayload;
 import icu.icuqalt10.panlingre.player.check;
 import icu.icuqalt10.panlingre.util.Shockwave;
@@ -33,6 +34,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -86,6 +88,11 @@ public class GameBusEvents {
             ItemTags.create(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "zhiye/warlock"));
     public static final TagKey<EntityType<?>> CantKnockAway_TAG =
             TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "cant_knockaway"));
+
+    @SubscribeEvent
+    public static void onAddReloadListeners(AddReloadListenerEvent event) {
+        event.addListener(new LookTipLoader());
+    }
 
     //玩家进入服务器
     @SubscribeEvent

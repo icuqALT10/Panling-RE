@@ -147,6 +147,8 @@ public class ModTabs {
                         output.accept(ModItems.archer.get());
                         output.accept(ModItems.warlock.get());
 
+                        output.accept(ModItems.ba_fang_yi.get());
+
                         output.accept(ModItems.race_ren.get());
                         output.accept(ModItems.race_shen.get());
                         output.accept(ModItems.race_xian.get());
