@@ -93,6 +93,8 @@ public class ModItems {
             () -> new BlockItem(ModBlocks.loot_chest.get(), new Item.Properties()));
 
     //材料
+    public static final DeferredItem<Item> respawn_stone = ITEMS.register("respawn_stone",() -> new Item(new Item.Properties()));
+
     public static final DeferredItem<Item> ys1_jin = ITEMS.register("ys1_jin",() -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> ys1_mu = ITEMS.register("ys1_mu",() -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> ys1_shui = ITEMS.register("ys1_shui",() -> new Item(new Item.Properties()));

@@ -80,6 +80,8 @@ public class ModTabs {
                     .icon(() -> new ItemStack(ModItems.rare2_yuanhe.get()))
                     .displayItems((parameters, output) -> {
 
+                        output.accept(ModItems.respawn_stone.get());
+
                         output.accept(ModItems.ys1_jin.get());
                         output.accept(ModItems.ys1_mu.get());
                         output.accept(ModItems.ys1_shui.get());
