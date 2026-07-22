@@ -1,7 +1,7 @@
 ﻿{
   "gui.panlingre.custom_trade": "§c§l未指定的标题",
-  "message.panlingre.can_interact.invalid_function": "§c无效的函数路径：%s",
-  "message.panlingre.can_interact.missing_function": "§c找不到交互函数：%s",
+  "message.panlingre.can_interact.empty_command": "§ccan_interact 中的指令不能为空",
+  "message.panlingre.can_interact.command_failed": "§c交互指令执行失败：%s（%s）",
 
   "overlay.mode.1": "[选择并释放]",
   "overlay.mode.2": "[仅选择]",
