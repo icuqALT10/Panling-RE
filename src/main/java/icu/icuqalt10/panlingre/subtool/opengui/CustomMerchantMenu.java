@@ -159,8 +159,8 @@ public class CustomMerchantMenu extends MerchantMenu {
     private CustomMerchantOffer findExactMatch(ItemStack a, ItemStack b) {
         for (CustomMerchantOffer o : customOffers()) {
             if (!ItemStack.isSameItemSameComponents(a, o.getEnrichedCostA())) continue;
-            if (!o.getEnrichedCostB().isEmpty()
-                    && !ItemStack.isSameItemSameComponents(b, o.getEnrichedCostB())) continue;
+            if (o.getEnrichedCostB().isEmpty() ? !b.isEmpty()
+                    : !ItemStack.isSameItemSameComponents(b, o.getEnrichedCostB())) continue;
             return o;
         }
         return null;
@@ -174,6 +174,8 @@ public class CustomMerchantMenu extends MerchantMenu {
         if (!o.getEnrichedCostB().isEmpty()) {
             if (!ItemStack.isSameItemSameComponents(b, o.getEnrichedCostB())) return false;
             if (b.getCount() < o.getCostB().getCount()) return false;
+        } else if (!b.isEmpty()) {
+            return false;
         }
         return true;
     }

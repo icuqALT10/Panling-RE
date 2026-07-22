@@ -12,7 +12,7 @@ public class OpenGuiPackets {
     }
 
     private static void onRegister(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar reg = event.registrar(PanlingRE.MODID).versioned("1.0");
+        PayloadRegistrar reg = event.registrar(PanlingRE.MODID).versioned("1.1");
         reg.playToClient(
                 OpenVillagerGuiPacket.TYPE,
                 OpenVillagerGuiPacket.STREAM_CODEC,

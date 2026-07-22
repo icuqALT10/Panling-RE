@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.subtool.opengui.network;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.subtool.opengui.client.OpenGuiClientHandler;
+import icu.icuqalt10.panlingre.subtool.opengui.data.CustomMerchantOffer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -30,16 +31,20 @@ public record OpenVillagerGuiPacket(MerchantOffers offers, Component title) impl
         ComponentSerialization.STREAM_CODEC.encode(buf, pkt.title());
         buf.writeInt(pkt.offers().size());
         for (MerchantOffer offer : pkt.offers()) {
-            ItemStack costAStack = offer.getCostA();
+            ItemStack costAStack = getExactCostA(offer);
             ItemCost  costA      = new ItemCost(costAStack.getItem(), costAStack.getCount());
 
-            ItemStack          costBStack = offer.getCostB();
+            ItemStack          costBStack = getExactCostB(offer);
             Optional<ItemCost> costB      = costBStack.isEmpty()
                     ? Optional.empty()
                     : Optional.of(new ItemCost(costBStack.getItem(), costBStack.getCount()));
 
             ItemCost.STREAM_CODEC.encode(buf, costA);
             ByteBufCodecs.optional(ItemCost.STREAM_CODEC).encode(buf, costB);
+            ItemStack.STREAM_CODEC.encode(buf, costAStack);
+            if (costB.isPresent()) {
+                ItemStack.STREAM_CODEC.encode(buf, costBStack);
+            }
             ItemStack.STREAM_CODEC.encode(buf, offer.getResult());
             buf.writeInt(offer.getUses());
             buf.writeInt(offer.getMaxUses());
@@ -57,6 +62,10 @@ public record OpenVillagerGuiPacket(MerchantOffers offers, Component title) impl
         for (int i = 0; i < size; i++) {
             ItemCost           costA      = ItemCost.STREAM_CODEC.decode(buf);
             Optional<ItemCost> costB      = ByteBufCodecs.optional(ItemCost.STREAM_CODEC).decode(buf);
+            ItemStack          exactCostA = ItemStack.STREAM_CODEC.decode(buf);
+            ItemStack          exactCostB = costB.isPresent()
+                    ? ItemStack.STREAM_CODEC.decode(buf)
+                    : ItemStack.EMPTY;
             ItemStack          result     = ItemStack.STREAM_CODEC.decode(buf);
             int                uses       = buf.readInt();
             int                maxUses    = buf.readInt();
@@ -65,11 +74,25 @@ public record OpenVillagerGuiPacket(MerchantOffers offers, Component title) impl
             float              priceMulti = buf.readFloat();
             int                demand     = buf.readInt();
 
-            MerchantOffer offer = new MerchantOffer(costA, costB, result, uses, maxUses, xp, priceMulti, demand);
+            MerchantOffer offer = new CustomMerchantOffer(
+                    costA, costB, result, uses, maxUses, xp, priceMulti, demand, exactCostA, exactCostB
+            );
             offer.addToSpecialPriceDiff(specialPrc);
             offers.add(offer);
         }
         return new OpenVillagerGuiPacket(offers, title);
+    }
+
+    private static ItemStack getExactCostA(MerchantOffer offer) {
+        return offer instanceof CustomMerchantOffer customOffer
+                ? customOffer.getEnrichedCostA()
+                : offer.getCostA();
+    }
+
+    private static ItemStack getExactCostB(MerchantOffer offer) {
+        return offer instanceof CustomMerchantOffer customOffer
+                ? customOffer.getEnrichedCostB()
+                : offer.getCostB();
     }
 
     public void handle(IPayloadContext context) {

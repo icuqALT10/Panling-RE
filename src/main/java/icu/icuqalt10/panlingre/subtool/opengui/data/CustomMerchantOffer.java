@@ -17,7 +17,13 @@ public class CustomMerchantOffer extends MerchantOffer {
     public CustomMerchantOffer(ItemCost costA, Optional<ItemCost> costB, ItemStack result,
                                int maxUses, int xp, float priceMultiplier,
                                ItemStack enrichedCostA, ItemStack enrichedCostB) {
-        super(costA, costB, result, maxUses, xp, priceMultiplier);
+        this(costA, costB, result, 0, maxUses, xp, priceMultiplier, 0, enrichedCostA, enrichedCostB);
+    }
+
+    public CustomMerchantOffer(ItemCost costA, Optional<ItemCost> costB, ItemStack result,
+                               int uses, int maxUses, int xp, float priceMultiplier, int demand,
+                               ItemStack enrichedCostA, ItemStack enrichedCostB) {
+        super(costA, costB, result, uses, maxUses, xp, priceMultiplier, demand);
         this.enrichedCostA = enrichedCostA;
         this.enrichedCostB = enrichedCostB;
     }
@@ -28,5 +34,20 @@ public class CustomMerchantOffer extends MerchantOffer {
 
     public ItemStack getEnrichedCostB() {
         return enrichedCostB;
+    }
+
+    @Override
+    public boolean satisfiedBy(ItemStack stackA, ItemStack stackB) {
+        if (!matchesExactCost(stackA, enrichedCostA, getCostA().getCount())) {
+            return false;
+        }
+        return enrichedCostB.isEmpty()
+                ? stackB.isEmpty()
+                : matchesExactCost(stackB, enrichedCostB, getCostB().getCount());
+    }
+
+    private static boolean matchesExactCost(ItemStack actual, ItemStack expected, int requiredCount) {
+        return ItemStack.isSameItemSameComponents(actual, expected)
+                && actual.getCount() >= requiredCount;
     }
 }
