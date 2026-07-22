@@ -7,7 +7,8 @@
     "RangedAttributeMixin",
     "AbstractArrowMixin",
     "SlimeSplitMixin",
-    "BiomeMixin"
+    "BiomeMixin",
+    "CanInteractEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
