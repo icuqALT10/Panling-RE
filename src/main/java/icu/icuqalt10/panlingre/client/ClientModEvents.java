@@ -7,6 +7,7 @@ import icu.icuqalt10.panlingre.client.gui.zftScreen;
 import icu.icuqalt10.panlingre.client.layer.FireTornadoWindLayer;
 import icu.icuqalt10.panlingre.client.models.FireTornadoModel;
 import icu.icuqalt10.panlingre.client.renderer.*;
+import icu.icuqalt10.panlingre.client.task.TaskGuideOverlay;
 import icu.icuqalt10.panlingre.client.renderer.boss.PanGuRenderer;
 import icu.icuqalt10.panlingre.init.*;
 import icu.icuqalt10.panlingre.looktip.LookTipOverlay;
@@ -106,6 +107,11 @@ public class ClientModEvents {
         event.registerAboveAll(
                 ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "look_tip_overlay"),
                 LookTipOverlay.INSTANCE
+        );
+
+        event.registerAboveAll(
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "task_guide_overlay"),
+                TaskGuideOverlay.INSTANCE
         );
     }
 

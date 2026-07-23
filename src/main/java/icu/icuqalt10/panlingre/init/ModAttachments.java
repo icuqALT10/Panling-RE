@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.BaFangYiData;
 import icu.icuqalt10.panlingre.attachment.BlessData;
-import icu.icuqalt10.panlingre.attachment.FreezeData;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
+import icu.icuqalt10.panlingre.task.TaskGuideState;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -33,17 +33,18 @@ public class ModAttachments {
                     .build()
     );
 
-    public static final Supplier<AttachmentType<FreezeData>> FREEZE_DATA = ATTACHMENT_TYPES.register(
-            "freeze_data",
-            () -> AttachmentType.builder(FreezeData::new)
-                    .serialize(FreezeData.CODEC)
-                    .build()
-    );
-
     public static final Supplier<AttachmentType<BaFangYiData>> BA_FANG_YI_DATA = ATTACHMENT_TYPES.register(
             "ba_fang_yi_data",
             () -> AttachmentType.builder(BaFangYiData::new)
                     .serialize(BaFangYiData.CODEC)
+                    .copyOnDeath()
+                    .build()
+    );
+
+    public static final Supplier<AttachmentType<TaskGuideState>> TASK_GUIDE = ATTACHMENT_TYPES.register(
+            "task_guide",
+            () -> AttachmentType.builder(() -> TaskGuideState.EMPTY)
+                    .serialize(TaskGuideState.CODEC)
                     .copyOnDeath()
                     .build()
     );

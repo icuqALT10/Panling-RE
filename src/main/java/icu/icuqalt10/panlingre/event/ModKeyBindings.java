@@ -2,9 +2,8 @@ package icu.icuqalt10.panlingre.event;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import icu.icuqalt10.panlingre.PanlingRE;
-import icu.icuqalt10.panlingre.attachment.FreezeData;
 import icu.icuqalt10.panlingre.client.SkillWheelOverlay;
-import icu.icuqalt10.panlingre.init.ModAttachments;
+import icu.icuqalt10.panlingre.init.ModEffects;
 import icu.icuqalt10.panlingre.network.SkillPayload;
 import icu.icuqalt10.panlingre.network.SkillWheelPayload;
 import icu.icuqalt10.panlingre.skill.ClientSkillState;
@@ -58,8 +57,7 @@ class InputHandler {
         Player player = mc.player;
         if (player == null) return;
 
-        FreezeData freezeData = player.getData(ModAttachments.FREEZE_DATA.get());
-        if (freezeData.isFrozen()) return;
+        if (player.hasEffect(ModEffects.freeze)) return;
 
         if (++rebuildTick >= 2) {
             rebuildTick = 0;

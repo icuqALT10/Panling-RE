@@ -2,14 +2,16 @@ package icu.icuqalt10.panlingre.event;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.BlessData;
-import icu.icuqalt10.panlingre.attachment.FreezeData;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.entity.FireTrailTracker;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
+import icu.icuqalt10.panlingre.init.ModEffects;
 import icu.icuqalt10.panlingre.looktip.LookTipLoader;
 import icu.icuqalt10.panlingre.network.SyncBlessPayload;
 import icu.icuqalt10.panlingre.player.check;
+import icu.icuqalt10.panlingre.task.TaskGuideLoader;
+import icu.icuqalt10.panlingre.task.TaskGuideService;
 import icu.icuqalt10.panlingre.util.Shockwave;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -26,18 +28,15 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -89,9 +88,17 @@ public class GameBusEvents {
     public static final TagKey<EntityType<?>> CantKnockAway_TAG =
             TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "cant_knockaway"));
 
+    //LookTip
     @SubscribeEvent
     public static void onAddReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new LookTipLoader());
+        event.addListener(new TaskGuideLoader());
+    }
+
+    //取消踩田
+    @SubscribeEvent
+    public static void onFarmlandTrample(BlockEvent.FarmlandTrampleEvent event) {
+        event.setCanceled(true);
     }
 
     //玩家进入服务器
@@ -104,6 +111,7 @@ public class GameBusEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             BlessData currentData = serverPlayer.getData(ModAttachments.BLESS.get());
             PacketDistributor.sendToPlayer(serverPlayer, new SyncBlessPayload(currentData));
+            TaskGuideService.syncActive(serverPlayer);
         }
     }
 
@@ -173,64 +181,17 @@ public class GameBusEvents {
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
         if (!player.level().isClientSide && player.tickCount % 10 == 0) {
-                // 检查玩家是否被冻结
-                FreezeData freezeData = player.getData(ModAttachments.FREEZE_DATA.get());
-
                 LingQiData data = player.getData(ModAttachments.LINGQI);
                 float max = (float) player.getAttributeValue(ModAttributes.MAX_LINGQI);
 
                 //每10刻恢复2.5%（如果没有被冻结）
-                if (!freezeData.isFrozen() && data.getCurrent() < max) {
+                if (!player.hasEffect(ModEffects.freeze) && data.getCurrent() < max) {
                     data.setCurrent(data.getCurrent() + max * 0.025f, player);
                 }
 
                 //同步灵气条
                 data.setCurrent(Math.min(data.getCurrent(),max),player);
                 data.sync(player);
-        }
-    }
-
-    //箭矢命中/落地时
-    @SubscribeEvent
-    public static void onArrowImpact(ProjectileImpactEvent event) {
-        Entity projectile = event.getProjectile();
-        Level level = projectile.level();
-
-        if (!level.isClientSide && projectile instanceof AbstractArrow arrow) {
-            if(arrow.getTags().contains("panlingre:zhong_chui_arrow")) {
-                triggerArrowExplosion(level, arrow,10f);
-                arrow.discard();
-            }
-            if(arrow.getTags().contains("panlingre:bei_dou_arrow")) {
-                triggerArrowExplosion(level, arrow,5f);
-                arrow.discard();
-            }
-        }
-    }
-    //箭矢爆炸效果
-    private static void triggerArrowExplosion(Level level, AbstractArrow arrow,float multiplied) {
-
-        if (level instanceof ServerLevel serverLevel) {
-
-            serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER,
-                    arrow.getX(), arrow.getY(), arrow.getZ(),
-                    1, 0.0D, 0.0D, 0.0D, 0.0D);
-        }
-
-        double radius = 2.0D;
-        AABB area = arrow.getBoundingBox().inflate(radius);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area);
-
-        Entity owner = arrow.getOwner();
-
-        for (LivingEntity target : targets) {
-
-            if (owner != null && (target.is(owner) || (owner instanceof LivingEntity livingOwner && livingOwner.isAlliedTo(target)))) {
-                continue;
-            }
-
-            float explosionDamage = (float) (arrow.getBaseDamage() * multiplied);
-            target.hurt(level.damageSources().explosion(arrow, owner), explosionDamage);
         }
     }
 

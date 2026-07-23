@@ -7,6 +7,7 @@ import icu.icuqalt10.panlingre.entity.FireTornadoEntity;
 import icu.icuqalt10.panlingre.event.GameBusEvents;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModEntities;
+import icu.icuqalt10.panlingre.init.ModEffects;
 import icu.icuqalt10.panlingre.item.liandan;
 import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.network.GroundSmashPayload;
@@ -29,6 +30,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.monster.Creeper;
@@ -342,7 +344,7 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
         List<LivingEntity> targetEntities = SkillHelper.getLivingEntitiesInFront(player, width, width, length);
         for (LivingEntity entity : targetEntities) {
             if (player.getTeam() != null && player.getTeam() != entity.getTeam()) {
-                SkillHelper.freezeEntity(entity,duration);
+                entity.addEffect(new MobEffectInstance(ModEffects.freeze, duration, 0));
                 entity.setTicksFrozen(140);
             }
         }

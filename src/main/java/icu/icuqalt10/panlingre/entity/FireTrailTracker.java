@@ -10,8 +10,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * 火焰轨迹跟踪器 - 服务端和客户端通用
- * 用于跟踪龙卷风经过的位置，供逻辑检测使用
+ * 服务端火焰轨迹跟踪器。
+ * 用于跟踪龙卷风经过的位置，供服务端逻辑检测使用；客户端渲染数据由
+ * {@code FireTrailRenderer} 单独维护，避免集成服务器中两个线程修改同一个 Map。
  */
 public class FireTrailTracker {
 
@@ -27,7 +28,7 @@ public class FireTrailTracker {
         }
     }
 
-    // 服务端和客户端各自维护独立的轨迹数据
+    // 仅允许服务端线程访问；静态字段在集成服务器的逻辑两端之间并不隔离。
     private static final Map<BlockPos, TrailData> ACTIVE_TRAILS = new HashMap<>();
 
     /**
@@ -101,7 +102,7 @@ public class FireTrailTracker {
         double z = entity.getZ();
         double y = entity.getY();
 
-        BlockPos[] checkPositions = {
+        return new BlockPos[]{
             BlockPos.containing(x + 0.3, y, z + 0.3),
             BlockPos.containing(x + 0.3, y, z - 0.3),
             BlockPos.containing(x - 0.3, y, z + 0.3),
@@ -111,7 +112,6 @@ public class FireTrailTracker {
             BlockPos.containing(x - 0.3, y - 1, z + 0.3),
             BlockPos.containing(x - 0.3, y - 1, z - 0.3)
         };
-        return checkPositions;
     }
 
     /**

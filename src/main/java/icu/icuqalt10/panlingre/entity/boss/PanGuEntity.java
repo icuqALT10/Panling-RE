@@ -141,19 +141,19 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
     // ========== 技能控制 =========
     public boolean SkillPhase1Triggered = false;
     public boolean SkillPhase2Triggered = false;
-    private BlockPos srcFrom = new BlockPos(3022,129,-2351);
-    private BlockPos srcTo = new BlockPos(3037 ,150,-2334);
-    private BlockPos mountain1 = new BlockPos(3071 ,129,-2254);
-    private BlockPos mountain2 = new BlockPos(3104 ,129,-2215);
-    private BlockPos mountain3 = new BlockPos(3102 ,129,-2279);
-    private BlockPos mountain4 = new BlockPos(3153 ,129,-2250);
-    private AABB mountain1Box = new AABB(new Vec3(mountain1.getX(),mountain1.getY(),mountain1.getZ()),
+    private final BlockPos srcFrom = new BlockPos(3022,129,-2351);
+    private final BlockPos srcTo = new BlockPos(3037 ,150,-2334);
+    private final BlockPos mountain1 = new BlockPos(3071 ,129,-2254);
+    private final BlockPos mountain2 = new BlockPos(3104 ,129,-2215);
+    private final BlockPos mountain3 = new BlockPos(3102 ,129,-2279);
+    private final BlockPos mountain4 = new BlockPos(3153 ,129,-2250);
+    private final AABB mountain1Box = new AABB(new Vec3(mountain1.getX(),mountain1.getY(),mountain1.getZ()),
             new Vec3(mountain1.getX()+16,mountain1.getY()+25,mountain1.getZ()+18));
-    private AABB mountain2Box = new AABB(new Vec3(mountain2.getX(),mountain2.getY(),mountain2.getZ()),
+    private final AABB mountain2Box = new AABB(new Vec3(mountain2.getX(),mountain2.getY(),mountain2.getZ()),
             new Vec3(mountain2.getX()+16,mountain2.getY()+25,mountain2.getZ()+18));
-    private AABB mountain3Box = new AABB(new Vec3(mountain3.getX(),mountain3.getY(),mountain3.getZ()),
+    private final AABB mountain3Box = new AABB(new Vec3(mountain3.getX(),mountain3.getY(),mountain3.getZ()),
             new Vec3(mountain3.getX()+16,mountain3.getY()+25,mountain3.getZ()+18));
-    private AABB mountain4Box = new AABB(new Vec3(mountain4.getX(),mountain4.getY(),mountain4.getZ()),
+    private final AABB mountain4Box = new AABB(new Vec3(mountain4.getX(),mountain4.getY(),mountain4.getZ()),
             new Vec3(mountain4.getX()+16,mountain4.getY()+25,mountain4.getZ()+18));
     private boolean is_snowing = false;
     public boolean isInSnowing() {return is_snowing;}
@@ -306,7 +306,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
 
 
         //如果被冻结 暂停以下方法
-        if (SkillHelper.isFrozen(this)) return;
+        if (this.hasEffect(ModEffects.freeze)) return;
 
         // 服务端动画计时器
         if (!currentAnimation.isEmpty()) {
@@ -487,7 +487,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
     private void SkillPhase1Run() {
         this.SkillPhase1Triggered = true;
         //解冻
-        SkillHelper.unfreezeEntity(this);
+        this.removeEffect(ModEffects.freeze);
         //设置属性
         this.setInvulnerable(true);
         this.setHealth(this.getMaxHealth() * 0.75f);
@@ -514,7 +514,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
     private void SkillPhase2Run() {
         this.SkillPhase2Triggered = true;
         //解冻
-        SkillHelper.unfreezeEntity(this);
+        this.removeEffect(ModEffects.freeze);
         //设置属性
         this.setInvulnerable(true);
         this.setHealth(this.getMaxHealth() * 0.5f);
@@ -966,13 +966,13 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         if (!(target instanceof Player player)) return;
         lockedPlayer = player;
 
-        SkillHelper.freezeEntity(player,20);
+        player.addEffect(new MobEffectInstance(ModEffects.freeze, 20, 0));
     }
 
     private void doCatchEnd() {
         if (lockedPlayer == null) return;
 
-        SkillHelper.unfreezeEntity(lockedPlayer);
+        lockedPlayer.removeEffect(ModEffects.freeze);
 
         lockedPlayer = null;
     }
@@ -1011,7 +1011,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         List<LivingEntity> targetEntities = SkillHelper.getLivingEntitiesInFront(this, 10.0, 10.0, 40.0);
         for (LivingEntity entity : targetEntities) {
             if (this.getTeam() != null && this.getTeam() != entity.getTeam()) {
-                SkillHelper.freezeEntity(entity,100);
+                entity.addEffect(new MobEffectInstance(ModEffects.freeze, 100, 0));
                 entity.setTicksFrozen(140);
             }
         }

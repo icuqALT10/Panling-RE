@@ -1,0 +1,32 @@
+{
+  "title": {
+    "text": "任务指引\n前往村庄寻找铁匠",
+    "color": "white"
+  },
+  "type": "pos_and_entity",
+  "entity": {
+    "type": [
+      "minecraft:villager"
+    ],
+    "nbt": "{Tags:[\"quest_blacksmith\"]}",
+    "pos": {
+      "x": {
+        "min": 110,
+        "max": 130
+      },
+      "y": {
+        "min": 60,
+        "max": 80
+      },
+      "z": 245
+    },
+    "color": "#E8C96A"
+  },
+  "target": {
+    "pos": {
+      "x": 120,
+      "y": 64,
+      "z": 245
+    }
+  }
+}

@@ -111,12 +111,12 @@ public class FireTornadoEntity extends Mob {
         for (BlockPos pos : belowPoses) {
             BlockState state = level().getBlockState(pos);
             if (!state.isAir() && state.isSolidRender(level(), pos)) {
-                // 记录到轨迹跟踪器（服务端用于逻辑检测，客户端用于渲染）
-                FireTrailTracker.addTrail(pos, state, 60);
-
-                // 客户端：同时添加到渲染器
                 if (level().isClientSide) {
                     FireTrailRenderer.addTrailBlock(pos, state, 60);
+                } else {
+                    // 逻辑轨迹只由服务端维护。集成服务器的客户端和服务端运行在不同线程，
+                    // 共用 FireTrailTracker 会在服务端遍历时被客户端写入并触发 CME。
+                    FireTrailTracker.addTrail(pos, state, 60);
                 }
             }
         }

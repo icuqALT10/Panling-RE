@@ -10,6 +10,10 @@ import icu.icuqalt10.panlingre.network.particle.GatherBall;
 import icu.icuqalt10.panlingre.network.ShakePayload;
 import icu.icuqalt10.panlingre.network.particle.ParticleCluster;
 import icu.icuqalt10.panlingre.network.particle.ParticleLighting;
+import icu.icuqalt10.panlingre.network.task.TaskEntityCheckPayload;
+import icu.icuqalt10.panlingre.network.task.TaskEntityResultPayload;
+import icu.icuqalt10.panlingre.network.task.TaskGuideSyncPayload;
+import icu.icuqalt10.panlingre.task.TaskGuideService;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
@@ -79,12 +83,6 @@ public class ModNetworks {
         );
 
         registrar.playToClient(
-                SyncFreezeDataPayload.TYPE,
-                SyncFreezeDataPayload.STREAM_CODEC,
-                SyncFreezeDataPayload::handle
-        );
-
-        registrar.playToClient(
                 ShakePayload.TYPE,
                 ShakePayload.STREAM_CODEC,
                 ShakePayload::handle
@@ -122,6 +120,26 @@ public class ModNetworks {
                 BaFangYiTeleportPayload.TYPE,
                 BaFangYiTeleportPayload.STREAM_CODEC,
                 BaFangYiCommand::handleTeleportRequest
+        );
+
+        registrar.playToClient(
+                TaskGuideSyncPayload.TYPE,
+                TaskGuideSyncPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() ->
+                        icu.icuqalt10.panlingre.client.task.ClientTaskGuideState.handleSync(payload))
+        );
+
+        registrar.playToServer(
+                TaskEntityCheckPayload.TYPE,
+                TaskEntityCheckPayload.STREAM_CODEC,
+                TaskGuideService::handleEntityCheck
+        );
+
+        registrar.playToClient(
+                TaskEntityResultPayload.TYPE,
+                TaskEntityResultPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() ->
+                        icu.icuqalt10.panlingre.client.task.ClientTaskGuideState.handleEntityResult(payload))
         );
 
     }

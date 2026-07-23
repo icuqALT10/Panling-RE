@@ -24,6 +24,7 @@ public class ModBusEvents {
         event.add(EntityType.SKELETON, ModAttributes.ARROW_DAMAGE);
         event.add(EntityType.STRAY, ModAttributes.ARROW_DAMAGE);
         event.add(EntityType.WITHER_SKELETON, ModAttributes.ARROW_DAMAGE);
+        event.add(EntityType.PILLAGER, ModAttributes.ARROW_DAMAGE);
     }
     //修改力量buff
     @SubscribeEvent

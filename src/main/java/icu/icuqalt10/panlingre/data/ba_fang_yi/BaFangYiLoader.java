@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import icu.icuqalt10.panlingre.PanlingRE;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -26,7 +27,7 @@ public class BaFangYiLoader {
     public static List<BaFangYiMajorEntry> loadAll(ServerLevel level) {
         ResourceManager rm = level.getServer().getResourceManager();
         Map<ResourceLocation, Resource> resources = rm.listResources("ba_fang_yi",
-                loc -> loc.getPath().endsWith(".json") && loc.getNamespace().equals("panlingre"));
+                loc -> loc.getPath().endsWith(".json") && loc.getNamespace().equals(PanlingRE.MODID));
 
         HolderLookup.Provider registryAccess = level.registryAccess();
         List<BaFangYiMajorEntry> entries = new ArrayList<>();
