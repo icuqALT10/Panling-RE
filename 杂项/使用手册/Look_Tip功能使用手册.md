@@ -16,7 +16,7 @@ Look Tip 是一个类似 Jade mod 的功能，当玩家看向特定的实体或�
         "text": "显示的文本\\n支持换行",
         "color": "gold"
     },
-    "entities": [
+    "entries": [
         {
             "type": "entity 或 block",
             "name": "实体或方块ID",
@@ -53,7 +53,7 @@ Look Tip 是一个类似 Jade mod 的功能，当玩家看向特定的实体或�
 }
 ```
 
-### entities（必填）
+### entries（必填）
 
 匹配条件数组。当玩家看向的实体/方块满足其中任意一个条件时，就会显示文本。
 
@@ -161,7 +161,7 @@ Look Tip 是一个类似 Jade mod 的功能，当玩家看向特定的实体或�
         "text": "§e宝藏箱子\\n§7位于特殊坐标",
         "color": "yellow"
     },
-    "entities": [
+    "entries": [
         {
             "type": "block",
             "name": "minecraft:chest",
@@ -182,7 +182,7 @@ Look Tip 是一个类似 Jade mod 的功能，当玩家看向特定的实体或�
         "text": "§6安全区域内的村民",
         "color": "gold"
     },
-    "entities": [
+    "entries": [
         {
             "type": "entity",
             "name": "minecraft:villager",
@@ -203,7 +203,7 @@ Look Tip 是一个类似 Jade mod 的功能，当玩家看向特定的实体或�
         "text": "§c§l精英怪物\\n§7血量: 100",
         "color": "red"
     },
-    "entities": [
+    "entries": [
         {
             "type": "entity",
             "name": ["minecraft:zombie", "minecraft:skeleton"],
@@ -220,7 +220,7 @@ Look Tip 是一个类似 Jade mod 的功能，当玩家看向特定的实体或�
         "text": "§e朱砂矿石\\n§a可以挖掘",
         "color": "yellow"
     },
-    "entities": [
+    "entries": [
         {
             "type": "block",
             "name": "panlingre:zhu_sha_ore",
@@ -239,7 +239,7 @@ Look Tip 是一个类似 Jade mod 的功能，当玩家看向特定的实体或�
         "text": "§6特殊区域的村民\\n§7满足多个条件",
         "color": "gold"
     },
-    "entities": [
+    "entries": [
         {
             "type": "entity",
             "name": "minecraft:villager",

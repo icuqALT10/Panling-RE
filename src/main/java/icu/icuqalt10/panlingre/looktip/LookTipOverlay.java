@@ -107,7 +107,7 @@ public class LookTipOverlay implements LayeredDraw.Layer {
             Entity entity = entityHit.getEntity();
 
             for (LookTipData data : lookTips.values()) {
-                for (LookTipData.EntityCondition condition : data.entities()) {
+                for (LookTipData.EntityCondition condition : data.entries()) {
                     if (!"entity".equals(condition.type())) continue;
 
                     if (LookTipMatcher.matchesEntityClient(entity, condition)) {
@@ -134,7 +134,7 @@ public class LookTipOverlay implements LayeredDraw.Layer {
             var blockState = mc.level.getBlockState(blockPos);
 
             for (LookTipData data : lookTips.values()) {
-                for (LookTipData.EntityCondition condition : data.entities()) {
+                for (LookTipData.EntityCondition condition : data.entries()) {
                     if (!"block".equals(condition.type())) continue;
 
                     if (LookTipMatcher.matchesBlockClient(blockState, blockPos, condition)) {

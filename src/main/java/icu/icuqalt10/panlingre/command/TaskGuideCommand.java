@@ -26,9 +26,10 @@ public final class TaskGuideCommand {
                 Commands.literal("plre")
                         .requires(source -> source.hasPermission(2))
                         .then(Commands.literal("task")
-                                .then(Commands.literal("find")
+                                .then(Commands.literal("guide")
                                         .then(action("on"))
-                                        .then(action("off"))
+                                        .then(Commands.literal("off")
+                                                .executes(TaskGuideCommand::disable))
                                         .then(action("query"))))
         );
     }
@@ -64,12 +65,18 @@ public final class TaskGuideCommand {
                 TaskGuideService.activate(player, taskId);
                 yield 1;
             }
-            case "off" -> {
-                TaskGuideService.deactivate(player, taskId);
-                yield 1;
-            }
             case "query" -> TaskGuideService.isActive(player, taskId) ? 1 : 0;
             default -> 0;
         };
+    }
+
+    private static int disable(CommandContext<CommandSourceStack> context) {
+        try {
+            TaskGuideService.deactivate(context.getSource().getPlayerOrException());
+            return 1;
+        } catch (Exception exception) {
+            context.getSource().sendFailure(Component.literal("任务指引指令必须以玩家身份执行"));
+            return 0;
+        }
     }
 }

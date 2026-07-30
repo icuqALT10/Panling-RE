@@ -19,24 +19,6 @@
             {
               "type": "minecraft:item",
               "name": "panlingre:lan_cao"
-            },
-            {
-              "type": "minecraft:item",
-              "name": "panlingre:zhen_zhu",
-              "functions": [
-                {
-                  "function": "minecraft:explosion_decay"
-                }
-              ]
-            },
-            {
-              "type": "minecraft:item",
-              "name": "panlingre:pu_ti_zi",
-              "functions": [
-                {
-                  "function": "minecraft:explosion_decay"
-                }
-              ]
             }
           ]
         }

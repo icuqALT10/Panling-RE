@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.item.fuzhi;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
+import icu.icuqalt10.panlingre.entity.HuoQiuFuEntity;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
@@ -25,8 +26,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class shou_yu_fu extends Item{
-    public shou_yu_fu() {
+public class huo_qiu_fu_3 extends Item{
+    public huo_qiu_fu_3() {
         super(
                 new Properties()
                         .stacksTo(64)
@@ -41,8 +42,8 @@ public class shou_yu_fu extends Item{
         builder.add(
                 ModAttributes.FALIZHI,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "shou_yu_fu"),
-                        1.0,
+                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "huo_qiu_fu_3"),
+                        2.0,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -56,18 +57,20 @@ public class shou_yu_fu extends Item{
         ItemStack itemstack = player.getItemInHand(hand);
 
         LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 5.0f;
+        float cost = 15.0f;
         //如果灵气不足
         if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
         //释放技能
         if (!level.isClientSide) {
-            float healAmount = (float) player.getAttributeValue(ModAttributes.FALIZHI);
-            player.heal(healAmount);
+            float damage = (float) (player.getAttributeValue(ModAttributes.FALIZHI) * 3.0);
+            HuoQiuFuEntity fireball = new HuoQiuFuEntity(level, player, damage);
+            fireball.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
+            level.addFreshEntity(fireball);
 
             //消耗
             itemstack.consume(1, player);
             //cd
-            cooldown_remove.cd_remove(player,this,200);
+            cooldown_remove.cd_remove(player,this,80);
             //音效
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.SNOWBALL_THROW, SoundSource.PLAYERS, 0.5f,1.0f);
@@ -82,20 +85,20 @@ public class shou_yu_fu extends Item{
 
         // 检测Shift键
         if (SafeClientAccess.isShiftPressed()) {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare5"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.shou_yu_fu.lore1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.shou_yu_fu.lore2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_3.lore1"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_3.lore2"));
             tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.shou_yu_fu.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.shou_yu_fu.skill2"
+            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_3.skill1.2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_3.skill2"
                     ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.shou_yu_fu.skill3"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_3.skill3"));
         } else {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare5"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));
             tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.shou_yu_fu.skill1.1"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_3.skill1.1"));
         }
 
         super.appendHoverText(stack, context, tooltipComponents, flag);

@@ -22,39 +22,72 @@ public class LootChestLoader {
 
     public static List<LootEntry> load(String lootId, ServerLevel serverLevel) {
         List<LootEntry> entries = new ArrayList<>();
-        ResourceLocation path = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "loot_chest/" + lootId + ".json");
+        ResourceLocation path = createPath(lootId);
+        if (path == null) {
+            PanlingRE.LOGGER.warn("Cannot load loot chest table: invalid lootTableId '{}'", lootId);
+            return entries;
+        }
+
         try {
             var opt = serverLevel.getServer().getResourceManager().getResource(path);
-            if (opt.isEmpty()) return entries;
-            Reader reader = opt.get().openAsReader();
-            JsonArray array = GsonHelper.parseArray(reader);
-            reader.close();
-            for (JsonElement elem : array) {
-                JsonObject obj = elem.getAsJsonObject();
-                JsonObject itemObj = obj.getAsJsonObject("item");
-                int weight = obj.has("weight") ? obj.get("weight").getAsInt() : 1;
-                boolean special = obj.has("special_item") && obj.get("special_item").getAsBoolean();
-                String command = obj.has("command") ? obj.get("command").getAsString() : "";
+            if (opt.isEmpty()) {
+                PanlingRE.LOGGER.warn("Loot chest table '{}' was not found (lootTableId='{}')", path, lootId);
+                return entries;
+            }
 
-                String id = itemObj.get("id").getAsString();
-                int count = itemObj.has("count") ? itemObj.get("count").getAsInt() : 1;
+            PanlingRE.LOGGER.debug("Loading loot chest table '{}' from datapack '{}'", path, opt.get().sourcePackId());
+            try (Reader reader = opt.get().openAsReader()) {
+                JsonArray array = GsonHelper.parseArray(reader);
+                for (JsonElement elem : array) {
+                    JsonObject obj = elem.getAsJsonObject();
+                    JsonObject itemObj = obj.getAsJsonObject("item");
+                    int weight = obj.has("weight") ? obj.get("weight").getAsInt() : 1;
+                    boolean special = obj.has("special_item") && obj.get("special_item").getAsBoolean();
+                    String command = obj.has("command") ? obj.get("command").getAsString() : "";
 
-                CompoundTag itemTag = new CompoundTag();
-                itemTag.putString("id", id);
-                itemTag.putInt("count", count);
-                if (itemObj.has("components")) {
-                    itemTag.put("components", jsonToTag(itemObj.get("components")));
-                }
+                    String id = itemObj.get("id").getAsString();
+                    int count = itemObj.has("count") ? itemObj.get("count").getAsInt() : 1;
 
-                ItemStack stack = ItemStack.parseOptional(serverLevel.registryAccess(), itemTag);
-                if (!stack.isEmpty()) {
-                    entries.add(new LootEntry(stack, weight, special, command));
+                    CompoundTag itemTag = new CompoundTag();
+                    itemTag.putString("id", id);
+                    itemTag.putInt("count", count);
+                    if (itemObj.has("components")) {
+                        itemTag.put("components", jsonToTag(itemObj.get("components")));
+                    }
+
+                    ItemStack stack = ItemStack.parseOptional(serverLevel.registryAccess(), itemTag);
+                    if (!stack.isEmpty()) {
+                        entries.add(new LootEntry(stack, weight, special, command));
+                    }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            PanlingRE.LOGGER.error("Failed to load loot chest table '{}' (lootTableId='{}')", path, lootId, e);
         }
         return entries;
+    }
+
+    private static ResourceLocation createPath(String lootId) {
+        if (lootId == null) return null;
+
+        String value = lootId.trim();
+        if (value.isEmpty()) return null;
+        if (value.endsWith(".json")) {
+            value = value.substring(0, value.length() - ".json".length());
+        }
+
+        String namespace = PanlingRE.MODID;
+        String idPath = value;
+        int namespaceSeparator = value.indexOf(':');
+        if (namespaceSeparator >= 0) {
+            namespace = value.substring(0, namespaceSeparator);
+            idPath = value.substring(namespaceSeparator + 1);
+        }
+        if (idPath.startsWith("loot_chest/")) {
+            idPath = idPath.substring("loot_chest/".length());
+        }
+
+        return ResourceLocation.tryBuild(namespace, "loot_chest/" + idPath + ".json");
     }
 
     private static Tag jsonToTag(JsonElement element) {

@@ -7,8 +7,11 @@
     "RangedAttributeMixin",
     "AbstractArrowMixin",
     "SlimeSplitMixin",
+    "CreeperSkullDropMixin",
     "BiomeMixin",
-    "CanInteractEntityMixin"
+    "CanInteractEntityMixin",
+    "ItemStackRightClickMixin",
+    "LivingEntityRightClickMixin"
   ],
   "client": [
     "client.MinecraftTaskGlowMixin",

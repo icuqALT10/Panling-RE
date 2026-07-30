@@ -26,8 +26,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class po_di_fu extends Item{
-    public po_di_fu() {
+public class po_di_fu_1 extends Item{
+    public po_di_fu_1() {
         super(
                 new Item.Properties()
                         .stacksTo(64)
@@ -42,7 +42,7 @@ public class po_di_fu extends Item{
         builder.add(
                 ModAttributes.FALIZHI,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "po_di_fu"),
+                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "po_di_fu_1"),
                         2.0,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
@@ -57,7 +57,7 @@ public class po_di_fu extends Item{
         ItemStack itemstack = player.getItemInHand(hand);
 
         LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 10.0f;
+        float cost = 5.0f;
         //如果灵气不足
         if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
         //释放技能
@@ -87,18 +87,18 @@ public class po_di_fu extends Item{
         if (SafeClientAccess.isShiftPressed()) {
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu.lore1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu.lore2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu_1.lore1"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu_1.lore2"));
             tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu.skill2"
+            tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu_1.skill1.2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu_1.skill2"
                     ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu.skill3"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu_1.skill3"));
         } else {
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));
             tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu.skill1.1"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu_1.skill1.1"));
         }
 
         super.appendHoverText(stack, context, tooltipComponents, flag);

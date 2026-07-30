@@ -12,7 +12,9 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 
 import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,16 +36,24 @@ public class TaskGuideLoader extends SimpleJsonResourceReloadListener {
     }
 
     private static void compile(ResourceLocation id, JsonElement json, TaskGuideData data) {
-        Optional<CompoundTag> requiredNbt = Optional.empty();
-        if (data.entity().isPresent() && data.entity().get().nbt().isPresent()) {
-            try {
-                requiredNbt = Optional.of(TagParser.parseTag(data.entity().get().nbt().get()));
-            } catch (Exception exception) {
-                PanlingRE.LOGGER.error("Failed to parse task guide NBT {}: {}", id, exception.getMessage());
-                return;
+        List<Optional<CompoundTag>> requiredNbts = new ArrayList<>(data.entries().size());
+        for (int index = 0; index < data.entries().size(); index++) {
+            TaskGuideData.Entry entry = data.entries().get(index);
+            Optional<CompoundTag> requiredNbt = Optional.empty();
+            if (entry.entity().isPresent() && entry.entity().get().nbt().isPresent()) {
+                try {
+                    requiredNbt = Optional.of(TagParser.parseTag(entry.entity().get().nbt().get()));
+                } catch (Exception exception) {
+                    PanlingRE.LOGGER.error(
+                            "Failed to parse task guide NBT {} entries[{}]: {}",
+                            id, index, exception.getMessage()
+                    );
+                    return;
+                }
             }
+            requiredNbts.add(requiredNbt);
         }
-        TASKS.put(id, new LoadedTask(data, GSON.toJson(json), requiredNbt));
+        TASKS.put(id, new LoadedTask(data, GSON.toJson(json), List.copyOf(requiredNbts)));
     }
 
     public static Optional<LoadedTask> get(ResourceLocation id) {
@@ -58,6 +68,6 @@ public class TaskGuideLoader extends SimpleJsonResourceReloadListener {
         return TASKS.keySet().stream().map(ResourceLocation::getPath).toList();
     }
 
-    public record LoadedTask(TaskGuideData data, String json, Optional<CompoundTag> requiredNbt) {
+    public record LoadedTask(TaskGuideData data, String json, List<Optional<CompoundTag>> requiredNbts) {
     }
 }

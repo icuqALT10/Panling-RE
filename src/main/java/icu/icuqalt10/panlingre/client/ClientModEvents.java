@@ -66,6 +66,10 @@ public class ClientModEvents {
         event.registerEntityRenderer(ModEntities.PO_DI_FU.get(), ThrownItemRenderer::new);
 
         event.registerEntityRenderer(ModEntities.CUSTOM_PELLET.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(
+                ModEntities.HUO_QIU_FU.get(),
+                HuoQiuFuRenderer::new
+        );
 
         event.registerEntityRenderer(ModEntities.FEI_XIAN_JIAN_ZHEN.get(), FeiXianJianZhenRenderer::new);
         event.registerEntityRenderer(ModEntities.XING_HAI.get(), XingHaiRenderer::new);

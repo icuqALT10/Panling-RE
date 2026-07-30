@@ -15,15 +15,11 @@ import java.util.Optional;
 
 public record TaskGuideData(
         Component title,
-        GuideType type,
-        Optional<EntityTarget> entity,
-        Optional<PositionTarget> target
+        List<Entry> entries
 ) {
     private static final Codec<TaskGuideData> RAW_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ComponentSerialization.CODEC.fieldOf("title").forGetter(TaskGuideData::title),
-            GuideType.CODEC.fieldOf("type").forGetter(TaskGuideData::type),
-            EntityTarget.CODEC.optionalFieldOf("entity").forGetter(TaskGuideData::entity),
-            PositionTarget.CODEC.optionalFieldOf("target").forGetter(TaskGuideData::target)
+            Entry.CODEC.listOf().fieldOf("entries").forGetter(TaskGuideData::entries)
     ).apply(instance, TaskGuideData::new));
 
     public static final Codec<TaskGuideData> CODEC = RAW_CODEC.validate(TaskGuideData::validate);
@@ -33,49 +29,43 @@ public record TaskGuideData(
     }
 
     private static DataResult<TaskGuideData> validate(TaskGuideData data) {
-        if (data.type.hasPosition() && data.target.isEmpty()) {
-            return DataResult.error(() -> "type " + data.type.serializedName + " requires target");
-        }
-        if (data.type.hasEntity() && data.entity.isEmpty()) {
-            return DataResult.error(() -> "type " + data.type.serializedName + " requires entity");
+        if (data.entries.isEmpty()) {
+            return DataResult.error(() -> "entries cannot be empty");
         }
         return DataResult.success(data);
     }
 
-    public enum GuideType {
-        POS("pos", true, false),
-        ENTITY("entity", false, true),
-        POS_AND_ENTITY("pos_and_entity", true, true);
+    public record Entry(
+            Optional<String> command,
+            boolean offWhenLocated,
+            Optional<EntityTarget> entity,
+            Optional<PositionTarget> target
+    ) {
+        private static final Codec<Entry> RAW_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.STRING.optionalFieldOf("command").forGetter(Entry::command),
+                Codec.BOOL.optionalFieldOf("off_when_located", false).forGetter(Entry::offWhenLocated),
+                EntityTarget.CODEC.optionalFieldOf("entity").forGetter(Entry::entity),
+                PositionTarget.CODEC.optionalFieldOf("target").forGetter(Entry::target)
+        ).apply(instance, Entry::new));
 
-        public static final Codec<GuideType> CODEC = Codec.STRING.comapFlatMap(
-                name -> {
-                    for (GuideType value : values()) {
-                        if (value.serializedName.equals(name)) {
-                            return DataResult.success(value);
-                        }
-                    }
-                    return DataResult.error(() -> "Unknown task guide type: " + name);
-                },
-                value -> value.serializedName
-        );
-
-        private final String serializedName;
-        private final boolean position;
-        private final boolean entity;
-
-        GuideType(String serializedName, boolean position, boolean entity) {
-            this.serializedName = serializedName;
-            this.position = position;
-            this.entity = entity;
-        }
-
-        public boolean hasPosition() {
-            return position;
-        }
-
-        public boolean hasEntity() {
-            return entity;
-        }
+        public static final Codec<Entry> CODEC = RAW_CODEC.validate(entry -> {
+            if (entry.command.isEmpty()) {
+                return DataResult.success(entry);
+            }
+            String command = entry.command.get().trim();
+            if (command.isEmpty()) {
+                return DataResult.error(() -> "entry command cannot be empty when present");
+            }
+            if (command.startsWith("/")) {
+                return DataResult.error(() -> "entry command must not start with /");
+            }
+            return DataResult.success(new Entry(
+                    Optional.of(command),
+                    entry.offWhenLocated,
+                    entry.entity,
+                    entry.target
+            ));
+        });
     }
 
     public record EntityTarget(

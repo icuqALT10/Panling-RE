@@ -17,12 +17,22 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
 public class bless_shengshou extends Item implements ICurioItem {
+    private static final ResourceLocation QINGLONG_ID =
+            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bless_qinglong");
+    private static final ResourceLocation ZHUQUE_ID =
+            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bless_zhuque");
+    private static final ResourceLocation BAIHU_ID =
+            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bless_baihu");
+    private static final ResourceLocation XUANWU_ID =
+            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bless_xuanwu");
+
     public bless_shengshou() {
         super(
                 new Properties()
@@ -38,37 +48,74 @@ public class bless_shengshou extends Item implements ICurioItem {
 
     @Override
     public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
-        Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
-
         if (!(slotContext.entity() instanceof Player player)) {
-            return modifiers;
+            return HashMultimap.create();
         }
 
-            modifiers.put(ModAttributes.MAX_LINGQI, new AttributeModifier(
-                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bless_qinglong"),
-                    BlessData.hasBless(player, "qinglong") ? 5.0 : 0.0,
-                    AttributeModifier.Operation.ADD_VALUE
-            ));
+        return createModifiers(player);
+    }
 
-            modifiers.put(Attributes.MAX_HEALTH, new AttributeModifier(
-                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bless_zhuque"),
-                    BlessData.hasBless(player, "zhuque") ? 5.0 : 0.0,
-                    AttributeModifier.Operation.ADD_VALUE
-            ));
+    private static Multimap<Holder<Attribute>, AttributeModifier> createModifiers(Player player) {
+        Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
 
-            modifiers.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(
-                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bless_baihu"),
-                    BlessData.hasBless(player, "baihu") ? 0.25 : 0.0,
-                    AttributeModifier.Operation.ADD_VALUE
-            ));
+        modifiers.put(ModAttributes.MAX_LINGQI, new AttributeModifier(
+                QINGLONG_ID,
+                BlessData.hasBless(player, "qinglong") ? 5.0 : 0.0,
+                AttributeModifier.Operation.ADD_VALUE
+        ));
 
-            modifiers.put(ModAttributes.COOLDOWN_REMOVE, new AttributeModifier(
-                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bless_xuanwu"),
-                    BlessData.hasBless(player, "xuanwu") ? 0.1 : 0.0,
-                    AttributeModifier.Operation.ADD_MULTIPLIED_BASE
-            ));
+        modifiers.put(Attributes.MAX_HEALTH, new AttributeModifier(
+                ZHUQUE_ID,
+                BlessData.hasBless(player, "zhuque") ? 5.0 : 0.0,
+                AttributeModifier.Operation.ADD_VALUE
+        ));
+
+        modifiers.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(
+                BAIHU_ID,
+                BlessData.hasBless(player, "baihu") ? 0.25 : 0.0,
+                AttributeModifier.Operation.ADD_VALUE
+        ));
+
+        modifiers.put(ModAttributes.COOLDOWN_REMOVE, new AttributeModifier(
+                XUANWU_ID,
+                BlessData.hasBless(player, "xuanwu") ? 0.1 : 0.0,
+                AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+        ));
 
         return modifiers;
+    }
+
+    /**
+     * Curios only evaluates an equipped stack's attribute modifiers when its equipment state
+     * changes. Bless data can change without moving the stack, so replace the modifiers here.
+     */
+    public static void refreshAttributes(Player player) {
+        removeModifier(player, ModAttributes.MAX_LINGQI, QINGLONG_ID);
+        removeModifier(player, Attributes.MAX_HEALTH, ZHUQUE_ID);
+        removeModifier(player, Attributes.KNOCKBACK_RESISTANCE, BAIHU_ID);
+        removeModifier(player, ModAttributes.COOLDOWN_REMOVE, XUANWU_ID);
+
+        boolean equipped = CuriosApi.getCuriosInventory(player)
+                .map(inventory -> inventory.isEquipped(
+                        stack -> stack.getItem() instanceof bless_shengshou))
+                .orElse(false);
+        if (!equipped) {
+            return;
+        }
+
+        createModifiers(player).forEach((attribute, modifier) -> {
+            var instance = player.getAttribute(attribute);
+            if (instance != null) {
+                instance.addOrUpdateTransientModifier(modifier);
+            }
+        });
+    }
+
+    private static void removeModifier(Player player, Holder<Attribute> attribute, ResourceLocation id) {
+        var instance = player.getAttribute(attribute);
+        if (instance != null) {
+            instance.removeModifier(id);
+        }
     }
 
     @Override

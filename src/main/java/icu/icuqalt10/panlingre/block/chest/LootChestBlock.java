@@ -2,10 +2,13 @@ package icu.icuqalt10.panlingre.block.chest;
 
 import com.mojang.serialization.MapCodec;
 import icu.icuqalt10.panlingre.init.ModBlockEntities;
+import icu.icuqalt10.panlingre.init.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
@@ -93,18 +96,30 @@ public class LootChestBlock extends HorizontalDirectionalBlock implements Entity
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+                                               Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (!stack.is(ModItems.loot_key.get())) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        if (level.isClientSide) {
+            return ItemInteractionResult.SUCCESS;
+        }
 
         LootChestBlockEntity be = (LootChestBlockEntity) level.getBlockEntity(pos);
-        if (be == null || be.isOpening()) return InteractionResult.PASS;
+        if (be == null || be.isOpening()) {
+            return ItemInteractionResult.CONSUME;
+        }
 
-        ItemStack held = player.getMainHandItem();
-        if (be.tryOpenWith(held, player.getName().getString())) {
+        if (be.tryOpenWith(stack, player.getName().getString())) {
             if (!player.getAbilities().instabuild) {
-                held.shrink(1);
+                stack.shrink(1);
             }
         }
-        return InteractionResult.CONSUME;
+        return ItemInteractionResult.CONSUME;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        return InteractionResult.PASS;
     }
 }

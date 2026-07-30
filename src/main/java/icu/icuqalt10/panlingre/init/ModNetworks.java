@@ -7,6 +7,7 @@ import icu.icuqalt10.panlingre.looktip.LookTipRequestPayload;
 import icu.icuqalt10.panlingre.looktip.LookTipResponsePayload;
 import icu.icuqalt10.panlingre.network.*;
 import icu.icuqalt10.panlingre.network.particle.GatherBall;
+import icu.icuqalt10.panlingre.network.particle.HuoQiuExplosionParticles;
 import icu.icuqalt10.panlingre.network.ShakePayload;
 import icu.icuqalt10.panlingre.network.particle.ParticleCluster;
 import icu.icuqalt10.panlingre.network.particle.ParticleLighting;
@@ -23,9 +24,9 @@ public class ModNetworks {
         final PayloadRegistrar registrar = event.registrar(PanlingRE.MODID);
 
         registrar.playToServer(
-                SkillPayload.TYPE,
-                SkillPayload.STREAM_CODEC,
-                SkillPayload::handle
+                LdPayload.TYPE,
+                LdPayload.STREAM_CODEC,
+                LdPayload::handle
         );
 
         registrar.playToServer(
@@ -62,6 +63,12 @@ public class ModNetworks {
                 ParticleLighting.TYPE,
                 ParticleLighting.STREAM_CODEC,
                 ParticleLighting::handle
+        );
+
+        registrar.playToClient(
+                HuoQiuExplosionParticles.TYPE,
+                HuoQiuExplosionParticles.STREAM_CODEC,
+                HuoQiuExplosionParticles::handle
         );
 
         registrar.playToClient(

@@ -13,12 +13,12 @@ import java.util.Optional;
 
 public record LookTipData(
         Component title,
-        List<EntityCondition> entities
+        List<EntityCondition> entries
 ) {
     public static final Codec<LookTipData> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     ComponentSerialization.CODEC.fieldOf("title").forGetter(LookTipData::title),
-                    EntityCondition.CODEC.listOf().fieldOf("entities").forGetter(LookTipData::entities)
+                    EntityCondition.CODEC.listOf().fieldOf("entries").forGetter(LookTipData::entries)
             ).apply(instance, LookTipData::new)
     );
 

@@ -42,7 +42,7 @@ public class qian_jin_suo extends Item implements ICurioItem {
 
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
 
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare2"));
+        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
         tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));
         tooltipComponents.add(Component.translatable("item.PanlingRE.qian_jin_suo.lore1"));
         tooltipComponents.add(Component.translatable("item.PanlingRE.qian_jin_suo.lore2"));

@@ -6,7 +6,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
-public record TaskEntityResultPayload(ResourceLocation taskId, int[] entityIds) implements CustomPacketPayload {
+public record TaskEntityResultPayload(
+        ResourceLocation taskId,
+        int selectedEntry,
+        int[] entityIds
+) implements CustomPacketPayload {
     public static final Type<TaskEntityResultPayload> TYPE = new Type<>(
             ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "task_entity_result")
     );
@@ -14,6 +18,7 @@ public record TaskEntityResultPayload(ResourceLocation taskId, int[] entityIds) 
     public static final StreamCodec<RegistryFriendlyByteBuf, TaskEntityResultPayload> STREAM_CODEC = StreamCodec.of(
             (buf, payload) -> {
                 buf.writeResourceLocation(payload.taskId);
+                buf.writeVarInt(payload.selectedEntry);
                 int length = Math.min(payload.entityIds.length, TaskEntityCheckPayload.MAX_CANDIDATES);
                 buf.writeVarInt(length);
                 for (int index = 0; index < length; index++) {
@@ -22,6 +27,7 @@ public record TaskEntityResultPayload(ResourceLocation taskId, int[] entityIds) 
             },
             buf -> {
                 ResourceLocation taskId = buf.readResourceLocation();
+                int selectedEntry = buf.readVarInt();
                 int length = buf.readVarInt();
                 if (length < 0 || length > TaskEntityCheckPayload.MAX_CANDIDATES) {
                     throw new IllegalArgumentException("Invalid task entity result count: " + length);
@@ -30,7 +36,7 @@ public record TaskEntityResultPayload(ResourceLocation taskId, int[] entityIds) 
                 for (int index = 0; index < length; index++) {
                     ids[index] = buf.readVarInt();
                 }
-                return new TaskEntityResultPayload(taskId, ids);
+                return new TaskEntityResultPayload(taskId, selectedEntry, ids);
             }
     );
 

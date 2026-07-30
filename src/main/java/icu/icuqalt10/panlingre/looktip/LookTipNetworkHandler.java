@@ -57,7 +57,7 @@ public class LookTipNetworkHandler {
         Map<ResourceLocation, LookTipData> lookTips = LookTipLoader.getLookTips();
 
         for (LookTipData data : lookTips.values()) {
-            for (LookTipData.EntityCondition condition : data.entities()) {
+            for (LookTipData.EntityCondition condition : data.entries()) {
                 if (LookTipMatcher.matchesEntity(entity, condition)) {
                     return Optional.of(data.title());
                 }
@@ -71,7 +71,7 @@ public class LookTipNetworkHandler {
         Map<ResourceLocation, LookTipData> lookTips = LookTipLoader.getLookTips();
 
         for (LookTipData data : lookTips.values()) {
-            for (LookTipData.EntityCondition condition : data.entities()) {
+            for (LookTipData.EntityCondition condition : data.entries()) {
                 if (LookTipMatcher.matchesBlock(blockState, blockEntity, condition)) {
                     return Optional.of(data.title());
                 }

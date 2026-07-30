@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * 覆写 MerchantMenu 的服务端匹配逻辑：
- * - 点击交易项：只按 item ID 匹配，放入全部库存
+ * - 点击交易项：按 item ID 和完整 components 精确匹配
  * - 放入后精确匹配 id+count+components，完全一致才显示结果
  * - 单击交易、shift 一键换货均有精确匹配拦截
  */
@@ -51,7 +51,7 @@ public class CustomMerchantMenu extends MerchantMenu {
         return (List<CustomMerchantOffer>) (List<?>) offers;
     }
 
-    // ========== 点击左侧交易项：只按 ID 放满整组 ==========
+    // ========== 点击左侧交易项：只填入与成本完全相同的物品 ==========
 
     @Override
     public void tryMoveItems(int tradeIndex) {
@@ -67,10 +67,9 @@ public class CustomMerchantMenu extends MerchantMenu {
         returnToInv(slotB);
         resultSlot.set(ItemStack.EMPTY);
 
-        // 只按 item ID 匹配，放入所有库存
-        fillAllById(slotA, offer.getEnrichedCostA());
+        fillMatchingItems(slotA, offer.getEnrichedCostA());
         if (!offer.getEnrichedCostB().isEmpty()) {
-            fillAllById(slotB, offer.getEnrichedCostB());
+            fillMatchingItems(slotB, offer.getEnrichedCostB());
         }
 
         slotA.setChanged();
@@ -87,12 +86,10 @@ public class CustomMerchantMenu extends MerchantMenu {
     }
 
     private void correctResultSlot() {
-        Slot slotA = this.slots.get(0);
-        Slot slotB = this.slots.get(1);
         Slot resultSlot = this.slots.get(2);
 
-        CustomMerchantOffer match = findExactMatch(slotA.getItem(), slotB.getItem());
-        if (match != null && canTrade(match)) {
+        CustomMerchantOffer match = findTradableOffer();
+        if (match != null) {
             if (!ItemStack.matches(resultSlot.getItem(), match.getResult())) {
                 resultSlot.set(match.getResult().copy());
             }
@@ -106,8 +103,7 @@ public class CustomMerchantMenu extends MerchantMenu {
     @Override
     public void clicked(int slotId, int button, ClickType clickType, Player p) {
         if (slotId == 2 && this.slots.get(2).hasItem()) {
-            CustomMerchantOffer offer = findOfferByResult(this.slots.get(2).getItem());
-            if (offer == null || !canTrade(offer)) {
+            if (findTradableOffer() == null) {
                 return;
             }
         }
@@ -123,9 +119,8 @@ public class CustomMerchantMenu extends MerchantMenu {
 
         Slot slotA = this.slots.get(0);
         Slot slotB = this.slots.get(1);
-        // 根据当前结果槽显示的产物定位是哪个 offer，避免多 offer 匹配同一 input 时找错
-        CustomMerchantOffer offer = findOfferByResult(resultSlot.getItem());
-        if (offer == null || !canTrade(offer)) return ItemStack.EMPTY;
+        CustomMerchantOffer offer = findTradableOffer();
+        if (offer == null) return ItemStack.EMPTY;
 
         int needA = offer.getCostA().getCount();
         int needB = offer.getEnrichedCostB().isEmpty() ? 0 : offer.getCostB().getCount();
@@ -147,14 +142,15 @@ public class CustomMerchantMenu extends MerchantMenu {
         return firstResult.isEmpty() ? ItemStack.EMPTY : firstResult;
     }
 
-    private CustomMerchantOffer findOfferByResult(ItemStack result) {
-        for (CustomMerchantOffer o : customOffers()) {
-            if (ItemStack.matches(result, o.getResult())) return o;
-        }
-        return null;
-    }
-
     // ========== 精确匹配 ==========
+
+    private CustomMerchantOffer findTradableOffer() {
+        CustomMerchantOffer offer = findExactMatch(
+                this.slots.get(0).getItem(),
+                this.slots.get(1).getItem()
+        );
+        return offer != null && canTrade(offer) ? offer : null;
+    }
 
     private CustomMerchantOffer findExactMatch(ItemStack a, ItemStack b) {
         for (CustomMerchantOffer o : customOffers()) {
@@ -180,12 +176,12 @@ public class CustomMerchantMenu extends MerchantMenu {
         return true;
     }
 
-    // ========== 填槽（只按 item ID，不限数量） ==========
+    // ========== 填槽（完整 components 匹配，不限数量） ==========
 
-    private void fillAllById(Slot slot, ItemStack expected) {
+    private void fillMatchingItems(Slot slot, ItemStack expected) {
         int maxStack = expected.getMaxStackSize(); // 物品自身堆叠上限（64）
         for (ItemStack stack : player.getInventory().items) {
-            if (stack.getItem() != expected.getItem()) continue;
+            if (!ItemStack.isSameItemSameComponents(stack, expected)) continue;
             int canFit = maxStack - slot.getItem().getCount();
             if (canFit <= 0) return;
             int take = Math.min(canFit, stack.getCount());

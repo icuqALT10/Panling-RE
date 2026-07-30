@@ -7,7 +7,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -16,20 +15,15 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public record SkillPayload(int keyID) implements CustomPacketPayload {
-    public static final Type<SkillPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "skill_packet"));
+public record LdPayload() implements CustomPacketPayload {
+    public static final Type<LdPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "skill_packet"));
 
-    public static final StreamCodec<ByteBuf, SkillPayload> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT, SkillPayload::keyID,
-            SkillPayload::new
-    );
+    public static final StreamCodec<ByteBuf, LdPayload> STREAM_CODEC = StreamCodec.unit(new LdPayload());
 
-    public static void handle(final SkillPayload payload, final IPayloadContext context) {
+    public static void handle(final LdPayload payload, final IPayloadContext context) {
         context.enqueueWork(() -> {
             Player player = context.player();
-            int keyID = payload.keyID();
 
-            if (keyID == 1) {
                 AtomicReference<ItemStack> foundStack = new AtomicReference<>(player.getMainHandItem());
 
                 if (!(foundStack.get().getItem() instanceof liandan)) {
@@ -42,7 +36,6 @@ public record SkillPayload(int keyID) implements CustomPacketPayload {
                 if (stack.getItem() instanceof liandan skillItem) {
                     skillItem.liandan_trigger(player.level(), player, stack);
                 }
-            }
         });
     }
 

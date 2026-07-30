@@ -13,6 +13,7 @@ import icu.icuqalt10.panlingre.player.check;
 import icu.icuqalt10.panlingre.task.TaskGuideLoader;
 import icu.icuqalt10.panlingre.task.TaskGuideService;
 import icu.icuqalt10.panlingre.util.Shockwave;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -21,19 +22,25 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.BasePressurePlateBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -237,6 +244,20 @@ public class GameBusEvents {
     public static void onEntityTick(EntityTickEvent.Post event) {
         Entity entity = event.getEntity();
 
+        // NoAI mobs do not move, so they need an explicit collision check to press plates beneath them.
+        if (entity instanceof Mob mob && mob.isNoAi() && !mob.level().isClientSide()) {
+            AABB box = mob.getBoundingBox();
+            BlockPos min = BlockPos.containing(box.minX + 1.0E-7, box.minY + 1.0E-7, box.minZ + 1.0E-7);
+            BlockPos max = BlockPos.containing(box.maxX - 1.0E-7, box.minY + 1.0E-7, box.maxZ - 1.0E-7);
+
+            for (BlockPos pos : BlockPos.betweenClosed(min, max)) {
+                BlockState state = mob.level().getBlockState(pos);
+                if (state.getBlock() instanceof BasePressurePlateBlock) {
+                    state.entityInside(mob.level(), pos, mob);
+                }
+            }
+        }
+
         // 处理“滚地雷”苦力怕的 3秒生命周期、玩家碰撞检测、击飞与精准伤害
         if (entity instanceof Creeper creeper && !creeper.level().isClientSide()) {
             // 检查是否带有滚地雷标签
@@ -288,6 +309,16 @@ public class GameBusEvents {
                     creeper.discard();
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDrops(LivingDropsEvent event) {
+        Entity attacker = event.getSource().getEntity();
+        if (event.getEntity() instanceof Creeper
+                && attacker != null
+                && attacker.getType().is(EntityTypeTags.SKELETONS)) {
+            event.getDrops().removeIf(drop -> drop.getItem().is(ItemTags.CREEPER_DROP_MUSIC_DISCS));
         }
     }
 

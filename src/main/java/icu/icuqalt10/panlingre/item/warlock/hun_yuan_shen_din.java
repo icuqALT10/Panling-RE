@@ -61,25 +61,24 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
     @Override
     public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
         Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
-        ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "hun_yuan_shen_din");
 
         modifiers.put(ModAttributes.MAGIC_DAMAGE, new AttributeModifier(
-                UID,
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "hun_yuan_shen_din"),
                 40,
                 AttributeModifier.Operation.ADD_VALUE
         ));
         modifiers.put(ModAttributes.FALIZHI, new AttributeModifier(
-                UID,
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "hun_yuan_shen_din"),
                 30,
                 AttributeModifier.Operation.ADD_VALUE
         ));
         modifiers.put(ModAttributes.MAX_LINGQI, new AttributeModifier(
-                UID,
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "hun_yuan_shen_din"),
                 20,
                 AttributeModifier.Operation.ADD_VALUE
         ));
         modifiers.put(ModAttributes.MAX_LINGQI, new AttributeModifier(
-                UID,
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "hun_yuan_shen_din2"),
                 0.25,
                 AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         ));
@@ -191,9 +190,9 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
     }
 
     private void Skill1(Player player) {
-        PacketDistributor.sendToPlayersTrackingEntity(player, new ShakePayload(player.position(), 10, 5, 1.5f));
+        PacketDistributor.sendToPlayersTrackingEntity(player, new ShakePayload(player.position(), 5, 5, 1.5f));
         if (player instanceof ServerPlayer sp) {
-            PacketDistributor.sendToPlayer(sp, new ShakePayload(player.position(), 10, 5, 1.5f));
+            PacketDistributor.sendToPlayer(sp, new ShakePayload(player.position(), 5, 5, 1.5f));
         }
 
         if (!(player.level() instanceof ServerLevel serverLevel)) return;
@@ -285,9 +284,9 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
     }
 
     private void Skill2(Player player) {
-        PacketDistributor.sendToPlayersTrackingEntity(player, new ShakePayload(player.position(), 10, 5, 1.5f));
+        PacketDistributor.sendToPlayersTrackingEntity(player, new ShakePayload(player.position(), 5, 5, 1.5f));
         if (player instanceof ServerPlayer sp) {
-            PacketDistributor.sendToPlayer(sp, new ShakePayload(player.position(), 10, 5, 1.5f));
+            PacketDistributor.sendToPlayer(sp, new ShakePayload(player.position(), 5, 5, 1.5f));
         }
 
         if (!(player.level() instanceof ServerLevel serverLevel)) return;
@@ -319,25 +318,25 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
         float length = (float) (player.getAttributeValue(ModAttributes.MAGIC_DAMAGE) / 2);
         int duration = (int) player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
 
-        Vec3 position = new Vec3(player.position().x,player.position().y+10,player.position().z);
+        Vec3 position = new Vec3(player.position().x,player.position().y+1,player.position().z);
         Vec3 lookVec = player.getLookAngle();
-        Vec3 targetPos = position.add(lookVec.scale(20));;
-        PacketDistributor.sendToPlayersTrackingEntity(player, new ShakePayload(player.position(), 10, 5, 1.5f));
+        Vec3 targetPos = position.add(lookVec.scale(length/5));;
+        PacketDistributor.sendToPlayersTrackingEntity(player, new ShakePayload(player.position(), 5, 5, 1.5f));
         PacketDistributor.sendToPlayersTrackingEntity(
                 player,
                 new ParticleCluster(
                         position, targetPos,
                         ParticleTypes.SNOWFLAKE,
-                        3000, 12
+                        2000, width/2
                 ));
         if (player instanceof ServerPlayer sp) {
-            PacketDistributor.sendToPlayer(sp, new ShakePayload(player.position(), 10, 5, 1.5f));
+            PacketDistributor.sendToPlayer(sp, new ShakePayload(player.position(), 5, 5, 1.5f));
             PacketDistributor.sendToPlayer(
                     sp,
                     new ParticleCluster(
                             position, targetPos,
                             ParticleTypes.SNOWFLAKE,
-                            3000, 12
+                            2000, width/2
                     ));
         }
 
@@ -357,9 +356,9 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
     }
 
     private void Skill4(Player player) {
-        PacketDistributor.sendToPlayersTrackingEntity(player, new ShakePayload(player.position(), 10, 5, 1.5f));
+        PacketDistributor.sendToPlayersTrackingEntity(player, new ShakePayload(player.position(), 5, 5, 1.5f));
         if (player instanceof ServerPlayer sp) {
-            PacketDistributor.sendToPlayer(sp, new ShakePayload(player.position(), 10, 5, 1.5f));
+            PacketDistributor.sendToPlayer(sp, new ShakePayload(player.position(), 5, 5, 1.5f));
         }
 
         if (!(player.level() instanceof ServerLevel serverLevel)) return;

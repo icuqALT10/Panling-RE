@@ -37,8 +37,16 @@ public class ba_fang_yi extends Item {
         ItemStack itemstack = player.getItemInHand(hand);
 
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
-            List<BaFangYiMajorEntry> allMajors = BaFangYiLoader.loadAll(serverPlayer.serverLevel());
             BaFangYiData data = BaFangYiData.get(player);
+            if (!data.isEnabled()) {
+                serverPlayer.sendSystemMessage(
+                        Component.translatable("command.panlingre.ba_fang_yi.disabled"),
+                        true
+                );
+                return InteractionResultHolder.fail(itemstack);
+            }
+
+            List<BaFangYiMajorEntry> allMajors = BaFangYiLoader.loadAll(serverPlayer.serverLevel());
             List<BaFangYiOpenPayload.BaFangYiMajorPayload> majors = new ArrayList<>();
             for (BaFangYiMajorEntry major : allMajors) {
                 if (data.isMajorUnlocked(major.id())) {

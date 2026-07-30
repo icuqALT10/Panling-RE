@@ -14,7 +14,6 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.ItemCost;
-import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 
 import java.io.InputStreamReader;
@@ -101,7 +100,7 @@ public class CustomTradeLoader {
                     PanlingRE.LOGGER.warn("[OpenGui] 跳过 buy 解析失败的交易项: {}", o);
                     continue;
                 }
-                ItemCost buyCost = createCostFromStack(buyStack, buyObj);
+                ItemCost buyCost = createCostFromStack(buyStack);
 
                 ItemStack buyBStack = ItemStack.EMPTY;
                 Optional<ItemCost> buyBCost = Optional.empty();
@@ -109,7 +108,7 @@ public class CustomTradeLoader {
                     JsonObject buyBObj = o.getAsJsonObject("buyB");
                     buyBStack = readStack(buyBObj, registryAccess);
                     if (!buyBStack.isEmpty()) {
-                        buyBCost = Optional.of(createCostFromStack(buyBStack, buyBObj));
+                        buyBCost = Optional.of(createCostFromStack(buyBStack));
                     }
                 }
 
@@ -133,10 +132,15 @@ public class CustomTradeLoader {
         return offers;
     }
 
-    static ItemCost createCostFromStack(ItemStack stack, JsonObject obj) {
-        // 不用 DataComponentPredicate，因为它的 "包含所有" 语义无法拒绝多出 component 的物品。
-        // 精确匹配交给 CustomMerchantMenu.findMatchingOffer 的 isSameItemSameComponents。
-        return new ItemCost(stack.getItem(), stack.getCount());
+    static ItemCost createCostFromStack(ItemStack stack) {
+        // ItemCost is also the client's display/autofill source, so it must retain
+        // the expected components. Exact equality is still enforced by
+        // CustomMerchantOffer and CustomMerchantMenu on both sides.
+        return new ItemCost(
+                stack.getItem().builtInRegistryHolder(),
+                stack.getCount(),
+                DataComponentPredicate.allOf(stack.getComponents())
+        );
     }
 
     private static ItemStack readStack(JsonObject obj, RegistryAccess registryAccess) {

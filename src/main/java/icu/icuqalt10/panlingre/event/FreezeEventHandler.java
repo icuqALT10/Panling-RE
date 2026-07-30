@@ -4,7 +4,6 @@ import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.effect.FreezeEffect;
 import icu.icuqalt10.panlingre.init.ModEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -16,14 +15,13 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 @EventBusSubscriber(modid = PanlingRE.MODID)
 public class FreezeEventHandler {
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onFreezeApplicable(MobEffectEvent.Applicable event) {
         if (!event.getEffectInstance().is(ModEffects.freeze)) {
             return;
         }
 
-        LivingEntity entity = event.getEntity();
-        if (entity.isInvulnerable() || entity instanceof Mob mob && mob.isNoAi()) {
+        if (!FreezeEffect.canApplyTo(event.getEntity())) {
             event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
         }
     }

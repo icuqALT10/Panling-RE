@@ -30,6 +30,13 @@ public class ModEntities {
                     .clientTrackingRange(4)
                     .updateInterval(10)
                     .build("custom_pellet"));
+    public static final DeferredHolder<EntityType<?>, EntityType<HuoQiuFuEntity>> HUO_QIU_FU =
+            ENTITIES.register("huo_qiu_fu", () -> EntityType.Builder.<HuoQiuFuEntity>of(HuoQiuFuEntity::new, MobCategory.MISC)
+                    .sized(1.5F, 1.5F)
+                    .clientTrackingRange(8)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .build("huo_qiu_fu"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<FeiXianJianZhenEntity>> FEI_XIAN_JIAN_ZHEN =
             ENTITIES.register("fei_xian_jian_zhen", () -> EntityType.Builder.of(FeiXianJianZhenEntity::new, MobCategory.MISC)

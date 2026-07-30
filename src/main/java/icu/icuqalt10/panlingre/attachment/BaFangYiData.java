@@ -11,6 +11,7 @@ public class BaFangYiData {
 
     private Map<String, Set<String>> unlockedMap = new HashMap<>();
     private long teleportCooldownEnd = 0;
+    private boolean enabled = true;
 
     public BaFangYiData() {}
 
@@ -25,13 +26,16 @@ public class BaFangYiData {
                         return map;
                     }),
             Codec.LONG.optionalFieldOf("teleportCooldownEnd", 0L)
-                    .forGetter(d -> d.teleportCooldownEnd)
-    ).apply(instance, (map, cooldownEnd) -> {
+                    .forGetter(d -> d.teleportCooldownEnd),
+            Codec.BOOL.optionalFieldOf("enabled", true)
+                    .forGetter(d -> d.enabled)
+    ).apply(instance, (map, cooldownEnd, enabled) -> {
         BaFangYiData data = new BaFangYiData();
         for (Map.Entry<String, List<String>> entry : map.entrySet()) {
             data.unlockedMap.put(entry.getKey(), new HashSet<>(entry.getValue()));
         }
         data.teleportCooldownEnd = cooldownEnd;
+        data.enabled = enabled;
         return data;
     }));
 
@@ -49,6 +53,14 @@ public class BaFangYiData {
 
     public long getTeleportCooldownEnd() {
         return teleportCooldownEnd;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public boolean isTeleportOnCooldown(long currentGameTime) {
@@ -124,5 +136,11 @@ public class BaFangYiData {
 
     public static boolean querySub(Player player, String majorId, String subId) {
         return get(player).isSubUnlocked(majorId, subId);
+    }
+
+    public static void setEnabled(Player player, boolean enabled) {
+        BaFangYiData data = get(player);
+        data.setEnabled(enabled);
+        player.setData(ModAttachments.BA_FANG_YI_DATA.get(), data);
     }
 }

@@ -27,17 +27,17 @@ public final class ClientTaskGuideState {
     private static final double ENTITY_RANGE = 50.0;
     private static ResourceLocation taskId;
     private static TaskGuideData task;
+    private static int selectedEntry = -1;
     private static Set<Integer> highlightedEntityIds = Set.of();
     private static int ticksUntilEntityCheck;
+    private static boolean guidanceVisible = true;
 
     private ClientTaskGuideState() {
     }
 
     public static void handleSync(TaskGuideSyncPayload payload) {
         if (!payload.enabled()) {
-            if (payload.taskId().equals(taskId)) {
-                clear();
-            }
+            clear();
             return;
         }
 
@@ -45,15 +45,35 @@ public final class ClientTaskGuideState {
                 .resultOrPartial(error -> PanlingRE.LOGGER.error(
                         "Failed to parse synced task guide {}: {}", payload.taskId(), error))
                 .ifPresentOrElse(data -> {
+                    if (payload.selectedEntry() < -1 || payload.selectedEntry() >= data.entries().size()) {
+                        PanlingRE.LOGGER.error(
+                                "Task guide {} selected invalid entry {}",
+                                payload.taskId(), payload.selectedEntry()
+                        );
+                        clear();
+                        return;
+                    }
+                    boolean changedTask = !payload.taskId().equals(taskId);
                     taskId = payload.taskId();
                     task = data;
+                    selectedEntry = payload.selectedEntry();
                     highlightedEntityIds = Set.of();
                     ticksUntilEntityCheck = 0;
+                    if (changedTask) {
+                        guidanceVisible = true;
+                    }
                 }, ClientTaskGuideState::clear);
     }
 
     public static void handleEntityResult(TaskEntityResultPayload payload) {
-        if (taskId == null || !taskId.equals(payload.taskId())) {
+        if (taskId == null
+                || !taskId.equals(payload.taskId())
+                || selectedEntry != payload.selectedEntry()
+                || !guidanceVisible
+                || entry()
+                        .flatMap(TaskGuideData.Entry::entity)
+                        .flatMap(TaskGuideData.EntityTarget::nbt)
+                        .isEmpty()) {
             return;
         }
         Set<Integer> result = new HashSet<>();
@@ -65,14 +85,35 @@ public final class ClientTaskGuideState {
         return Optional.ofNullable(task);
     }
 
+    public static Optional<TaskGuideData.Entry> entry() {
+        if (task == null || selectedEntry < 0 || selectedEntry >= task.entries().size()) {
+            return Optional.empty();
+        }
+        return Optional.of(task.entries().get(selectedEntry));
+    }
+
     public static boolean shouldGlow(Entity entity) {
         return highlightedEntityIds.contains(entity.getId());
     }
 
     public static int outlineColor() {
-        return task != null && task.entity().isPresent()
-                ? task.entity().get().outlineColor()
+        return entry().flatMap(TaskGuideData.Entry::entity).isPresent()
+                ? entry().flatMap(TaskGuideData.Entry::entity).orElseThrow().outlineColor()
                 : 0xE8C96A;
+    }
+
+    public static boolean isGuidanceVisible() {
+        return guidanceVisible;
+    }
+
+    public static void toggleGuidance() {
+        Optional<TaskGuideData.Entry> selected = entry();
+        if (selected.isPresent()
+                && (selected.get().target().isPresent() || selected.get().entity().isPresent())) {
+            guidanceVisible = !guidanceVisible;
+            highlightedEntityIds = Set.of();
+            ticksUntilEntityCheck = 0;
+        }
     }
 
     @SubscribeEvent
@@ -82,7 +123,13 @@ public final class ClientTaskGuideState {
             clear();
             return;
         }
-        if (task == null || taskId == null || !task.type().hasEntity() || task.entity().isEmpty()) {
+        if (!guidanceVisible) {
+            highlightedEntityIds = Set.of();
+            ticksUntilEntityCheck = 0;
+            return;
+        }
+        Optional<TaskGuideData.EntityTarget> entityTarget = entry().flatMap(TaskGuideData.Entry::entity);
+        if (taskId == null || entityTarget.isEmpty()) {
             highlightedEntityIds = Set.of();
             return;
         }
@@ -91,7 +138,7 @@ public final class ClientTaskGuideState {
         }
         ticksUntilEntityCheck = 5;
 
-        TaskGuideData.EntityTarget target = task.entity().get();
+        TaskGuideData.EntityTarget target = entityTarget.get();
         int[] candidates = minecraft.level
                 .getEntities(
                         minecraft.player,
@@ -108,7 +155,14 @@ public final class ClientTaskGuideState {
                 .mapToInt(Entity::getId)
                 .toArray();
 
-        PacketDistributor.sendToServer(new TaskEntityCheckPayload(taskId, candidates));
+        if (target.nbt().isEmpty()) {
+            Set<Integer> matches = new HashSet<>();
+            Arrays.stream(candidates).forEach(matches::add);
+            highlightedEntityIds = Set.copyOf(matches);
+            return;
+        }
+
+        PacketDistributor.sendToServer(new TaskEntityCheckPayload(taskId, selectedEntry, candidates));
     }
 
     @SubscribeEvent
@@ -119,7 +173,9 @@ public final class ClientTaskGuideState {
     private static void clear() {
         taskId = null;
         task = null;
+        selectedEntry = -1;
         highlightedEntityIds = Set.of();
         ticksUntilEntityCheck = 0;
+        guidanceVisible = true;
     }
 }

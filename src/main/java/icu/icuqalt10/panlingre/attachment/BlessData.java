@@ -61,6 +61,7 @@ public record BlessData(boolean qinglong, boolean zhuque, boolean baihu, boolean
         player.setData(ModAttachments.BLESS.get(), newData);
 
         if (player instanceof ServerPlayer serverPlayer) {
+            bless_shengshou.refreshAttributes(serverPlayer);
             PacketDistributor.sendToPlayer(serverPlayer, new SyncBlessPayload(newData));
         }
         return true;
@@ -75,6 +76,7 @@ public record BlessData(boolean qinglong, boolean zhuque, boolean baihu, boolean
         player.setData(ModAttachments.BLESS.get(), newData);
 
         if (player instanceof ServerPlayer serverPlayer) {
+            bless_shengshou.refreshAttributes(serverPlayer);
             PacketDistributor.sendToPlayer(serverPlayer, new SyncBlessPayload(newData));
         }
         return true;

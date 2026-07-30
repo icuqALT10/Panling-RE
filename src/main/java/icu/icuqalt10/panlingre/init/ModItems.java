@@ -6,10 +6,7 @@ import icu.icuqalt10.panlingre.item.archer.armor.feng_xing;
 import icu.icuqalt10.panlingre.item.archer.armor.hu_pi;
 import icu.icuqalt10.panlingre.item.archer.armor.she_lin;
 import icu.icuqalt10.panlingre.item.common.armor.*;
-import icu.icuqalt10.panlingre.item.fuzhi.ju_li_fu;
-import icu.icuqalt10.panlingre.item.fuzhi.po_di_fu;
-import icu.icuqalt10.panlingre.item.fuzhi.shou_yu_fu;
-import icu.icuqalt10.panlingre.item.fuzhi.tui_huo_fu;
+import icu.icuqalt10.panlingre.item.fuzhi.*;
 import icu.icuqalt10.panlingre.item.other.LootKeyItem;
 import icu.icuqalt10.panlingre.item.other.*;
 import icu.icuqalt10.panlingre.item.potions.*;
@@ -191,6 +188,18 @@ public class ModItems {
             Component.translatable("item.panlingre.bi_hai_zhu.lore2")
     )))));
 
+
+    public static final DeferredItem<Item> rare6_yuanhe_fra = ITEMS.register("rare6_yuanhe_fra",
+            () -> new Item(new Item.Properties().component(DataComponents.LORE, new ItemLore(List.of(
+                    Component.translatable("item.panlingre.rare6_yuanhe_fra.lore1"),
+                    Component.translatable("item.panlingre.rare6_yuanhe_fra.lore2")
+            )))));
+    public static final DeferredItem<Item> rare6_yuanhe = ITEMS.register("rare6_yuanhe",
+            () -> new Item(new Item.Properties().component(DataComponents.LORE, new ItemLore(List.of(
+                    Component.translatable("item.panlingre.rare6_yuanhe.lore1"),
+                    Component.translatable("item.panlingre.rare6_yuanhe.lore2")
+            )))));
+
     public static final DeferredItem<Item> yao_yin_1 = ITEMS.register("yao_yin_1", yao_yin::new);
     public static final DeferredItem<Item> yao_yin_2 = ITEMS.register("yao_yin_2", yao_yin::new);
     public static final DeferredItem<Item> yao_yin_3 = ITEMS.register("yao_yin_3", yao_yin::new);
@@ -210,14 +219,24 @@ public class ModItems {
     public static final DeferredItem<Item> pu_ti_zi = ITEMS.register("pu_ti_zi",() -> new Item(new Item.Properties()));
 
     //符纸
-    public static final DeferredItem<Item> po_di_fu = ITEMS.register("po_di_fu", po_di_fu::new);
-    public static final DeferredItem<Item> shou_yu_fu = ITEMS.register("shou_yu_fu", shou_yu_fu::new);
+    public static final DeferredItem<Item> po_di_fu_1 = ITEMS.register("po_di_fu_1", po_di_fu_1::new);
+    public static final DeferredItem<Item> po_di_fu_2 = ITEMS.register("po_di_fu_2", po_di_fu_2::new);
+    public static final DeferredItem<Item> po_di_fu_3 = ITEMS.register("po_di_fu_3", po_di_fu_3::new);
+    public static final DeferredItem<Item> huo_qiu_fu_1 = ITEMS.register("huo_qiu_fu_1", huo_qiu_fu_1::new);
+    public static final DeferredItem<Item> huo_qiu_fu_2 = ITEMS.register("huo_qiu_fu_2", huo_qiu_fu_2::new);
+    public static final DeferredItem<Item> huo_qiu_fu_3 = ITEMS.register("huo_qiu_fu_3", huo_qiu_fu_3::new);
+    public static final DeferredItem<Item> shou_yu_fu_1 = ITEMS.register("shou_yu_fu_1", shou_yu_fu_1::new);
+    public static final DeferredItem<Item> shou_yu_fu_2 = ITEMS.register("shou_yu_fu_2", shou_yu_fu_2::new);
+    public static final DeferredItem<Item> shou_yu_fu_3 = ITEMS.register("shou_yu_fu_3", shou_yu_fu_3::new);
     public static final DeferredItem<Item> tui_huo_fu = ITEMS.register("tui_huo_fu", tui_huo_fu::new);
     public static final DeferredItem<Item> ju_li_fu = ITEMS.register("ju_li_fu", ju_li_fu::new);
 
 
     //丹药
     public static final DeferredItem<Item> he_ding_dan = ITEMS.register("he_ding_dan", he_ding_dan::new);
+    public static final DeferredItem<Item> liao_yu_1 = ITEMS.register("liao_yu_1", liao_yu_1::new);
+    public static final DeferredItem<Item> liao_yu_2 = ITEMS.register("liao_yu_2", liao_yu_2::new);
+    public static final DeferredItem<Item> liao_yu_3 = ITEMS.register("liao_yu_3", liao_yu_3::new);
     public static final DeferredItem<Item> wan_ling = ITEMS.register("wan_ling", wan_ling::new);
     public static final DeferredItem<Item> luo_shen = ITEMS.register("luo_shen", luo_shen::new);
     public static final DeferredItem<Item> hun_yuan_1 = ITEMS.register("hun_yuan_1", hun_yuan_1::new);

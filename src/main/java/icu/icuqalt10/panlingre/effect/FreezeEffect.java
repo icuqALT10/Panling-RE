@@ -27,11 +27,14 @@ public class FreezeEffect extends MobEffect {
         );
     }
 
+    public static boolean canApplyTo(LivingEntity entity) {
+        return !entity.isInvulnerable()
+                && (!(entity instanceof Mob mob) || !mob.isNoAi());
+    }
+
     @Override
     public void onEffectStarted(LivingEntity entity, int amplifier) {
-        if (entity.level().isClientSide) {
-            return;
-        }
+        if (entity.level().isClientSide) return;
 
         if (entity instanceof Mob mob) {
             mob.setNoAi(true);

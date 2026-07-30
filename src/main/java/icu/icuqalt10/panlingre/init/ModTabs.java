@@ -135,6 +135,9 @@ public class ModTabs {
                         output.accept(ModItems.rare5_yuanhe.get());
                         output.accept(ModItems.ling_yu_jian.get());
                         output.accept(ModItems.bi_hai_zhu.get());
+
+                        output.accept(ModItems.rare6_yuanhe_fra.get());
+                        output.accept(ModItems.rare6_yuanhe.get());
                     })
                     .build()
             );
@@ -279,6 +282,9 @@ public class ModTabs {
                     .displayItems((parameters, output) -> {
 
                         output.accept(ModItems.he_ding_dan.get());
+                        output.accept(ModItems.liao_yu_1.get());
+                        output.accept(ModItems.liao_yu_2.get());
+                        output.accept(ModItems.liao_yu_3.get());
                         output.accept(ModItems.wan_ling.get());
                         output.accept(ModItems.luo_shen.get());
                         output.accept(ModItems.hun_yuan_1.get());
@@ -302,8 +308,15 @@ public class ModTabs {
                         output.accept(ModItems.feng_hou_3.get());
                         output.accept(ModItems.jian_xue.get());
 
-                        output.accept(ModItems.po_di_fu.get());
-                        output.accept(ModItems.shou_yu_fu.get());
+                        output.accept(ModItems.po_di_fu_1.get());
+                        output.accept(ModItems.po_di_fu_2.get());
+                        output.accept(ModItems.po_di_fu_3.get());
+                        output.accept(ModItems.huo_qiu_fu_1.get());
+                        output.accept(ModItems.huo_qiu_fu_2.get());
+                        output.accept(ModItems.huo_qiu_fu_3.get());
+                        output.accept(ModItems.shou_yu_fu_1.get());
+                        output.accept(ModItems.shou_yu_fu_2.get());
+                        output.accept(ModItems.shou_yu_fu_3.get());
                         output.accept(ModItems.tui_huo_fu.get());
                         output.accept(ModItems.ju_li_fu.get());
                     })

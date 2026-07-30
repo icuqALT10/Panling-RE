@@ -4,8 +4,8 @@
     {
       "slot": 0,
       "ingredient": {
-        "item": "panlingre:zhu_sha_1",
-        "count": 12
+        "item": "panlingre:zhu_sha_3",
+        "count": 8
       }
     },
     {
@@ -18,20 +18,20 @@
     {
       "slot": 2,
       "ingredient": {
-        "item": "panlingre:ys1_mu",
-        "count": 20
+        "item": "panlingre:ys1_jin",
+        "count": 60
       }
     },
     {
       "slot": 3,
       "ingredient": {
-        "item": "panlingre:ys1_shui",
-        "count": 10
+        "item": "panlingre:ys1_huo",
+        "count": 40
       }
     }
   ],
   "result": {
     "count": 24,
-    "id": "panlingre:shou_yu_fu"
+    "id": "panlingre:po_di_fu_3"
   }
 }

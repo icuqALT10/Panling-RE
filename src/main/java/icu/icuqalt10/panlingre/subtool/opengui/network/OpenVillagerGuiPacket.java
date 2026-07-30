@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.subtool.opengui.network;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.subtool.opengui.client.OpenGuiClientHandler;
 import icu.icuqalt10.panlingre.subtool.opengui.data.CustomMerchantOffer;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -32,12 +33,12 @@ public record OpenVillagerGuiPacket(MerchantOffers offers, Component title) impl
         buf.writeInt(pkt.offers().size());
         for (MerchantOffer offer : pkt.offers()) {
             ItemStack costAStack = getExactCostA(offer);
-            ItemCost  costA      = new ItemCost(costAStack.getItem(), costAStack.getCount());
+            ItemCost  costA      = createCost(costAStack);
 
             ItemStack          costBStack = getExactCostB(offer);
             Optional<ItemCost> costB      = costBStack.isEmpty()
                     ? Optional.empty()
-                    : Optional.of(new ItemCost(costBStack.getItem(), costBStack.getCount()));
+                    : Optional.of(createCost(costBStack));
 
             ItemCost.STREAM_CODEC.encode(buf, costA);
             ByteBufCodecs.optional(ItemCost.STREAM_CODEC).encode(buf, costB);
@@ -93,6 +94,14 @@ public record OpenVillagerGuiPacket(MerchantOffers offers, Component title) impl
         return offer instanceof CustomMerchantOffer customOffer
                 ? customOffer.getEnrichedCostB()
                 : offer.getCostB();
+    }
+
+    private static ItemCost createCost(ItemStack stack) {
+        return new ItemCost(
+                stack.getItem().builtInRegistryHolder(),
+                stack.getCount(),
+                DataComponentPredicate.allOf(stack.getComponents())
+        );
     }
 
     public void handle(IPayloadContext context) {

@@ -349,10 +349,9 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
                 // 没命中,throw.end动画会在关键帧自然触发doThrowEnd()播放miss
             }
         }
-
     }
 
-    //永不移除
+    //移除时
     @Override
     public boolean removeWhenFarAway(double distanceToClosestPlayer) {
         if (!this.level().isClientSide()) {
@@ -360,7 +359,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
             weatherManager.cleanup();
             this.bossEvent.removeAllPlayers();
         }
-        return false;
+        return true;
     }
 
     // 实体被移除（如自然刷掉、代码强制移除、死亡动画播完后）时
@@ -644,7 +643,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
                 }
                 else if (this.level() instanceof ServerLevel sl) {
                     switch (tick) {
-                        case 0 -> runCommand(sl, "execute as @a[distance=..80] run dialog show boss_gangu_intro_1");
+                        case 20 -> runCommand(sl, "execute as @a[distance=..80] run dialog show boss_gangu_intro_1");
                         case 80 -> runCommand(sl, "execute as @a[distance=..80] run dialog show boss_gangu_intro_2");
                         case 122 -> {
                             this.level().playSound(null, this.getX(), this.getY(), this.getZ(),

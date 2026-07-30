@@ -6,7 +6,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
-public record TaskEntityCheckPayload(ResourceLocation taskId, int[] entityIds) implements CustomPacketPayload {
+public record TaskEntityCheckPayload(
+        ResourceLocation taskId,
+        int selectedEntry,
+        int[] entityIds
+) implements CustomPacketPayload {
     public static final int MAX_CANDIDATES = 128;
     public static final Type<TaskEntityCheckPayload> TYPE = new Type<>(
             ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "task_entity_check")
@@ -15,6 +19,7 @@ public record TaskEntityCheckPayload(ResourceLocation taskId, int[] entityIds) i
     public static final StreamCodec<RegistryFriendlyByteBuf, TaskEntityCheckPayload> STREAM_CODEC = StreamCodec.of(
             (buf, payload) -> {
                 buf.writeResourceLocation(payload.taskId);
+                buf.writeVarInt(payload.selectedEntry);
                 int length = Math.min(payload.entityIds.length, MAX_CANDIDATES);
                 buf.writeVarInt(length);
                 for (int index = 0; index < length; index++) {
@@ -23,6 +28,7 @@ public record TaskEntityCheckPayload(ResourceLocation taskId, int[] entityIds) i
             },
             buf -> {
                 ResourceLocation taskId = buf.readResourceLocation();
+                int selectedEntry = buf.readVarInt();
                 int length = buf.readVarInt();
                 if (length < 0 || length > MAX_CANDIDATES) {
                     throw new IllegalArgumentException("Invalid task entity candidate count: " + length);
@@ -31,7 +37,7 @@ public record TaskEntityCheckPayload(ResourceLocation taskId, int[] entityIds) i
                 for (int index = 0; index < length; index++) {
                     ids[index] = buf.readVarInt();
                 }
-                return new TaskEntityCheckPayload(taskId, ids);
+                return new TaskEntityCheckPayload(taskId, selectedEntry, ids);
             }
     );
 

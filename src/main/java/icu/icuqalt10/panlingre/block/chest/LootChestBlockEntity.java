@@ -1,6 +1,7 @@
 package icu.icuqalt10.panlingre.block.chest;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.init.ModBlockEntities;
 import icu.icuqalt10.panlingre.init.ModComponents;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -42,8 +43,6 @@ public class LootChestBlockEntity extends BlockEntity {
 
     private transient ItemEntity displayEntity;
     private transient List<LootChestLoader.LootEntry> availableEntries;
-
-    private static final Map<String, List<LootChestLoader.LootEntry>> lootCache = new HashMap<>();
 
     public LootChestBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.LOOT_CHEST_BE.get(), pos, state);
@@ -97,6 +96,9 @@ public class LootChestBlockEntity extends BlockEntity {
         if (isOpening()) return false;
         String keyType = key.getOrDefault(ModComponents.KEY_TYPE.get(), "");
         String keyId = key.getOrDefault(ModComponents.KEY_ID.get(), "");
+        PanlingRE.LOGGER.debug(
+                "Loot chest open attempt at {}: chestType='{}', chestId='{}', lootTableId='{}', keyType='{}', keyId='{}'",
+                worldPosition, chestType, chestId, lootTableId, keyType, keyId);
         if (!keyType.equals(chestType) || !keyId.equals(chestId) || keyId.isEmpty()) return false;
         if (!(level instanceof ServerLevel serverLevel)) return false;
 
@@ -237,7 +239,9 @@ public class LootChestBlockEntity extends BlockEntity {
     }
 
     private List<LootChestLoader.LootEntry> getLootEntries(ServerLevel serverLevel) {
-        return lootCache.computeIfAbsent(lootTableId, id -> LootChestLoader.load(id, serverLevel));
+        // Read through the current resource manager so datapack changes take
+        // effect after /reload and cannot leak between worlds via static state.
+        return LootChestLoader.load(lootTableId, serverLevel);
     }
 
     private LootChestLoader.LootEntry rollEntry(List<LootChestLoader.LootEntry> entries, net.minecraft.util.RandomSource random) {

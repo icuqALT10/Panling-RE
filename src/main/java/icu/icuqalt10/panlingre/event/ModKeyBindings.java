@@ -3,8 +3,9 @@ package icu.icuqalt10.panlingre.event;
 import com.mojang.blaze3d.platform.InputConstants;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.client.SkillWheelOverlay;
+import icu.icuqalt10.panlingre.client.task.ClientTaskGuideState;
 import icu.icuqalt10.panlingre.init.ModEffects;
-import icu.icuqalt10.panlingre.network.SkillPayload;
+import icu.icuqalt10.panlingre.network.LdPayload;
 import icu.icuqalt10.panlingre.network.SkillWheelPayload;
 import icu.icuqalt10.panlingre.skill.ClientSkillState;
 import net.minecraft.client.KeyMapping;
@@ -24,16 +25,20 @@ import java.util.Map;
 
 @EventBusSubscriber(modid = PanlingRE.MODID, value = Dist.CLIENT)
 public class ModKeyBindings {
-    protected static final Map<KeyMapping, Integer> SKILL_KEYS = new HashMap<>();
+    protected static final Map<KeyMapping, String> SKILL_KEYS = new HashMap<>();
 
-    public static final KeyMapping LIANDAN = register("liandan", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_L, 1);
-    public static final KeyMapping SKILL_ACTIVATE = register("skill_1", InputConstants.Type.MOUSE, 3, 13);
-    public static final KeyMapping MODE_TOGGLE = register("mode_toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, 14);
+    public static final KeyMapping LIANDAN =
+            register("liandan", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_L, "key.PanlingRE.liandan");
+    public static final KeyMapping SKILL_ACTIVATE =
+            register("skill_activate", InputConstants.Type.MOUSE, 3, "key.PanlingRE.skill_activate");
+    public static final KeyMapping MODE_TOGGLE =
+            register("mode_toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "key.PanlingRE.mode_toggle");
+    public static final KeyMapping SKILL_WHEEL =
+            register("skill_wheel", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "key.PanlingRE.skill_wheel");
+    public static final KeyMapping TASK_GUIDE_TOGGLE =
+            register("task_guide_toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_J, "key.PanlingRE.task_guide_toggle");
 
-    public static final KeyMapping SKILL_WHEEL = new KeyMapping(
-            "key.PanlingRE.skill_wheel", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories.PanlingRE");
-
-    private static KeyMapping register(String name, InputConstants.Type type, int code, int id) {
+    private static KeyMapping register(String name, InputConstants.Type type, int code, String id) {
         KeyMapping mapping = new KeyMapping("key.PanlingRE." + name, type, code, "key.categories.PanlingRE");
         SKILL_KEYS.put(mapping, id);
         return mapping;
@@ -42,7 +47,6 @@ public class ModKeyBindings {
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         SKILL_KEYS.keySet().forEach(event::register);
-        event.register(SKILL_WHEEL);
     }
 }
 
@@ -56,6 +60,10 @@ class InputHandler {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player == null) return;
+
+        while (ModKeyBindings.TASK_GUIDE_TOGGLE.consumeClick()) {
+            ClientTaskGuideState.toggleGuidance();
+        }
 
         if (player.hasEffect(ModEffects.freeze)) return;
 
@@ -88,7 +96,7 @@ class InputHandler {
         }
 
         while (ModKeyBindings.LIANDAN.consumeClick()) {
-            PacketDistributor.sendToServer(new SkillPayload(1));
+            PacketDistributor.sendToServer(new LdPayload());
         }
     }
 

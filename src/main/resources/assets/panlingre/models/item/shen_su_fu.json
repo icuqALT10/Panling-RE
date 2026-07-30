@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "panlingre:item/cheng_fu"
+        "layer0": "panlingre:item/fuzhi/shen_su"
     }
 }

@@ -51,7 +51,7 @@ public record ParticleCluster(Vec3 start, Vec3 target, ParticleOptions particle,
             if (distance < 0.001) {
                 velocity = Vec3.ZERO;
             } else {
-                double speed = distance / 5;
+                double speed = distance / 2;
                 velocity = direction.normalize().scale(speed);
             }
 

@@ -9,7 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 public record TaskGuideSyncPayload(
         boolean enabled,
         ResourceLocation taskId,
-        String json
+        String json,
+        int selectedEntry
 ) implements CustomPacketPayload {
     public static final Type<TaskGuideSyncPayload> TYPE = new Type<>(
             ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "task_guide_sync")
@@ -20,12 +21,22 @@ public record TaskGuideSyncPayload(
                 buf.writeBoolean(payload.enabled);
                 buf.writeResourceLocation(payload.taskId);
                 buf.writeUtf(payload.json);
+                buf.writeVarInt(payload.selectedEntry + 1);
             },
-            buf -> new TaskGuideSyncPayload(buf.readBoolean(), buf.readResourceLocation(), buf.readUtf())
+            buf -> new TaskGuideSyncPayload(
+                    buf.readBoolean(),
+                    buf.readResourceLocation(),
+                    buf.readUtf(),
+                    buf.readVarInt() - 1
+            )
     );
 
     public static TaskGuideSyncPayload disabled(ResourceLocation taskId) {
-        return new TaskGuideSyncPayload(false, taskId, "");
+        return new TaskGuideSyncPayload(false, taskId, "", -1);
+    }
+
+    public static TaskGuideSyncPayload disabled() {
+        return disabled(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "none"));
     }
 
     @Override

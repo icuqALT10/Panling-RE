@@ -3,7 +3,7 @@
         "text": "§6带有 test 标签的实体",
         "color": "gold"
     },
-    "entities": [
+    "entries": [
         {
             "type": "entity",
             "name": ["minecraft:creeper"],

@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.init;
 
 import com.mojang.serialization.Codec;
 import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.component.RightClickComponent;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -41,6 +42,14 @@ public class ModComponents {
                     DataComponentType.<String>builder()
                             .persistent(Codec.STRING)
                             .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+                            .build()
+            );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<RightClickComponent>> RIGHT_CLICK =
+            COMPONENTS.register("right_click", () ->
+                    DataComponentType.<RightClickComponent>builder()
+                            .persistent(RightClickComponent.CODEC)
+                            .networkSynchronized(RightClickComponent.STREAM_CODEC)
                             .build()
             );
 }

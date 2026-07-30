@@ -13,6 +13,7 @@ import icu.icuqalt10.panlingre.init.ModItems;
 import icu.icuqalt10.panlingre.network.BaFangYiTeleportPayload;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -61,6 +62,16 @@ public class BaFangYiCommand {
                                                                 StringArgumentType.getString(ctx, "major"),
                                                                 StringArgumentType.getString(ctx, "sub")))
                                                 )
+                                        )
+                                )
+                                .then(Commands.literal("on")
+                                        .then(Commands.argument("player", EntityArgument.player())
+                                                .executes(ctx -> setEnabled(ctx, EntityArgument.getPlayer(ctx, "player"), true))
+                                        )
+                                )
+                                .then(Commands.literal("off")
+                                        .then(Commands.argument("player", EntityArgument.player())
+                                                .executes(ctx -> setEnabled(ctx, EntityArgument.getPlayer(ctx, "player"), false))
                                         )
                                 )
                         )
@@ -154,11 +165,25 @@ public class BaFangYiCommand {
         return 0;
     }
 
+    private static int setEnabled(CommandContext<CommandSourceStack> ctx, ServerPlayer target, boolean enabled) {
+        BaFangYiData.setEnabled(target, enabled);
+        ctx.getSource().sendSuccess(
+                () -> Component.translatable(PREFIX + (enabled ? "enable.success" : "disable.success"),
+                        target.getDisplayName()),
+                true
+        );
+        return 1;
+    }
+
     public static void handleTeleportRequest(BaFangYiTeleportPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer serverPlayer) {
                 BaFangYiData data = BaFangYiData.get(serverPlayer);
 
+                if (!data.isEnabled()) {
+                    serverPlayer.sendSystemMessage(Component.translatable(PREFIX + "disabled"), true);
+                    return;
+                }
                 if (!data.isMajorUnlocked(payload.majorId())) {
                     serverPlayer.sendSystemMessage(Component.translatable(PREFIX + "major_locked"), true);
                     return;

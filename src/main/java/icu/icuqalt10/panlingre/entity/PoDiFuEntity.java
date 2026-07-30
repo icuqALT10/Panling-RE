@@ -39,7 +39,7 @@ public class PoDiFuEntity extends ThrowableItemProjectile {
 
     @Override
     protected Item getDefaultItem() {
-        return ModItems.po_di_fu.get();
+        return ModItems.po_di_fu_1.get();
     }
 
     public void setMultiplier(float multiplier) {

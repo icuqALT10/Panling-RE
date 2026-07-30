@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "panlingre:rare3_yuanhe"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "panlingre:rare3_yuanhe_fra"
+  }
+}
