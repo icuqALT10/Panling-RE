@@ -30,6 +30,7 @@ public class ModAttachments {
             () -> AttachmentType.builder(BlessData::new)
                     .serialize(BlessData.CODEC)
                     .copyOnDeath()
+                    .sync((holder, player) -> holder == player, BlessData.STREAM_CODEC)
                     .build()
     );
 

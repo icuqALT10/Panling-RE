@@ -74,5 +74,6 @@ public class Heavy2Goal extends Goal {
             boss.setAttacking(false);
             boss.endAttack();
             boss.startAttackCooldown();
+            boss.setTarget(null);
     }
 }

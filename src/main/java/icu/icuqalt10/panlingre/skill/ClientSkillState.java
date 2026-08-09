@@ -26,13 +26,15 @@ public class ClientSkillState {
     public static void rebuild(Player player) {
         availableSkills.clear();
         addedNameKeys.clear();
-        addSkillsFromStack(player.getMainHandItem());
+        CuriosApi.getCuriosInventory(player).ifPresent(handler -> {
+            var equippedCurios = handler.getEquippedCurios();
+            for (int slot = 0; slot < equippedCurios.getSlots(); slot++) {
+                addSkillsFromStack(equippedCurios.getStackInSlot(slot));
+            }
+        });
+        player.getArmorSlots().forEach(ClientSkillState::addSkillsFromStack);
         addSkillsFromStack(player.getOffhandItem());
-        CuriosApi.getCuriosInventory(player).ifPresent(handler ->
-            handler.findCurios(stack -> true).forEach(result ->
-                addSkillsFromStack(result.stack())
-            )
-        );
+        addSkillsFromStack(player.getMainHandItem());
 
         // 恢复上次选中
         selectedIndex = -1;
@@ -100,8 +102,13 @@ public class ClientSkillState {
     }
 
     public static void recordCooldown(SkillSlot slot, long cdMs) {
-        cooldownData.put(cooldownKey(slot),
-                new long[]{System.currentTimeMillis() + cdMs, cdMs});
+        recordCooldown(cooldownKey(slot), cdMs);
+    }
+
+    public static void recordCooldown(String cooldownKey, long cdMs) {
+        long duration = Math.max(0L, cdMs);
+        cooldownData.put(cooldownKey,
+                new long[]{System.currentTimeMillis() + duration, duration});
     }
 
     public static float getCooldownProgress(SkillSlot slot) {

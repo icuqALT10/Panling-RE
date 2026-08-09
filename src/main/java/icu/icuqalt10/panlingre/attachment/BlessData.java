@@ -4,15 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.item.other.bless_shengshou;
-import icu.icuqalt10.panlingre.network.SyncBlessPayload;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
-
-import java.util.Optional;
 
 public record BlessData(boolean qinglong, boolean zhuque, boolean baihu, boolean xuanwu) {
 
@@ -26,6 +21,21 @@ public record BlessData(boolean qinglong, boolean zhuque, boolean baihu, boolean
             Codec.BOOL.optionalFieldOf("baihu", false).forGetter(BlessData::baihu),
             Codec.BOOL.optionalFieldOf("xuanwu", false).forGetter(BlessData::xuanwu)
     ).apply(instance, BlessData::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, BlessData> STREAM_CODEC = StreamCodec.of(
+            (buf, data) -> {
+                buf.writeBoolean(data.qinglong());
+                buf.writeBoolean(data.zhuque());
+                buf.writeBoolean(data.baihu());
+                buf.writeBoolean(data.xuanwu());
+            },
+            buf -> new BlessData(
+                    buf.readBoolean(),
+                    buf.readBoolean(),
+                    buf.readBoolean(),
+                    buf.readBoolean()
+            )
+    );
 
     public BlessData with(String type, boolean value) {
         return switch (type.toLowerCase()) {
@@ -62,7 +72,6 @@ public record BlessData(boolean qinglong, boolean zhuque, boolean baihu, boolean
 
         if (player instanceof ServerPlayer serverPlayer) {
             bless_shengshou.refreshAttributes(serverPlayer);
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncBlessPayload(newData));
         }
         return true;
     }
@@ -77,7 +86,6 @@ public record BlessData(boolean qinglong, boolean zhuque, boolean baihu, boolean
 
         if (player instanceof ServerPlayer serverPlayer) {
             bless_shengshou.refreshAttributes(serverPlayer);
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncBlessPayload(newData));
         }
         return true;
     }

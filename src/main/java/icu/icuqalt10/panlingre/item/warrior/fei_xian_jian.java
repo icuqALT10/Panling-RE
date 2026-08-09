@@ -32,6 +32,9 @@ import java.util.List;
 
 public class fei_xian_jian extends SwordItem implements skill_trigger {
 
+    private final int cooldown = 200;
+    private final float cost = 30.0f;
+
     public fei_xian_jian() {
         super(
                 Tiers.DIAMOND,
@@ -115,7 +118,7 @@ public class fei_xian_jian extends SwordItem implements skill_trigger {
 
     @Override
     public long getSkillCD(int skillIndex) {
-        return 10000L;
+        return cooldown * 50L;
     }
 
     @Override
@@ -125,7 +128,7 @@ public class fei_xian_jian extends SwordItem implements skill_trigger {
 
     @Override
     public float getSkillLingQiCost(int skillIndex) {
-        return 30;
+        return cost;
     }
 
     @Override
@@ -148,7 +151,8 @@ public class fei_xian_jian extends SwordItem implements skill_trigger {
             tooltipComponents.add(Component.translatable("item.PanlingRE.fei_xian_jian.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.fei_xian_jian.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.fei_xian_jian.skill2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.fei_xian_jian.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.fei_xian_jian.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.fei_xian_jian.skill4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.fei_xian_jian.skill5"));

@@ -38,6 +38,13 @@ public class ModEntities {
                     .fireImmune()
                     .build("huo_qiu_fu"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<JinLiRenEntity>> JIN_LI_REN =
+            ENTITIES.register("jin_li_ren", () -> EntityType.Builder.<JinLiRenEntity>of(JinLiRenEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(4)
+                    .updateInterval(1)
+                    .build("jin_li_ren"));
+
     public static final DeferredHolder<EntityType<?>, EntityType<FeiXianJianZhenEntity>> FEI_XIAN_JIAN_ZHEN =
             ENTITIES.register("fei_xian_jian_zhen", () -> EntityType.Builder.of(FeiXianJianZhenEntity::new, MobCategory.MISC)
                     .sized(0.1f, 0.1f)

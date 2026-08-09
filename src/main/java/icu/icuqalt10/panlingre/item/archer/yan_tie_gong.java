@@ -1,5 +1,9 @@
 package icu.icuqalt10.panlingre.item.archer;
 
+import icu.icuqalt10.panlingre.attachment.LingQiData;
+
+import icu.icuqalt10.panlingre.attribute.cooldown_remove;
+
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.item.skill_trigger;
@@ -27,6 +31,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class yan_tie_gong extends BowItem implements skill_trigger {
+
+    private final int cooldown = 100;
+    private final float cost = 20.0f;
 
     public yan_tie_gong() {
         super(
@@ -95,7 +102,7 @@ public class yan_tie_gong extends BowItem implements skill_trigger {
 
     @Override
     public long getSkillCD(int skillIndex) {
-        return 5000L;
+        return cooldown * 50L;
     }
 
     @Override
@@ -105,7 +112,7 @@ public class yan_tie_gong extends BowItem implements skill_trigger {
 
     @Override
     public float getSkillLingQiCost(int skillIndex) {
-        return 20;
+        return cost;
     }
 
     @Override
@@ -127,7 +134,8 @@ public class yan_tie_gong extends BowItem implements skill_trigger {
             tooltipComponents.add(Component.translatable("item.PanlingRE.yan_tie_gong.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.yan_tie_gong.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.yan_tie_gong.skill2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.yan_tie_gong.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.yan_tie_gong.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.yan_tie_gong.skill4"));
         } else {

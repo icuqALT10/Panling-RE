@@ -20,12 +20,15 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @EventBusSubscriber(modid = PanlingRE.MODID, value = Dist.CLIENT)
 public class ModKeyBindings {
     protected static final Map<KeyMapping, String> SKILL_KEYS = new HashMap<>();
+    public static final List<KeyMapping> SKILL_SHORTCUTS = new ArrayList<>(16);
 
     public static final KeyMapping LIANDAN =
             register("liandan", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_L, "key.PanlingRE.liandan");
@@ -37,6 +40,13 @@ public class ModKeyBindings {
             register("skill_wheel", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "key.PanlingRE.skill_wheel");
     public static final KeyMapping TASK_GUIDE_TOGGLE =
             register("task_guide_toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_J, "key.PanlingRE.task_guide_toggle");
+
+    static {
+        for (int i = 1; i <= 16; i++) {
+            SKILL_SHORTCUTS.add(register("skill_shortcut_" + i, InputConstants.Type.KEYSYM,
+                    InputConstants.UNKNOWN.getValue(), "key.PanlingRE.skill_shortcut_" + i));
+        }
+    }
 
     private static KeyMapping register(String name, InputConstants.Type type, int code, String id) {
         KeyMapping mapping = new KeyMapping("key.PanlingRE." + name, type, code, "key.categories.PanlingRE");
@@ -85,18 +95,26 @@ class InputHandler {
         if (SkillWheelOverlay.INSTANCE.active) return;
 
         while (ModKeyBindings.SKILL_ACTIVATE.consumeClick()) {
-            var sel = ClientSkillState.getSelectedSkill();
-            if (sel != null && ClientSkillState.getCooldownProgress(sel) <= 0) {
-                long baseCd = sel.data().cooldown();
-                PacketDistributor.sendToServer(
-                        new SkillWheelPayload(sel.itemId(), sel.skillIndex(), baseCd));
-                ClientSkillState.recordCooldown(sel,
-                        ClientSkillState.getReducedCooldown(player, baseCd));
+            activateSkill(ClientSkillState.getSelectedSkill());
+        }
+
+        for (int i = 0; i < ModKeyBindings.SKILL_SHORTCUTS.size(); i++) {
+            KeyMapping shortcut = ModKeyBindings.SKILL_SHORTCUTS.get(i);
+            while (shortcut.consumeClick()) {
+                var skills = ClientSkillState.getAvailableSkills();
+                if (i < skills.size()) activateSkill(skills.get(i));
             }
         }
 
         while (ModKeyBindings.LIANDAN.consumeClick()) {
             PacketDistributor.sendToServer(new LdPayload());
+        }
+    }
+
+    private static void activateSkill(ClientSkillState.SkillSlot skill) {
+        if (skill != null && ClientSkillState.getCooldownProgress(skill) <= 0) {
+            PacketDistributor.sendToServer(
+                    new SkillWheelPayload(skill.itemId(), skill.skillIndex()));
         }
     }
 

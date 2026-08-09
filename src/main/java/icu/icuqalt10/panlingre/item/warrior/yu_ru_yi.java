@@ -43,6 +43,9 @@ import java.util.List;
 
 public class yu_ru_yi extends Item implements skill_trigger {
 
+    private final int cooldown = 100;
+    private final float cost = 30.0f;
+
     public yu_ru_yi() {
         super(
                 new Properties()
@@ -89,7 +92,7 @@ public class yu_ru_yi extends Item implements skill_trigger {
                 Attributes.ATTACK_SPEED,
                 new AttributeModifier(
                         BASE_ATTACK_SPEED_ID,
-                        -2.6,
+                        -2.2,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -152,7 +155,7 @@ public class yu_ru_yi extends Item implements skill_trigger {
 
     @Override
     public long getSkillCD(int skillIndex) {
-        return 5000L;
+        return cooldown * 50L;
     }
 
     @Override
@@ -162,7 +165,7 @@ public class yu_ru_yi extends Item implements skill_trigger {
 
     @Override
     public float getSkillLingQiCost(int skillIndex) {
-        return 30;
+        return cost;
     }
 
     @Override
@@ -185,7 +188,8 @@ public class yu_ru_yi extends Item implements skill_trigger {
             tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.skill2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.skill4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.yu_ru_yi.skill5"));

@@ -1011,7 +1011,6 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         for (LivingEntity entity : targetEntities) {
             if (this.getTeam() != null && this.getTeam() != entity.getTeam()) {
                 entity.addEffect(new MobEffectInstance(ModEffects.freeze, 100, 0));
-                entity.setTicksFrozen(140);
             }
         }
 
@@ -1083,7 +1082,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
                 SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.NEUTRAL, 5f,1.0f);
 
         PacketDistributor.sendToPlayersTrackingEntity(this, new GroundSmashPayload(targetPos, 4, 15));
-        GameBusEvents.addShockwave(this, new Shockwave(targetPos,3,15,this.getTeam()));
+        GameBusEvents.addShockwave(this, new Shockwave(targetPos,6,15,this.getTeam()));
 
         if (this.level() instanceof ServerLevel sl) {
             runCommand(sl, "execute as @a[distance=..80] run dialog show boss_pangu_skill_4");

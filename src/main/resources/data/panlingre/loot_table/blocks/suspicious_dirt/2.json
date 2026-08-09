@@ -2,23 +2,63 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 3,
+      "rolls": 2,
       "entries": [
             {
               "type": "minecraft:item",
-              "name": "panlingre:he_shou_wu"
+              "name": "panlingre:he_shou_wu",
+              "functions": [
+                {
+                  "function": "minecraft:apply_bonus",
+                  "enchantment": "minecraft:fortune",
+                  "formula": "minecraft:ore_drops"
+                },
+                {
+                  "function": "minecraft:explosion_decay"
+                }
+              ]
             },
             {
               "type": "minecraft:item",
-              "name": "panlingre:ling_zhi"
+              "name": "panlingre:ling_zhi",
+              "functions": [
+                {
+                  "function": "minecraft:apply_bonus",
+                  "enchantment": "minecraft:fortune",
+                  "formula": "minecraft:ore_drops"
+                },
+                {
+                  "function": "minecraft:explosion_decay"
+                }
+              ]
             },
             {
               "type": "minecraft:item",
-              "name": "panlingre:ren_shen"
+              "name": "panlingre:ren_shen",
+              "functions": [
+                {
+                  "function": "minecraft:apply_bonus",
+                  "enchantment": "minecraft:fortune",
+                  "formula": "minecraft:ore_drops"
+                },
+                {
+                  "function": "minecraft:explosion_decay"
+                }
+              ]
             },
             {
               "type": "minecraft:item",
-              "name": "panlingre:lan_cao"
+              "name": "panlingre:lan_cao",
+              "functions": [
+                {
+                  "function": "minecraft:apply_bonus",
+                  "enchantment": "minecraft:fortune",
+                  "formula": "minecraft:ore_drops"
+                },
+                {
+                  "function": "minecraft:explosion_decay"
+                }
+              ]
             }
           ]
         }

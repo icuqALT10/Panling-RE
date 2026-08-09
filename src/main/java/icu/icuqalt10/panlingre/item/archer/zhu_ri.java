@@ -1,5 +1,9 @@
 package icu.icuqalt10.panlingre.item.archer;
 
+import icu.icuqalt10.panlingre.attachment.LingQiData;
+
+import icu.icuqalt10.panlingre.attribute.cooldown_remove;
+
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.entity.ZhuRiArrowEntity;
 import icu.icuqalt10.panlingre.init.ModAttributes;
@@ -30,6 +34,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class zhu_ri extends BowItem implements skill_trigger {
+
+    private final int cooldown = 400;
+    private final float cost = 50.0f;
 
     public zhu_ri() {
         super(
@@ -122,7 +129,7 @@ public class zhu_ri extends BowItem implements skill_trigger {
 
         double bestDist = Double.MAX_VALUE;
         for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, scanBox,
-                e -> e != player && e.isAttackable())) {
+                e -> canLockTarget(player, e))) {
             Vec3 toE = e.position().subtract(eye);
             double proj = toE.dot(look);
             if (proj <= 0 || proj > 100) continue;
@@ -196,6 +203,20 @@ public class zhu_ri extends BowItem implements skill_trigger {
         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
     }
 
+    private boolean canLockTarget(Player player, LivingEntity target) {
+        if (target == player || !target.isAlive() || !target.isAttackable() || target.isInvulnerable()) {
+            return false;
+        }
+        if (target instanceof Player targetPlayer
+                && (targetPlayer.isCreative() || targetPlayer.isSpectator())) {
+            return false;
+        }
+        if (player.getTeam() != null && player.isAlliedTo(target)) {
+            return false;
+        }
+        return !target.isInvulnerableTo(player.damageSources().playerAttack(player));
+    }
+
     @Override
     public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
         //释放技能
@@ -226,7 +247,7 @@ public class zhu_ri extends BowItem implements skill_trigger {
 
     @Override
     public long getSkillCD(int skillIndex) {
-        return 20000L;
+        return cooldown * 50L;
     }
 
     @Override
@@ -236,7 +257,7 @@ public class zhu_ri extends BowItem implements skill_trigger {
 
     @Override
     public float getSkillLingQiCost(int skillIndex) {
-        return 50;
+        return cost;
     }
 
     @Override
@@ -259,7 +280,8 @@ public class zhu_ri extends BowItem implements skill_trigger {
             tooltipComponents.add(Component.translatable("item.PanlingRE.zhu_ri.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.zhu_ri.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.zhu_ri.skill2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.zhu_ri.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.zhu_ri.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.zhu_ri.skill4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.zhu_ri.skill5"));

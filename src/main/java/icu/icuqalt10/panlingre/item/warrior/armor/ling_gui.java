@@ -53,6 +53,11 @@ public class ling_gui extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("ling_gui_helmet"),
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("ling_gui_helmet"),
+                            0.1,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.CHEST) {
             builder.add(Attributes.ARMOR,
@@ -79,6 +84,11 @@ public class ling_gui extends ArmorItem {
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("ling_gui_chestplate"),
                             4,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("ling_gui_chestplate"),
+                            0.1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.LEGS) {
@@ -107,6 +117,11 @@ public class ling_gui extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("ling_gui_leggings"),
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("ling_gui_leggings"),
+                            0.1,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.FEET) {
             builder.add(Attributes.ARMOR,
@@ -133,6 +148,11 @@ public class ling_gui extends ArmorItem {
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("ling_gui_boots"),
                             2,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("ling_gui_boots"),
+                            0.1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
 

@@ -2,10 +2,13 @@ package icu.icuqalt10.panlingre.attachment;
 
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.network.LingQiSyncPacket;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
+
+import java.math.BigDecimal;
 
 public class LingQiData {
     private float current;
@@ -41,6 +44,11 @@ public class LingQiData {
     }
 
     //静态方法
+    public static Component getCostText(float cost) {
+        String value = new BigDecimal(Float.toString(cost)).stripTrailingZeros().toPlainString();
+        return Component.literal(value).withStyle(ChatFormatting.AQUA);
+    }
+
     public static class ClientLingQiData {
         private static float current;
         private static float max;

@@ -29,6 +29,9 @@ import java.util.List;
 
 public class tao_mu_jian extends SwordItem implements skill_trigger {
 
+    private final int cooldown = 60;
+    private final float cost = 5.0f;
+
     public tao_mu_jian() {
         super(
                 Tiers.DIAMOND,
@@ -104,7 +107,7 @@ public class tao_mu_jian extends SwordItem implements skill_trigger {
 
     @Override
     public long getSkillCD(int skillIndex) {
-        return 3000L;
+        return cooldown * 50L;
     }
 
     @Override
@@ -114,7 +117,7 @@ public class tao_mu_jian extends SwordItem implements skill_trigger {
 
     @Override
     public float getSkillLingQiCost(int skillIndex) {
-        return 5;
+        return cost;
     }
 
     @Override
@@ -135,7 +138,8 @@ public class tao_mu_jian extends SwordItem implements skill_trigger {
             tooltipComponents.add(Component.translatable("item.PanlingRE.tao_mu_jian.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.tao_mu_jian.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.tao_mu_jian.skill2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.tao_mu_jian.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.tao_mu_jian.skill3"));
         } else {
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare1"));

@@ -29,6 +29,9 @@ import java.util.List;
 
 public class kai_shan_dao extends Item implements skill_trigger {
 
+    private final int cooldown = 100;
+    private final float cost = 20.0f;
+
     public kai_shan_dao() {
         super(
                 new Properties()
@@ -65,7 +68,7 @@ public class kai_shan_dao extends Item implements skill_trigger {
                 Attributes.ATTACK_SPEED,
                 new AttributeModifier(
                         BASE_ATTACK_SPEED_ID,
-                        -3.0,
+                        -2,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -100,7 +103,7 @@ public class kai_shan_dao extends Item implements skill_trigger {
 
     @Override
     public long getSkillCD(int skillIndex) {
-        return 10000L;
+        return cooldown * 50L;
     }
 
     @Override
@@ -110,7 +113,7 @@ public class kai_shan_dao extends Item implements skill_trigger {
 
     @Override
     public float getSkillLingQiCost(int skillIndex) {
-        return 20;
+        return cost;
     }
 
     @Override
@@ -131,7 +134,8 @@ public class kai_shan_dao extends Item implements skill_trigger {
             tooltipComponents.add(Component.translatable("item.PanlingRE.kai_shan_dao.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.kai_shan_dao.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.kai_shan_dao.skill2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.kai_shan_dao.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.kai_shan_dao.skill3"));
         } else {
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare2"));

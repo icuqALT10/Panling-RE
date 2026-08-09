@@ -1,5 +1,7 @@
 package icu.icuqalt10.panlingre.item.other;
 
+import icu.icuqalt10.panlingre.attribute.cooldown_remove;
+
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.BaFangYiData;
 import icu.icuqalt10.panlingre.data.ba_fang_yi.BaFangYiLoader;
@@ -28,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ba_fang_yi extends Item {
+
+    private final int cooldown = 600;
     public ba_fang_yi() {
         super(new Properties().stacksTo(1).fireResistant());
     }
@@ -78,7 +82,8 @@ public class ba_fang_yi extends Item {
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.ba_fang_yi.skill1.2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.ba_fang_yi.skill2",
-                    Component.keybind("key.use").withStyle(ChatFormatting.GOLD)));
+                    Component.keybind("key.use").withStyle(ChatFormatting.GOLD),
+                    cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.ba_fang_yi.skill3"));
         } else {
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));

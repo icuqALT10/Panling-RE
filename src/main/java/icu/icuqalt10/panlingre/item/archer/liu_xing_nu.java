@@ -1,5 +1,9 @@
 package icu.icuqalt10.panlingre.item.archer;
 
+import icu.icuqalt10.panlingre.attachment.LingQiData;
+
+import icu.icuqalt10.panlingre.attribute.cooldown_remove;
+
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.entity.FeiXianJianZhenEntity;
 import icu.icuqalt10.panlingre.entity.XingHaiEntity;
@@ -32,6 +36,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class liu_xing_nu extends CrossbowItem implements skill_trigger {
+
+    private final int cooldown = 200;
+    private final float cost = 30.0f;
 
     public liu_xing_nu() {
         super(
@@ -93,7 +100,7 @@ public class liu_xing_nu extends CrossbowItem implements skill_trigger {
 
     @Override
     public long getSkillCD(int skillIndex) {
-        return 10000L;
+        return cooldown * 50L;
     }
 
     @Override
@@ -103,7 +110,7 @@ public class liu_xing_nu extends CrossbowItem implements skill_trigger {
 
     @Override
     public float getSkillLingQiCost(int skillIndex) {
-        return 30;
+        return cost;
     }
 
     @Override
@@ -126,7 +133,8 @@ public class liu_xing_nu extends CrossbowItem implements skill_trigger {
             tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.skill2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.skill4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.liu_xing_nu.skill5"));

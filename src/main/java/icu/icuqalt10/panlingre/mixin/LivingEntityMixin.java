@@ -71,6 +71,9 @@ public abstract class LivingEntityMixin extends Entity {
     @Unique
     private float panlingre$storedGlobalLastHurt;
 
+    @Unique
+    private boolean panlingre$suppressCurrentDamageKnockback;
+
     // Tick 更新 Map 里的冷却时间
     @Inject(method = "tick", at = @At("TAIL"))
     private void panlingre$tickCooldowns(CallbackInfo ci) {
@@ -95,6 +98,14 @@ public abstract class LivingEntityMixin extends Entity {
 
         Entity attacker = source.getEntity();
         this.panlingre$currentAttackerKey = attacker != null ? attacker.getStringUUID() : source.type().msgId();
+
+        this.panlingre$suppressCurrentDamageKnockback = false;
+        if (attacker instanceof LivingEntity livingAttacker) {
+            ItemStack weapon = livingAttacker.getMainHandItem();
+            this.panlingre$suppressCurrentDamageKnockback =
+                    weapon.getItem() instanceof ding_hai_shen_zhen
+                            && weapon.getOrDefault(ModComponents.IS_POWERED.get(), false);
+        }
 
         this.panlingre$storedGlobalInvulTime = this.invulnerableTime;
         this.panlingre$storedGlobalLastHurt = this.lastHurt;
@@ -124,12 +135,12 @@ public abstract class LivingEntityMixin extends Entity {
 
                     if (weapon.getItem() instanceof ding_hai_shen_zhen &&
                             weapon.getOrDefault(ModComponents.IS_POWERED.get(), false)) {
-                        newInvulTime = 13;
+                        newInvulTime = 12;
                     }
                 }
 
                 if (source.getDirectEntity() instanceof ZhuRiArrowEntity) {
-                    newInvulTime = 10;
+                    newInvulTime = 12;
                 }
             }
 
@@ -150,6 +161,19 @@ public abstract class LivingEntityMixin extends Entity {
             this.lastHurt = this.panlingre$storedGlobalLastHurt;
 
             this.panlingre$currentAttackerKey = null;
+        }
+
+        this.panlingre$suppressCurrentDamageKnockback = false;
+    }
+
+    // The built-in damage knockback happens while hurt() is still running. The
+    // later Player.attack knockback is handled separately by PlayerAttackMixin.
+    @Inject(method = "knockback", at = @At("HEAD"), cancellable = true)
+    private void panlingre$suppressPoweredDingHaiShenZhenDamageKnockback(
+            double strength, double x, double z, CallbackInfo ci
+    ) {
+        if (this.panlingre$suppressCurrentDamageKnockback) {
+            ci.cancel();
         }
     }
 }

@@ -1,0 +1,50 @@
+{
+  "boss.pan_gu": {
+    "sounds": [
+      {
+        "name": "panlingre:instance/pan_gu",
+        "stream": true
+      }
+    ]
+  },
+  "yuansu.jin": {
+    "sounds": [
+      {
+        "name": "panlingre:yuansu/se_metal",
+        "stream": true
+      }
+    ]
+  },
+  "yuansu.mu": {
+    "sounds": [
+      {
+        "name": "panlingre:yuansu/se_wood",
+        "stream": true
+      }
+    ]
+  },
+  "yuansu.shui": {
+    "sounds": [
+      {
+        "name": "panlingre:yuansu/se_water",
+        "stream": true
+      }
+    ]
+  },
+  "yuansu.huo": {
+    "sounds": [
+      {
+        "name": "panlingre:yuansu/se_fire",
+        "stream": true
+      }
+    ]
+  },
+  "yuansu.tu": {
+    "sounds": [
+      {
+        "name": "panlingre:yuansu/se_earth",
+        "stream": true
+      }
+    ]
+  }
+}

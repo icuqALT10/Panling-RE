@@ -1,5 +1,9 @@
 package icu.icuqalt10.panlingre.item.warlock;
 
+import icu.icuqalt10.panlingre.attachment.LingQiData;
+
+import icu.icuqalt10.panlingre.attribute.cooldown_remove;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import icu.icuqalt10.panlingre.PanlingRE;
@@ -32,6 +36,9 @@ import java.util.List;
 
 public class huang_tong_lu extends Item implements ICurioItem,skill_trigger {
 
+    private final int cooldown = 20;
+    private final float cost = 5.0f;
+
     public huang_tong_lu() {
         super(
                 new Properties()
@@ -63,7 +70,7 @@ public class huang_tong_lu extends Item implements ICurioItem,skill_trigger {
 
             if (target != null) {
 
-                float attack_damage = (float) player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
+                float attack_damage = (float) (player.getAttributeValue(ModAttributes.MAGIC_DAMAGE) *1.5);
                 target.hurt(player.damageSources().indirectMagic(player,player), attack_damage);
 
                 Vec3 playerPos = player.position().add(0, player.getEyeHeight(), 0);
@@ -99,7 +106,7 @@ public class huang_tong_lu extends Item implements ICurioItem,skill_trigger {
 
     @Override
     public long getSkillCD(int skillIndex) {
-        return 1000L;
+        return cooldown * 50L;
     }
 
     @Override
@@ -109,7 +116,7 @@ public class huang_tong_lu extends Item implements ICurioItem,skill_trigger {
 
     @Override
     public float getSkillLingQiCost(int skillIndex) {
-        return 5;
+        return cost;
     }
 
     @Override
@@ -179,7 +186,8 @@ public class huang_tong_lu extends Item implements ICurioItem,skill_trigger {
             tooltipComponents.add(Component.translatable("item.PanlingRE.huang_tong_lu.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.huang_tong_lu.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.huang_tong_lu.skill2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.huang_tong_lu.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.huang_tong_lu.skill3"));
         } else {
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare1"));

@@ -53,6 +53,11 @@ public class long_lin extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("long_lin_helmet"),
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("long_lin_helmet"),
+                            0.2,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.CHEST) {
             builder.add(Attributes.ARMOR,
@@ -79,6 +84,11 @@ public class long_lin extends ArmorItem {
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("long_lin_chestplate"),
                             6,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("long_lin_chestplate"),
+                            0.2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.LEGS) {
@@ -107,6 +117,11 @@ public class long_lin extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("long_lin_leggings"),
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("long_lin_leggings"),
+                            0.2,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.FEET) {
             builder.add(Attributes.ARMOR,
@@ -133,6 +148,11 @@ public class long_lin extends ArmorItem {
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("long_lin_boots"),
                             4,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("long_lin_boots"),
+                            0.2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
 

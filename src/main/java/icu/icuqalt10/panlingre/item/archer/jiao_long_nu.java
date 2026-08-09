@@ -1,5 +1,9 @@
 package icu.icuqalt10.panlingre.item.archer;
 
+import icu.icuqalt10.panlingre.attachment.LingQiData;
+
+import icu.icuqalt10.panlingre.attribute.cooldown_remove;
+
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModEffects;
@@ -30,6 +34,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class jiao_long_nu extends CrossbowItem implements skill_trigger {
+
+    private final int cooldown = 10;
+    private final float cost = 10.0f;
 
     public jiao_long_nu() {
         super(
@@ -105,7 +112,7 @@ public class jiao_long_nu extends CrossbowItem implements skill_trigger {
 
     @Override
     public long getSkillCD(int skillIndex) {
-        return 500L;
+        return cooldown * 50L;
     }
 
     @Override
@@ -115,7 +122,7 @@ public class jiao_long_nu extends CrossbowItem implements skill_trigger {
 
     @Override
     public float getSkillLingQiCost(int skillIndex) {
-        return 10;
+        return cost;
     }
 
     @Override
@@ -138,7 +145,8 @@ public class jiao_long_nu extends CrossbowItem implements skill_trigger {
             tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.skill2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.skill4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.jiao_long_nu.skill5"));

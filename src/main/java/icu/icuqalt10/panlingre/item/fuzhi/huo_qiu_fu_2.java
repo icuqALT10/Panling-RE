@@ -27,6 +27,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class huo_qiu_fu_2 extends Item{
+
+    private final int cooldown = 60;
+    private final float cost = 10.0f;
     public huo_qiu_fu_2() {
         super(
                 new Properties()
@@ -57,7 +60,6 @@ public class huo_qiu_fu_2 extends Item{
         ItemStack itemstack = player.getItemInHand(hand);
 
         LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 10.0f;
         //如果灵气不足
         if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
         //释放技能
@@ -70,7 +72,7 @@ public class huo_qiu_fu_2 extends Item{
             //消耗
             itemstack.consume(1, player);
             //cd
-            cooldown_remove.cd_remove(player,this,60);
+            cooldown_remove.cd_remove(player, this, cooldown);
             //音效
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.SNOWBALL_THROW, SoundSource.PLAYERS, 0.5f,1.0f);
@@ -92,8 +94,11 @@ public class huo_qiu_fu_2 extends Item{
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_2.skill1.2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_2.skill2"
-                    ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD)));
+                    ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD),
+                    cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_2.skill3"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_2.skill4"));
         } else {
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));

@@ -48,6 +48,11 @@ public class zhan_lang extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("zhan_lang_helmet"),
                             0.5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("zhan_lang_helmet"),
+                            0.05,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.CHEST) {
             builder.add(Attributes.ARMOR,
@@ -69,6 +74,11 @@ public class zhan_lang extends ArmorItem {
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("zhan_lang_chestplate"),
                             1,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("zhan_lang_chestplate"),
+                            0.05,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.LEGS) {
@@ -92,6 +102,11 @@ public class zhan_lang extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("zhan_lang_leggings"),
                             0.75,
                             AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("zhan_lang_leggings"),
+                            0.05,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.FEET) {
             builder.add(Attributes.ARMOR,
@@ -113,6 +128,11 @@ public class zhan_lang extends ArmorItem {
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("zhan_lang_boots"),
                             0.25,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("zhan_lang_boots"),
+                            0.05,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
 

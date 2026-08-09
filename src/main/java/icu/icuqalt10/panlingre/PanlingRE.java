@@ -30,6 +30,7 @@ public class PanlingRE {
         ModMenus.register(modEventBus);
         ModItems.register(modEventBus);
         ModEntities.register(modEventBus);
+        ModSounds.register(modEventBus);
         ModTabs.register(modEventBus);
         ModRecipes.RECIPE_TYPES.register(modEventBus);
         ModRecipes.SERIALIZERS.register(modEventBus);

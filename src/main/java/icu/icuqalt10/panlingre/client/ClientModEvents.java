@@ -70,6 +70,7 @@ public class ClientModEvents {
                 ModEntities.HUO_QIU_FU.get(),
                 HuoQiuFuRenderer::new
         );
+        event.registerEntityRenderer(ModEntities.JIN_LI_REN.get(), JinLiRenRenderer::new);
 
         event.registerEntityRenderer(ModEntities.FEI_XIAN_JIAN_ZHEN.get(), FeiXianJianZhenRenderer::new);
         event.registerEntityRenderer(ModEntities.XING_HAI.get(), XingHaiRenderer::new);

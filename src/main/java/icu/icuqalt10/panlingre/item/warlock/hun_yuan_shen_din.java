@@ -1,8 +1,11 @@
 package icu.icuqalt10.panlingre.item.warlock;
 
+import icu.icuqalt10.panlingre.attachment.LingQiData;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.entity.FireTornadoEntity;
 import icu.icuqalt10.panlingre.event.GameBusEvents;
 import icu.icuqalt10.panlingre.init.ModAttributes;
@@ -53,6 +56,15 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 
 public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger, liandan {
+
+    private final int cooldown1 = 200;
+    private final int cooldown2 = 240;
+    private final int cooldown3 = 600;
+    private final int cooldown4 = 160;
+    private final float cost1 = 25.0f;
+    private final float cost2 = 20.0f;
+    private final float cost3 = 35.0f;
+    private final float cost4 = 20.0f;
 
     public hun_yuan_shen_din() {
         super(new Properties().stacksTo(1).fireResistant());
@@ -105,10 +117,10 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
     @Override
     public long getSkillCD(int skillIndex) {
         return switch (skillIndex) {
-            case 0 -> 10000L;
-            case 1 -> 12000L;
-            case 2 -> 30000L;
-            case 3 -> 8000L;
+            case 0 -> cooldown1 * 50L;
+            case 1 -> cooldown2 * 50L;
+            case 2 -> cooldown3 * 50L;
+            case 3 -> cooldown4 * 50L;
             default -> 1000L;
         };
     }
@@ -127,9 +139,10 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
     @Override
     public float getSkillLingQiCost(int skillIndex) {
         return switch (skillIndex) {
-            case 0 -> 25;
-            case 2 -> 35;
-            case 1,3 -> 20;
+            case 0 -> cost1;
+            case 1 -> cost2;
+            case 2 -> cost3;
+            case 3 -> cost4;
             default -> 5.0f;
         };
     }
@@ -169,10 +182,18 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
             tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.lore4"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill1.1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill2.1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill3.1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill4.1"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill1.1",
+                    cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown1),
+                    LingQiData.getCostText(cost1)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill2.1",
+                    cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown2),
+                    LingQiData.getCostText(cost2)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill3.1",
+                    cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown3),
+                    LingQiData.getCostText(cost3)));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill4.1",
+                    cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown4),
+                    LingQiData.getCostText(cost4)));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill1.2"
                     ,Component.keybind("key.PanlingRE.liandan").withStyle(ChatFormatting.GOLD)));
@@ -344,7 +365,6 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
         for (LivingEntity entity : targetEntities) {
             if (player.getTeam() != null && player.getTeam() != entity.getTeam()) {
                 entity.addEffect(new MobEffectInstance(ModEffects.freeze, duration, 0));
-                entity.setTicksFrozen(140);
             }
         }
 

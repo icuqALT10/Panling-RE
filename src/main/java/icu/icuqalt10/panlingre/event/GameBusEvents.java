@@ -1,14 +1,12 @@
 package icu.icuqalt10.panlingre.event;
 
 import icu.icuqalt10.panlingre.PanlingRE;
-import icu.icuqalt10.panlingre.attachment.BlessData;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.entity.FireTrailTracker;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModEffects;
 import icu.icuqalt10.panlingre.looktip.LookTipLoader;
-import icu.icuqalt10.panlingre.network.SyncBlessPayload;
 import icu.icuqalt10.panlingre.player.check;
 import icu.icuqalt10.panlingre.task.TaskGuideLoader;
 import icu.icuqalt10.panlingre.task.TaskGuideService;
@@ -116,8 +114,6 @@ public class GameBusEvents {
             player.getData(ModAttachments.LINGQI).sync(player);
         }
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            BlessData currentData = serverPlayer.getData(ModAttachments.BLESS.get());
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncBlessPayload(currentData));
             TaskGuideService.syncActive(serverPlayer);
         }
     }
@@ -193,7 +189,10 @@ public class GameBusEvents {
 
                 //每10刻恢复2.5%（如果没有被冻结）
                 if (!player.hasEffect(ModEffects.freeze) && data.getCurrent() < max) {
-                    data.setCurrent(data.getCurrent() + max * 0.025f, player);
+                    // 属性每增加1%，每秒额外恢复最大灵气的1%；折算到每10刻需要乘0.5。
+                    float recoveryBonus = (float) player.getAttributeValue(ModAttributes.LING_QI_RECOVERY) - 1.0f;
+                    float recoveryRate = 0.025f + recoveryBonus * 0.5f;
+                    data.setCurrent(data.getCurrent() + max * recoveryRate, player);
                 }
 
                 //同步灵气条

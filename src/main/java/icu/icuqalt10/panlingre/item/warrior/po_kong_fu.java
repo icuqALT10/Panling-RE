@@ -35,6 +35,9 @@ import java.util.List;
 
 public class po_kong_fu extends Item implements skill_trigger {
 
+    private final int cooldown = 100;
+    private final float cost = 25.0f;
+
     public po_kong_fu() {
         super(
                 new Properties()
@@ -81,7 +84,7 @@ public class po_kong_fu extends Item implements skill_trigger {
                 Attributes.ATTACK_SPEED,
                 new AttributeModifier(
                         BASE_ATTACK_SPEED_ID,
-                        -2.6,
+                        -2,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -125,7 +128,7 @@ public class po_kong_fu extends Item implements skill_trigger {
 
     @Override
     public long getSkillCD(int skillIndex) {
-        return 5000L;
+        return cooldown * 50L;
     }
 
     @Override
@@ -135,7 +138,7 @@ public class po_kong_fu extends Item implements skill_trigger {
 
     @Override
     public float getSkillLingQiCost(int skillIndex) {
-        return 25;
+        return cost;
     }
 
     @Override
@@ -158,7 +161,8 @@ public class po_kong_fu extends Item implements skill_trigger {
             tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.skill2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.skill4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.skill5"));

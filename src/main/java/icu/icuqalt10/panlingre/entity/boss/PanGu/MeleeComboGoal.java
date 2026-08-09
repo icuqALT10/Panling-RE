@@ -105,5 +105,6 @@ public class MeleeComboGoal extends Goal {
             boss.setAttacking(false);
             boss.endAttack();
             boss.startAttackCooldown();
+            boss.setTarget(null);
     }
 }

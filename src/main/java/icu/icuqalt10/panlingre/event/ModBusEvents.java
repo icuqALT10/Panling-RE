@@ -18,6 +18,7 @@ public class ModBusEvents {
         event.add(EntityType.PLAYER, ModAttributes.MAX_LINGQI);
         event.add(EntityType.PLAYER, ModAttributes.FALIZHI);
         event.add(EntityType.PLAYER, ModAttributes.COOLDOWN_REMOVE);
+        event.add(EntityType.PLAYER, ModAttributes.LING_QI_RECOVERY);
         event.add(EntityType.PLAYER, ModAttributes.ARROW_DAMAGE);
         event.add(EntityType.PLAYER, ModAttributes.MAGIC_DAMAGE);
 
@@ -26,7 +27,7 @@ public class ModBusEvents {
         event.add(EntityType.WITHER_SKELETON, ModAttributes.ARROW_DAMAGE);
         event.add(EntityType.PILLAGER, ModAttributes.ARROW_DAMAGE);
     }
-    //修改力量buff
+    //修改原版buff
     @SubscribeEvent
     public static void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
@@ -44,6 +45,15 @@ public class ModBusEvents {
                     ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "strength_magic_damage"),
                     3.0,
                     AttributeModifier.Operation.ADD_VALUE
+            );
+
+            MobEffect haste = MobEffects.DIG_SPEED.value();
+
+            haste.addAttributeModifier(
+                    ModAttributes.COOLDOWN_REMOVE,
+                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "haste_cooldown_remove"),
+                    0.05,
+                    AttributeModifier.Operation.ADD_MULTIPLIED_BASE
             );
         });
     }

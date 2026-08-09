@@ -29,6 +29,9 @@ import java.util.List;
 
 public class jing_tie_jian extends SwordItem implements skill_trigger {
 
+    private final int cooldown = 400;
+    private final float cost = 10.0f;
+
     public jing_tie_jian() {
         super(
                 Tiers.DIAMOND,
@@ -70,7 +73,7 @@ public class jing_tie_jian extends SwordItem implements skill_trigger {
                 Attributes.ATTACK_SPEED,
                 new AttributeModifier(
                         BASE_ATTACK_SPEED_ID,
-                        -2.4,
+                        -2.2,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -96,7 +99,7 @@ public class jing_tie_jian extends SwordItem implements skill_trigger {
 
     @Override
     public long getSkillCD(int skillIndex) {
-        return 20000L;
+        return cooldown * 50L;
     }
 
     @Override
@@ -106,7 +109,7 @@ public class jing_tie_jian extends SwordItem implements skill_trigger {
 
     @Override
     public float getSkillLingQiCost(int skillIndex) {
-        return 10;
+        return cost;
     }
 
     @Override
@@ -127,7 +130,8 @@ public class jing_tie_jian extends SwordItem implements skill_trigger {
             tooltipComponents.add(Component.translatable("item.PanlingRE.jing_tie_jian.lore2"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.jing_tie_jian.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.jing_tie_jian.skill2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.jing_tie_jian.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.jing_tie_jian.skill3"));
         } else {
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare2"));

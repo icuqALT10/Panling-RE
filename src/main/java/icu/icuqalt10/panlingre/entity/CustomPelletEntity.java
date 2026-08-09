@@ -91,50 +91,48 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
         }
     }
 
+    private boolean isFriendly(Entity owner, LivingEntity target) {
+        if (owner.getTeam() == null || target.getTeam() == null) return true;
+        else return owner.getTeam() == target.getTeam();
+    }
+
+    private boolean isUnFriendly(Entity owner, LivingEntity target) {
+        if (owner.getTeam() == null || target.getTeam() == null) return true;
+        else return owner.getTeam() != target.getTeam();
+    }
+
     //================= 效果方法区 =================
 
     private void feng_hou_1(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
             Entity owner = this.getOwner();
-            if (owner instanceof Player player) {
-                double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
+            if (owner != null && isFriendly(owner, target)) return;
 
-                float finalDamage = (float) (magic_damage * 1);
-                target.hurt(this.damageSources().indirectMagic(owner,owner), finalDamage);
-            }
+            target.hurt(this.damageSources().indirectMagic(owner,owner), 20);
         }
     }
     private void feng_hou_2(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
             Entity owner = this.getOwner();
-            if (owner instanceof Player player) {
-                double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
+            if (owner != null && isFriendly(owner, target)) return;
 
-                float finalDamage = (float) (magic_damage * 2);
-                target.hurt(this.damageSources().indirectMagic(owner,owner), finalDamage);
-            }
+            target.hurt(this.damageSources().indirectMagic(owner,owner), 50);
         }
     }
     private void feng_hou_3(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
             Entity owner = this.getOwner();
-            if (owner instanceof Player player) {
-                double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
+            if (owner != null && isFriendly(owner, target)) return;
 
-                float finalDamage = (float) (magic_damage * 3);
-                target.hurt(this.damageSources().indirectMagic(owner,owner), finalDamage);
-            }
+            target.hurt(this.damageSources().indirectMagic(owner,owner), 100);
         }
     }
     private void jian_xue(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
             Entity owner = this.getOwner();
-            if (owner instanceof Player player) {
-                double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
+            if (owner != null && isFriendly(owner, target)) return;
 
-                float finalDamage = (float) (magic_damage * 5);
-                target.hurt(this.damageSources().indirectMagic(owner,owner), finalDamage);
-            }
+            target.hurt(this.damageSources().indirectMagic(owner,owner), 500);
         }
     }
 
@@ -142,62 +140,59 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
     private void hui_chun_1(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
             Entity owner = this.getOwner();
-            if (owner instanceof Player player) {
-                double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
+            if (owner != null && isUnFriendly(owner, target)) return;
 
-                float finalDamage = (float) (magic_damage * 0.5);
-                target.heal(finalDamage);
-            }
+            target.heal(8);
         }
     }
     private void hui_chun_2(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
             Entity owner = this.getOwner();
-            if (owner instanceof Player player) {
-                double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
+            if (owner != null && isUnFriendly(owner, target)) return;
 
-                float finalDamage = (float) (magic_damage * 1);
-                target.heal(finalDamage);
-            }
+            target.heal(16);
         }
     }
     private void hui_chun_3(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
             Entity owner = this.getOwner();
-            if (owner instanceof Player player) {
-                double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
+            if (owner != null && isUnFriendly(owner, target)) return;
 
-                float finalDamage = (float) (magic_damage * 1.5);
-                target.heal(finalDamage);
-            }
+            target.heal(32);
         }
     }
     private void qi_si(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
             Entity owner = this.getOwner();
-            if (owner instanceof Player player) {
-                double magic_damage = player.getAttributeValue(ModAttributes.MAGIC_DAMAGE);
+            if (owner != null && isUnFriendly(owner, target)) return;
 
-                float finalDamage = (float) (magic_damage * 2.5);
-                target.heal(finalDamage);
-            }
+            target.heal(96);
         }
     }
 
     private void tian_shen_1(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
+            Entity owner = this.getOwner();
+            if (owner != null && isUnFriendly(owner, target)) return;
+
             target.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 12000, 1,false,false,true));
             target.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 6000, 0,false,false,true));
         }
     }
     private void tian_shen_2(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
+            Entity owner = this.getOwner();
+            if (owner != null && isUnFriendly(owner, target)) return;
+
             target.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 12000, 2,false,false,true));
             target.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 6000, 1,false,false,true));
         }
     }
     private void tian_shen_3(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
+            Entity owner = this.getOwner();
+            if (owner != null && isUnFriendly(owner, target)) return;
+
             target.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 12000, 3,false,false,true));
             target.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 6000, 2,false,false,true));
         }
@@ -205,6 +200,9 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
 
     private void jiu_zhuan_1(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
+            Entity owner = this.getOwner();
+            if (owner != null && isUnFriendly(owner, target)) return;
+
             target.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0,false,false,true));
             target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0,false,false,true));
             target.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 12000, 0,false,false,true));
@@ -213,6 +211,9 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
     }
     private void jiu_zhuan_2(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
+            Entity owner = this.getOwner();
+            if (owner != null && isUnFriendly(owner, target)) return;
+
             target.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0,false,false,true));
             target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0,false,false,true));
             target.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 12000, 1,false,false,true));
@@ -221,6 +222,9 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
     }
     private void jiu_zhuan_3(LivingEntity target, ItemStack stack) {
         if (!this.level().isClientSide) {
+            Entity owner = this.getOwner();
+            if (owner != null && isUnFriendly(owner, target)) return;
+
             target.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0,false,false,true));
             target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0,false,false,true));
             target.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 12000, 1,false,false,true));

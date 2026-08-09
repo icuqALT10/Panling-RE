@@ -293,6 +293,9 @@ public class ModTabs {
                         output.accept(ModItems.pi_gu_1.get());
                         output.accept(ModItems.pi_gu_2.get());
                         output.accept(ModItems.pi_gu_3.get());
+                        output.accept(ModItems.na_qi_1.get());
+                        output.accept(ModItems.na_qi_2.get());
+                        output.accept(ModItems.na_qi_3.get());
                         output.accept(ModItems.hui_chun_1.get());
                         output.accept(ModItems.hui_chun_2.get());
                         output.accept(ModItems.hui_chun_3.get());

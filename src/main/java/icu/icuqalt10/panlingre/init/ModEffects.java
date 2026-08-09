@@ -36,5 +36,14 @@ public class ModEffects {
                     )
     );
 
+    public static final DeferredHolder<MobEffect, MobEffect> ling_qi_recovery = EFFECTS.register("ling_qi_recovery",
+            () -> new CommonEffect(MobEffectCategory.BENEFICIAL, 0x63E6E2)
+                    .addAttributeModifier(
+                            ModAttributes.LING_QI_RECOVERY,
+                            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ling_qi_recovery"),
+                            0.01,
+                            AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                    ));
+
     public static final DeferredHolder<MobEffect, MobEffect> freeze = EFFECTS.register("freeze", FreezeEffect::new);
 }

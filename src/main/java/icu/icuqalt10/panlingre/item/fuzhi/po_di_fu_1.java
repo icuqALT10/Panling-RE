@@ -27,6 +27,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class po_di_fu_1 extends Item{
+
+    private final int cooldown = 40;
+    private final float cost = 5.0f;
     public po_di_fu_1() {
         super(
                 new Item.Properties()
@@ -57,7 +60,6 @@ public class po_di_fu_1 extends Item{
         ItemStack itemstack = player.getItemInHand(hand);
 
         LingQiData data = player.getData(ModAttachments.LINGQI);
-        float cost = 5.0f;
         //如果灵气不足
         if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
         //释放技能
@@ -70,7 +72,7 @@ public class po_di_fu_1 extends Item{
             //消耗
             itemstack.consume(1, player);
             //cd
-            cooldown_remove.cd_remove(player,this,40);
+            cooldown_remove.cd_remove(player, this, cooldown);
             //音效
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.SNOWBALL_THROW, SoundSource.PLAYERS, 0.5f,1.0f);
@@ -92,7 +94,9 @@ public class po_di_fu_1 extends Item{
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu_1.skill1.2"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu_1.skill2"
-                    ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD)));
+                    ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD),
+                    cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.po_di_fu_1.skill3"));
         } else {
             tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));

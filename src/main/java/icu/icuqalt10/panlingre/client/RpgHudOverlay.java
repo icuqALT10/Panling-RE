@@ -3,110 +3,248 @@ package icu.icuqalt10.panlingre.client;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.init.ModAttributes;
+import icu.icuqalt10.panlingre.init.ModEffects;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.Util;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 
 public class RpgHudOverlay implements LayeredDraw.Layer {
-    // 路径前缀缩写
     private static final String HUD_PATH = "textures/gui/hud/";
-    private static final ResourceLocation HEALTH_E = loc("health_empty.png");
-    private static final ResourceLocation HEALTH_F = loc("health_full.png");
-    private static final ResourceLocation HUNGRY_E = loc("hungry_empty.png");
-    private static final ResourceLocation HUNGRY_F = loc("hungry_full.png");
-    private static final ResourceLocation LINGQI_E = loc("lingqi_empty.png");
-    private static final ResourceLocation LINGQI_F = loc("lingqi_full.png");
+    private static final String HEALTH_PATH = HUD_PATH + "health/";
 
-    // 图标路径
-    private static final ResourceLocation ARMOR_ICON = loc("armor.png");
-    private static final ResourceLocation MANA_ICON = loc("falizhi.png");
-    private static final ResourceLocation OXYGEN_ICON = loc("oxygen.png");
+    private static final int BAR_WIDTH = 81;
+    private static final int BAR_HEIGHT = 9;
+    private static final int BAR_TEXTURE_WIDTH = 160;
+    private static final int BAR_TEXTURE_HEIGHT = 22;
+    private static final int SOURCE_CAP_WIDTH = 8;
+    private static final int DISPLAY_CAP_WIDTH = 3;
+    private static final int BLINK_INTERVAL_TICKS = 3;
+    private static final int HEALTH_BLINK_TICKS = 20;
+    private static final int OTHER_BAR_BLINK_TICKS = 10;
+    private static final float VALUE_ANIMATION_SPEED = 8.0F;
+    private static final float VALUE_SNAP_EPSILON = 0.01F;
 
-    private static ResourceLocation loc(String name) {
-        return ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, HUD_PATH + name);
+    private static final BarTextures HEALTH = healthTextures("health");
+    private static final BarTextures POISONED = healthTextures("poisoned");
+    private static final BarTextures WITHERED = healthTextures("withered");
+    private static final BarTextures FROZEN = healthTextures("frozen");
+    private static final BarTextures ABSORBING = healthTextures("absorbing");
+    private static final BarTextures HUNGRY = textures(HUD_PATH, "hungry");
+    private static final BarTextures LINGQI = textures(HUD_PATH, "lingqi");
+
+    private static final ResourceLocation ARMOR_ICON = loc(HUD_PATH + "armor.png");
+    private static final ResourceLocation MANA_ICON = loc(HUD_PATH + "falizhi.png");
+    private static final ResourceLocation OXYGEN_ICON = loc(HUD_PATH + "oxygen.png");
+
+    private Player trackedPlayer;
+    private float lastHealth;
+    private float lastMaxHealth;
+    private float lastAbsorption;
+    private int lastFood;
+    private float lastSaturation;
+    private float lastLingQi;
+    private float lastMaxLingQi;
+    private int healthBlinkUntil;
+    private int hungryBlinkUntil;
+    private int lingQiBlinkUntil;
+    private float displayedHealth;
+    private float displayedFood;
+    private float displayedLingQi;
+    private long lastAnimationMillis;
+
+    private static ResourceLocation loc(String path) {
+        return ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, path);
+    }
+
+    private static BarTextures healthTextures(String name) {
+        return textures(HEALTH_PATH, name);
+    }
+
+    private static BarTextures textures(String path, String name) {
+        return new BarTextures(
+                loc(path + name + "_empty.png"),
+                loc(path + name + "_full.png"),
+                loc(path + name + "_empty_blinking.png"),
+                loc(path + name + "_full_blinking.png")
+        );
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.options.hideGui) return;
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player == null || minecraft.options.hideGui) return;
 
-        Player player = mc.player;
-        int screenWidth = mc.getWindow().getGuiScaledWidth();
-        int screenHeight = mc.getWindow().getGuiScaledHeight();
-        int centerX = screenWidth / 2;
-
-        // 坐标对齐基准
+        Player player = minecraft.player;
+        int centerX = minecraft.getWindow().getGuiScaledWidth() / 2;
+        int screenHeight = minecraft.getWindow().getGuiScaledHeight();
         int leftX = centerX - 91;
         int rightX = centerX + 10;
-        int rowBottomY = screenHeight - 39; // 下行 (生命、饥饿)
-        int rowTopY = screenHeight - 49;    // 上行 (灵气、杂项)
+        int rowBottomY = screenHeight - 39;
+        int rowTopY = screenHeight - 49;
 
-        // --- 1. 左下：生命值 + 伤害吸收 (§e 为黄色代码) ---
-        float abs = player.getAbsorptionAmount();
-        String hpBase = String.format("%.0f/%.0f", player.getHealth(), player.getMaxHealth());
-        String hpExtra = abs > 0 ? " §e+" + (int)abs : "";
-        drawBarBottom(guiGraphics, leftX, rowBottomY, player.getHealth(), player.getMaxHealth(),
-                HEALTH_E, HEALTH_F, hpBase + hpExtra);
+        float currentLingQi = LingQiData.ClientLingQiData.getCurrent();
+        float maxLingQi = LingQiData.ClientLingQiData.getMax();
+        updateBlinkTimers(player, currentLingQi, maxLingQi);
+        updateDisplayedValues(player.getHealth(), player.getFoodData().getFoodLevel(), currentLingQi);
 
-        // --- 2. 右下：饥饿值 + 饱和度 ---
-        float sat = player.getFoodData().getSaturationLevel();
-        String foodBase = String.format("%d/20", player.getFoodData().getFoodLevel());
-        String foodExtra = sat > 0 ? " §e+" + (int)sat : "";
-        drawBarBottom(guiGraphics, rightX, rowBottomY, (float)player.getFoodData().getFoodLevel(), 20f,
-                HUNGRY_E, HUNGRY_F, foodBase + foodExtra);
+        float absorption = player.getAbsorptionAmount();
+        String healthText = String.format("%.0f/%.0f", displayedHealth, player.getMaxHealth());
+        if (absorption > 0) healthText += " \u00a7e+" + (int) absorption;
+        drawBar(guiGraphics, leftX, rowBottomY, displayedHealth, player.getMaxHealth(),
+                healthTexturesFor(player), isBlinking(player.tickCount, healthBlinkUntil), healthText, 0);
 
-        // --- 3. 右上：灵气值 (通过 Attachment 获取) ---
-        float currentLq = LingQiData.ClientLingQiData.getCurrent();
-        float maxLq = LingQiData.ClientLingQiData.getMax();
-        drawBarTop(guiGraphics, rightX, rowTopY, currentLq, maxLq, LINGQI_E, LINGQI_F,
-                String.format("%.0f/%.0f", currentLq, maxLq));
+        int foodLevel = player.getFoodData().getFoodLevel();
+        float saturation = player.getFoodData().getSaturationLevel();
+        String foodText = String.format("%.0f/20", displayedFood);
+        if (saturation > 0) foodText += " \u00a7e+" + (int) saturation;
+        drawBar(guiGraphics, rightX, rowBottomY, displayedFood, 20.0F,
+                HUNGRY, isBlinking(player.tickCount, hungryBlinkUntil), foodText, 0);
 
-        // --- 4. 左上：图标数值组 (缩小显示) ---
-        // 护甲
+        drawBar(guiGraphics, rightX, rowTopY, displayedLingQi, maxLingQi,
+                LINGQI, isBlinking(player.tickCount, lingQiBlinkUntil),
+                String.format("%.0f/%.0f", displayedLingQi, maxLingQi), 0);
+
         drawIconValue(guiGraphics, leftX, rowTopY, ARMOR_ICON, String.valueOf(player.getArmorValue()));
-        // 法力
-        float mana = (float)player.getAttributeValue(ModAttributes.FALIZHI);
+        float mana = (float) player.getAttributeValue(ModAttributes.FALIZHI);
         drawIconValue(guiGraphics, leftX + 30, rowTopY, MANA_ICON, String.format("%.2f", mana));
-        // 氧气
         if (player.getAirSupply() < player.getMaxAirSupply()) {
-            drawIconValue(guiGraphics, leftX + 65, rowTopY, OXYGEN_ICON, String.valueOf(player.getAirSupply() / 20));
+            drawIconValue(guiGraphics, leftX + 65, rowTopY, OXYGEN_ICON,
+                    String.valueOf(player.getAirSupply() / 20));
         }
     }
 
-    private void drawBarBottom(GuiGraphics g, int x, int y, float cur, float max, ResourceLocation e, ResourceLocation f, String text) {
-        g.blit(e, x, y, 0, 0, 81, 9, 81, 9);
-        int w = (int)(Math.min(cur / max, 1.0f) * 81);
-        if (w > 0) g.blit(f, x, y, 0, 0, w, 9, 81, 9);
+    private void updateBlinkTimers(Player player, float currentLingQi, float maxLingQi) {
+        int tick = player.tickCount;
+        float health = player.getHealth();
+        float maxHealth = player.getMaxHealth();
+        float absorption = player.getAbsorptionAmount();
+        int food = player.getFoodData().getFoodLevel();
+        float saturation = player.getFoodData().getSaturationLevel();
 
-        renderScaledText(g, text, x, y, 81);
+        if (trackedPlayer != player) {
+            trackedPlayer = player;
+            lastHealth = health;
+            lastMaxHealth = maxHealth;
+            lastAbsorption = absorption;
+            lastFood = food;
+            lastSaturation = saturation;
+            lastLingQi = currentLingQi;
+            lastMaxLingQi = maxLingQi;
+            healthBlinkUntil = tick;
+            hungryBlinkUntil = tick;
+            lingQiBlinkUntil = tick;
+            displayedHealth = health;
+            displayedFood = food;
+            displayedLingQi = currentLingQi;
+            lastAnimationMillis = Util.getMillis();
+            return;
+        }
+
+        if (Float.compare(health, lastHealth) != 0
+                || Float.compare(maxHealth, lastMaxHealth) != 0
+                || Float.compare(absorption, lastAbsorption) != 0) {
+            healthBlinkUntil = tick + HEALTH_BLINK_TICKS;
+        }
+        if (food != lastFood || Float.compare(saturation, lastSaturation) != 0) {
+            hungryBlinkUntil = tick + OTHER_BAR_BLINK_TICKS;
+        }
+        if (Float.compare(currentLingQi, lastLingQi) != 0 || Float.compare(maxLingQi, lastMaxLingQi) != 0) {
+            lingQiBlinkUntil = tick + OTHER_BAR_BLINK_TICKS;
+        }
+
+        lastHealth = health;
+        lastMaxHealth = maxHealth;
+        lastAbsorption = absorption;
+        lastFood = food;
+        lastSaturation = saturation;
+        lastLingQi = currentLingQi;
+        lastMaxLingQi = maxLingQi;
     }
 
-    private void drawBarTop(GuiGraphics g, int x, int y, float cur, float max, ResourceLocation e, ResourceLocation f, String text) {
-        g.blit(e, x, y, 0, 0, 81, 9, 81, 9);
-        int w = (int)(Math.min(cur / max, 1.0f) * 81);
-        if (w > 0) g.blit(f, x, y, 0, 0, w, 9, 81, 9);
+    private void updateDisplayedValues(float health, float food, float lingQi) {
+        long now = Util.getMillis();
+        float deltaSeconds = Math.min((now - lastAnimationMillis) / 1000.0F, 0.1F);
+        lastAnimationMillis = now;
+        float animationFactor = 1.0F - (float) Math.exp(-VALUE_ANIMATION_SPEED * deltaSeconds);
 
-        renderScaledText(g, text, x, y+1, 81);
+        displayedHealth = animateValue(displayedHealth, health, animationFactor);
+        displayedFood = animateValue(displayedFood, food, animationFactor);
+        displayedLingQi = animateValue(displayedLingQi, lingQi, animationFactor);
     }
 
-    private void drawIconValue(GuiGraphics g, int x, int y, ResourceLocation icon, String val) {
-        g.blit(icon, x, y, 0, 0, 9, 9, 9, 9);
-        renderScaledText(g, val, x + 11, y + 1, 0); // 0表示不居中，直接靠图标排
+    private static float animateValue(float displayed, float target, float animationFactor) {
+        float animated = displayed + (target - displayed) * animationFactor;
+        return Math.abs(target - animated) <= VALUE_SNAP_EPSILON ? target : animated;
     }
 
-    private void renderScaledText(GuiGraphics g, String text, int x, int y, int barWidth) {
-        g.pose().pushPose();
-        g.pose().scale((float) 0.7, (float) 0.7, 1.0f);
-        int tw = Minecraft.getInstance().font.width(text);
+    private static BarTextures healthTexturesFor(Player player) {
+        if (player.hasEffect(MobEffects.POISON)) return POISONED;
+        if (player.hasEffect(MobEffects.WITHER)) return WITHERED;
+        if (player.isFullyFrozen() || player.hasEffect(ModEffects.freeze)) return FROZEN;
+        if (player.getAbsorptionAmount() > 0) return ABSORBING;
+        return HEALTH;
+    }
 
-        float tx = (barWidth > 0) ? (x + (barWidth - tw * (float) 0.7) / 2f) / (float) 0.7 : x / (float) 0.7;
-        float ty = (y + (9 - 8 * (float) 0.7) / 2f) / (float) 0.7;
+    private static boolean isBlinking(int tick, int blinkUntil) {
+        return tick < blinkUntil && (tick / BLINK_INTERVAL_TICKS & 1) == 0;
+    }
 
-        g.drawString(Minecraft.getInstance().font, text, (int)tx, (int)ty, 0xFFFFFF, true);
-        g.pose().popPose();
+    private void drawBar(GuiGraphics graphics, int x, int y, float current, float max,
+                         BarTextures textures, boolean blinking, String text, int textYOffset) {
+        ResourceLocation empty = blinking ? textures.blinkingEmpty() : textures.empty();
+        ResourceLocation full = blinking ? textures.blinkingFull() : textures.full();
+        drawBarTexture(graphics, empty, x, y);
+
+        float ratio = max > 0.0F ? current / max : 0.0F;
+        int width = (int) (Math.clamp(ratio, 0.0F, 1.0F) * BAR_WIDTH);
+        if (width > 0) {
+            graphics.enableScissor(x, y, x + width, y + BAR_HEIGHT);
+            drawBarTexture(graphics, full, x, y);
+            graphics.disableScissor();
+        }
+
+        renderScaledText(graphics, text, x, y + textYOffset, BAR_WIDTH);
+    }
+
+    private void drawBarTexture(GuiGraphics graphics, ResourceLocation texture, int x, int y) {
+        int centerSourceWidth = BAR_TEXTURE_WIDTH - SOURCE_CAP_WIDTH * 2;
+        int centerDisplayWidth = BAR_WIDTH - DISPLAY_CAP_WIDTH * 2;
+
+        graphics.blit(texture, x, y, DISPLAY_CAP_WIDTH, BAR_HEIGHT,
+                0.0F, 0.0F, SOURCE_CAP_WIDTH, BAR_TEXTURE_HEIGHT,
+                BAR_TEXTURE_WIDTH, BAR_TEXTURE_HEIGHT);
+        graphics.blit(texture, x + DISPLAY_CAP_WIDTH, y, centerDisplayWidth, BAR_HEIGHT,
+                SOURCE_CAP_WIDTH, 0.0F, centerSourceWidth, BAR_TEXTURE_HEIGHT,
+                BAR_TEXTURE_WIDTH, BAR_TEXTURE_HEIGHT);
+        graphics.blit(texture, x + BAR_WIDTH - DISPLAY_CAP_WIDTH, y, DISPLAY_CAP_WIDTH, BAR_HEIGHT,
+                BAR_TEXTURE_WIDTH - SOURCE_CAP_WIDTH, 0.0F, SOURCE_CAP_WIDTH, BAR_TEXTURE_HEIGHT,
+                BAR_TEXTURE_WIDTH, BAR_TEXTURE_HEIGHT);
+    }
+
+    private void drawIconValue(GuiGraphics graphics, int x, int y, ResourceLocation icon, String value) {
+        graphics.blit(icon, x, y, 0, 0, 9, 9, 9, 9);
+        renderScaledText(graphics, value, x + 11, y + 1, 0);
+    }
+
+    private void renderScaledText(GuiGraphics graphics, String text, int x, int y, int barWidth) {
+        float scale = 0.7F;
+        int textWidth = Minecraft.getInstance().font.width(text);
+        float textX = barWidth > 0 ? x + (barWidth - textWidth * scale) / 2.0F : x;
+        float textY = y + (BAR_HEIGHT - 8 * scale) / 2.0F;
+
+        graphics.pose().pushPose();
+        graphics.pose().translate(textX, textY, 0.0F);
+        graphics.pose().scale(scale, scale, 1.0F);
+        graphics.drawString(Minecraft.getInstance().font, text, 0, 0, 0xFFFFFF, true);
+        graphics.pose().popPose();
+    }
+
+    private record BarTextures(ResourceLocation empty, ResourceLocation full,
+                               ResourceLocation blinkingEmpty, ResourceLocation blinkingFull) {
     }
 }

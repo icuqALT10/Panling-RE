@@ -22,6 +22,7 @@ public class CustomMerchantMenu extends MerchantMenu {
 
     private final MerchantOffers offers;
     private final Player player;
+    private int selectedTradeIndex;
 
     public CustomMerchantMenu(int containerId, Inventory playerInv, MerchantOffers offers) {
         super(containerId, playerInv, new SimpleMerchant(offers));
@@ -46,6 +47,12 @@ public class CustomMerchantMenu extends MerchantMenu {
         this.offers.addAll(newOffers);
     }
 
+    @Override
+    public void setSelectionHint(int tradeIndex) {
+        this.selectedTradeIndex = tradeIndex;
+        super.setSelectionHint(tradeIndex);
+    }
+
     @SuppressWarnings("unchecked")
     private List<CustomMerchantOffer> customOffers() {
         return (List<CustomMerchantOffer>) (List<?>) offers;
@@ -57,6 +64,7 @@ public class CustomMerchantMenu extends MerchantMenu {
     public void tryMoveItems(int tradeIndex) {
         List<CustomMerchantOffer> trades = customOffers();
         if (tradeIndex < 0 || tradeIndex >= trades.size()) return;
+        setSelectionHint(tradeIndex);
         CustomMerchantOffer offer = trades.get(tradeIndex);
 
         Slot slotA = this.slots.get(0);
@@ -145,19 +153,23 @@ public class CustomMerchantMenu extends MerchantMenu {
     // ========== 精确匹配 ==========
 
     private CustomMerchantOffer findTradableOffer() {
-        CustomMerchantOffer offer = findExactMatch(
-                this.slots.get(0).getItem(),
-                this.slots.get(1).getItem()
-        );
-        return offer != null && canTrade(offer) ? offer : null;
-    }
+        List<CustomMerchantOffer> trades = customOffers();
+        if (selectedTradeIndex >= 0 && selectedTradeIndex < trades.size()) {
+            CustomMerchantOffer selectedOffer = trades.get(selectedTradeIndex);
+            if (canTrade(selectedOffer)) {
+                return selectedOffer;
+            }
+        }
 
-    private CustomMerchantOffer findExactMatch(ItemStack a, ItemStack b) {
-        for (CustomMerchantOffer o : customOffers()) {
-            if (!ItemStack.isSameItemSameComponents(a, o.getEnrichedCostA())) continue;
-            if (o.getEnrichedCostB().isEmpty() ? !b.isEmpty()
-                    : !ItemStack.isSameItemSameComponents(b, o.getEnrichedCostB())) continue;
-            return o;
+        // Manual insertion may happen without selecting a row first. In that
+        // case, use the first offer that is fully satisfied, not merely the
+        // first offer with the same item/components.
+        for (int i = 0; i < trades.size(); i++) {
+            if (i == selectedTradeIndex) continue;
+            CustomMerchantOffer offer = trades.get(i);
+            if (canTrade(offer)) {
+                return offer;
+            }
         }
         return null;
     }

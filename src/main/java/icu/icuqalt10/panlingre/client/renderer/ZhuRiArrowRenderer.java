@@ -18,21 +18,11 @@ public class ZhuRiArrowRenderer extends EntityRenderer<ZhuRiArrowEntity> {
     private static final ResourceLocation TEX =
             ResourceLocation.withDefaultNamespace("textures/misc/white.png");
 
-    // Outer layers: translucent + NO_CULL (dark shell, DE style)
-    private static final RenderType BEAM_DARK = RenderType.create(
-            "zhu_ri_beam_dark",
-            DefaultVertexFormat.NEW_ENTITY,
-            VertexFormat.Mode.QUADS, 256, false, true,
-            RenderType.CompositeState.builder()
-                    .setShaderState(RenderType.RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
-                    .setTextureState(new RenderType.TextureStateShard(TEX, false, false))
-                    .setTransparencyState(RenderType.TRANSLUCENT_TRANSPARENCY)
-                    .setCullState(RenderType.NO_CULL)
-                    .setLightmapState(RenderType.LIGHTMAP)
-                    .setOverlayState(RenderType.OVERLAY)
-                    .createCompositeState(false)
-    );
-    // Inner core: additive glow
+    // The emissive entity pass is understood by both vanilla and shader loaders.
+    // RenderType.eyes supplies the additive halo, while this pass keeps a bright
+    // core even when a shader pack changes exposure and entity lighting.
+    private static final RenderType BEAM_EMISSIVE =
+            RenderType.entityTranslucentEmissive(TEX, false);
     private static final RenderType BEAM_GLOW = RenderType.eyes(TEX);
 
     private static final int SIDES = 8;
@@ -53,12 +43,12 @@ public class ZhuRiArrowRenderer extends EntityRenderer<ZhuRiArrowEntity> {
 
         float ga = dec ? Math.max(0f, 1f - decay) : 1f;
 
-        // Outer aura (additive glow)
-        tube(pts, ps, buf, BEAM_GLOW, 0.12f, 0xeba317,0,0,   (int)(30*ga));
-        // Mid glow (additive glow)
-        tube(pts, ps, buf, BEAM_GLOW, 0.05f, 0x2d,0,0,   (int)(60*ga));
-        // Inner core (dark, translucent)
-        tube(pts, ps, buf, BEAM_DARK, 0.015f,0x6f,0x02,0x02,(int)(180*ga));
+        // setColor takes separate 0..255 channels.  Passing 0xeba317 as the red
+        // channel used to truncate to 0x17 on common buffer implementations,
+        // which is why shader packs showed a very dark red beam.
+        tube(pts, ps, buf, BEAM_GLOW,    0.065f, 0xEB, 0x5A, 0x0A, (int)(70 * ga));
+        tube(pts, ps, buf, BEAM_EMISSIVE,0.0275f,0xB0, 0x18, 0x08, (int)(210 * ga));
+        tube(pts, ps, buf, BEAM_EMISSIVE,0.009f, 0x6F, 0x02, 0x02, (int)(230 * ga));
 
         super.render(e, yaw, pt, ps, buf, light);
     }

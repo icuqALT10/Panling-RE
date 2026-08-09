@@ -4,6 +4,9 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "LivingEntityMixin",
+    "EnderDragonMixin",
+    "WitherBossMixin",
+    "PlayerAttackMixin",
     "RangedAttributeMixin",
     "AbstractArrowMixin",
     "SlimeSplitMixin",

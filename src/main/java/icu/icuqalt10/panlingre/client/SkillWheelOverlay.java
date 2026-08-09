@@ -53,12 +53,8 @@ public class SkillWheelOverlay implements LayeredDraw.Layer {
             ClientSkillState.selectSkill(hoveredIndex);
             if (ClientSkillState.isActivateMode()
                     && ClientSkillState.getCooldownProgress(skill) <= 0) {
-                long baseCd = skill.data().cooldown();
                 PacketDistributor.sendToServer(
-                        new SkillWheelPayload(skill.itemId(), skill.skillIndex(), baseCd));
-                Player player = Minecraft.getInstance().player;
-                long reduced = player != null ? ClientSkillState.getReducedCooldown(player, baseCd) : baseCd;
-                ClientSkillState.recordCooldown(skill, reduced);
+                        new SkillWheelPayload(skill.itemId(), skill.skillIndex()));
             }
         }
         Minecraft.getInstance().mouseHandler.grabMouse();

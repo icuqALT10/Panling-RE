@@ -31,6 +31,9 @@ import java.util.List;
 
 public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
 
+    private final int cooldown = 400;
+    private final float cost = 50.0f;
+
     public ding_hai_shen_zhen() {
         super(
                 Tiers.DIAMOND,
@@ -86,7 +89,7 @@ public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
                 Attributes.ATTACK_SPEED,
                 new AttributeModifier(
                         BASE_ATTACK_SPEED_ID,
-                        isPowered ? 100.0 : -2.6,
+                        isPowered ? 100.0 : -2.2,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -126,7 +129,7 @@ public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
 
     @Override
     public long getSkillCD(int skillIndex) {
-        return 20000L;
+        return cooldown * 50L;
     }
 
     @Override
@@ -136,7 +139,7 @@ public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
 
     @Override
     public float getSkillLingQiCost(int skillIndex) {
-        return 50;
+        return cost;
     }
 
     @Override
@@ -161,7 +164,8 @@ public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
             tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.lore4"));
             tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill2"));
+            tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+                    LingQiData.getCostText(cost)));
             tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill3"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill4"));
             tooltipComponents.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill5"));

@@ -3,6 +3,8 @@ package icu.icuqalt10.panlingre.event;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.effect.FreezeEffect;
 import icu.icuqalt10.panlingre.init.ModEffects;
+import icu.icuqalt10.panlingre.network.FreezeSyncPayload;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -11,10 +13,33 @@ import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber(modid = PanlingRE.MODID)
 public class FreezeEventHandler {
+    @SubscribeEvent
+    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            PacketDistributor.sendToPlayer(
+                    player,
+                    new FreezeSyncPayload(player.getUUID(), player.hasEffect(ModEffects.freeze))
+            );
+        }
+    }
+
+    @SubscribeEvent
+    public static void onStartTracking(PlayerEvent.StartTracking event) {
+        if (event.getEntity() instanceof ServerPlayer player
+                && event.getTarget() instanceof LivingEntity target) {
+            PacketDistributor.sendToPlayer(
+                    player,
+                    new FreezeSyncPayload(target.getUUID(), target.hasEffect(ModEffects.freeze))
+            );
+        }
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onFreezeApplicable(MobEffectEvent.Applicable event) {
         if (!event.getEffectInstance().is(ModEffects.freeze)) {

@@ -54,6 +54,14 @@ public class ModAttributes {
                     2.0
             ).setSyncable(true)
     );
+    public static final DeferredHolder<Attribute, Attribute> LING_QI_RECOVERY = ATTRIBUTES.register("ling_qi_recovery",
+            () -> new RangedAttribute(
+                    "description.PanlingRE.ling_qi_recovery",
+                    1.0,
+                    -10000.0,
+                    10000.0
+            ).setSyncable(true)
+    );
 
     public static void register(IEventBus eventBus) {
         ATTRIBUTES.register(eventBus);

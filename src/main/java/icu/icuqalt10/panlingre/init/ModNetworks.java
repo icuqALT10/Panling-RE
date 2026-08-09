@@ -36,6 +36,18 @@ public class ModNetworks {
         );
 
         registrar.playToClient(
+                SkillUseSucceededPayload.TYPE,
+                SkillUseSucceededPayload.STREAM_CODEC,
+                SkillUseSucceededPayload::handle
+        );
+
+        registrar.playToClient(
+                FreezeSyncPayload.TYPE,
+                FreezeSyncPayload.STREAM_CODEC,
+                FreezeSyncPayload::handle
+        );
+
+        registrar.playToClient(
                 LingQiSyncPacket.TYPE,
                 LingQiSyncPacket.STREAM_CODEC,
                 LingQiSyncPacket::handle

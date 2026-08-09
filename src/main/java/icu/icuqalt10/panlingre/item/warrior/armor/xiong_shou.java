@@ -53,6 +53,11 @@ public class xiong_shou extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("xiong_shou_helmet"),
                             1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("xiong_shou_helmet"),
+                            0.075,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.CHEST) {
             builder.add(Attributes.ARMOR,
@@ -79,6 +84,11 @@ public class xiong_shou extends ArmorItem {
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("xiong_shou_chestplate"),
                             2,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("xiong_shou_chestplate"),
+                            0.075,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.LEGS) {
@@ -107,6 +117,11 @@ public class xiong_shou extends ArmorItem {
                             ResourceLocation.withDefaultNamespace("xiong_shou_leggings"),
                             1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("xiong_shou_leggings"),
+                            0.075,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.FEET) {
             builder.add(Attributes.ARMOR,
@@ -133,6 +148,11 @@ public class xiong_shou extends ArmorItem {
                     new AttributeModifier(
                             ResourceLocation.withDefaultNamespace("xiong_shou_boots"),
                             1,
+                            AttributeModifier.Operation.ADD_VALUE), slot);
+            builder.add(Attributes.KNOCKBACK_RESISTANCE,
+                    new AttributeModifier(
+                            ResourceLocation.withDefaultNamespace("xiong_shou_boots"),
+                            0.075,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
 
