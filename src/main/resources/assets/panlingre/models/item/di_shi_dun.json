@@ -1,0 +1,30 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "panlingre:item/shield_inactive"
+  },
+	"overrides": [
+		{
+			"predicate": {"panlingre:form": 1},
+			"model": "panlingre:item/shields/pojun"
+		},
+        {
+            "predicate": {
+				"panlingre:form": 1,
+                "blocking": 1
+            },
+            "model": "panlingre:item/shields/pojun_blocking"
+        },
+		{
+			"predicate": {"panlingre:form": 2},
+			"model": "panlingre:item/shields/jinzhong"
+		},
+        {
+            "predicate": {
+				"panlingre:form": 2,
+                "blocking": 1
+            },
+            "model": "panlingre:item/shields/jinzhong_blocking"
+        }
+	]
+}

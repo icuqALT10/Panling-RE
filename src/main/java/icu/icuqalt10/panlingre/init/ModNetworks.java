@@ -11,6 +11,7 @@ import icu.icuqalt10.panlingre.network.particle.HuoQiuExplosionParticles;
 import icu.icuqalt10.panlingre.network.ShakePayload;
 import icu.icuqalt10.panlingre.network.particle.ParticleCluster;
 import icu.icuqalt10.panlingre.network.particle.ParticleLighting;
+import icu.icuqalt10.panlingre.network.particle.Ys3JinTornadoPayload;
 import icu.icuqalt10.panlingre.network.task.TaskEntityCheckPayload;
 import icu.icuqalt10.panlingre.network.task.TaskEntityResultPayload;
 import icu.icuqalt10.panlingre.network.task.TaskGuideSyncPayload;
@@ -35,6 +36,18 @@ public class ModNetworks {
                 SkillWheelPayload::handle
         );
 
+        registrar.playToServer(
+                TianXingTargetPayload.TYPE,
+                TianXingTargetPayload.STREAM_CODEC,
+                TianXingTargetPayload::handle
+        );
+
+        registrar.playToServer(
+                PojunCounterAttackReadyPayload.TYPE,
+                PojunCounterAttackReadyPayload.STREAM_CODEC,
+                PojunCounterAttackReadyPayload::handle
+        );
+
         registrar.playToClient(
                 SkillUseSucceededPayload.TYPE,
                 SkillUseSucceededPayload.STREAM_CODEC,
@@ -42,9 +55,15 @@ public class ModNetworks {
         );
 
         registrar.playToClient(
-                FreezeSyncPayload.TYPE,
-                FreezeSyncPayload.STREAM_CODEC,
-                FreezeSyncPayload::handle
+                ItemActivationPayload.TYPE,
+                ItemActivationPayload.STREAM_CODEC,
+                ItemActivationPayload::handle
+        );
+
+        registrar.playToClient(
+                PojunCounterAttackPayload.TYPE,
+                PojunCounterAttackPayload.STREAM_CODEC,
+                PojunCounterAttackPayload::handle
         );
 
         registrar.playToClient(
@@ -99,6 +118,12 @@ public class ModNetworks {
                 ParticleCluster.TYPE,
                 ParticleCluster.STREAM_CODEC,
                 ParticleCluster::handle
+        );
+
+        registrar.playToClient(
+                Ys3JinTornadoPayload.TYPE,
+                Ys3JinTornadoPayload.STREAM_CODEC,
+                Ys3JinTornadoPayload::handle
         );
 
         registrar.playToClient(

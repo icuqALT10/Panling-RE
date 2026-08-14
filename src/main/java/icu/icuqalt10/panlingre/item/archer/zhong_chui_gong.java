@@ -60,7 +60,16 @@ public class zhong_chui_gong extends BowItem implements skill_trigger {
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
                         UID,
-                        -0.2,
+                        -0.45,
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                ),
+                EquipmentSlotGroup.MAINHAND
+        );
+        builder.add(
+                Attributes.ARMOR,
+                new AttributeModifier(
+                        UID,
+                        0.1,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
                 EquipmentSlotGroup.MAINHAND

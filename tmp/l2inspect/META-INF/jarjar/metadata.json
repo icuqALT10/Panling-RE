@@ -1,0 +1,88 @@
+{
+  "jars": [
+    {
+      "identifier": {
+        "group": "com.tterrag.registrate",
+        "artifact": "Registrate"
+      },
+      "version": {
+        "range": "[MC1.21-1.3.0+67,)",
+        "artifactVersion": "MC1.21-1.3.0+67"
+      },
+      "path": "META-INF/jarjar/Registrate-MC1.21-1.3.0+67.jar",
+      "isObfuscated": false
+    },
+    {
+      "identifier": {
+        "group": "dev.xkmc",
+        "artifact": "l2core"
+      },
+      "version": {
+        "range": "[3.0.8+15,)",
+        "artifactVersion": "3.0.8+15"
+      },
+      "path": "META-INF/jarjar/l2core-3.0.8+15.jar",
+      "isObfuscated": false
+    },
+    {
+      "identifier": {
+        "group": "dev.xkmc",
+        "artifact": "l2itemselector"
+      },
+      "version": {
+        "range": "[3.0.9,)",
+        "artifactVersion": "3.0.9"
+      },
+      "path": "META-INF/jarjar/l2itemselector-3.0.9.jar",
+      "isObfuscated": false
+    },
+    {
+      "identifier": {
+        "group": "dev.xkmc",
+        "artifact": "l2menustacker"
+      },
+      "version": {
+        "range": "[3.0.10,)",
+        "artifactVersion": "3.0.10"
+      },
+      "path": "META-INF/jarjar/l2menustacker-3.0.10.jar",
+      "isObfuscated": false
+    },
+    {
+      "identifier": {
+        "group": "dev.xkmc",
+        "artifact": "l2modularblocks"
+      },
+      "version": {
+        "range": "[3.0.0+4,)",
+        "artifactVersion": "3.0.0+4"
+      },
+      "path": "META-INF/jarjar/l2modularblocks-3.0.0+4.jar",
+      "isObfuscated": false
+    },
+    {
+      "identifier": {
+        "group": "dev.xkmc",
+        "artifact": "l2serial"
+      },
+      "version": {
+        "range": "[3.1.1,)",
+        "artifactVersion": "3.1.1"
+      },
+      "path": "META-INF/jarjar/l2serial-3.1.1.jar",
+      "isObfuscated": false
+    },
+    {
+      "identifier": {
+        "group": "dev.xkmc",
+        "artifact": "l2tabs"
+      },
+      "version": {
+        "range": "[3.0.5+7,)",
+        "artifactVersion": "3.0.5+7"
+      },
+      "path": "META-INF/jarjar/l2tabs-3.0.5+7.jar",
+      "isObfuscated": false
+    }
+  ]
+}

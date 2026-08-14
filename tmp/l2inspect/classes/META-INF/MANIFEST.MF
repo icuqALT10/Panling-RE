@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Specification-Title: l2tabs
+Specification-Vendor: xkmc
+Specification-Version: 1
+Implementation-Title: L2Tabs
+Implementation-Version: 3.0.5+7
+Implementation-Vendor: xkmc
+Implementation-Timestamp: 2024-10-14T07:33:06+0800
+MixinConfigs: l2tabs.mixins.json
+

@@ -10,6 +10,7 @@ import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModComponents;
 import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -21,9 +22,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -33,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class zhu_ri extends BowItem implements skill_trigger {
+public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger {
 
     private final int cooldown = 400;
     private final float cost = 50.0f;
@@ -42,7 +43,7 @@ public class zhu_ri extends BowItem implements skill_trigger {
         super(
                 new Properties()
                         .stacksTo(1)
-                        .fireResistant()
+                        .fireResistant(), 3, 1
         );
     }
 
@@ -66,7 +67,7 @@ public class zhu_ri extends BowItem implements skill_trigger {
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
                         UID,
-                        isPowered ? -0.35 : -0.15,
+                        isPowered ? -0.75 : 0.2,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -75,7 +76,7 @@ public class zhu_ri extends BowItem implements skill_trigger {
                 Attributes.ARMOR,
                 new AttributeModifier(
                         UID,
-                        -0.15,
+                        isPowered ? 0.15 : -0.2,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -191,6 +192,9 @@ public class zhu_ri extends BowItem implements skill_trigger {
         ZhuRiArrowEntity arrow = new ZhuRiArrowEntity(level, player,
                 P0, P1, P2, P3, arrowDmg, lockedTarget);
         serverLevel.addFreshEntity(arrow);
+        if (tian_xing_jian.isSniperActive(player)) {
+            tian_xing_jian.notifySniperShot(player);
+        }
 
         if (!player.getAbilities().instabuild) {
             ammo.shrink(1);
@@ -221,8 +225,10 @@ public class zhu_ri extends BowItem implements skill_trigger {
     public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
         //释放技能
         if (!level.isClientSide) {
+            stack.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
             stack.set(ModComponents.IS_POWERED.get(), true);
             stack.set(ModComponents.POWERED_TIMER.get(), level.getGameTime());
+            syncBuiltInEnchantments(stack, level);
 
             //音效
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
@@ -234,15 +240,25 @@ public class zhu_ri extends BowItem implements skill_trigger {
     }
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (!level.isClientSide && stack.getOrDefault(ModComponents.IS_POWERED.get(), false)) {
+        super.inventoryTick(stack, level, entity, slotId, isSelected);
+        if (level.isClientSide) return;
+
+        boolean isPowered = stack.getOrDefault(ModComponents.IS_POWERED.get(), false);
+        if (isPowered) {
             long startTime = stack.getOrDefault(ModComponents.POWERED_TIMER.get(), 0L);
             if (level.getGameTime() - startTime > 200) {
                 stack.set(ModComponents.IS_POWERED.get(), false);
+                syncBuiltInEnchantments(stack, level);
                 if (entity instanceof Player player) {
                     player.displayClientMessage(Component.translatable("item.PanlingRE.zhu_ri.skill.expired"), true);
                 }
             }
         }
+    }
+
+    @Override
+    protected boolean hasBuiltInEnchantments(ItemStack stack) {
+        return !stack.getOrDefault(ModComponents.IS_POWERED.get(), false);
     }
 
     @Override
@@ -267,6 +283,13 @@ public class zhu_ri extends BowItem implements skill_trigger {
                 "item.PanlingRE.zhu_ri.skill4",
                 "item.PanlingRE.zhu_ri.skill5"
         };
+    }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        return stack.getOrDefault(ModComponents.IS_POWERED.get(), false) ?
+                Component.translatable("item.panlingre.zhu_ri.juji") :
+                Component.translatable("item.panlingre.zhu_ri.youxia");
     }
 
     @Override

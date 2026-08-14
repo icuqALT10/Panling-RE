@@ -1,0 +1,8 @@
+{
+  "l2library.configuration.restoreFullHealthOnRespawn": "Restore full health on respawn",
+  "l2library.configuration.restoreFullHealthOnRespawn.tooltip": "",
+  "l2library.configuration.section.l2configs.l2library.server.toml": "L2Library Server Configuration",
+  "l2library.configuration.section.l2configs.l2library.server.toml.title": "L2Library Server Configuration",
+  "l2library.configuration.title": "L2Library Configuration",
+  "l2library.title": "L2Library"
+}

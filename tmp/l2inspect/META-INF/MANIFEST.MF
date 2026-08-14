@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Specification-Title: l2library
+Specification-Vendor: xkmc
+Specification-Version: 1
+Implementation-Title: L2Library-1.21
+Implementation-Version: 3.0.8
+Implementation-Vendor: xkmc
+Implementation-Timestamp: 2026-02-06T22:36:59+0800
+MixinConfigs: l2library.mixins.json
+

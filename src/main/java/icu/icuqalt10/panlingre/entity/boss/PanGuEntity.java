@@ -1419,6 +1419,9 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
             );
         }
 
+        if (this.level() instanceof ServerLevel sl) {
+            runCommand(sl, "function plre:instances/pangu/boss_died");
+        }
         this.remove(RemovalReason.KILLED);
     }
 
@@ -1457,6 +1460,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
             creeper.getPersistentData().putInt("GundileiTicks", 20);
             //写入伤害
             creeper.getPersistentData().putFloat("GundileiDamage", 10);
+            creeper.getPersistentData().putUUID("GundileiOwner", this.getUUID());
 
             //加入队伍
             if (this.getTeam() != null) {

@@ -36,9 +36,16 @@ import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @EventBusSubscriber(modid = PanlingRE.MODID, value = Dist.CLIENT)
 public class ClientModEvents {
+
+    private static final Pattern ATTRIBUTE_NUMBER =
+            Pattern.compile("([+-]?)(\\d+(?:\\.\\d+)?)");
 
     //视场角抖动
     private static final List<ShakeEffect> shakeEffects = new ArrayList<>();
@@ -167,6 +174,23 @@ public class ClientModEvents {
                             stack.getOrDefault(ModComponents.IS_POWERED.get(), false) ? 1.0F : 0.0F
             );
 
+            // 地势盾牌：0 = 未激活，1 = 破军，2 = 金钟。
+            ItemProperties.register(
+                    ModItems.di_shi_dun.get(),
+                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "form"),
+                    (stack, level, entity, seed) -> entity instanceof net.minecraft.world.entity.player.Player player
+                            && player.getOffhandItem() == stack
+                            ? stack.getOrDefault(ModComponents.DI_SHI_DUN_FORM.get(), 0)
+                            : 0.0F
+            );
+            ItemProperties.register(
+                    ModItems.di_shi_dun.get(),
+                    ResourceLocation.withDefaultNamespace("blocking"),
+                    (stack, level, entity, seed) -> entity != null
+                            && entity.isUsingItem()
+                            && entity.getUseItem() == stack ? 1.0F : 0.0F
+            );
+
             //逐日 powered状态下拉弓动画10倍速
             ItemProperties.register(
                     ModItems.zhu_ri.get(),
@@ -216,6 +240,12 @@ public class ClientModEvents {
         event.registerEntityRenderer(ModEntities.FIRE_TORNADO.get(), FireTornadoRenderer::new);
         // 注册朱日流光箭渲染器
         event.registerEntityRenderer(ModEntities.ZHU_RI_ARROW.get(), ZhuRiArrowRenderer::new);
+        event.registerEntityRenderer(ModEntities.YS_MU_HEALING.get(), YsMuHealingRenderer::new);
+        event.registerEntityRenderer(ModEntities.TU_BARRIER.get(), TuBarrierRenderer::new);
+        event.registerEntityRenderer(ModEntities.YS3_JIN_TORNADO.get(), Ys3JinTornadoRenderer::new);
+        event.registerEntityRenderer(ModEntities.YS3_MU_DOMAIN.get(), Ys3MuDomainRenderer::new);
+        event.registerEntityRenderer(ModEntities.YS3_SHUI_DOMAIN.get(), Ys3ShuiDomainRenderer::new);
+        event.registerEntityRenderer(ModEntities.YS3_HUO_DOMAIN.get(), Ys3HuoDomainRenderer::new);
     }
 
     /**
@@ -223,6 +253,8 @@ public class ClientModEvents {
      */
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
+        formatCooldownRemoveTooltip(event.getToolTip());
+
         ItemStack stack = event.getItemStack();
 
         // 检查物品是否有can_break组件
@@ -283,6 +315,34 @@ public class ClientModEvents {
                 // 插入简略提示
                 tooltip.add(canBreakIndex, Component.literal("§6[按住 Shift 查看可破坏方块]"));
             }
+        }
+    }
+
+    private static void formatCooldownRemoveTooltip(List<Component> tooltip) {
+        String attributeName = Component.translatable(
+                "description.PanlingRE.cooldown_remove"
+        ).getString();
+
+        for (int i = 0; i < tooltip.size(); i++) {
+            Component line = tooltip.get(i);
+            String text = line.getString();
+            if (!text.contains(attributeName)) {
+                continue;
+            }
+
+            Matcher matcher = ATTRIBUTE_NUMBER.matcher(text);
+            if (!matcher.find()) {
+                continue;
+            }
+
+            BigDecimal percent = new BigDecimal(matcher.group(2))
+                    .movePointRight(2)
+                    .setScale(2, RoundingMode.HALF_UP)
+                    .stripTrailingZeros();
+            String replacement = text.substring(0, matcher.start())
+                    + matcher.group(1) + percent.toPlainString()
+                    + "%" + text.substring(matcher.end());
+            tooltip.set(i, Component.literal(replacement).withStyle(line.getStyle()));
         }
     }
 

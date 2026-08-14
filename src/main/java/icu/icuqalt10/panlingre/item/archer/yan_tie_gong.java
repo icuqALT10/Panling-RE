@@ -7,9 +7,7 @@ import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.item.skill_trigger;
-import icu.icuqalt10.panlingre.mixin.AbstractArrowMixin;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -61,7 +59,16 @@ public class yan_tie_gong extends BowItem implements skill_trigger {
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
                         UID,
-                        -0.1,
+                        -0.4,
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                ),
+                EquipmentSlotGroup.MAINHAND
+        );
+        builder.add(
+                Attributes.ARMOR,
+                new AttributeModifier(
+                        UID,
+                        0.05,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
                 EquipmentSlotGroup.MAINHAND

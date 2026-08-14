@@ -152,6 +152,13 @@ public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
     }
 
     @Override
+    public Component getName(ItemStack stack) {
+        return stack.getOrDefault(ModComponents.IS_POWERED.get(), false) ?
+                Component.translatable("item.panlingre.ding_hai_shen_zhen.pojun") :
+                Component.translatable("item.panlingre.ding_hai_shen_zhen.jinzhong");
+    }
+
+    @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
 
         // 检测Shift键

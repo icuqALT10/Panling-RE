@@ -187,12 +187,10 @@ public class GameBusEvents {
                 LingQiData data = player.getData(ModAttachments.LINGQI);
                 float max = (float) player.getAttributeValue(ModAttributes.MAX_LINGQI);
 
-                //每10刻恢复2.5%（如果没有被冻结）
+                //每10t恢复（如果没有被冻结）
                 if (!player.hasEffect(ModEffects.freeze) && data.getCurrent() < max) {
-                    // 属性每增加1%，每秒额外恢复最大灵气的1%；折算到每10刻需要乘0.5。
-                    float recoveryBonus = (float) player.getAttributeValue(ModAttributes.LING_QI_RECOVERY) - 1.0f;
-                    float recoveryRate = 0.025f + recoveryBonus * 0.5f;
-                    data.setCurrent(data.getCurrent() + max * recoveryRate, player);
+                    float recovery = (float) player.getAttributeValue(ModAttributes.LING_QI_RECOVERY) * 0.5f;
+                    data.setCurrent(data.getCurrent() + max * recovery, player);
                 }
 
                 //同步灵气条
@@ -280,13 +278,20 @@ public class GameBusEvents {
                     float damage = creeper.getPersistentData().getInt("GundileiDamage");
                     boolean SuccessCheck = false;
                     ServerLevel serverLevel = (ServerLevel) creeper.level();
+                    Entity damageOwner = creeper;
+                    if (creeper.getPersistentData().hasUUID("GundileiOwner")) {
+                        Entity storedOwner = serverLevel.getEntity(creeper.getPersistentData().getUUID("GundileiOwner"));
+                        if (storedOwner != null) {
+                            damageOwner = storedOwner;
+                        }
+                    }
 
                     for (LivingEntity bumpedentity : bumpedEntyties) {
                         if (bumpedentity == creeper) continue;
                         if (creeper.getTeam() != null && creeper.getTeam() == bumpedentity.getTeam()) continue;
 
                         // 扣除精确的 10 点爆炸伤害
-                        bumpedentity.hurt(serverLevel.damageSources().explosion(creeper, creeper), damage);
+                        bumpedentity.hurt(serverLevel.damageSources().explosion(creeper, damageOwner), damage);
 
                         // 计算击飞向量 (由苦力怕指向玩家的方向，给予 XZ 方向冲量，并给予稳定的向上速度)
                         if (entity.getType().is(CantKnockAway_TAG)) {

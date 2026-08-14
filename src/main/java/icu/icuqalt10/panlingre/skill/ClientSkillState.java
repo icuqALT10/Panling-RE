@@ -92,7 +92,7 @@ public class ClientSkillState {
     public static void toggleMode() { activateMode = !activateMode; }
 
     public static long getReducedCooldown(Player player, long baseCd) {
-        double cdRemove = 2.0 - player.getAttributeValue(ModAttributes.COOLDOWN_REMOVE);
+        double cdRemove = 1.0 - player.getAttributeValue(ModAttributes.COOLDOWN_REMOVE);
         return (long)(baseCd * cdRemove);
     }
 

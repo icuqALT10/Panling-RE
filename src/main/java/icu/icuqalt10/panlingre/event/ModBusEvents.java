@@ -53,7 +53,7 @@ public class ModBusEvents {
                     ModAttributes.COOLDOWN_REMOVE,
                     ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "haste_cooldown_remove"),
                     0.05,
-                    AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                    AttributeModifier.Operation.ADD_VALUE
             );
         });
     }

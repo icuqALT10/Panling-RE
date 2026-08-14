@@ -23,7 +23,7 @@ public class cooldown_remove {
          * Callers may therefore use ticks, milliseconds, or seconds consistently.
          */
         public static double apply(Player player, double baseCooldown) {
-            double multiplier = 2 - player.getAttributeValue(ModAttributes.COOLDOWN_REMOVE);
+            double multiplier = 1 - player.getAttributeValue(ModAttributes.COOLDOWN_REMOVE);
             return baseCooldown * multiplier;
         }
 

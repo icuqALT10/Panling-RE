@@ -25,7 +25,6 @@
   ],
   "result": {
     "count": 1,
-    "id": "panlingre:hong_ling_nu",
-    "components": {"enchantments":{"levels":{"quick_charge":3},"show_in_tooltip":false}}
+    "id": "panlingre:hong_ling_nu"
   }
 }

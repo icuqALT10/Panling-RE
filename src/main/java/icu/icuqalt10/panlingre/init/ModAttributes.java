@@ -49,17 +49,17 @@ public class ModAttributes {
     public static final DeferredHolder<Attribute, Attribute> COOLDOWN_REMOVE = ATTRIBUTES.register("cooldown_remove",
             () -> new RangedAttribute(
                     "description.PanlingRE.cooldown_remove",
-                    1.0,
-                    1.0,
-                    2.0
+                    0.0,
+                    -100.0,
+                    1.0
             ).setSyncable(true)
     );
     public static final DeferredHolder<Attribute, Attribute> LING_QI_RECOVERY = ATTRIBUTES.register("ling_qi_recovery",
             () -> new RangedAttribute(
                     "description.PanlingRE.ling_qi_recovery",
-                    1.0,
-                    -10000.0,
-                    10000.0
+                    0.05,
+                    -1.0,
+                    1.0
             ).setSyncable(true)
     );
 

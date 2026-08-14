@@ -70,6 +70,44 @@ public class ModEntities {
                     .updateInterval(1)
                     .build("zhu_ri_arrow"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<YsMuHealingEntity>> YS_MU_HEALING =
+            ENTITIES.register("ys_mu_healing", () -> EntityType.Builder.<YsMuHealingEntity>of(YsMuHealingEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(8)
+                    .updateInterval(1)
+                    .noSave()
+                    .noSummon()
+                    .build("ys_mu_healing"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<Ys3JinTornadoEntity>> YS3_JIN_TORNADO =
+            ENTITIES.register("ys3_jin_tornado", () -> EntityType.Builder.<Ys3JinTornadoEntity>of(Ys3JinTornadoEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F).clientTrackingRange(10).updateInterval(1).noSave().noSummon()
+                    .build("ys3_jin_tornado"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<Ys3MuDomainEntity>> YS3_MU_DOMAIN =
+            ENTITIES.register("ys3_mu_domain", () -> EntityType.Builder.<Ys3MuDomainEntity>of(Ys3MuDomainEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F).clientTrackingRange(12).updateInterval(1).noSave().noSummon()
+                    .build("ys3_mu_domain"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<Ys3ShuiDomainEntity>> YS3_SHUI_DOMAIN =
+            ENTITIES.register("ys3_shui_domain", () -> EntityType.Builder.<Ys3ShuiDomainEntity>of(Ys3ShuiDomainEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F).clientTrackingRange(12).updateInterval(1).noSave().noSummon()
+                    .build("ys3_shui_domain"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<Ys3HuoDomainEntity>> YS3_HUO_DOMAIN =
+            ENTITIES.register("ys3_huo_domain", () -> EntityType.Builder.<Ys3HuoDomainEntity>of(Ys3HuoDomainEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F).clientTrackingRange(12).updateInterval(1).noSave().noSummon()
+                    .build("ys3_huo_domain"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<TuBarrierEntity>> TU_BARRIER =
+            ENTITIES.register("tu_barrier", () -> EntityType.Builder.<TuBarrierEntity>of(TuBarrierEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.25F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .noSave()
+                    .noSummon()
+                    .build("tu_barrier"));
+
     // 注册火龙卷实体
     public static final DeferredHolder<EntityType<?>, EntityType<FireTornadoEntity>> FIRE_TORNADO =
             ENTITIES.register("fire_tornado",

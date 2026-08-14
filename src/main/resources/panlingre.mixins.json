@@ -4,8 +4,6 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "LivingEntityMixin",
-    "EnderDragonMixin",
-    "WitherBossMixin",
     "PlayerAttackMixin",
     "RangedAttributeMixin",
     "AbstractArrowMixin",
@@ -16,9 +14,10 @@
     "ItemStackRightClickMixin",
     "LivingEntityRightClickMixin"
   ],
-  "client": [
+    "client": [
     "client.MinecraftTaskGlowMixin",
-    "client.EntityTaskGlowColorMixin"
+    "client.EntityTaskGlowColorMixin",
+    "client.GameRendererActivationMixin"
   ],
   "injectors": {
     "defaultRequire": 1

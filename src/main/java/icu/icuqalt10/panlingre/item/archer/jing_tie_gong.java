@@ -60,7 +60,16 @@ public class jing_tie_gong extends BowItem implements skill_trigger {
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
                         UID,
-                        -0.1,
+                        -0.35,
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                ),
+                EquipmentSlotGroup.MAINHAND
+        );
+        builder.add(
+                Attributes.ARMOR,
+                new AttributeModifier(
+                        UID,
+                        0.05,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
                 EquipmentSlotGroup.MAINHAND

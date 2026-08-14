@@ -179,6 +179,7 @@ public class ModTabs {
                         output.accept(ModItems.yu_ru_yi.get());
                         output.accept(ModItems.fei_xian_jian.get());
                         output.accept(ModItems.ding_hai_shen_zhen.get());
+                        output.accept(ModItems.di_shi_dun.get());
 
                         output.accept(ModItems.teng_mu_gong.get());
                         output.accept(ModItems.jing_tie_gong.get());
@@ -190,6 +191,7 @@ public class ModTabs {
                         output.accept(ModItems.bei_dou_gong.get());
                         output.accept(ModItems.liu_xing_nu.get());
                         output.accept(ModItems.zhu_ri.get());
+                        output.accept(ModItems.tian_xing_jian.get());
 
                         output.accept(ModItems.huang_tong_lu.get());
                         output.accept(ModItems.jing_tie_lu.get());

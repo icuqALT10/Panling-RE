@@ -35,7 +35,7 @@ public class shen_su_fu extends Item implements ICurioItem {
         modifiers.put(ModAttributes.COOLDOWN_REMOVE, new AttributeModifier(
                 ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "shen_su_fu"),
                 0.15,
-                AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                AttributeModifier.Operation.ADD_VALUE
         ));
 
         modifiers.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(

@@ -29,6 +29,31 @@ public class ModComponents {
                             .build()
             );
 
+    /** 0 = inactive, 1 = pojun, 2 = jinzhong. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> DI_SHI_DUN_FORM =
+            COMPONENTS.register("di_shi_dun_form", () ->
+                    DataComponentType.<Integer>builder()
+                            .persistent(Codec.INT)
+                            .networkSynchronized(ByteBufCodecs.VAR_INT)
+                            .build()
+            );
+
+    /** 0 = inactive, 1 = sniper, 2 = ranger. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> TIAN_XING_JIAN_FORM =
+            COMPONENTS.register("tian_xing_jian_form", () ->
+                    DataComponentType.<Integer>builder()
+                            .persistent(Codec.INT)
+                            .networkSynchronized(ByteBufCodecs.VAR_INT)
+                            .build()
+            );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> HIDDEN_ENCHANTMENTS_INITIALIZED =
+            COMPONENTS.register("hidden_enchantments_initialized", () ->
+                    DataComponentType.<Boolean>builder()
+                            .persistent(Codec.BOOL)
+                            .build()
+            );
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> KEY_TYPE =
             COMPONENTS.register("key_type", () ->
                     DataComponentType.<String>builder()

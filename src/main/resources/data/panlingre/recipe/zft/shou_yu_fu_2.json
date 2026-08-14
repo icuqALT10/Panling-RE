@@ -5,14 +5,14 @@
       "slot": 0,
       "ingredient": {
         "item": "panlingre:zhu_sha_2",
-        "count": 8
+        "count": 4
       }
     },
     {
       "slot": 1,
       "ingredient": {
         "item": "panlingre:fu_zhi",
-        "count": 18
+        "count": 32
       }
     },
     {
@@ -38,7 +38,7 @@
     }
   ],
   "result": {
-    "count": 18,
+    "count": 32,
     "id": "panlingre:shou_yu_fu_2"
   }
 }

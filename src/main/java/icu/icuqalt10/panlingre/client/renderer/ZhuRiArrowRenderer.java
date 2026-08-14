@@ -18,12 +18,8 @@ public class ZhuRiArrowRenderer extends EntityRenderer<ZhuRiArrowEntity> {
     private static final ResourceLocation TEX =
             ResourceLocation.withDefaultNamespace("textures/misc/white.png");
 
-    // The emissive entity pass is understood by both vanilla and shader loaders.
-    // RenderType.eyes supplies the additive halo, while this pass keeps a bright
-    // core even when a shader pack changes exposure and entity lighting.
-    private static final RenderType BEAM_EMISSIVE =
+    private static final RenderType TRAIL =
             RenderType.entityTranslucentEmissive(TEX, false);
-    private static final RenderType BEAM_GLOW = RenderType.eyes(TEX);
 
     private static final int SIDES = 8;
 
@@ -33,9 +29,18 @@ public class ZhuRiArrowRenderer extends EntityRenderer<ZhuRiArrowEntity> {
     @Override
     public void render(ZhuRiArrowEntity e, float yaw, float pt,
                        PoseStack ps, MultiBufferSource buf, int light) {
-        float prog = e.progress(), decay = e.decay();
+        float prog = e.progress(pt), decay = e.decay(pt);
         boolean dec = e.decaying();
         if (prog <= 0 && !dec) return;
+
+        if (!dec) {
+            Vec3 tangent = ZhuRiArrowEntity.cubicTangent(
+                    prog, e.p0(), e.p1(), e.p2(), e.p3());
+            if (tangent.lengthSqr() > 1.0E-7D) {
+                Vec3 direction = tangent.normalize();
+                renderAirCone(direction, ps, buf);
+            }
+        }
 
         Vec3 ep = e.getPosition(pt);
         List<Vec3> pts = sampleCurve(e, prog, decay, dec, ep);
@@ -46,11 +51,46 @@ public class ZhuRiArrowRenderer extends EntityRenderer<ZhuRiArrowEntity> {
         // setColor takes separate 0..255 channels.  Passing 0xeba317 as the red
         // channel used to truncate to 0x17 on common buffer implementations,
         // which is why shader packs showed a very dark red beam.
-        tube(pts, ps, buf, BEAM_GLOW,    0.065f, 0xEB, 0x5A, 0x0A, (int)(70 * ga));
-        tube(pts, ps, buf, BEAM_EMISSIVE,0.0275f,0xB0, 0x18, 0x08, (int)(210 * ga));
-        tube(pts, ps, buf, BEAM_EMISSIVE,0.009f, 0x6F, 0x02, 0x02, (int)(230 * ga));
+        tube(pts, ps, buf, TRAIL, 0.055F,
+                0x6F, 0x02, 0x02, (int)(150 * ga));
 
         super.render(e, yaw, pt, ps, buf, light);
+    }
+
+    private void renderAirCone(Vec3 direction, PoseStack poseStack, MultiBufferSource buffers) {
+        Vec3 binormal = direction.cross(new Vec3(0.0D, 1.0D, 0.0D));
+        if (binormal.lengthSqr() < 1.0E-7D) binormal = direction.cross(new Vec3(1.0D, 0.0D, 0.0D));
+        binormal = binormal.normalize();
+        Vec3 normal = direction.cross(binormal).normalize();
+        Vec3 base = direction.scale(-0.66D);
+        Vec3 tip = direction.scale(1.44D);
+        double radius = 0.22D;
+        VertexConsumer consumer = buffers.getBuffer(TRAIL);
+        PoseStack.Pose pose = poseStack.last();
+        int sides = 5;
+        for (int i = 0; i < sides; i++) {
+            double a = Math.PI * 2.0D * i / sides;
+            double b = Math.PI * 2.0D * (i + 1) / sides;
+            Vec3 first = base.add(binormal.scale(Math.cos(a) * radius))
+                    .add(normal.scale(Math.sin(a) * radius));
+            Vec3 second = base.add(binormal.scale(Math.cos(b) * radius))
+                    .add(normal.scale(Math.sin(b) * radius));
+            coneVertex(consumer, pose, first, 25);
+            coneVertex(consumer, pose, second, 25);
+            coneVertex(consumer, pose, tip, 95);
+            coneVertex(consumer, pose, tip, 95);
+            coneVertex(consumer, pose, second, 25);
+            coneVertex(consumer, pose, first, 25);
+            coneVertex(consumer, pose, tip, 95);
+            coneVertex(consumer, pose, tip, 95);
+        }
+    }
+
+    private void coneVertex(VertexConsumer consumer, PoseStack.Pose pose, Vec3 point, int alpha) {
+        consumer.addVertex(pose, (float)point.x, (float)point.y, (float)point.z)
+                .setColor(0x6F, 0x02, 0x02, alpha).setUv(0.0F, 0.0F)
+                .setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT)
+                .setNormal(pose, 0.0F, 1.0F, 0.0F);
     }
 
     private List<Vec3> sampleCurve(ZhuRiArrowEntity e, float prog, float decay,
@@ -97,16 +137,15 @@ public class ZhuRiArrowRenderer extends EntityRenderer<ZhuRiArrowEntity> {
 
             float segP = (float)i / (pts.size() - 1);
             // Gradient along beam: darker at start → brighter at end (like DE guardian beam)
-            float grad = 0.4f + 0.6f * segP;
-            int a = (int)(alpha * grad);
+            float taper = smoothStep(Math.min(1.0F, segP / 0.45F));
 
             float[][] ring = new float[SIDES][3];
             for (int s = 0; s < SIDES; s++) {
                 double ang = s * 2 * Math.PI / SIDES;
                 double ca = Math.cos(ang), sa = Math.sin(ang);
-                ring[s][0] = (float)(cp.x + w*(ca*B.x + sa*N.x));
-                ring[s][1] = (float)(cp.y + w*(ca*B.y + sa*N.y));
-                ring[s][2] = (float)(cp.z + w*(ca*B.z + sa*N.z));
+                ring[s][0] = (float)(cp.x + w*taper*(ca*B.x + sa*N.x));
+                ring[s][1] = (float)(cp.y + w*taper*(ca*B.y + sa*N.y));
+                ring[s][2] = (float)(cp.z + w*taper*(ca*B.z + sa*N.z));
             }
             rings.add(ring);
         }
@@ -115,8 +154,8 @@ public class ZhuRiArrowRenderer extends EntityRenderer<ZhuRiArrowEntity> {
             float[][] r0 = rings.get(i);
             float[][] r1 = rings.get(i + 1);
             float segP = (float)i / (rings.size()-1);
-            float grad = 0.4f + 0.6f * segP;
-            int a = (int)(alpha * grad);
+            float taper = smoothStep(Math.min(1.0F, segP / 0.45F));
+            int a = (int)(alpha * taper);
             for (int s = 0; s < SIDES; s++) {
                 int sn = (s + 1) % SIDES;
                 float[] a0 = r0[s],  a1 = r0[sn];
@@ -141,5 +180,8 @@ public class ZhuRiArrowRenderer extends EntityRenderer<ZhuRiArrowEntity> {
     }
     private static V3 cross(V3 a, V3 b) {
         return new V3(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
+    }
+    private static float smoothStep(float value) {
+        return value * value * (3.0F - 2.0F * value);
     }
 }

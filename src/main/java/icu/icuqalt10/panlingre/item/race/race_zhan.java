@@ -40,7 +40,7 @@ public class race_zhan extends Item implements ICurioItem {
         modifiers.put(ModAttributes.COOLDOWN_REMOVE, new AttributeModifier(
                 ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "race_zhan"),
                 0.05,
-                AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                AttributeModifier.Operation.ADD_VALUE
         ));
 
         return modifiers;

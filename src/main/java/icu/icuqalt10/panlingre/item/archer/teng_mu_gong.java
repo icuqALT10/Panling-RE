@@ -8,7 +8,6 @@ import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;

@@ -79,7 +79,7 @@ public class bless_shengshou extends Item implements ICurioItem {
         modifiers.put(ModAttributes.COOLDOWN_REMOVE, new AttributeModifier(
                 XUANWU_ID,
                 BlessData.hasBless(player, "xuanwu") ? 0.1 : 0.0,
-                AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                AttributeModifier.Operation.ADD_VALUE
         ));
 
         return modifiers;

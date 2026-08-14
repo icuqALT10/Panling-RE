@@ -1,0 +1,28 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "panlingre:item/bows/zhu_ri/youxia/bow6"
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [-90.61, 5.32, -47.04],
+			"translation": [0, 0.1, 3.25],
+			"scale": [0.9, 0.9, 0.9]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [-90.61, 5.32, -47.04],
+			"translation": [0, 0.1, 3.25],
+			"scale": [0.9, 0.9, 0.9]
+		},
+		"firstperson_righthand": {
+			"rotation": [-105.11, -6.72, -67.24],
+			"translation": [0.13, 3.2, 2.63],
+			"scale": [0.68, 0.68, 0.68]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-105.11, -6.72, -67.24],
+			"translation": [0.13, 3.2, 2.63],
+			"scale": [0.68, 0.68, 0.68]
+		}
+	}
+}

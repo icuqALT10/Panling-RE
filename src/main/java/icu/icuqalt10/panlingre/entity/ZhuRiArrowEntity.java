@@ -26,14 +26,21 @@ public class ZhuRiArrowEntity extends Entity {
     private static final EntityDataAccessor<Float> X2=F("X2"),Y2=F("Y2"),Z2=F("Z2");
     private static final EntityDataAccessor<Float> X3=F("X3"),Y3=F("Y3"),Z3=F("Z3");
     private static final EntityDataAccessor<Float> PROG=F("PROG"), DEC=F("DEC"), DMG=F("DMG");
+    private static final EntityDataAccessor<Integer> FLIGHT_DURATION =
+            SynchedEntityData.defineId(ZhuRiArrowEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DECAY_DURATION =
+            SynchedEntityData.defineId(ZhuRiArrowEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> IS_DECAYING =
+            SynchedEntityData.defineId(ZhuRiArrowEntity.class, EntityDataSerializers.BOOLEAN);
     private static EntityDataAccessor<Float> F(String s) {
         return SynchedEntityData.defineId(ZhuRiArrowEntity.class, EntityDataSerializers.FLOAT);
     }
 
-    private enum Stage { FLYING, DECAYING, DONE }
-    private Stage stage = Stage.FLYING;
-    private int ticks;
+    private int flightTicks;
+    private int decayTicks;
     private LivingEntity cachedTarget;
+    private float previousProgress;
+    private float previousDecay;
 
     public ZhuRiArrowEntity(EntityType<? extends ZhuRiArrowEntity> t, Level l) { super(t, l); }
 
@@ -44,6 +51,11 @@ public class ZhuRiArrowEntity extends Entity {
         s(X0,Y0,Z0,p0); s(X1,Y1,Z1,p1); s(X2,Y2,Z2,p2); s(X3,Y3,Z3,p3);
         entityData.set(DMG, (float)damage);
         entityData.set(PROG, 0f); entityData.set(DEC, 0f);
+        entityData.set(FLIGHT_DURATION,
+                Math.clamp((int)Math.ceil(p0.distanceTo(p3) / 3.0D), 3, 10));
+        entityData.set(DECAY_DURATION,
+                Math.clamp((int)Math.ceil(approximateCurveLength(p0, p1, p2, p3) / 3.0D), 3, 20));
+        entityData.set(IS_DECAYING, false);
         this.cachedTarget = targetEntity;
         setPos(p0.x, p0.y, p0.z);
     }
@@ -51,8 +63,14 @@ public class ZhuRiArrowEntity extends Entity {
     public Vec3 p0() { return v(X0,Y0,Z0); }  public Vec3 p1() { return v(X1,Y1,Z1); }
     public Vec3 p2() { return v(X2,Y2,Z2); }  public Vec3 p3() { return v(X3,Y3,Z3); }
     public float progress() { return entityData.get(PROG); }
-    public float decay()    { return entityData.get(DEC); }
-    public boolean decaying() { return stage == Stage.DECAYING; }
+    public float progress(float partialTick) {
+        return previousProgress + (progress() - previousProgress) * partialTick;
+    }
+    public float decay() { return entityData.get(DEC); }
+    public float decay(float partialTick) {
+        return previousDecay + (decay() - previousDecay) * partialTick;
+    }
+    public boolean decaying() { return entityData.get(IS_DECAYING); }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder b) {
@@ -62,14 +80,18 @@ public class ZhuRiArrowEntity extends Entity {
         b.define(X2,0f);b.define(Y2,0f);b.define(Z2,0f);
         b.define(X3,0f);b.define(Y3,0f);b.define(Z3,0f);
         b.define(PROG,0f); b.define(DEC,0f); b.define(DMG,0f);
+        b.define(FLIGHT_DURATION, 10);
+        b.define(DECAY_DURATION, 10);
+        b.define(IS_DECAYING, false);
     }
 
     @Override
     public void tick() {
-        if (stage == Stage.DONE) { discard(); return; }
-        ticks++;
-        if (stage == Stage.FLYING) {
-            float t = Math.min(1f, ticks / 10f);
+        previousProgress = progress();
+        previousDecay = decay();
+        this.xOld = getX(); this.yOld = getY(); this.zOld = getZ();
+        if (!decaying()) {
+            float t = Math.min(1f, ++flightTicks / (float)entityData.get(FLIGHT_DURATION));
             entityData.set(PROG, t);
             Vec3 p = cubicBezier(t, p0(), p1(), p2(), p3());
             setPos(p.x, p.y, p.z);
@@ -84,15 +106,15 @@ public class ZhuRiArrowEntity extends Entity {
                 }
                 if (t >= 1f) hit();
             }
-        } else if (stage == Stage.DECAYING) {
-            float d = Math.min(1f, ticks / 10f);
+        } else if (!level().isClientSide) {
+            float d = Math.min(1f, ++decayTicks / (float)entityData.get(DECAY_DURATION));
             entityData.set(DEC, d);
-            if (!level().isClientSide && d >= 1f) { stage = Stage.DONE; discard(); }
+            if (d >= 1f) discard();
         }
     }
 
     private void hit() {
-        if (stage != Stage.FLYING) return;
+        if (decaying()) return;
         if (!level().isClientSide) {
             float dmg = entityData.get(DMG);
             Entity owner = entityData.get(OWN)
@@ -111,7 +133,8 @@ public class ZhuRiArrowEntity extends Entity {
                 }
             }
         }
-        stage = Stage.DECAYING; ticks = 0;
+        entityData.set(IS_DECAYING, true);
+        decayTicks = 0;
     }
 
     @Override protected void readAdditionalSaveData(CompoundTag t) {}
@@ -132,6 +155,17 @@ public class ZhuRiArrowEntity extends Entity {
             3*mt*mt*(B.x-A.x) + 6*mt*t*(C.x-B.x) + 3*t*t*(D.x-C.x),
             3*mt*mt*(B.y-A.y) + 6*mt*t*(C.y-B.y) + 3*t*t*(D.y-C.y),
             3*mt*mt*(B.z-A.z) + 6*mt*t*(C.z-B.z) + 3*t*t*(D.z-C.z));
+    }
+
+    private static double approximateCurveLength(Vec3 p0, Vec3 p1, Vec3 p2, Vec3 p3) {
+        double length = 0.0D;
+        Vec3 previous = p0;
+        for (int i = 1; i <= 24; i++) {
+            Vec3 current = cubicBezier(i / 24.0F, p0, p1, p2, p3);
+            length += previous.distanceTo(current);
+            previous = current;
+        }
+        return length;
     }
 
     private void s(EntityDataAccessor<Float> ax,EntityDataAccessor<Float> ay,EntityDataAccessor<Float> az,Vec3 v) {

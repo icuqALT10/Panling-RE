@@ -10,20 +10,17 @@ import icu.icuqalt10.panlingre.init.ModEffects;
 import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.mixin.AbstractArrowMixin;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Arrow;
-import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
@@ -33,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class jiao_long_nu extends CrossbowItem implements skill_trigger {
+public class jiao_long_nu extends HiddenEnchantedCrossbowItem implements skill_trigger {
 
     private final int cooldown = 10;
     private final float cost = 10.0f;
@@ -42,7 +39,7 @@ public class jiao_long_nu extends CrossbowItem implements skill_trigger {
         super(
                 new Properties()
                         .stacksTo(1)
-                        .fireResistant()
+                        .fireResistant(), 3, 1
         );
     }
 
@@ -65,6 +62,15 @@ public class jiao_long_nu extends CrossbowItem implements skill_trigger {
                 new AttributeModifier(
                         UID,
                         0.25,
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                ),
+                EquipmentSlotGroup.MAINHAND
+        );
+        builder.add(
+                Attributes.ARMOR,
+                new AttributeModifier(
+                        UID,
+                        -0.15,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
                 EquipmentSlotGroup.MAINHAND

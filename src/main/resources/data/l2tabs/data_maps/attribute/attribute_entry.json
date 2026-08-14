@@ -1,0 +1,39 @@
+{
+  "values": {
+    "panlingre:max_lingqi": {
+      "intrinsic": 20.0,
+      "order": 1500,
+      "usePercent": false
+    },
+    "panlingre:arrow_damage": {
+      "intrinsic": 0.0,
+      "order": 8000,
+      "usePercent": false
+    },
+    "panlingre:magic_damage": {
+      "intrinsic": 0.0,
+      "order": 8001,
+      "usePercent": false
+    },
+    "panlingre:falizhi": {
+      "intrinsic": 0.0,
+      "order": 8002,
+      "usePercent": false
+    },
+    "panlingre:cooldown_remove": {
+      "intrinsic": 0.0,
+      "order": 8003,
+      "usePercent": true
+    },
+    "panlingre:ling_qi_recovery": {
+      "intrinsic": 0.05,
+      "order": 8004,
+      "usePercent": true
+    }
+  },
+  "remove": [
+    "minecraft:generic.armor_toughness",
+    "minecraft:generic.luck",
+    "minecraft:player.block_interaction_range"
+  ]
+}

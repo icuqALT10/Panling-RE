@@ -1,0 +1,54 @@
+{
+  "values": {
+    "minecraft:generic.armor": {
+      "intrinsic": 0.0,
+      "order": 2000,
+      "usePercent": false
+    },
+    "minecraft:generic.armor_toughness": {
+      "intrinsic": 0.0,
+      "order": 3000,
+      "usePercent": false
+    },
+    "minecraft:generic.attack_damage": {
+      "intrinsic": 0.0,
+      "order": 6000,
+      "usePercent": false
+    },
+    "minecraft:generic.attack_speed": {
+      "intrinsic": 0.0,
+      "order": 7000,
+      "usePercent": false
+    },
+    "minecraft:generic.knockback_resistance": {
+      "intrinsic": 0.0,
+      "order": 4000,
+      "usePercent": false
+    },
+    "minecraft:generic.luck": {
+      "intrinsic": 0.0,
+      "order": 10000,
+      "usePercent": false
+    },
+    "minecraft:generic.max_health": {
+      "intrinsic": 0.0,
+      "order": 1000,
+      "usePercent": false
+    },
+    "minecraft:generic.movement_speed": {
+      "intrinsic": 0.0,
+      "order": 5000,
+      "usePercent": false
+    },
+    "minecraft:player.block_interaction_range": {
+      "intrinsic": 0.0,
+      "order": 8000,
+      "usePercent": false
+    },
+    "minecraft:player.entity_interaction_range": {
+      "intrinsic": 0.0,
+      "order": 9000,
+      "usePercent": false
+    }
+  }
+}

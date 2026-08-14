@@ -14,6 +14,7 @@ import icu.icuqalt10.panlingre.item.warlock.yuansu.*;
 import icu.icuqalt10.panlingre.item.warrior.*;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.item.warrior.armor.*;
+import icu.icuqalt10.panlingre.item.warrior.other.di_shi_dun;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
@@ -94,11 +95,11 @@ public class ModItems {
     public static final DeferredItem<Item> ys2_shui = ITEMS.register("ys2_shui",ys2_shui::new);
     public static final DeferredItem<Item> ys2_huo = ITEMS.register("ys2_huo",ys2_huo::new);
     public static final DeferredItem<Item> ys2_tu = ITEMS.register("ys2_tu",ys2_tu::new);
-    public static final DeferredItem<Item> ys3_jin = ITEMS.register("ys3_jin",() -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ys3_mu = ITEMS.register("ys3_mu",() -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ys3_shui = ITEMS.register("ys3_shui",() -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ys3_huo = ITEMS.register("ys3_huo",() -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ys3_tu = ITEMS.register("ys3_tu",() -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> ys3_jin = ITEMS.register("ys3_jin",ys3_jin::new);
+    public static final DeferredItem<Item> ys3_mu = ITEMS.register("ys3_mu", ys3_mu::new);
+    public static final DeferredItem<Item> ys3_shui = ITEMS.register("ys3_shui", ys3_shui::new);
+    public static final DeferredItem<Item> ys3_huo = ITEMS.register("ys3_huo", ys3_huo::new);
+    public static final DeferredItem<Item> ys3_tu = ITEMS.register("ys3_tu", ys3_tu::new);
 
     public static final DeferredItem<Item> rare2_yuanhe_fra = ITEMS.register("rare2_yuanhe_fra",
             () -> new Item(new Item.Properties().component(DataComponents.LORE, new ItemLore(List.of(
@@ -295,6 +296,8 @@ public class ModItems {
             ITEMS.register("fei_xian_jian", fei_xian_jian::new);
     public static final DeferredItem<Item> ding_hai_shen_zhen =
             ITEMS.register("ding_hai_shen_zhen", ding_hai_shen_zhen::new);
+    public static final DeferredItem<Item> di_shi_dun =
+            ITEMS.register("di_shi_dun", di_shi_dun::new);
 
     public static final DeferredItem<Item> teng_mu_gong =
             ITEMS.register("teng_mu_gong", teng_mu_gong::new);
@@ -316,6 +319,8 @@ public class ModItems {
             ITEMS.register("liu_xing_nu", liu_xing_nu::new);
     public static final DeferredItem<Item> zhu_ri =
             ITEMS.register("zhu_ri", zhu_ri::new);
+    public static final DeferredItem<Item> tian_xing_jian =
+            ITEMS.register("tian_xing_jian", tian_xing_jian::new);
 
     public static final DeferredItem<Item> huang_tong_lu =
             ITEMS.register("huang_tong_lu", huang_tong_lu::new);

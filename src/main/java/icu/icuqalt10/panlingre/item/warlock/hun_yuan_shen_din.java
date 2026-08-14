@@ -441,6 +441,7 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
             creeper.getPersistentData().putInt("GundileiTicks", 20);
             //写入伤害
             creeper.getPersistentData().putFloat("GundileiDamage", damage);
+            creeper.getPersistentData().putUUID("GundileiOwner", player.getUUID());
 
             //加入队伍
             if (player.getTeam() != null) {
