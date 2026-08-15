@@ -1,1 +1,1 @@
-dialow show qinglong_failure
+dialog show qinglong_failure

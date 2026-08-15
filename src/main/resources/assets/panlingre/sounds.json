@@ -7,6 +7,14 @@
       }
     ]
   },
+  "instance.sishou": {
+    "sounds": [
+      {
+        "name": "panlingre:instance/sishou",
+        "stream": true
+      }
+    ]
+  },
   "yuansu.jin": {
     "sounds": [
       {

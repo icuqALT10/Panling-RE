@@ -148,7 +148,7 @@
 	#Whether the in-world TES entity status HUD should include horse stats
 	inWorldHudHorseStats = false
 	#Whether the in-world TES entity status HUD should override vanilla name rendering
-	inWorldHudNameOverride = true
+	inWorldHudNameOverride = false
 	#Set a manual vertical offset for the TES in-world HUD (in blocks) in the event of other mods doing overhead rendering
 	# Default: 0.0
 	# Range: 1.401298464324817E-45 ~ 3.4028234663852886E38

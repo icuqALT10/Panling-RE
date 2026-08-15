@@ -1,8 +1,0 @@
-{
-  "l2library.configuration.restoreFullHealthOnRespawn": "重生后回复所有血量",
-  "l2library.configuration.restoreFullHealthOnRespawn.tooltip": "",
-  "l2library.configuration.section.l2configs.l2library.server.toml": "莱特兰前置集 - 服务端配置",
-  "l2library.configuration.section.l2configs.l2library.server.toml.title": "莱特兰前置集 - 服务端配置",
-  "l2library.configuration.title": "莱特兰前置集 - 配置",
-  "l2library.title": "莱特兰·前置集"
-}

@@ -19,6 +19,13 @@ public final class ModSounds {
             )
     );
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> SISHOU_BGM = SOUND_EVENTS.register(
+            "instance.sishou",
+            () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "instance.sishou")
+            )
+    );
+
     public static final DeferredHolder<SoundEvent, SoundEvent> YS_JIN = SOUND_EVENTS.register(
             "yuansu.jin",
             () -> SoundEvent.createVariableRangeEvent(

@@ -109,6 +109,13 @@ public class ModNetworks {
         );
 
         registrar.playToClient(
+                QinglongMusicPayload.TYPE,
+                QinglongMusicPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() ->
+                        icu.icuqalt10.panlingre.client.sound.QinglongMusicManager.handle(payload.start()))
+        );
+
+        registrar.playToClient(
                 GatherBall.TYPE,
                 GatherBall.STREAM_CODEC,
                 GatherBall::handle

@@ -46,4 +46,12 @@ public final class InstanceEvents {
     public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) InstanceManager.failAndKill(player);
     }
+
+    @SubscribeEvent
+    public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player
+                && player.getTags().contains(InstanceManager.ACTIVE_PLAYER_TAG)) {
+            InstanceManager.failAndKill(player);
+        }
+    }
 }

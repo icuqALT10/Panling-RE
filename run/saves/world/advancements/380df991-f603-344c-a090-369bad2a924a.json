@@ -5,9 +5,15 @@
     },
     "done": true
   },
+  "plre:misson/qinglong": {
+    "criteria": {
+      "trigger": "2026-08-15 21:20:27 +0800"
+    },
+    "done": true
+  },
   "plre:biome/null": {
     "criteria": {
-      "trigger": "2026-08-15 16:45:06 +0800"
+      "trigger": "2026-08-15 21:24:56 +0800"
     },
     "done": true
   },

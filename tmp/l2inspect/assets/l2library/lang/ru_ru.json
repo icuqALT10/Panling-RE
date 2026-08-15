@@ -1,8 +1,0 @@
-{
-  "l2library.configuration.restoreFullHealthOnRespawn": "Восстанавливать полное здоровье при возрождении",
-  "l2library.configuration.restoreFullHealthOnRespawn.tooltip": "",
-  "l2library.configuration.section.l2configs.l2library.server.toml": "L2Library серверная конфигурация",
-  "l2library.configuration.section.l2configs.l2library.server.toml.title": "L2Library серверная конфигурация",
-  "l2library.configuration.title": "L2Library конфигурация",
-  "l2library.title": "L2Library"
-}

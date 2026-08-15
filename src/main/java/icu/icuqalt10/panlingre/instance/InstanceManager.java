@@ -25,6 +25,7 @@ import java.util.Queue;
 import java.util.UUID;
 
 public final class InstanceManager {
+    public static final String ACTIVE_PLAYER_TAG = "panlingre.instance.active";
     private static final Map<ResourceLocation, RuntimeDefinition> RUNTIMES = new LinkedHashMap<>();
     private static final Map<UUID, InstanceSession> SESSIONS = new HashMap<>();
     private static final Map<UUID, InstanceSession> OWNED_ENTITIES = new HashMap<>();
@@ -111,6 +112,7 @@ public final class InstanceManager {
         savedData.setPreparedVersion(id.toString(), slot, -1);
         InstanceSession session = new InstanceSession(server, id, runtime.definition, slot, player, controller.get());
         SESSIONS.put(player.getUUID(), session);
+        player.addTag(ACTIVE_PLAYER_TAG);
         Vec3 spawn = session.playerSpawn();
         player.teleportTo(targetLevel, spawn.x, spawn.y, spawn.z, player.getYRot(), player.getXRot());
         controller.get().start(session);
@@ -135,6 +137,7 @@ public final class InstanceManager {
         }
 
         if (callbackPlayer != null) {
+            callbackPlayer.removeTag(ACTIVE_PLAYER_TAG);
             Optional<ResourceLocation> callback = result == InstanceResult.SUCCESS
                     ? Optional.of(session.definition().success()) : session.definition().failure();
             executeFunction(callbackPlayer, callback);
@@ -149,8 +152,13 @@ public final class InstanceManager {
     public static void failAndKill(ServerPlayer player) {
         if (player == null) return;
         InstanceSession session = SESSIONS.get(player.getUUID());
+        if (session == null && !player.getTags().contains(ACTIVE_PLAYER_TAG)) return;
         player.kill();
-        if (session != null) finish(session, InstanceResult.FAILURE, player);
+        if (session != null) {
+            finish(session, InstanceResult.FAILURE, player);
+        } else {
+            player.removeTag(ACTIVE_PLAYER_TAG);
+        }
     }
 
     public static void ownEntity(InstanceSession session, LivingEntity entity) {
@@ -218,7 +226,11 @@ public final class InstanceManager {
         );
         for (Entity entity : java.util.List.copyOf(level.getEntities(null, bounds))) {
             if (entity instanceof ServerPlayer player) {
-                failAndKill(player);
+                if (player.getTags().contains(ACTIVE_PLAYER_TAG) || SESSIONS.containsKey(player.getUUID())) {
+                    failAndKill(player);
+                } else {
+                    player.kill();
+                }
             } else {
                 entity.discard();
             }
