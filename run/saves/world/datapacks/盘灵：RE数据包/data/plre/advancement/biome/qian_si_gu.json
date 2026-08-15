@@ -1,0 +1,19 @@
+{
+    "criteria": {
+        "trigger":{
+            "trigger": "location",
+            "conditions": {
+                "player": {
+                    "location": {
+                        "biomes": [
+                            "plre:qian_si_gu"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "rewards": {
+        "function": "plre:biome/qian_si_gu"
+    }
+}

@@ -17,6 +17,11 @@ import java.util.List;
 
 public class zhan_lang extends ArmorItem {
 
+    private static final ResourceLocation HELMET_ID = ResourceLocation.withDefaultNamespace("zhan_lang_helmet");
+    private static final ResourceLocation CHESTPLATE_ID = ResourceLocation.withDefaultNamespace("zhan_lang_chestplate");
+    private static final ResourceLocation LEGGINGS_ID = ResourceLocation.withDefaultNamespace("zhan_lang_leggings");
+    private static final ResourceLocation BOOTS_ID = ResourceLocation.withDefaultNamespace("zhan_lang_boots");
+
     public zhan_lang(Holder<ArmorMaterial> material, Type type) {
         super(material, type, new Properties()
                 .attributes(createModifiers(type))
@@ -30,108 +35,108 @@ public class zhan_lang extends ArmorItem {
         if(slot==EquipmentSlotGroup.HEAD) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_helmet"),
+                            HELMET_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_helmet"),
+                            HELMET_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_helmet"),
+                            HELMET_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_helmet"),
+                            HELMET_ID,
                             0.5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.KNOCKBACK_RESISTANCE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_helmet"),
+                            HELMET_ID,
                             0.05,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.CHEST) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_chestplate"),
+                            CHESTPLATE_ID,
                             8,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_chestplate"),
+                            CHESTPLATE_ID,
                             7,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_chestplate"),
+                            CHESTPLATE_ID,
                             3,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_chestplate"),
+                            CHESTPLATE_ID,
                             1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.KNOCKBACK_RESISTANCE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_chestplate"),
+                            CHESTPLATE_ID,
                             0.05,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.LEGS) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_leggings"),
+                            LEGGINGS_ID,
                             6,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_leggings"),
+                            LEGGINGS_ID,
                             6,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_leggings"),
+                            LEGGINGS_ID,
                             3,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_leggings"),
+                            LEGGINGS_ID,
                             0.75,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.KNOCKBACK_RESISTANCE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_leggings"),
+                            LEGGINGS_ID,
                             0.05,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.FEET) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_boots"),
+                            BOOTS_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_boots"),
+                            BOOTS_ID,
                             3,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_boots"),
+                            BOOTS_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_boots"),
+                            BOOTS_ID,
                             0.25,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.KNOCKBACK_RESISTANCE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("zhan_lang_boots"),
+                            BOOTS_ID,
                             0.05,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }

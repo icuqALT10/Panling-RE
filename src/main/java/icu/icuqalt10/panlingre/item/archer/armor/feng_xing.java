@@ -17,6 +17,11 @@ import java.util.List;
 
 public class feng_xing extends ArmorItem {
 
+    private static final ResourceLocation HELMET_ID = ResourceLocation.withDefaultNamespace("feng_xing_helmet");
+    private static final ResourceLocation CHESTPLATE_ID = ResourceLocation.withDefaultNamespace("feng_xing_chestplate");
+    private static final ResourceLocation LEGGINGS_ID = ResourceLocation.withDefaultNamespace("feng_xing_leggings");
+    private static final ResourceLocation BOOTS_ID = ResourceLocation.withDefaultNamespace("feng_xing_boots");
+
     public feng_xing(Holder<ArmorMaterial> material, Type type) {
         super(material, type, new Properties()
                 .attributes(createModifiers(type))
@@ -30,93 +35,93 @@ public class feng_xing extends ArmorItem {
         if(slot==EquipmentSlotGroup.HEAD) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_helmet"),
+                            HELMET_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MOVEMENT_SPEED,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_helmet"),
+                            HELMET_ID,
                             0.1,
                             AttributeModifier.Operation.ADD_MULTIPLIED_BASE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_helmet"),
+                            HELMET_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_helmet"),
+                            HELMET_ID,
                             1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.ARROW_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_helmet"),
+                            HELMET_ID,
                             1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.CHEST) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_chestplate"),
+                            CHESTPLATE_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_chestplate"),
+                            CHESTPLATE_ID,
                             5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_chestplate"),
+                            CHESTPLATE_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.ARROW_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_chestplate"),
+                            CHESTPLATE_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.LEGS) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_leggings"),
+                            LEGGINGS_ID,
                             3,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_leggings"),
+                            LEGGINGS_ID,
                             3,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_leggings"),
+                            LEGGINGS_ID,
                             1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.ARROW_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_leggings"),
+                            LEGGINGS_ID,
                             1.5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.FEET) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_boots"),
+                            BOOTS_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MOVEMENT_SPEED,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_boots"),
+                            BOOTS_ID,
                             0.1,
                             AttributeModifier.Operation.ADD_MULTIPLIED_BASE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_boots"),
+                            BOOTS_ID,
                             1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.ARROW_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("feng_xing_boots"),
+                            BOOTS_ID,
                             0.5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }

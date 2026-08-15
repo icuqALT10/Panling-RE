@@ -1,0 +1,6 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "block/other/hardened_clay_stained_cyan_7"
+    }
+}

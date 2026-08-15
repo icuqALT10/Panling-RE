@@ -1,0 +1,17 @@
+{
+  "id": "misson_cant_into",
+  "type": "OVERLAY",
+  "start": "1",
+  "entries": [
+    {
+      "id": "1",
+      "speaker": "",
+      "text": [
+        {
+          "translate": "pl.scene.shenmiao.fail"
+        }
+      ],
+      "out_time":2000
+    }
+  ]
+}

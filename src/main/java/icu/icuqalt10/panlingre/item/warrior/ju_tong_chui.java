@@ -32,6 +32,9 @@ import java.util.List;
 
 public class ju_tong_chui extends Item implements skill_trigger {
 
+    private static final ResourceLocation MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ju_tong_chui");
+
     private final int cooldown = 400;
     private final float cost = 20.0f;
 
@@ -50,7 +53,7 @@ public class ju_tong_chui extends Item implements skill_trigger {
         builder.add(
                 Attributes.ARMOR,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ju_tong_chui"),
+                        MODIFIER_ID,
                         10.0,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
@@ -60,7 +63,7 @@ public class ju_tong_chui extends Item implements skill_trigger {
         builder.add(
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ju_tong_chui"),
+                        MODIFIER_ID,
                         -0.15,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),

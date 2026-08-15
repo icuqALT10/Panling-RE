@@ -1,0 +1,644 @@
+{
+  "id": "misson_yao_6",
+  "title":"misson/yao/6",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.7"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.yao.7.option"},
+          "target": "7.1",
+          "visibility_command": "execute if score @s misson_yao matches 7"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.9.option"},
+          "target": "9.1",
+          "visibility_command": "execute if score @s misson_yao matches 9"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.11.option"},
+          "target": "11.1",
+          "visibility_command": "execute if score @s misson_yao matches 11"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.12.option1"},
+          "target": "12.1",
+          "visibility_command": "execute if score @s misson_yao matches 12"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.12.option2"},
+          "visibility_command": "execute if score @s misson_yao matches 12"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.13.option"},
+          "target": "13.1",
+          "visibility_command": "execute if score @s misson_yao matches 13 if score @s misson_south matches 7"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.14.option1"},
+          "target": "14.1",
+          "visibility_command": "execute if score @s misson_yao matches 14"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.14.option2"},
+          "visibility_command": "execute if score @s misson_yao matches 14"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.15.option"},
+          "target": "15.1",
+          "visibility_command": "execute if score @s misson_yao matches 15 if score @s misson_west matches 7"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.16.option1"},
+          "target": "16.1",
+          "visibility_command": "execute if score @s misson_yao matches 16"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.16.option2"},
+          "visibility_command": "execute if score @s misson_yao matches 16"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.17.option"},
+          "target": "17.1",
+          "visibility_command": "execute if score @s misson_yao matches 17 if score @s misson_north matches 5"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "7.1",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.7.1"
+        }
+      ],
+      "next":"7.2"
+    },
+    {
+      "id": "7.2",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.7.2"
+        }
+      ],
+      "next":"7.3"
+    },
+    {
+      "id": "7.3",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.7.3"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.yao.7.3.option"},
+          "target": "7.4"
+        }
+      ]
+    },
+    {
+      "id": "7.4",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.7.4"
+        }
+      ],
+      "next":"7.5"
+    },
+    {
+      "id": "7.5",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.7.5"
+        }
+      ],
+      "next":"7.6"
+    },
+    {
+      "id": "7.6",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.7.6"
+        }
+      ],
+      "next":"7.7"
+    },
+    {
+      "id": "7.7",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.7.7"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/7"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "9.1",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.9.1"
+        }
+      ],
+      "next":"9.2"
+    },
+    {
+      "id": "9.2",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.9.2"
+        }
+      ],
+      "next":"9.3"
+    },
+    {
+      "id": "9.3",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.9.3"
+        }
+      ],
+      "next":"9.4"
+    },
+    {
+      "id": "9.4",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.9.4"
+        }
+      ],
+      "next":"9.5"
+    },
+    {
+      "id": "9.5",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.9.5"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/9"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "11.1",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.11.1"
+        }
+      ],
+      "next":"11.2"
+    },
+    {
+      "id": "11.2",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.11.2"
+        }
+      ],
+      "next":"11.3"
+    },
+    {
+      "id": "11.3",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.11.3"
+        }
+      ],
+      "next":"11.4"
+    },
+    {
+      "id": "11.4",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.11.4"
+        }
+      ],
+      "next":"11.5"
+    },
+    {
+      "id": "11.5",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.11.5"
+        }
+      ],
+      "next":"11.6"
+    },
+    {
+      "id": "11.6",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.11.6"
+        }
+      ],
+      "next":"11.7"
+    },
+    {
+      "id": "11.7",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.11.7"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "panlingre:ba_fang_yi"
+        }
+      ],
+      "next":"11.8"
+    },
+    {
+      "id": "11.8",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.11.8"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "panlingre:ba_fang_yi"
+        }
+      ],
+      "next":"11.9"
+    },
+    {
+      "id": "11.9",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.11.9"
+        }
+      ],
+      "next":"11.10"
+    },
+    {
+      "id": "11.10",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.11.10"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/11"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "12.1",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.12.1"
+        }
+      ],
+      "next":"12.2"
+    },
+    {
+      "id": "12.2",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.12.2"
+        }
+      ],
+      "next":"12.3"
+    },
+    {
+      "id": "12.3",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.12.3"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/12"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "13.1",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.13.1"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.yao.13.1.option"},
+          "target": "13.2"
+        }
+      ]
+    },
+    {
+      "id": "13.2",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.13.2"
+        }
+      ],
+      "next":"13.3"
+    },
+    {
+      "id": "13.3",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.13.3"
+        }
+      ],
+      "next":"13.4"
+    },
+    {
+      "id": "13.4",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.13.4"
+        }
+      ],
+      "next":"13.5"
+    },
+    {
+      "id": "13.5",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.13.5"
+        }
+      ],
+      "next":"13.6"
+    },
+    {
+      "id": "13.6",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.13.6"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/13"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "14.1",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.14.1"
+        }
+      ],
+      "next":"14.2"
+    },
+    {
+      "id": "14.2",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.14.2"
+        }
+      ],
+      "next":"14.3"
+    },
+    {
+      "id": "14.3",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.14.3"
+        }
+      ],
+      "next":"14.4"
+    },
+    {
+      "id": "14.4",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.14.4"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/14"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "15.1",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.15.1"
+        }
+      ],
+      "next":"15.2"
+    },
+    {
+      "id": "15.2",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.15.2"
+        }
+      ],
+      "next":"15.3"
+    },
+    {
+      "id": "15.3",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.15.3"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/15"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "16.1",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.16.1"
+        }
+      ],
+      "next":"16.2"
+    },
+    {
+      "id": "16.2",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.16.2"
+        }
+      ],
+      "next":"16.3"
+    },
+    {
+      "id": "16.3",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.16.3"
+        }
+      ],
+      "next":"16.4"
+    },
+    {
+      "id": "16.4",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.16.4"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/16"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "17.1",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.17.1"
+        }
+      ],
+      "next":"17.2"
+    },
+    {
+      "id": "17.2",
+      "speaker": {"translate": "pl.npc.name.yaomain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.17.2"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/17"
+      ],
+      "endDialog": true
+    }
+  ]
+}

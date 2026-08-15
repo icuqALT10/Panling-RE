@@ -1,0 +1,521 @@
+{
+  "id": "misson_middle_fa_hai",
+  "title":"misson/middle/fa_hai",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.fa_hai"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.ren.16.option"},
+          "target": "ren.16.1",
+          "visibility_command": "execute if score @s misson_ren matches 16"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.ren.17.option1"},
+          "target": "ren.17.1",
+          "visibility_command": "execute if score @s misson_ren matches 17"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.ren.17.option2"},
+          "visibility_command": "execute if score @s misson_ren matches 17"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.xian.16.option"},
+          "target": "xian.16.1",
+          "visibility_command": "execute if score @s misson_xian matches 16"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.xian.17.option1"},
+          "target": "xian.17.1",
+          "visibility_command": "execute if score @s misson_xian matches 17"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.xian.17.option2"},
+          "visibility_command": "execute if score @s misson_xian matches 17"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.7.option"},
+          "target": "shen.7.1",
+          "visibility_command": "execute if score @s misson_shen matches 7"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "ren.16.1",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.16.1"
+        }
+      ],
+      "next":"ren.16.2"
+    },
+    {
+      "id": "ren.16.2",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.16.2"
+        }
+      ],
+      "next":"ren.16.3"
+    },
+    {
+      "id": "ren.16.3",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.16.3"
+        }
+      ],
+      "next":"ren.16.4"
+    },
+    {
+      "id": "ren.16.4",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.16.4"
+        }
+      ],
+      "next":"ren.16.5"
+    },
+    {
+      "id": "ren.16.5",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.16.5"
+        }
+      ],
+      "next":"ren.16.6"
+    },
+    {
+      "id": "ren.16.6",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.16.6"
+        }
+      ],
+      "next":"ren.16.7"
+    },
+    {
+      "id": "ren.16.7",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.16.7"
+        }
+      ],
+      "next":"ren.16.8"
+    },
+    {
+      "id": "ren.16.8",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.16.8"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/ren/16"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "ren.17.1",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.17.1"
+        }
+      ],
+      "next":"ren.17.2"
+    },
+    {
+      "id": "ren.17.2",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.17.2"
+        }
+      ],
+      "next":"ren.17.3"
+    },
+    {
+      "id": "ren.17.3",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.17.3"
+        }
+      ],
+      "next":"ren.17.4"
+    },
+    {
+      "id": "ren.17.4",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.17.4"
+        }
+      ],
+      "next":"ren.17.5"
+    },
+    {
+      "id": "ren.17.5",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.17.5"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/ren/17"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "xian.16.1",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.16.1"
+        }
+      ],
+      "next":"xian.16.2"
+    },
+    {
+      "id": "xian.16.2",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.16.2"
+        }
+      ],
+      "next":"xian.16.3"
+    },
+    {
+      "id": "xian.16.3",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.16.3"
+        }
+      ],
+      "next":"xian.16.4"
+    },
+    {
+      "id": "xian.16.4",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.16.4"
+        }
+      ],
+      "next":"xian.16.5"
+    },
+    {
+      "id": "xian.16.5",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.16.5"
+        }
+      ],
+      "next":"xian.16.6"
+    },
+    {
+      "id": "xian.16.6",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.16.6"
+        }
+      ],
+      "next":"xian.16.7"
+    },
+    {
+      "id": "xian.16.7",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.16.7"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/xian/16"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "xian.17.1",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.17.1"
+        }
+      ],
+      "next":"xian.17.2"
+    },
+    {
+      "id": "xian.17.2",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.17.2"
+        }
+      ],
+      "next":"xian.17.3"
+    },
+    {
+      "id": "xian.17.3",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.17.3"
+        }
+      ],
+      "next":"xian.17.4"
+    },
+    {
+      "id": "xian.17.4",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.17.4"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/xian/17"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "shen.7.1",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.1"
+        }
+      ],
+      "next":"shen.7.2"
+    },
+    {
+      "id": "shen.7.2",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.2"
+        }
+      ],
+      "next":"shen.7.3"
+    },
+    {
+      "id": "shen.7.3",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.3"
+        }
+      ],
+      "next":"shen.7.4"
+    },
+    {
+      "id": "shen.7.4",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.4"
+        }
+      ],
+      "next":"shen.7.5"
+    },
+    {
+      "id": "shen.7.5",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.5"
+        }
+      ],
+      "next":"shen.7.6"
+    },
+    {
+      "id": "shen.7.6",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.6"
+        }
+      ],
+      "next":"shen.7.7"
+    },
+    {
+      "id": "shen.7.7",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.7"
+        }
+      ],
+      "next":"shen.7.8"
+    },
+    {
+      "id": "shen.7.8",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.8"
+        }
+      ],
+      "next":"shen.7.9"
+    },
+    {
+      "id": "shen.7.9",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.9"
+        }
+      ],
+      "next":"shen.7.10"
+    },
+    {
+      "id": "shen.7.10",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.10"
+        }
+      ],
+      "next":"shen.7.11"
+    },
+    {
+      "id": "shen.7.11",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.11"
+        }
+      ],
+      "next":"shen.7.12"
+    },
+    {
+      "id": "shen.7.12",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.12"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "panlingre:ba_fang_yi"
+        }
+      ],
+      "next":"shen.7.13"
+    },
+    {
+      "id": "shen.7.13",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.13"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "panlingre:ba_fang_yi"
+        }
+      ],
+      "next":"shen.7.14"
+    },
+    {
+      "id": "shen.7.14",
+      "speaker": {"translate": "pl.npc.name.mainx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.7.14"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "panlingre:ba_fang_yi"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/7"
+      ],
+      "endDialog": true
+    }
+  ]
+}

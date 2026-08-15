@@ -1,0 +1,10 @@
+plre bafangyi add east qing_long
+plre bafangyi add east yao_zu
+plre bafangyi add east ye_lang_qun
+plre bafangyi add east long_xu_zhen
+plre bafangyi add east cha_dian_tan
+plre bafangyi add east shan_shen_miao
+plre bafangyi add east fei_qi_cun_zhuang
+plre bafangyi add east fei_qi_ji_tan
+plre bafangyi add east shen_mu
+plre bafangyi add east shi_huang_ling

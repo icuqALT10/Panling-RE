@@ -1,0 +1,61 @@
+{
+  "id": "misson_ren_3",
+  "title":"misson/ren/3",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.renmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.3"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.ren.3.option"},
+          "target": "1",
+          "visibility_command": "execute if score @s misson_ren matches 3"
+        }
+      ],
+      "endDialog": true
+    },
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.renmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.3.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "pl.npc.name.renmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.3.2"
+        }
+      ],
+      "next":"3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "pl.npc.name.renmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.3.3"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/ren/3"
+      ],
+      "endDialog": true
+    }
+  ]
+}

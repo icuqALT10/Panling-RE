@@ -1,0 +1,12 @@
+{
+    "title": [
+        {"translate":"plre.looktip.chest.sheng_shan"}
+    ],
+    "entries": [
+        {
+            "type": "block",
+            "name": "panlingre:loot_chest",
+            "nbt": "{chestType:\"golden\",chestId:\"sheng_shan\"}"
+        }
+    ]
+}

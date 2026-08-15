@@ -1,0 +1,83 @@
+{
+  "id": "misson_shen_5",
+  "title":"misson/shen/5",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.shenmain5"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.6"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.shen.6.option"},
+          "target": "1",
+          "visibility_command": "execute if score @s misson_shen matches 6"
+        }
+      ],
+      "endDialog": true
+    },
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.shenmain5"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.6.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "pl.npc.name.shenmain5"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.6.2"
+        }
+      ],
+      "next":"3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "pl.npc.name.shenmain5"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.6.3"
+        }
+      ],
+      "next":"4"
+    },
+    {
+      "id": "4",
+      "speaker": {"translate": "pl.npc.name.shenmain5"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.6.4"
+        }
+      ],
+      "next":"5"
+    },
+    {
+      "id": "5",
+      "speaker": {"translate": "pl.npc.name.shenmain5"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.6.5"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/6"
+      ],
+      "endDialog": true
+    }
+  ]
+}

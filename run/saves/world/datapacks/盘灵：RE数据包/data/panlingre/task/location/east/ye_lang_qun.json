@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.east.ye_lang_qun"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": 384,
+                    "y": 43,
+                    "z": -6
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

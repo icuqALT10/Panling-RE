@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.middle.dan_yao_pu"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": 261,
+                    "y": 44,
+                    "z": 53
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

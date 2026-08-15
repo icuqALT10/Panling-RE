@@ -1,0 +1,11 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "up": "block/sandstone_smooth",
+		"down": "block/sandstone_bottom",
+        "north": "block/sandstone_carved",
+		"south": "block/sandstone_carved",
+		"west": "block/other/sandstone_carved_1",
+		"east": "block/other/sandstone_carved_1"
+    }
+}

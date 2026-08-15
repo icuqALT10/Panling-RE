@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.middle.tie_jiang_pu"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": 83,
+                    "y": 46,
+                    "z": 144
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

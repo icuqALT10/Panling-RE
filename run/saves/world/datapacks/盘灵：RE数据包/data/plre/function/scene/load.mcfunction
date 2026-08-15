@@ -1,0 +1,1 @@
+scoreboard objectives add relife_pos dummy "重生点"

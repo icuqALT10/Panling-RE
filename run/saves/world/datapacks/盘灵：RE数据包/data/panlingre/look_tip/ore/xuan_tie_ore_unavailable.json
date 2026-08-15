@@ -1,0 +1,15 @@
+{
+    "title": [
+        {"translate":"block.panlingre.xuan_tie_ore"},
+        {"translate":"plre.looktip.ore.unavailable.ore"}
+    ],
+    "entries": [
+        {
+            "type": "block",
+            "name": "panlingre:xuan_tie_ore",
+            "block_state": {
+                "has_ore": "false"
+            }
+        }
+    ]
+}

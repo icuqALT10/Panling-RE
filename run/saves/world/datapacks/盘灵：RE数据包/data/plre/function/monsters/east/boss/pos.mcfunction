@@ -1,0 +1,1 @@
+execute if entity @s[tag=spider] run return run function plre:monsters/east/boss/spider

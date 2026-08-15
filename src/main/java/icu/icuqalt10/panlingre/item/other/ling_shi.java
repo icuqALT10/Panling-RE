@@ -19,6 +19,9 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 
 public class ling_shi extends Item implements ICurioItem {
+
+    private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ling_shi");
+
     public ling_shi() {
         super(
                 new Properties()
@@ -32,7 +35,7 @@ public class ling_shi extends Item implements ICurioItem {
         Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
 
         modifiers.put(ModAttributes.MAX_LINGQI, new AttributeModifier(
-                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ling_shi"),
+                MODIFIER_ID,
                 10,
                 AttributeModifier.Operation.ADD_VALUE
         ));

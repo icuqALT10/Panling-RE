@@ -1,0 +1,10 @@
+{
+  "title": {"translate": "plre.npc.name.warehouse"},
+  "offers": [
+    {
+      "buy":  { "item": "panlingre:yao_yin_1", "count": 2 },
+      "buyB":  { "item": "panlingre:ys1_tu", "count": 10 },
+      "sell": { "item": "minecraft:potion", "count": 1, "components": {"custom_name":"{\"translate\":\"pl.item.name.southm1\"}","lore":["{\"translate\":\"pl.item.lore.southm1a\"}","{\"translate\":\"pl.item.lore.southm1b\"}"],"potion_contents":{"custom_effects":[{"id":"fire_resistance","amplifier":0,"duration":1200}]}}}
+    }
+  ]
+}

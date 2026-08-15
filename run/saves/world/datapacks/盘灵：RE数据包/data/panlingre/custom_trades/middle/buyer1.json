@@ -1,0 +1,44 @@
+{
+  "title": {"translate": "plre.npc.name.buyer1"},
+  "offers": [
+    {"buy":{"item":"minecraft:coal","count":1,"components":{"custom_data":{"id":"plre:coal"}}},
+    "sell":{"item":"panlingre:tong_qian","count":1}},
+
+    {"buy":{"item":"panlingre:rare2_yuanhe","count":1},
+    "sell":{"item":"panlingre:yuan_bao","count":1}},
+    
+    {"buy":{"item":"panlingre:jing_shou_pi","count":1},
+    "sell":{"item":"panlingre:tong_qian","count":1}},
+    
+    {"buy":{"item":"panlingre:jing_tie","count":1},
+    "sell":{"item":"panlingre:tong_qian","count":2}},
+    
+    {"buy":{"item":"panlingre:rare3_yuanhe","count":1},
+    "sell":{"item":"panlingre:yuan_bao","count":3}},
+    
+    {"buy":{"item":"panlingre:jin_jing","count":1},
+    "sell":{"item":"panlingre:tong_qian","count":5}},
+    
+    {"buy":{"item":"panlingre:chi_tong_ding","count":1},
+    "sell":{"item":"panlingre:tong_qian","count":5}},
+    
+    {"buy":{"item":"panlingre:rare4_yuanhe","count":1},
+    "sell":{"item":"panlingre:yuan_bao","count":5}},
+    
+    {"buy":{"item":"panlingre:xuan_tie","count":1},
+    "sell":{"item":"panlingre:yuan_bao","count":1}},
+    
+    {"buy":{"item":"panlingre:bai_yu_jing","count":1},
+    "sell":{"item":"panlingre:yuan_bao","count":1}},
+    
+    {"buy":{"item":"panlingre:rare5_yuanhe","count":1},
+    "sell":{"item":"panlingre:yin_piao","count":1}},
+    
+    {"buy":{"item":"panlingre:ling_yu_jian","count":1},
+    "sell":{"item":"panlingre:yuan_bao","count":2}},
+    
+    {"buy":{"item":"panlingre:bi_hai_zhu","count":1},
+    "sell":{"item":"panlingre:yuan_bao","count":2}}
+
+  ]
+}

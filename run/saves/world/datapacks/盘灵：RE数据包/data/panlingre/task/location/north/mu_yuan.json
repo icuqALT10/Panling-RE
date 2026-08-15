@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.north.mu_yuan"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": 111,
+                    "y": 49,
+                    "z": -514
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

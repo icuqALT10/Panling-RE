@@ -1,0 +1,9 @@
+{
+  "title": {"translate": "plre.npc.name.feather"},
+  "offers": [
+    
+    {"buy":{"item":"panlingre:yin_piao","count":5},
+    "sell":{"item":"panlingre:shen_su_feather","count":1}}
+
+  ]
+}

@@ -1,0 +1,344 @@
+{
+  "id": "misson_west_2",
+  "title":"misson/west/2",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.west.2.option1"},
+          "target": "2.1",
+          "visibility_command": "execute if score @s misson_west matches 2"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.west.2.option2"},
+          "target": "4.1",
+          "visibility_command": "execute if score @s misson_west matches 4"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "2.1",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.1"
+        }
+      ],
+      "next":"2.2"
+    },
+    {
+      "id": "2.2",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.2"
+        }
+      ],
+      "next":"2.3"
+    },
+    {
+      "id": "2.3",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.3"
+        }
+      ],
+      "next":"2.4"
+    },
+    {
+      "id": "2.4",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.4"
+        }
+      ],
+      "next":"2.5"
+    },
+    {
+      "id": "2.5",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.5"
+        }
+      ],
+      "next":"2.6"
+    },
+    {
+      "id": "2.6",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.6"
+        }
+      ],
+      "next":"2.7"
+    },
+    {
+      "id": "2.7",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.7"
+        }
+      ],
+      "next":"2.8"
+    },
+    {
+      "id": "2.8",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.8"
+        }
+      ],
+      "next":"2.9"
+    },
+    {
+      "id": "2.9",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.9"
+        }
+      ],
+      "next":"2.10"
+    },
+    {
+      "id": "2.10",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.10"
+        }
+      ],
+      "next":"2.11"
+    },
+    {
+      "id": "2.11",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.11"
+        }
+      ],
+      "next":"2.12"
+    },
+    {
+      "id": "2.12",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.12"
+        }
+      ],
+      "next":"2.13"
+    },
+    {
+      "id": "2.13",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.13"
+        }
+      ],
+      "next":"2.14"
+    },
+    {
+      "id": "2.14",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.14"
+        }
+      ],
+      "next":"2.15"
+    },
+    {
+      "id": "2.15",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.15"
+        }
+      ],
+      "next":"2.16"
+    },
+    {
+      "id": "2.16",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.16"
+        }
+      ],
+      "next":"2.17"
+    },
+    {
+      "id": "2.17",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.17"
+        }
+      ],
+      "next":"2.18"
+    },
+    {
+      "id": "2.18",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.18"
+        }
+      ],
+      "next":"2.19"
+    },
+    {
+      "id": "2.19",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.19"
+        }
+      ],
+      "next":"2.20"
+    },
+    {
+      "id": "2.20",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.2.20"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/west/2"
+      ],
+      "display_items": [
+        {
+          "item": "minecraft:nether_wart",
+          "count":1,
+          "nbt":"{\"minecraft:custom_name\":{\"translate\":\"pl.item.name.westm\"},\"minecraft:lore\":[{\"translate\":\"pl.item.lore.westma\"},{\"translate\":\"pl.item.lore.westmb\"}]}"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "4.1",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.4.1"
+        }
+      ],
+      "next":"4.2"
+    },
+    {
+      "id": "4.2",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.4.2"
+        }
+      ],
+      "next":"4.3"
+    },
+    {
+      "id": "4.3",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.4.3"
+        }
+      ],
+      "next":"4.4"
+    },
+    {
+      "id": "4.4",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.4.4"
+        }
+      ],
+      "next":"4.5"
+    },
+    {
+      "id": "4.5",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.4.5"
+        }
+      ],
+      "next":"4.6"
+    },
+    {
+      "id": "4.6",
+      "speaker": {"translate": "pl.npc.name.westm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.4.6"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/west/4"
+      ],
+      "display_items": [
+        {
+          "item": "minecraft:paper",
+          "count":1,
+          "nbt":"{\"minecraft:custom_name\":{\"translate\":\"pl.item.name.west_letter\"},\"minecraft:lore\":[{\"translate\":\"pl.dialog.misson.letter.1\"},{\"translate\":\"pl.dialog.misson.letter.2\"},{\"translate\":\"pl.dialog.misson.letter.3\"},{\"translate\":\"pl.dialog.misson.letter.4\"}]}"
+        }
+      ],
+      "endDialog": true
+    }
+  ]
+}

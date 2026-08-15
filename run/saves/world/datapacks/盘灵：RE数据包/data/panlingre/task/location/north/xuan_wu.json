@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.north.xuan_wu"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": -114,
+                    "y": 4,
+                    "z": -401
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

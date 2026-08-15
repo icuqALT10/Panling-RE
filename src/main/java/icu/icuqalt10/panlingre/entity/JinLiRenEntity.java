@@ -155,9 +155,11 @@ public class JinLiRenEntity extends AbstractArrow {
                     Entity owner = getOwner();
                     Entity target = level().getEntity(curveTargetId);
                     if (owner != null && isValidAttackTarget(owner, target)) {
-                        target.hurt(damageSources().arrow(this, owner), (float) skillDamage);
-                        if (owner instanceof LivingEntity livingOwner && target instanceof LivingEntity livingTarget) {
-                            livingOwner.setLastHurtMob(livingTarget);
+                        if (skillDamage > 0.0D) {
+                            target.hurt(damageSources().arrow(this, owner), (float) skillDamage);
+                            if (owner instanceof LivingEntity livingOwner && target instanceof LivingEntity livingTarget) {
+                                livingOwner.setLastHurtMob(livingTarget);
+                            }
                         }
                     }
                 }

@@ -1,0 +1,18 @@
+{
+	version: 1
+	uuid: "cf77010ca8b44ab49dad4964232ccd33"
+	name: "icuqALT10_s_Party#cf77010c"
+	lock: false
+	rewards_blocked: false
+	task_progress: { }
+	started: { }
+	completed: { }
+	repeatable: { }
+	completion_count: { }
+	claimed_rewards: { }
+	player_data: {
+		1dd5b132229840298755438bb46d59f0: {
+			can_edit: 1b
+		}
+	}
+}

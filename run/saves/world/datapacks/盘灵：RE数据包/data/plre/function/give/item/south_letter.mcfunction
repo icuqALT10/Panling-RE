@@ -1,0 +1,1 @@
+give @s blaze_powder[custom_data={id:"plre:south_letter"},custom_name='{"translate":"pl.item.south.letter"}',lore=['{"translate":"pl.item.south.letter.lore"}'],panlingre:right_click={command:"dialog show misson_south_letter"}]

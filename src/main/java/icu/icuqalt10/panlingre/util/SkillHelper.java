@@ -1,11 +1,13 @@
 package icu.icuqalt10.panlingre.util;
 
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class SkillHelper {
     public static List<LivingEntity> getLivingEntitiesInFront(LivingEntity source, double width, double height, double length) {
@@ -42,5 +44,20 @@ public class SkillHelper {
                             && Math.abs(projUp) <= halfHeight;
                 })
                 .toList();
+    }
+
+    /**
+     * 技能伤害的目标筛选谓词：
+     * 排除自己、非活体、无敌、创造/旁观玩家，以及释放者同队伍的实体（仅当释放者有队伍时）。
+     */
+    public static Predicate<LivingEntity> combatTargetFilter(LivingEntity source) {
+        return target -> {
+            if (target == source) return false;
+            if (!target.isAlive()) return false;
+            if (target.isInvulnerable()) return false;
+            if (target instanceof Player p && (p.isCreative() || p.isSpectator())) return false;
+            if (source.getTeam() != null && target.getTeam() == source.getTeam()) return false;
+            return true;
+        };
     }
 }

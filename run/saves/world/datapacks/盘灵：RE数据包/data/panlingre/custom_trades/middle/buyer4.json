@@ -1,0 +1,14 @@
+{
+  "title": {"translate": "plre.npc.name.buyer4"},
+  "offers": [
+    {"buy":{"item":"minecraft:lily_pad","count":1,"components":{"custom_data":{"id":"plre:lily_pad"}}},
+    "sell":{"item":"panlingre:yuan_bao","count":8}},
+
+    {"buy":{"item":"minecraft:stick","count":1,"components":{"custom_data":{"id":"plre:stick"}}},
+    "sell":{"item":"panlingre:yin_piao","count":1}},
+
+    {"buy":{"item":"minecraft:wither_skeleton_skull","count":1,"components":{"custom_data":{"id":"plre:wither_skeleton_skull"}}},
+    "sell":{"item":"panlingre:yin_piao","count":3}}
+
+  ]
+}

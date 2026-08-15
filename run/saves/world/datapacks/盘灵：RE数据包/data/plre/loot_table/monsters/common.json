@@ -1,0 +1,35 @@
+{
+    "type":"minecraft:entity",
+    "pools": [
+        {
+            "rolls":1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "panlingre:respawn_stone",
+                    "conditions": [
+                        {
+                            "condition": "minecraft:random_chance",
+                            "chance": 0.1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls":1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "panlingre:yao_yin_1",
+                    "conditions": [
+                        {
+                            "condition": "minecraft:random_chance",
+                            "chance": 0.15
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

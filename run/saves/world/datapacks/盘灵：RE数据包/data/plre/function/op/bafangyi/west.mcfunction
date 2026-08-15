@@ -1,0 +1,9 @@
+plre bafangyi add west bai_hu
+plre bafangyi add west chen_dai_fu
+plre bafangyi add west guo_yuan
+plre bafangyi add west ku_gu
+plre bafangyi add west zhen_yao_ta
+plre bafangyi add west jiu_miao
+plre bafangyi add west zhan_shen_zu
+plre bafangyi add west jin_kuang_xiao_zhen
+plre bafangyi add west sheng_hu_mi_zhen

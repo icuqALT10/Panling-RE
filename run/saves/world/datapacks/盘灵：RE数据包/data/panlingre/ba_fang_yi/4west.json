@@ -1,0 +1,61 @@
+{
+    "title": {"translate":"plre.location.west"},
+    "id": "west",
+    "texture": "panlingre:textures/item/ys3_jin.png",
+    "poses": [
+        {
+            "title": {"translate":"plre.location.west.bai_hu"},
+            "id": "bai_hu",
+            "texture": "ftbquests:textures/qusets/guide/structure/west/bai_hu.png",
+            "pos": { "x": -580.5, "y": 151.5, "z": -198.5 }
+        },
+        {
+            "title": {"translate":"plre.location.west.sheng_hu_mi_zhen"},
+            "id": "sheng_hu_mi_zhen",
+            "texture": "ftbquests:textures/qusets/guide/structure/west/sheng_hu_mi_zhen.png",
+            "pos": { "x": -434.0, "y": 111.0, "z": 157.0 }
+        },
+        {
+            "title": {"translate":"plre.location.west.jin_kuang_xiao_zhen"},
+            "id": "jin_kuang_xiao_zhen",
+            "texture": "ftbquests:textures/qusets/guide/structure/west/jin_kuang_xiao_zhen.png",
+            "pos": { "x": -383.5, "y": 112.0, "z": 128.5 }
+        },
+        {
+            "title": {"translate":"plre.location.west.zhan_shen_zu"},
+            "id": "zhan_shen_zu",
+            "texture": "panlingre:textures/item/race_zhan.png",
+            "pos": { "x": -18.5, "y": 36.0, "z": 134.5 }
+        },
+        {
+            "title": {"translate":"plre.location.west.chen_dai_fu"},
+            "id": "chen_dai_fu",
+            "texture": "ftbquests:textures/qusets/guide/structure/west/chen_dai_fu.png",
+            "pos": { "x": -131.5, "y": 45.0, "z": 140.0 }
+        },
+        {
+            "title": {"translate":"plre.location.west.guo_yuan"},
+            "id": "guo_yuan",
+            "texture": "ftbquests:textures/qusets/guide/structure/west/guo_yuan.png",
+            "pos": { "x": -62.5, "y": 68.0, "z": 30.5 }
+        },
+        {
+            "title": {"translate":"plre.location.west.ku_gu"},
+            "id": "ku_gu",
+            "texture": "ftbquests:textures/qusets/guide/structure/west/ku_gu.png",
+            "pos": { "x": -669.5, "y": 108.0, "z": -637.5 }
+        },
+        {
+            "title": {"translate":"plre.location.west.zhen_yao_ta"},
+            "id": "zhen_yao_ta",
+            "texture": "ftbquests:textures/qusets/guide/structure/west/zhen_yao_ta.png",
+            "pos": { "x": -175.5, "y": 64.0, "z": -179.5 }
+        },
+        {
+            "title": {"translate":"plre.location.west.jiu_miao"},
+            "id": "jiu_miao",
+            "texture": "ftbquests:textures/qusets/guide/structure/west/jiu_miao.png",
+            "pos": { "x": -309.5, "y": 115.0, "z": -423.5 }
+        }
+    ]
+}

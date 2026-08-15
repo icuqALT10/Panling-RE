@@ -1,0 +1,29 @@
+{
+  "id": "npc_east_sell_fish",
+  "title":"npc/east/sell_fish",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "plre.npc.name.sell_fish"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.east.sell_fish"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.east.sell_fish.option1"},
+          "command":[
+            "plre opengui villager @s east/sell_fish"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.east.sell_fish.option2"}
+        }
+      ],
+      "endDialog": true
+    }
+  ]
+}

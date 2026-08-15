@@ -1,0 +1,156 @@
+{
+  "id": "misson_south_4",
+  "title":"misson/south/4",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.southm3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.4"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.south.4.option"},
+          "target": "1",
+          "visibility_command": "execute if score @s misson_south matches 4"
+        }
+      ],
+      "endDialog": true
+    },
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.southm3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.4.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "pl.npc.name.southm3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.4.2"
+        }
+      ],
+      "next":"3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "pl.npc.name.southm3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.4.3"
+        }
+      ],
+      "next":"4"
+    },
+    {
+      "id": "4",
+      "speaker": {"translate": "pl.npc.name.southm3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.4.4"
+        }
+      ],
+      "next":"5"
+    },
+    {
+      "id": "5",
+      "speaker": {"translate": "pl.npc.name.southm3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.4.5"
+        }
+      ],
+      "next":"6"
+    },
+    {
+      "id": "6",
+      "speaker": {"translate": "pl.npc.name.southm3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.4.6"
+        }
+      ],
+      "next":"7"
+    },
+    {
+      "id": "7",
+      "speaker": {"translate": "pl.npc.name.southm3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.4.7"
+        }
+      ],
+      "next":"8"
+    },
+    {
+      "id": "8",
+      "speaker": {"translate": "pl.npc.name.southm3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.4.8"
+        }
+      ],
+      "next":"9"
+    },
+    {
+      "id": "9",
+      "speaker": {"translate": "pl.npc.name.southm3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.4.9"
+        }
+      ],
+      "next":"10"
+    },
+    {
+      "id": "10",
+      "speaker": {"translate": "pl.npc.name.southm3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.4.10"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "minecraft:blaze_powder",
+          "count":1,
+          "nbt":"{\"minecraft:custom_name\":{\"translate\":\"pl.item.name.southm2\"},\"minecraft:lore\":[{\"translate\":\"pl.item.lore.southm2a\"}]}"
+        }
+      ],
+      "next":"11"
+    },
+    {
+      "id": "11",
+      "speaker": {"translate": "pl.npc.name.southm3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.4.11"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/south/4"
+      ],
+      "endDialog": true
+    }
+  ]
+}

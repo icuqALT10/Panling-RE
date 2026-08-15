@@ -1,0 +1,14 @@
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","north","common","spider"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "north.common.spider"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","north","common","skeleton"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "north.common.skeleton"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","north","common","cave_spider"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "north.common.cave_spider"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","north","elite","box_zombie"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "north.elite.box_zombie"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","north","elite","box_skeleton"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "north.elite.box_skeleton"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","north","elite","box_spider"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "north.elite.box_spider"}']
+
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","north","boss","skeleton"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:1600s,MinSpawnDelay:800s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "north.boss.skeleton"}']

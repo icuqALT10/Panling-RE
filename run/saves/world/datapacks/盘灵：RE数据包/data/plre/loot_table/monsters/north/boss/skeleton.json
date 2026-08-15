@@ -1,0 +1,58 @@
+{
+    "type":"minecraft:entity",
+    "pools": [
+        {
+            "rolls":5,
+            "entries": [
+                {
+                    "type": "minecraft:loot_table",
+                    "value": "plre:monsters/north/common/skeleton"
+                }
+            ]
+        },
+        {
+            "rolls":1,
+            "entries": [
+                {   
+                    "type": "minecraft:item",
+                    "name": "panlingre:rare5_yuanhe_fra"
+                }
+
+            ]
+        },
+        {
+            "rolls":1, 
+            "conditions": [
+                {
+                    "condition": "minecraft:random_chance",
+                    "chance": 0.2
+                }
+            ],
+            "entries": [
+                {   
+                    "type": "minecraft:item",
+                    "name": "panlingre:rare5_yuanhe"
+                }
+
+            ]
+        },
+        {
+            "rolls":1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "panlingre:respawn_stone",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

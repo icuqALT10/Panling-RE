@@ -20,6 +20,9 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 
 public class kong_ming_shi extends Item implements ICurioItem {
+
+    private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "kong_ming_shi");
+
     public kong_ming_shi() {
         super(
                 new Properties()
@@ -33,7 +36,7 @@ public class kong_ming_shi extends Item implements ICurioItem {
         Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
 
         modifiers.put(ModAttributes.FALIZHI, new AttributeModifier(
-                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "kong_ming_shi"),
+                MODIFIER_ID,
                 5,
                 AttributeModifier.Operation.ADD_VALUE
         ));
@@ -46,7 +49,6 @@ public class kong_ming_shi extends Item implements ICurioItem {
         tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
         tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));
         tooltipComponents.add(Component.translatable("item.PanlingRE.kong_ming_shi.lore1"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.kong_ming_shi.lore2"));
 
         super.appendHoverText(stack, context, tooltipComponents, flag);
     }

@@ -9,6 +9,8 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.UUID;
 
 public class LingQiData {
     private float current;
@@ -27,7 +29,7 @@ public class LingQiData {
     public void sync(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
             float maxLingQi = (float) player.getAttributeValue(ModAttributes.MAX_LINGQI);
-            PacketDistributor.sendToPlayer(serverPlayer, new LingQiSyncPacket(this.current, maxLingQi));
+            PacketDistributor.sendToPlayer(serverPlayer, new LingQiSyncPacket(serverPlayer.getUUID(), this.current, maxLingQi));
         }
     }
 
@@ -50,15 +52,23 @@ public class LingQiData {
     }
 
     public static class ClientLingQiData {
+        private static UUID owner;
         private static float current;
         private static float max;
 
-        public static void set(float c, float m) {
+        public static void set(UUID owner, float c, float m) {
+            ClientLingQiData.owner = owner;
             current = c;
             max = m;
         }
 
-        public static float getCurrent() { return current; }
-        public static float getMax() { return max; }
+        // 读取时校验请求者 UUID，避免多玩家/切换场景下缓存串数据
+        public static float getCurrent(UUID requester) {
+            return Objects.equals(owner, requester) ? current : 0f;
+        }
+
+        public static float getMax(UUID requester) {
+            return Objects.equals(owner, requester) ? max : 0f;
+        }
     }
 }

@@ -17,6 +17,11 @@ import java.util.List;
 
 public class ling_gui extends ArmorItem {
 
+    private static final ResourceLocation HELMET_ID = ResourceLocation.withDefaultNamespace("ling_gui_helmet");
+    private static final ResourceLocation CHESTPLATE_ID = ResourceLocation.withDefaultNamespace("ling_gui_chestplate");
+    private static final ResourceLocation LEGGINGS_ID = ResourceLocation.withDefaultNamespace("ling_gui_leggings");
+    private static final ResourceLocation BOOTS_ID = ResourceLocation.withDefaultNamespace("ling_gui_boots");
+
     public ling_gui(Holder<ArmorMaterial> material, Type type) {
         super(material, type, new Properties()
                 .attributes(createModifiers(type))
@@ -30,128 +35,128 @@ public class ling_gui extends ArmorItem {
         if(slot==EquipmentSlotGroup.HEAD) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_helmet"),
+                            HELMET_ID,
                             12,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_helmet"),
+                            HELMET_ID,
                             10,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_helmet"),
+                            HELMET_ID,
                             5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_helmet"),
+                            HELMET_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_helmet"),
+                            HELMET_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.KNOCKBACK_RESISTANCE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_helmet"),
+                            HELMET_ID,
                             0.1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.CHEST) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_chestplate"),
+                            CHESTPLATE_ID,
                             20,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_chestplate"),
+                            CHESTPLATE_ID,
                             16,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_chestplate"),
+                            CHESTPLATE_ID,
                             7,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_chestplate"),
+                            CHESTPLATE_ID,
                             5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_chestplate"),
+                            CHESTPLATE_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.KNOCKBACK_RESISTANCE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_chestplate"),
+                            CHESTPLATE_ID,
                             0.1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.LEGS) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_leggings"),
+                            LEGGINGS_ID,
                             16,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_leggings"),
+                            LEGGINGS_ID,
                             14,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_leggings"),
+                            LEGGINGS_ID,
                             6,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_leggings"),
+                            LEGGINGS_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_leggings"),
+                            LEGGINGS_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.KNOCKBACK_RESISTANCE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_leggings"),
+                            LEGGINGS_ID,
                             0.1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.FEET) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_boots"),
+                            BOOTS_ID,
                             12,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_boots"),
+                            BOOTS_ID,
                             8,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_boots"),
+                            BOOTS_ID,
                             5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_boots"),
+                            BOOTS_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_boots"),
+                            BOOTS_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.KNOCKBACK_RESISTANCE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("ling_gui_boots"),
+                            BOOTS_ID,
                             0.1,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }

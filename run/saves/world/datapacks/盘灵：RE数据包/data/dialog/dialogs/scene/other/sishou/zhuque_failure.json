@@ -1,0 +1,17 @@
+{
+  "id": "bird_failure",
+  "type": "OVERLAY",
+  "start": "1",
+  "entries": [
+    {
+      "id": "1",
+      "speaker": "",
+      "text": [
+        {
+          "translate": "pl.info.bird.failure"
+        }
+      ],
+      "out_time":2500
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","instance","zhuque","zombie"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:400s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "instance.zhuque.zombie"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","instance","zhuque","blaze"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:400s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "instance.zhuque.blaze"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","instance","zhuque","magma_cube"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:400s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "instance.zhuque.magma_cube"}']

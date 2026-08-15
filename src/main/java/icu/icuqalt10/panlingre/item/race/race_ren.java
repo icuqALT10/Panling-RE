@@ -20,6 +20,9 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 
 public class race_ren extends Item implements ICurioItem {
+
+    private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "race_ren");
+
     public race_ren() {
         super(
                 new Properties()
@@ -38,7 +41,7 @@ public class race_ren extends Item implements ICurioItem {
         Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
 
         modifiers.put(Attributes.ARMOR, new AttributeModifier(
-                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "race_ren"),
+                MODIFIER_ID,
                 5,
                 AttributeModifier.Operation.ADD_VALUE
         ));

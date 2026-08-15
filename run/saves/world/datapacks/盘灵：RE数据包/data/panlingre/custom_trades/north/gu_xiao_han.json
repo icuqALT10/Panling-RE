@@ -1,0 +1,9 @@
+{
+  "title": {"translate": "pl.npc.name.northtong"},
+  "offers": [
+    {
+      "buy":  { "item": "panlingre:tong_qian", "count": 20 },
+      "sell": { "item": "minecraft:fishing_rod", "count": 1, "components": {"custom_data":{"id":"plre:gu_xiao_han"},"custom_name":"{\"translate\":\"pl.item.name.fishing_rod0\"}","lore":["{\"translate\":\"pl.item.lore.fishing_rod0a\"}","{\"translate\":\"pl.item.lore.fishing_rod0b\"}"],"enchantments":{"lure":1,"luck_of_the_sea":1}}}
+    }
+  ]
+}

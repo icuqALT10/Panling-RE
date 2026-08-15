@@ -1,0 +1,96 @@
+{
+    "pools": [
+        {
+            "rolls":1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:rabbit",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_count",
+                            "count":{
+                                "type":"minecraft:uniform",
+                                "max": 1,
+                                "min": 1
+                            }
+                        },
+                        {
+                            "function": "minecraft:set_components",
+                            "components": {
+                              "custom_data": {"id":"plre:rabbit"}
+                            }
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "condition": "minecraft:entity_properties",
+                            "predicate": {
+                              "flags": {
+                                "is_on_fire": false
+                              }
+                            },
+                            "entity": "this"
+                          }
+                    ]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:cooked_rabbit",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_count",
+                            "count":{
+                                "type":"minecraft:uniform",
+                                "max": 1,
+                                "min": 1
+                            }
+                        },
+                        {
+                            "function": "minecraft:set_components",
+                            "components": {
+                              "custom_data": {"id":"plre:cooked_rabbit"}
+                            }
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "condition": "minecraft:entity_properties",
+                            "predicate": {
+                              "flags": {
+                                "is_on_fire": true
+                              }
+                            },
+                            "entity": "this"
+                          }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls":1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:rabbit_hide",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_components",
+                            "components": {
+                              "custom_data": {"id":"plre:rabbit_hide"}
+                            }
+                        },
+                        {
+                            "function": "minecraft:set_count",
+                            "count":{
+                                "type":"minecraft:uniform",
+                                "min": 0,
+                                "max": 1
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

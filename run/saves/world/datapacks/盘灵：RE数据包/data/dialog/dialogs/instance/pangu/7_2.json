@@ -1,0 +1,17 @@
+{
+  "id": "instance_pangu_7_2",
+  "type": "OVERLAY",
+  "start": "1",
+  "entries": [
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text": [
+        {
+          "translate": "plre.instance.dialog.pangu.7"
+        }
+      ],
+      "out_time":2500
+    }
+  ]
+}

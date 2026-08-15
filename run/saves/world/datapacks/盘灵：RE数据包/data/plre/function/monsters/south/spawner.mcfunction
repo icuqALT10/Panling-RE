@@ -1,0 +1,26 @@
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","common","husk"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.common.husk"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","common","blaze"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.common.blaze"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","common","magma_cube"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.common.magma_cube"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","elite","box_zombie"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.elite.box_zombie"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","elite","box_skeleton"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.elite.box_skeleton"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","elite","box_wither_skeleton"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.elite.box_wither_skeleton"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","elite","box_husk"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.elite.box_husk"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","elite","box_blaze"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.elite.box_blaze"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","elite","box_magma_cube"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.elite.box_magma_cube"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","elite","box2_husk"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.elite.box2_husk"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","elite","box2_blaze"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.elite.box2_blaze"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","elite","box2_magma_cube"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.elite.box2_magma_cube"}']
+
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","south","boss","husk"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:1600s,MinSpawnDelay:800s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "south.boss.husk"}']

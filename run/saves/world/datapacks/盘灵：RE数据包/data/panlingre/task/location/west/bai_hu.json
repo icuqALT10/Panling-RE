@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.west.bai_hu"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": -580,
+                    "y": 151,
+                    "z": -198
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

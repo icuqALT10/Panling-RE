@@ -1,0 +1,83 @@
+{
+  "id": "misson_ren_6",
+  "title":"misson/ren/6",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.renmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.7"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.ren.7.option"},
+          "target": "1",
+          "visibility_command": "execute if score @s misson_ren matches 7"
+        }
+      ],
+      "endDialog": true
+    },
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.renmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.7.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "pl.npc.name.renmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.7.2"
+        }
+      ],
+      "next":"3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "pl.npc.name.renmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.7.3"
+        }
+      ],
+      "next":"4"
+    },
+    {
+      "id": "4",
+      "speaker": {"translate": "pl.npc.name.renmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.7.4"
+        }
+      ],
+      "next":"5"
+    },
+    {
+      "id": "5",
+      "speaker": {"translate": "pl.npc.name.renmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.7.5"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/ren/7"
+      ],
+      "endDialog": true
+    }
+  ]
+}

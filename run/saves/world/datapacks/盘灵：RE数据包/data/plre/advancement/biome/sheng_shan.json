@@ -1,0 +1,19 @@
+{
+    "criteria": {
+        "trigger":{
+            "trigger": "location",
+            "conditions": {
+                "player": {
+                    "location": {
+                        "biomes": [
+                            "plre:sheng_shan"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "rewards": {
+        "function": "plre:biome/sheng_shan"
+    }
+}

@@ -1,0 +1,1 @@
+give @s filled_map[custom_data={id:"plre:palace_map"},custom_name='{"translate":"pl.item.name.map0"}',lore=['{"translate":"pl.item.lore.map0a"}','{"translate":"pl.item.lore.map0b"}','{"translate":"pl.item.lore.map0c"}','{"translate":"pl.item.lore.map0d"}','{"translate":"pl.item.lore.map0e"}','{"translate":"pl.item.lore.map0f"}'],map_id=0,hide_additional_tooltip={}]

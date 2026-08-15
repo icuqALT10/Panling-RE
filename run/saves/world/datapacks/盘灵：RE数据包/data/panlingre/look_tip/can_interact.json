@@ -1,0 +1,12 @@
+{
+    "title": [
+        {"translate":"plre.looktip.entity.can_interact"}
+    ],
+    "entries": [
+        {
+            "type": "entity",
+            "name": "villager",
+            "nbt": "{can_interact:{active:true}}"
+        }
+    ]
+}

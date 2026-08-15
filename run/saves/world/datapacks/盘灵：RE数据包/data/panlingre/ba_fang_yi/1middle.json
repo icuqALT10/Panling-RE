@@ -1,0 +1,121 @@
+{
+    "title": {"translate":"plre.location.middle"},
+    "id": "middle",
+    "texture": "panlingre:textures/item/ys3_tu.png",
+    "poses": [
+        {
+            "title": {"translate":"plre.location.middle.middle"},
+            "id": "middle",
+            "texture": "ftbquests:textures/qusets/guide/structure/middle.png",
+            "pos": { "x": 179.5, "y": 42.0, "z": 65.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.tie_jiang_pu"},
+            "id": "tie_jiang_pu",
+            "texture": "ftbquests:textures/qusets/guide/structure/tie_jiang_pu.png",
+            "pos": { "x": 83.5, "y": 46.0, "z": 144.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.dan_yao_pu"},
+            "id": "dan_yao_pu",
+            "texture": "ftbquests:textures/qusets/guide/structure/dan_yao_pu.png",
+            "pos": { "x": 261.5, "y": 44.0, "z": 53.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.ling_fu_pu"},
+            "id": "ling_fu_pu",
+            "texture": "ftbquests:textures/qusets/guide/structure/ling_fu_pu.png",
+            "pos": { "x": 294.5, "y": 46.0, "z": 27.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.buyer"},
+            "id": "buyer",
+            "texture": "ftbquests:textures/qusets/guide/structure/buyer.png",
+            "pos": { "x": 91.5, "y": 47.0, "z": 107.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.seller"},
+            "id": "seller",
+            "texture": "ftbquests:textures/qusets/guide/structure/seller.png",
+            "pos": { "x": 101.5, "y": 46.0, "z": 181.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.qian_zhuang"},
+            "id": "qian_zhuang",
+            "texture": "ftbquests:textures/qusets/guide/structure/qian_zhuang.png",
+            "pos": { "x": 33.5, "y": 46.5, "z": 160.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.cang_ku"},
+            "id": "cang_ku",
+            "texture": "ftbquests:textures/qusets/guide/structure/cang_ku.png",
+            "pos": { "x": 95.5, "y": 48.0, "z": 32.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.biao_ju"},
+            "id": "biao_ju",
+            "texture": "ftbquests:textures/qusets/guide/structure/biao_ju.png",
+            "pos": { "x": 52.5, "y": 46.0, "z": 135.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.yi_zhan"},
+            "id": "yi_zhan",
+            "texture": "ftbquests:textures/qusets/guide/structure/yi_zhan.png",
+            "pos": { "x": 79.5, "y": 44.0, "z": -74.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.ren_shen_xian"},
+            "id": "ren_shen_xian",
+            "texture": "panlingre:textures/item/race_ren.png",
+            "pos": { "x": 208.5, "y": 49.0, "z": 37.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.feng_hua_lou"},
+            "id": "feng_hua_lou",
+            "texture": "ftbquests:textures/qusets/guide/structure/feng_hua_lou.png",
+            "pos": { "x": 57.5, "y": 48.0, "z": 36.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.gong_sun_wang_fu"},
+            "id": "gong_sun_wang_fu",
+            "texture": "ftbquests:textures/qusets/guide/structure/gong_sun_wang_fu.png",
+            "pos": { "x": 283.5, "y": 44.0, "z": -3.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.hu_guo_dian"},
+            "id": "hu_guo_dian",
+            "texture": "ftbquests:textures/qusets/guide/structure/hu_guo_dian.png",
+            "pos": { "x": 241.5, "y": 61.0, "z": -191.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.huang_gong"},
+            "id": "huang_gong",
+            "texture": "ftbquests:textures/qusets/guide/structure/huang_gong.png",
+            "pos": { "x": 179.5, "y": 66.0, "z": -130.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.liu_dao_cha_fang"},
+            "id": "liu_dao_cha_fang",
+            "texture": "ftbquests:textures/qusets/guide/structure/liu_dao_cha_fang.png",
+            "pos": { "x": 46.5, "y": 48.5, "z": 56.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.xin_zhan"},
+            "id": "xin_zhan",
+            "texture": "ftbquests:textures/qusets/guide/structure/xin_zhan.png",
+            "pos": { "x": 94.5, "y": 48.0, "z": 91.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.yi_cha_xuan"},
+            "id": "yi_cha_xuan",
+            "texture": "ftbquests:textures/qusets/guide/structure/yi_cha_xuan.png",
+            "pos": { "x": 66.5, "y": 47.0, "z": 119.5 }
+        },
+        {
+            "title": {"translate":"plre.location.middle.zhong_lie_ci"},
+            "id": "zhong_lie_ci",
+            "texture": "ftbquests:textures/qusets/guide/structure/zhong_lie_ci.png",
+            "pos": { "x": 192.5, "y": 47.0, "z": 173.5 }
+        }
+    ]
+}

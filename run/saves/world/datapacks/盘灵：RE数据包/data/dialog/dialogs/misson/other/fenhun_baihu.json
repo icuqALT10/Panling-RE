@@ -1,0 +1,121 @@
+{
+  "id": "other_fenhun_baihu",
+  "title":"other/fenhun_baihu",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.west3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.5"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate": "pl.dialog.misson.west.5.option1"},
+          "target": "5.1",
+          "visibility_command": "execute if score @s misson_west matches 5"
+        },
+        {
+          "text": {"translate": "pl.dialog.misson.west.5.option2"},
+          "target": "6.1",
+          "visibility_command": "execute if score @s misson_west matches 6 if function plre:check/bless/baihu run return 1"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "5.1",
+      "speaker": {"translate": "pl.npc.name.west3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.5.1"
+        }
+      ],
+      "next":"5.2"
+    },
+    {
+      "id": "5.2",
+      "speaker": {"translate": "pl.npc.name.west3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.5.2"
+        }
+      ],
+      "next":"5.3"
+    },
+    {
+      "id": "5.3",
+      "speaker": {"translate": "pl.npc.name.west3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.5.3"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/west/5"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "6.1",
+      "speaker": {"translate": "pl.npc.name.west3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.6.1"
+        }
+      ],
+      "next":"6.2"
+    },
+    {
+      "id": "6.2",
+      "speaker": {"translate": "pl.npc.name.west3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.6.2"
+        }
+      ],
+      "next":"6.3"
+    },
+    {
+      "id": "6.3",
+      "speaker": {"translate": "pl.npc.name.west3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.6.3"
+        }
+      ],
+      "next":"6.4"
+    },
+    {
+      "id": "6.4",
+      "speaker": {"translate": "pl.npc.name.west3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.west.6.4"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/west/6"
+      ],
+      "endDialog": true
+    }
+  ]
+}

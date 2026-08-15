@@ -1,0 +1,26 @@
+{
+    "criteria": {
+        "trigger":{
+            "trigger": "location",
+            "conditions": {
+                "player": {
+                    "location": {
+                        "biomes": [
+                            "plains",
+                            "the_void",
+                            "ocean",
+                            "snowy_plains",
+                            "snowy_taiga",
+                            "desert",
+                            "deep_ocean",
+                            "savanna"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "rewards": {
+        "function": "plre:biome/null"
+    }
+}

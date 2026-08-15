@@ -1,0 +1,225 @@
+{
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "f"
+	group: "29EB2635133F64C0"
+	icon: {
+		id: "panlingre:ys3_jin"
+	}
+	id: "7D1B36C11939BE72"
+	order_index: 6
+	quest_links: [ ]
+	quests: [
+		{
+			dependencies: [
+				"0D85D408F40791F3"
+				"3B5599D1520AC45E"
+				"62C6B847B61449A4"
+				"22F7C5FB445856FC"
+				"0681DC4147351369"
+			]
+			dependency_requirement: "one_completed"
+			hide_dependency_lines: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: true
+			hide_until_deps_visible: false
+			id: "318DB8A814889AD2"
+			rewards: [{
+				id: "23D4015D941940D7"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/west/1"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "73677B2E9A361DCE"
+				type: "advancement"
+			}]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["318DB8A814889AD2"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "0773EC20C08BC8AC"
+			rewards: [{
+				id: "359FD50E2ED044C0"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/west/2"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "10515A4DE6A3E4B3"
+				type: "advancement"
+			}]
+			x: 2.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["0773EC20C08BC8AC"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "5507404D12D0491D"
+			rewards: [{
+				id: "5CECEECF9BB085F9"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/west/3"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "4C076EB3616B8A3D"
+				type: "advancement"
+			}]
+			x: 4.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["5507404D12D0491D"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "06537E73AECAD5CD"
+			rewards: [{
+				id: "3CA51F4915ECF573"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/west/4"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "41C3F2CF74F53B46"
+				type: "advancement"
+			}]
+			x: 6.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["06537E73AECAD5CD"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "0B141B2BFFC3B6EA"
+			rewards: [{
+				id: "72D0444C434CFA3F"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/west/5"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "7D91819CC9ADB026"
+				type: "advancement"
+			}]
+			x: 8.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["0B141B2BFFC3B6EA"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "2B49BD2D5FA72AC6"
+			rewards: [{
+				id: "3346A32807740DBB"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/baihu"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys3_jin"
+				}
+				id: "4E102488363BD491"
+				type: "advancement"
+			}]
+			x: 10.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["2B49BD2D5FA72AC6"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "4E72A09000CB08AE"
+			rewards: [{
+				id: "3038E2D6950DADB5"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/west/6"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "56E41186F802236F"
+				type: "advancement"
+			}]
+			x: 12.0d
+			y: 0.0d
+		}
+		{
+			can_repeat: true
+			dependencies: ["318DB8A814889AD2"]
+			dependency_requirement: "all_started"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "76E1B535211D11EE"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/function plre:task/misson/west/find"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "203C7AA85EABC84A"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 1.0d
+			tasks: [{
+				id: "168EAC0F2497F8E9"
+				type: "checkmark"
+			}]
+			x: 0.5d
+			y: 1.0d
+		}
+	]
+}

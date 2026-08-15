@@ -1,0 +1,67 @@
+{
+    "title": {"translate":"plre.location.east"},
+    "id": "east",
+    "texture": "panlingre:textures/item/ys3_mu.png",
+    "poses": [
+        {
+            "title": {"translate":"plre.location.east.qing_long"},
+            "id": "qing_long",
+            "texture": "ftbquests:textures/qusets/guide/structure/east/qing_long.png",
+            "pos": { "x": 540.5, "y": 36.0, "z": 394.5 }
+        },
+        {
+            "title": {"translate":"plre.location.east.yao_zu"},
+            "id": "yao_zu",
+            "texture": "panlingre:textures/item/race_yao.png",
+            "pos": { "x": 411.5, "y": 60.0, "z": 82.5 }
+        },
+        {
+            "title": {"translate":"plre.location.east.ye_lang_qun"},
+            "id": "ye_lang_qun",
+            "texture": "panlingre:textures/item/jing_shou_pi.png",
+            "pos": { "x": 384.5, "y": 43.0, "z": -6.5 }
+        },
+        {
+            "title": {"translate":"plre.location.east.long_xu_zhen"},
+            "id": "long_xu_zhen",
+            "texture": "ftbquests:textures/qusets/guide/structure/east/long_xu_zhen.png",
+            "pos": { "x": 522.5, "y": 33.0, "z": 21.5 }
+        },
+        {
+            "title": {"translate":"plre.location.east.cha_dian_tan"},
+            "id": "cha_dian_tan",
+            "texture": "ftbquests:textures/qusets/guide/structure/east/cha_dian_tan.png",
+            "pos": { "x": 689.5, "y": 70.0, "z": 113.5 }
+        },
+        {
+            "title": {"translate":"plre.location.east.shan_shen_miao"},
+            "id": "shan_shen_miao",
+            "texture": "ftbquests:textures/qusets/guide/structure/east/shan_shen_miao.png",
+            "pos": { "x": 834.5, "y": 40.0, "z": 108.5 }
+        },
+        {
+            "title": {"translate":"plre.location.east.fei_qi_cun_zhuang"},
+            "id": "fei_qi_cun_zhuang",
+            "texture": "ftbquests:textures/qusets/guide/structure/east/fei_qi_cun_zhuang.png",
+            "pos": { "x": 544.5, "y": 38.0, "z": 344.5 }
+        },
+        {
+            "title": {"translate":"plre.location.east.fei_qi_ji_tan"},
+            "id": "fei_qi_ji_tan",
+            "texture": "ftbquests:textures/qusets/guide/structure/east/fei_qi_ji_tan.png",
+            "pos": { "x": 666.5, "y": 47.0, "z": 46.5 }
+        },
+        {
+            "title": {"translate":"plre.location.east.shen_mu"},
+            "id": "shen_mu",
+            "texture": "ftbquests:textures/qusets/guide/structure/east/shen_mu.png",
+            "pos": { "x": 631.5, "y": 50.0, "z": 373.5 }
+        },
+        {
+            "title": {"translate":"plre.location.east.shi_huang_ling"},
+            "id": "shi_huang_ling",
+            "texture": "ftbquests:textures/qusets/guide/structure/east/shi_huang_ling.png",
+            "pos": { "x": 692.5, "y": 33.0, "z": -141.5 }
+        }
+    ]
+}

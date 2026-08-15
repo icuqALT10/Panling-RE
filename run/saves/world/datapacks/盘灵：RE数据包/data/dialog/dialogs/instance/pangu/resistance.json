@@ -1,0 +1,16 @@
+{
+  "id": "instance_pangu_resistance",
+  "type": "OVERLAY",
+  "start": "1",
+  "entries": [
+    {
+      "id": "1",
+      "speaker": "",
+      "text": [
+        {
+          "translate": "plre.instance.dialog.pangu.resistance"
+        }
+      ]
+    }
+  ]
+}

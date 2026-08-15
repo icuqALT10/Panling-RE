@@ -1,0 +1,11 @@
+{
+  "title": {"translate": "plre.npc.name.buyer3"},
+  "offers": [
+    {"buy":{"item":"minecraft:brick","count":1,"components":{"custom_data":{"id":"plre:old_lock"}}},
+    "sell":{"item":"panlingre:yuan_bao","count":8}},
+
+    {"buy":{"item":"minecraft:black_dye","count":1,"components":{"custom_data":{"id":"plre:old_key"}}},
+    "sell":{"item":"panlingre:yuan_bao","count":12}}
+
+  ]
+}

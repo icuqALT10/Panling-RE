@@ -1,0 +1,61 @@
+{
+  "id": "misson_yao_3",
+  "title":"misson/yao/3",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.yaomain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.3"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.yao.3.option"},
+          "target": "1",
+          "visibility_command": "execute if score @s misson_yao matches 3"
+        }
+      ],
+      "endDialog": true
+    },
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.yaomain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.3.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "pl.npc.name.yaomain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.3.2"
+        }
+      ],
+      "next":"3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "pl.npc.name.yaomain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.3.3"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/3"
+      ],
+      "endDialog": true
+    }
+  ]
+}

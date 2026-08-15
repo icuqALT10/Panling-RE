@@ -1,0 +1,50 @@
+{
+  "id": "misson_ren_4",
+  "title":"misson/ren/4",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.renmain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.4"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.ren.4.option"},
+          "target": "1",
+          "visibility_command": "execute if score @s misson_ren matches 4"
+        }
+      ],
+      "endDialog": true
+    },
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.renmain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.4.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "pl.npc.name.renmain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.4.2"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/ren/4"
+      ],
+      "endDialog": true
+    }
+  ]
+}

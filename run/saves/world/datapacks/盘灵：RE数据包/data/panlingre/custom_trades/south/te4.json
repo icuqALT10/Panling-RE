@@ -1,0 +1,12 @@
+{
+  "title": {"translate": "plre.npc.name.te4"},
+  "offers": [
+    {"buy":{"item":"minecraft:orange_dye","count":50,"components":{"custom_data":{"id":"plre:te4"},"custom_name":"{\"translate\":\"pl.item.name.tezhan\"}","lore":["{\"translate\":\"pl.item.lore.tezhana\"}","{\"translate\":\"pl.item.lore.tezhanb\"}"]}},
+    "sell":{"item":"panlingre:shen_su_feather","count":1}},
+    {"buy":{"item":"minecraft:orange_dye","count":30,"components":{"custom_data":{"id":"plre:te4"},"custom_name":"{\"translate\":\"pl.item.name.tezhan\"}","lore":["{\"translate\":\"pl.item.lore.tezhana\"}","{\"translate\":\"pl.item.lore.tezhanb\"}"]}},
+    "sell":{"item":"panlingre:yuan_bao","count":5}},
+    {"buy":{"item":"minecraft:orange_dye","count":20,"components":{"custom_data":{"id":"plre:te4"},"custom_name":"{\"translate\":\"pl.item.name.tezhan\"}","lore":["{\"translate\":\"pl.item.lore.tezhana\"}","{\"translate\":\"pl.item.lore.tezhanb\"}"]}},
+    "sell":{"item":"panlingre:yao_yin_2","count":1}}
+
+  ]
+}

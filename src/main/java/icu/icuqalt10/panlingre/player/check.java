@@ -7,9 +7,9 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 public class check {
 
-    public static boolean zhiye_check(Player player,String targetId) {
+    private static boolean hasItemInCurioSlot(Player player, String slotId, String targetId) {
         return CuriosApi.getCuriosInventory(player).map(inventory -> {
-            var stacksHandler = inventory.getCurios().get("zhiye");
+            var stacksHandler = inventory.getCurios().get(slotId);
             if (stacksHandler == null) return false;
 
             var stacks = stacksHandler.getStacks();
@@ -24,20 +24,11 @@ public class check {
         }).orElse(false);
     }
 
-    public static boolean race_check(Player player,String targetId) {
-        return CuriosApi.getCuriosInventory(player).map(inventory -> {
-            var stacksHandler = inventory.getCurios().get("race");
-            if (stacksHandler == null) return false;
+    public static boolean zhiye_check(Player player, String targetId) {
+        return hasItemInCurioSlot(player, "zhiye", targetId);
+    }
 
-            var stacks = stacksHandler.getStacks();
-            for (int i = 0; i < stacks.getSlots(); i++) {
-                ItemStack stack = stacks.getStackInSlot(i);
-                if (!stack.isEmpty()) {
-                    String currentId = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
-                    if (currentId.equals(targetId)) return true;
-                }
-            }
-            return false;
-        }).orElse(false);
+    public static boolean race_check(Player player, String targetId) {
+        return hasItemInCurioSlot(player, "race", targetId);
     }
 }

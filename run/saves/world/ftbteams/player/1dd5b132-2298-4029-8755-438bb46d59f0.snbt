@@ -1,0 +1,19 @@
+{
+	id: "1dd5b132-2298-4029-8755-438bb46d59f0"
+	type: "player"
+	player_name: "icuqALT10"
+	ranks: {
+		1dd5b132-2298-4029-8755-438bb46d59f0: "owner"
+	}
+	properties: {
+		"ftbteams:display_name": "icuqALT10"
+		"ftbteams:description": ""
+		"ftbteams:color": "#BAFF59"
+		"ftbteams:free_to_join": 0b
+		"ftbteams:max_msg_history_size": 1000
+		"ftbteams:team_stages": [ ]
+		"ftbteams:lives_remaining": 0
+	}
+	message_history: [ ]
+	extra: { }
+}

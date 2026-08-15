@@ -1,0 +1,15 @@
+{
+    "title": [
+        {"translate":"block.panlingre.suspicious_dirt"},
+        {"translate":"plre.looktip.ore.unavailable.dirt"}
+    ],
+    "entries": [
+        {
+            "type": "block",
+            "name": "panlingre:suspicious_dirt",
+            "block_state": {
+                "has_grass": "false"
+            }
+        }
+    ]
+}

@@ -36,6 +36,8 @@ import java.util.List;
 
 public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger {
 
+    private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "zhu_ri");
+
     private final int cooldown = 400;
     private final float cost = 50.0f;
 
@@ -50,14 +52,13 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
-        ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "zhu_ri");
 
         boolean isPowered = stack.getOrDefault(ModComponents.IS_POWERED.get(), false);
 
         builder.add(
                 ModAttributes.ARROW_DAMAGE,
                 new AttributeModifier(
-                        UID,
+                        MODIFIER_ID,
                         isPowered ? 25.0 : 35.0,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
@@ -66,7 +67,7 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
         builder.add(
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
-                        UID,
+                        MODIFIER_ID,
                         isPowered ? -0.75 : 0.2,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
@@ -75,7 +76,7 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
         builder.add(
                 Attributes.ARMOR,
                 new AttributeModifier(
-                        UID,
+                        MODIFIER_ID,
                         isPowered ? 0.15 : -0.2,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),

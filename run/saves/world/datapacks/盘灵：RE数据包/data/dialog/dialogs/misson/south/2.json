@@ -1,0 +1,105 @@
+{
+  "id": "misson_south_2",
+  "title":"misson/south/2",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.southm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.2"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.south.2.option"},
+          "target": "1",
+          "visibility_command": "execute if score @s misson_south matches 2"
+        }
+      ],
+      "endDialog": true
+    },
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.southm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.2.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "pl.npc.name.southm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.2.2"
+        }
+      ],
+      "next":"3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "pl.npc.name.southm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.2.3"
+        }
+      ],
+      "next":"4"
+    },
+    {
+      "id": "4",
+      "speaker": {"translate": "pl.npc.name.southm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.2.4"
+        }
+      ],
+      "next":"5"
+    },
+    {
+      "id": "5",
+      "speaker": {"translate": "pl.npc.name.southm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.2.5"
+        }
+      ],
+      "next":"6"
+    },
+    {
+      "id": "6",
+      "speaker": {"translate": "pl.npc.name.southm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.2.6"
+        }
+      ],
+      "next":"7"
+    },
+    {
+      "id": "7",
+      "speaker": {"translate": "pl.npc.name.southm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.south.2.7"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/south/2"
+      ],
+      "endDialog": true
+    }
+  ]
+}

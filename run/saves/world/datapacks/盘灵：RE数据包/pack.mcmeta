@@ -1,0 +1,34 @@
+{
+	"pack": {
+		"pack_format": 48,
+		"description": "盘灵：RE 数据包"
+	},
+	"filter": {
+		"block": [
+			{
+				"namespace": "minecraft",
+				"path": "recipe/.*"
+			},
+			{
+				"namespace": "beyonddimensions",
+				"path": "recipe/.*"
+			},
+			{
+				"namespace": "waystones",
+				"path": "recipe/.*"
+			},
+			{
+				"namespace": "powerful_dummy",
+				"path": "recipe/.*"
+			},
+			{
+				"namespace": "ftbquests",
+				"path": "recipe/.*"
+			},
+			{
+				"namespace": "minecraft",
+				"path": "advancement/.*"
+			}
+		]
+	}
+}

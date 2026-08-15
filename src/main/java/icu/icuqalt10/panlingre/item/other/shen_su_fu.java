@@ -20,6 +20,9 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 
 public class shen_su_fu extends Item implements ICurioItem {
+
+    private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "shen_su_fu");
+
     public shen_su_fu() {
         super(
                 new Properties()
@@ -33,13 +36,13 @@ public class shen_su_fu extends Item implements ICurioItem {
         Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
 
         modifiers.put(ModAttributes.COOLDOWN_REMOVE, new AttributeModifier(
-                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "shen_su_fu"),
+                MODIFIER_ID,
                 0.15,
                 AttributeModifier.Operation.ADD_VALUE
         ));
 
         modifiers.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(
-                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "shen_su_fu"),
+                MODIFIER_ID,
                 0.2,
                 AttributeModifier.Operation.ADD_MULTIPLIED_BASE
         ));

@@ -1,0 +1,21 @@
+{
+  "title": {"translate": "plre.npc.name.food4"},
+  "offers": [
+    
+    {"buy":{"item":"panlingre:tong_qian","count":1},
+    "sell":{"item":"apple","count":5}},
+    
+    {"buy":{"item":"panlingre:tong_qian","count":5},
+    "sell":{"item":"bread","count":12}},
+    
+    {"buy":{"item":"panlingre:tong_qian","count":7},
+    "sell":{"item":"baked_potato","count":10}},
+    
+    {"buy":{"item":"panlingre:tong_qian","count":1},
+    "sell":{"item":"mushroom_stew","count":1}},
+    
+    {"buy":{"item":"panlingre:tong_qian","count":3},
+    "sell":{"item":"pumpkin_pie","count":3}}
+
+  ]
+}

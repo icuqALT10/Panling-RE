@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.south.ma_zei"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": -158,
+                    "y": 49,
+                    "z": 543
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

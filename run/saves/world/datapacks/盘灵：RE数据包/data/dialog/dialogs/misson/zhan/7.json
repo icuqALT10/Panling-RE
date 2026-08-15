@@ -1,0 +1,143 @@
+{
+  "id": "misson_zhan_7",
+  "title":"misson/zhan/7",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.8"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.zhan.8.option"},
+          "target": "8.1",
+          "visibility_command": "execute if score @s misson_zhan matches 8"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.zhan.9.option"},
+          "target": "9.1",
+          "visibility_command": "execute if score @s misson_zhan matches 9 if function plre:check/bless/qinglong run return 1"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "8.1",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.8.1"
+        }
+      ],
+      "next":"8.2"
+    },
+    {
+      "id": "8.2",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.8.2"
+        }
+      ],
+      "next":"8.3"
+    },
+    {
+      "id": "8.3",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.8.3"
+        }
+      ],
+      "next":"8.4"
+    },
+    {
+      "id": "8.4",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.8.4"
+        }
+      ],
+      "next":"8.5"
+    },
+    {
+      "id": "8.5",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.8.5"
+        }
+      ],
+      "next":"8.6"
+    },
+    {
+      "id": "8.6",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.8.6"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/zhan/8"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "9.1",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.9.1"
+        }
+      ],
+      "next":"9.2"
+    },
+    {
+      "id": "9.2",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.9.2"
+        }
+      ],
+      "next":"9.3"
+    },
+    {
+      "id": "9.3",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.9.3"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/zhan/9"
+      ],
+      "endDialog": true
+    }
+  ]
+}

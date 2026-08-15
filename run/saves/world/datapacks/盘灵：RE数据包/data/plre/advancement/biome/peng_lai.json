@@ -1,0 +1,19 @@
+{
+    "criteria": {
+        "trigger":{
+            "trigger": "location",
+            "conditions": {
+                "player": {
+                    "location": {
+                        "biomes": [
+                            "plre:peng_lai"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "rewards": {
+        "function": "plre:biome/peng_lai"
+    }
+}

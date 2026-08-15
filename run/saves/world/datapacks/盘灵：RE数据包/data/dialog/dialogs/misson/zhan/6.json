@@ -1,0 +1,98 @@
+{
+  "id": "misson_zhan_6",
+  "title":"misson/zhan/6",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.7"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.zhan.7.option"},
+          "target": "7.1",
+          "visibility_command": "execute if score @s misson_zhan matches 7"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "7.1",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.7.1"
+        }
+      ],
+      "next":"7.2"
+    },
+    {
+      "id": "7.2",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.7.2"
+        }
+      ],
+      "next":"7.3"
+    },
+    {
+      "id": "7.3",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.7.3"
+        }
+      ],
+      "next":"7.4"
+    },
+    {
+      "id": "7.4",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.7.4"
+        }
+      ],
+      "next":"7.5"
+    },
+    {
+      "id": "7.5",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.7.5"
+        }
+      ],
+      "next":"7.6"
+    },
+    {
+      "id": "7.6",
+      "speaker": {"translate": "pl.npc.name.zhanmain6"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.7.6"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/zhan/7"
+      ],
+      "endDialog": true
+    }
+  ]
+}

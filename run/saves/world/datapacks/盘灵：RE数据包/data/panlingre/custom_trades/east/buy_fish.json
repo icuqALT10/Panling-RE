@@ -1,0 +1,15 @@
+{
+  "title": {"translate": "plre.npc.name.buy_fish"},
+  "offers": [
+    
+    {"buy":{"item":"minecraft:cod","count":5, "components": {"custom_data":{"id":"plre:fish"}}},
+    "sell":{"item":"panlingre:tong_qian","count":3}},
+    
+    {"buy":{"item":"minecraft:salmon","count":1, "components": {"custom_data":{"id":"plre:salmon"}}},
+    "sell":{"item":"panlingre:tong_qian","count":1}},
+    
+    {"buy":{"item":"minecraft:tropical_fish","count":1, "components": {"custom_data":{"id":"plre:tropical_fish"}}},
+    "sell":{"item":"panlingre:tong_qian","count":10}}
+
+  ]
+}

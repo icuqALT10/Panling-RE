@@ -1,0 +1,243 @@
+{
+  "id": "other_fenhun_qinglong",
+  "title":"other/fenhun_qinglong",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.other.fenhun_qinglong"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.ren.8.option"},
+          "target": "ren.1",
+          "visibility_command": "execute if score @s misson_ren matches 8"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.10.option"},
+          "target": "yao.1",
+          "visibility_command": "execute if score @s misson_yao matches 10"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.xian.8.option"},
+          "target": "xian.1",
+          "visibility_command": "execute if score @s misson_xian matches 8"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "ren.1",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.8.1"
+        }
+      ],
+      "next":"ren.2"
+    },
+    {
+      "id": "ren.2",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.8.2"
+        }
+      ],
+      "next":"ren.3"
+    },
+    {
+      "id": "ren.3",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.8.3"
+        }
+      ],
+      "next":"ren.4"
+    },
+    {
+      "id": "ren.4",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.8.4"
+        }
+      ],
+      "next":"ren.5"
+    },
+    {
+      "id": "ren.5",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.8.5"
+        }
+      ],
+      "next":"ren.6"
+    },
+    {
+      "id": "ren.6",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.8.6"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/ren/8"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "yao.1",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.10.1"
+        }
+      ],
+      "next":"yao.2"
+    },
+    {
+      "id": "yao.2",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.10.2"
+        }
+      ],
+      "next":"yao.3"
+    },
+    {
+      "id": "yao.3",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.10.3"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/10"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "xian.1",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.8.1"
+        }
+      ],
+      "next":"xian.2"
+    },
+    {
+      "id": "xian.2",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.8.2"
+        }
+      ],
+      "next":"xian.3"
+    },
+    {
+      "id": "xian.3",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.8.3"
+        }
+      ],
+      "next":"xian.4"
+    },
+    {
+      "id": "xian.4",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.8.4"
+        }
+      ],
+      "next":"xian.5"
+    },
+    {
+      "id": "xian.5",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.8.5"
+        }
+      ],
+      "next":"xian.6"
+    },
+    {
+      "id": "xian.6",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.8.6"
+        }
+      ],
+      "next":"xian.7"
+    },
+    {
+      "id": "xian.7",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.8.7"
+        }
+      ],
+      "next":"xian.8"
+    },
+    {
+      "id": "xian.8",
+      "speaker": {"translate": "pl.npc.name.maindragon"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.8.8"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/xian/8"
+      ],
+      "endDialog": true
+    }
+  ]
+}

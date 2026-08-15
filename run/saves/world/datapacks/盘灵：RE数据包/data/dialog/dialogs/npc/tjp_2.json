@@ -1,0 +1,42 @@
+{
+  "id": "npc_tjp_2",
+  "title":"npc/tjp_2",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.tjp_2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.npc.tjp_2"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.npc.tjp_2.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"pl.dialog.npc.tjp_2.option2"}
+        }
+      ],
+      "endDialog": true
+    },
+    
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.tjp_2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.npc.tjp_2.1"
+        }
+      ],
+      "command": [
+        "function plre:give/item/job_item"
+      ],
+      "endDialog": true
+    }
+  ]
+}

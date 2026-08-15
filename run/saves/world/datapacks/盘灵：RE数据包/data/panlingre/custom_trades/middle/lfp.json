@@ -1,0 +1,12 @@
+{
+  "title": {"translate": "plre.npc.name.lfp"},
+  "offers": [
+    
+    {"buy":{"item":"panlingre:tong_qian","count":2},
+    "sell":{"item":"panlingre:fu_zhi","count":3}},
+    
+    {"buy":{"item":"panlingre:tong_qian","count":1},
+    "sell":{"item":"panlingre:zhu_sha_1","count":2}}
+
+  ]
+}

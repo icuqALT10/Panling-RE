@@ -1,0 +1,165 @@
+{
+  "id": "npc_middle_warehouse",
+  "title":"npc/middle/warehouse",
+  "start":"start",
+  "entries": [
+    {
+      "id": "start",
+      "speaker": {"translate": "plre.npc.name.warehouse"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.warehouse.start"
+        }
+      ],
+      "options": [
+        {
+          "text": {"translate": "plre.dialog.npc.middle.warehouse.start.option.1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate": "plre.dialog.npc.middle.warehouse.start.option.2"},
+          "command": [
+            "plre opengui villager @s middle/warehouse"
+          ]
+        },
+        {
+          "text": {"translate": "plre.dialog.npc.middle.warehouse.start.option.3"},
+          "target": "end"
+        }
+      ]
+    },
+    {
+      "id": "again",
+      "speaker": {"translate": "plre.npc.name.warehouse"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.warehouse.again"
+        }
+      ],
+      "options": [
+        {
+          "text": {"translate": "plre.dialog.npc.middle.warehouse.start.option.1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate": "plre.dialog.npc.middle.warehouse.start.option.2"},
+          "command": [
+            "plre opengui villager @s middle/warehouse"
+          ]
+        },
+        {
+          "text": {"translate": "plre.dialog.npc.middle.warehouse.start.option.3"},
+          "target": "end"
+        }
+      ]
+    },
+
+    {
+      "id": "end",
+      "speaker": {"translate": "plre.npc.name.warehouse"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.warehouse.end"
+        }
+      ],
+      "endDialog": true
+    },
+
+    {
+      "id": "1",
+      "speaker": {"translate": "plre.npc.name.warehouse"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.warehouse.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "plre.npc.name.warehouse"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.warehouse.2"
+        }
+      ],
+      "next":"3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "plre.npc.name.warehouse"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.warehouse.3"
+        }
+      ],
+      "next":"4",
+      "display_items": [
+        {"item":"beyonddimensions:net_creater"},
+        {"item":"beyonddimensions:net_control"}
+      ]
+    },
+    {
+      "id": "4",
+      "speaker": {"translate": "plre.npc.name.warehouse"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.warehouse.4"
+        }
+      ],
+      "next":"5",
+      "display_items": [
+        {"item":"beyonddimensions:net_member_inviter"},
+        {"item":"beyonddimensions:net_control"}
+      ]
+    },
+    {
+      "id": "5",
+      "speaker": {"translate": "plre.npc.name.warehouse"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.warehouse.5"
+        }
+      ],
+      "next":"6",
+      "display_items": [
+        {"item":"beyonddimensions:net_terminal_item"},
+        {"item":"beyonddimensions:net_control"}
+      ]
+    },
+    {
+      "id": "6",
+      "speaker": {"translate": "plre.npc.name.warehouse"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.warehouse.6"
+        }
+      ],
+      "next":"7",
+      "display_items": [
+        {"item":"beyonddimensions:net_destroyer"},
+        {"item":"beyonddimensions:net_control"}
+      ]
+    },
+    {
+      "id": "7",
+      "speaker": {"translate": "plre.npc.name.warehouse"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.warehouse.7"
+        }
+      ],
+      "next":"again"
+    }
+  ]
+}

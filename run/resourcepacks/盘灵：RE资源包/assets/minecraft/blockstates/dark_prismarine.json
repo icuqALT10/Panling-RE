@@ -1,0 +1,18 @@
+{
+    "variants": {
+        "": [
+			{ "model": "block/dark_prismarine" },
+			{ "model": "block/dark_prismarine", "y": 90 },
+			{ "model": "block/dark_prismarine", "y": 180 },
+			{ "model": "block/dark_prismarine", "y": 270 },
+			{ "model": "block/dark_prismarine_1" },
+			{ "model": "block/dark_prismarine_1", "y": 90 },
+			{ "model": "block/dark_prismarine_1", "y": 180 },
+			{ "model": "block/dark_prismarine_1", "y": 270 },
+			{ "model": "block/dark_prismarine_2" },
+			{ "model": "block/dark_prismarine_2", "y": 90 },
+			{ "model": "block/dark_prismarine_2", "y": 180 },
+			{ "model": "block/dark_prismarine_2", "y": 270 }
+		]
+    }
+}

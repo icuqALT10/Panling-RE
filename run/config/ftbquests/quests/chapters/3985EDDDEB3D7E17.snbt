@@ -1,0 +1,279 @@
+{
+	autofocus_id: "158949DC15EB708B"
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "3985EDDDEB3D7E17"
+	group: "45E9F6E0A0BA2A7B"
+	icon: {
+		id: "panlingre:ye_ming_zhu"
+	}
+	id: "3985EDDDEB3D7E17"
+	images: [
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare1.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: 4.0d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare2.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: 6.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare3.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: 9.0d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare4.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: 11.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare5.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: 14.0d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare6.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: 16.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare1.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: -4.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare2.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: -7.0d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare3.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: -9.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare4.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: -12.0d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare5.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: -14.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare6.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: -17.0d
+		}
+	]
+	order_index: 2
+	quest_links: [ ]
+	quests: [
+		{
+			id: "158949DC15EB708B"
+			tasks: [{
+				id: "7962435726591C44"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["158949DC15EB708B"]
+			icon: {
+				id: "panlingre:warrior"
+			}
+			id: "785CEE7E97CBFD2B"
+			tasks: [{
+				id: "537AC109E67FA596"
+				type: "checkmark"
+			}]
+			x: -6.0d
+			y: 2.0d
+		}
+		{
+			dependencies: ["158949DC15EB708B"]
+			icon: {
+				id: "panlingre:archer"
+			}
+			id: "6539CAE277810994"
+			tasks: [{
+				id: "07C47E404C18925C"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: 2.0d
+		}
+		{
+			dependencies: ["158949DC15EB708B"]
+			icon: {
+				id: "panlingre:warlock"
+			}
+			id: "51F37C4DAAB7DB5B"
+			tasks: [{
+				id: "00E88F95E4BCB0B9"
+				type: "checkmark"
+			}]
+			x: 6.0d
+			y: 2.0d
+		}
+		{
+			dependencies: ["158949DC15EB708B"]
+			icon: {
+				id: "minecraft:nether_brick"
+			}
+			id: "07942DB75AEF50FE"
+			tasks: [{
+				id: "2842E25D08B2582B"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: -2.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"07942DB75AEF50FE"
+			]
+			dependency_requirement: "one_completed"
+			id: "0A9BF0CDC59E7492"
+			optional: true
+			rewards: [{
+				id: "457DA38574CF54DB"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "6F52EC1B2DA0EB03"
+				item: { count: 1, id: "panlingre:ye_ming_zhu" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: -7.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"0A9BF0CDC59E7492"
+			]
+			dependency_requirement: "one_completed"
+			id: "14F10C154FB1BAF5"
+			optional: true
+			rewards: [{
+				id: "4C8AE2D654648271"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "10549002017C244B"
+				item: { count: 1, id: "panlingre:qian_jin_suo" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: -7.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"0FA47ADC1471F1A0"
+			]
+			dependency_requirement: "one_completed"
+			id: "392044D9378412BE"
+			optional: true
+			rewards: [{
+				id: "7F0A5603B0EBA9D8"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "60429C32853C0369"
+				item: { count: 1, id: "panlingre:ling_shi" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: -12.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7484CF60E2E2A655"
+			]
+			dependency_requirement: "one_completed"
+			id: "0FA47ADC1471F1A0"
+			optional: true
+			rewards: [{
+				id: "2E09EC291D11FE78"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "53A4A6D8F2220489"
+				item: { count: 1, id: "panlingre:shen_su_fu" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: -12.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"0A9BF0CDC59E7492"
+			]
+			dependency_requirement: "one_completed"
+			id: "7484CF60E2E2A655"
+			optional: true
+			rewards: [{
+				id: "30B7D62AD164A4A7"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "32D4F2B8D5815762"
+				item: { count: 1, id: "panlingre:kong_ming_shi" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: -9.5d
+		}
+	]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "misson_zhan_3",
+  "title":"misson/zhan/3",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.zhanmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.3"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.zhan.3.option"},
+          "target": "1",
+          "visibility_command": "execute if score @s misson_zhan matches 3"
+        }
+      ],
+      "endDialog": true
+    },
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.zhanmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.3.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "pl.npc.name.zhanmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.3.2"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/zhan/3"
+      ],
+      "endDialog": true
+    }
+  ]
+}

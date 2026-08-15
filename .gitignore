@@ -34,7 +34,15 @@ bin/
 
 ### Minecraft Modding ###
 run/
-!**/src/**/run/
+# 强制保留（白名单）以下运行配置和地图数据
+!run/config/
+!run/defaultconfigs/
+!run/mods/
+!run/resourcepacks/
+!run/saves/
+!run/xaero/
+!run/XaeroWaypoints_BACKUP240807/
+!run/options.txt
 **/src/generated/**/.cache/
 repo/
 !**/src/**/repo/

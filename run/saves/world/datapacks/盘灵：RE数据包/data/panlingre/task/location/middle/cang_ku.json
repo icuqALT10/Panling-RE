@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.middle.cang_ku"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": 95,
+                    "y": 48,
+                    "z": 32
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

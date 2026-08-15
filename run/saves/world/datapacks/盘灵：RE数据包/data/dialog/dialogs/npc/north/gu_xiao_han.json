@@ -1,0 +1,29 @@
+{
+  "id": "npc_north_gu_xiao_han",
+  "title":"npc/north/gu_xiao_han",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.northtong"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.npc.north.gu_xiao_han.1"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.npc.north.gu_xiao_han.1.option1"},
+          "command":[
+            "plre opengui villager @s north/gu_xiao_han"
+          ]
+        },
+        {
+          "text": {"translate":"pl.dialog.npc.north.gu_xiao_han.1.option2"}
+        }
+      ],
+      "endDialog": true
+    }
+  ]
+}

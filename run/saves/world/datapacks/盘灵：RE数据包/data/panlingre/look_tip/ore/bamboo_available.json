@@ -1,0 +1,15 @@
+{
+    "title": [
+        {"translate":"block.panlingre.bamboo_block"},
+        {"translate":"plre.looktip.ore.available.axe.iron"}
+    ],
+    "entries": [
+        {
+            "type": "block",
+            "name": "panlingre:bamboo_block",
+            "block_state": {
+                "is_sapling": "false"
+            }
+        }
+    ]
+}

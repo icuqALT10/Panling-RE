@@ -1,0 +1,16 @@
+{
+    "variants": {
+        "": [
+			{ "model": "block/hardened_clay_cyan", "weight": 98},
+			{ "model": "block/hardened_clay_cyan_1", "weight": 1},
+			{ "model": "block/hardened_clay_cyan_2", "weight": 1},
+			{ "model": "block/hardened_clay_cyan_3", "weight": 1},
+			{ "model": "block/hardened_clay_cyan_4", "weight": 1},
+			{ "model": "block/hardened_clay_cyan_5", "weight": 1},
+			{ "model": "block/hardened_clay_cyan_6", "weight": 1},
+			{ "model": "block/hardened_clay_cyan_7", "weight": 1},
+			{ "model": "block/hardened_clay_cyan_8", "weight": 1}
+		]
+		
+    }
+}

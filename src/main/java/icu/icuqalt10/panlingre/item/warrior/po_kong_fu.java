@@ -7,6 +7,7 @@ import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModEffects;
 import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
+import icu.icuqalt10.panlingre.util.SkillHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -35,6 +36,9 @@ import java.util.List;
 
 public class po_kong_fu extends Item implements skill_trigger {
 
+    private static final ResourceLocation MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "po_kong_fu");
+
     private final int cooldown = 100;
     private final float cost = 25.0f;
 
@@ -53,7 +57,7 @@ public class po_kong_fu extends Item implements skill_trigger {
         builder.add(
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "po_kong_fu"),
+                        MODIFIER_ID,
                         0.2,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
@@ -63,7 +67,7 @@ public class po_kong_fu extends Item implements skill_trigger {
         builder.add(
                 Attributes.ARMOR,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "po_kong_fu"),
+                        MODIFIER_ID,
                         -10,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
@@ -103,17 +107,16 @@ public class po_kong_fu extends Item implements skill_trigger {
             player.hurtMarked = true;
 
             AABB dashArea = player.getBoundingBox().expandTowards(lookVec.scale(4.0)).inflate(1.0);
-            List<Entity> targets = level.getEntities(player, dashArea, entity -> entity instanceof LivingEntity);
+            List<LivingEntity> targets = level.getEntitiesOfClass(
+                    LivingEntity.class, dashArea, SkillHelper.combatTargetFilter(player));
 
             double baseDamage = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
             float finalDamage = (float) (baseDamage * 1.25);
 
-            for (Entity target : targets) {
-                if (target instanceof LivingEntity living && living.isAttackable()) {
-                    living.addEffect(new MobEffectInstance(ModEffects.po_jia, 200, 1));
-                    living.hurt(level.damageSources().playerAttack(player), finalDamage);
-                    living.knockback(0.5, -lookVec.x, -lookVec.z);
-                }
+            for (LivingEntity living : targets) {
+                living.addEffect(new MobEffectInstance(ModEffects.po_jia, 200, 1));
+                living.hurt(level.damageSources().playerAttack(player), finalDamage);
+                living.knockback(0.5, -lookVec.x, -lookVec.z);
             }
 
             //音效

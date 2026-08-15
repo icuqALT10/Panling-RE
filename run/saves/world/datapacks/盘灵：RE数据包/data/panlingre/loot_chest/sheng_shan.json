@@ -1,0 +1,67 @@
+[
+    {
+        "item":{
+            "id":"panlingre:ding_hai_shen_zhen",
+            "count":1
+        },
+        "command":"plre curios @s zhiye panlingre:warrior",
+        "weight":20,
+        "special_item":true
+    },
+    {
+        "item":{
+            "id":"panlingre:zhu_ri",
+            "count":1
+        },
+        "command":"plre curios @s zhiye panlingre:archer",
+        "weight":20,
+        "special_item":true
+    },
+    {
+        "item":{
+            "id":"panlingre:hun_yuan_shen_din",
+            "count":1
+        },
+        "command":"plre curios @s zhiye panlingre:warlock",
+        "weight":20,
+        "special_item":true
+    },
+    {
+        "item":{
+            "id":"nether_wart",
+            "count":1,
+            "components":{
+                "custom_data":{"id":"plre:ys_pack"},
+                "custom_name":"{\"translate\":\"plre.item.ys_pack\"}",
+                "lore":["{\"translate\":\"plre.item.ys_pack.lore1\"}","{\"translate\":\"plre.item.ys_pack.lore2\"}"],
+                "panlingre:right_click":{"command":"function plre:item/ys_pack"}
+            }
+        },
+        "weight":20,
+        "special_item":false
+    },
+    {
+        "item":{
+            "id":"panlingre:rare6_yuanhe",
+            "count":1
+        },
+        "weight":20,
+        "special_item":false
+    },
+    {
+        "item":{
+            "id":"panlingre:zhen_zhu",
+            "count":4
+        },
+        "weight":20,
+        "special_item":false
+    },
+    {
+        "item":{
+            "id":"panlingre:pu_ti_zi",
+            "count":4
+        },
+        "weight":20,
+        "special_item":false
+    }
+]

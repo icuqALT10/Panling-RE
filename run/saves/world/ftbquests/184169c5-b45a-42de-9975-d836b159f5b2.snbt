@@ -1,0 +1,14 @@
+{
+	version: 1
+	uuid: "184169c5b45a42de9975d836b159f5b2"
+	name: "ten_nights_s_Party#184169c5"
+	lock: false
+	rewards_blocked: false
+	task_progress: { }
+	started: { }
+	completed: { }
+	repeatable: { }
+	completion_count: { }
+	claimed_rewards: { }
+	player_data: { }
+}

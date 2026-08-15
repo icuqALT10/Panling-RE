@@ -1,0 +1,10 @@
+{
+    "variants": {
+		"": [
+			{ "model": "block/glass_green", "weight": 1 },
+			{ "model": "block/glass_green", "y": 90, "weight": 1 },
+			{ "model": "block/glass_green", "y": 180, "weight": 1 },
+			{ "model": "block/glass_green", "y": 270, "weight": 1 }
+		]
+    }
+}

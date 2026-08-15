@@ -1,0 +1,7 @@
+{
+    "parent": "block/cube_top",
+    "textures": {
+        "top": "block/other/prismarine_rough_top",
+		"side": "block/other/prismarine_rough_side"
+    }
+}

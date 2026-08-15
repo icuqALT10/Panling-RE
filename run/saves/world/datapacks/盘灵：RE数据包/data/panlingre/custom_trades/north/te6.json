@@ -1,0 +1,12 @@
+{
+  "title": {"translate": "plre.npc.name.te6"},
+  "offers": [
+    {"buy":{"item":"minecraft:orange_dye","count":50,"components":{"custom_data":{"id":"plre:te6"},"custom_name":"{\"translate\":\"pl.item.name.teyao\"}","lore":["{\"translate\":\"pl.item.lore.teyaoa\"}","{\"translate\":\"pl.item.lore.teyaob\"}"]}},
+    "sell":{"item":"panlingre:ling_shi","count":1}},
+    {"buy":{"item":"minecraft:orange_dye","count":30,"components":{"custom_data":{"id":"plre:te6"},"custom_name":"{\"translate\":\"pl.item.name.teyao\"}","lore":["{\"translate\":\"pl.item.lore.teyaoa\"}","{\"translate\":\"pl.item.lore.teyaob\"}"]}},
+    "sell":{"item":"panlingre:yin_piao","count":1}},
+    {"buy":{"item":"minecraft:orange_dye","count":30,"components":{"custom_data":{"id":"plre:te6"},"custom_name":"{\"translate\":\"pl.item.name.teyao\"}","lore":["{\"translate\":\"pl.item.lore.teyaoa\"}","{\"translate\":\"pl.item.lore.teyaob\"}"]}},
+    "sell":{"item":"panlingre:yao_yin_3","count":2}}
+
+  ]
+}

@@ -87,8 +87,8 @@ public class RpgHudOverlay implements LayeredDraw.Layer {
         int rowBottomY = screenHeight - 39;
         int rowTopY = screenHeight - 49;
 
-        float currentLingQi = LingQiData.ClientLingQiData.getCurrent();
-        float maxLingQi = LingQiData.ClientLingQiData.getMax();
+        float currentLingQi = LingQiData.ClientLingQiData.getCurrent(player.getUUID());
+        float maxLingQi = LingQiData.ClientLingQiData.getMax(player.getUUID());
         updateBlinkTimers(player, currentLingQi, maxLingQi);
         updateDisplayedValues(player.getHealth(), player.getFoodData().getFoodLevel(), currentLingQi);
 

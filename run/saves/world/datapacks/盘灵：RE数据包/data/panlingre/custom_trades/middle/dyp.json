@@ -1,0 +1,31 @@
+{
+  "title": {"translate": "plre.npc.name.dyp"},
+  "offers": [
+    
+    {"buy":{"item":"panlingre:he_shou_wu","count":3},
+    "buyB":{"item":"panlingre:ling_zhi","count":3},
+    "sell":{"item":"panlingre:yao_yin_1","count":2}},
+    
+    {"buy":{"item":"panlingre:he_shou_wu","count":2},
+    "sell":{"item":"panlingre:tong_qian","count":3}},
+    
+    {"buy":{"item":"panlingre:ling_zhi","count":2},
+    "sell":{"item":"panlingre:tong_qian","count":3}},
+    
+    {"buy":{"item":"panlingre:ys1_jin","count":3},
+    "sell":{"item":"panlingre:tong_qian","count":2}},
+    
+    {"buy":{"item":"panlingre:ys1_mu","count":3},
+    "sell":{"item":"panlingre:tong_qian","count":2}},
+    
+    {"buy":{"item":"panlingre:ys1_shui","count":3},
+    "sell":{"item":"panlingre:tong_qian","count":2}},
+    
+    {"buy":{"item":"panlingre:ys1_huo","count":3},
+    "sell":{"item":"panlingre:tong_qian","count":2}},
+    
+    {"buy":{"item":"panlingre:ys1_tu","count":3},
+    "sell":{"item":"panlingre:tong_qian","count":2}}
+
+  ]
+}

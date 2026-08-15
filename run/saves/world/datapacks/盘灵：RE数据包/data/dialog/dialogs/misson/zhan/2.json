@@ -1,0 +1,225 @@
+{
+  "id": "misson_zhan_2",
+  "title":"misson/zhan/2",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.2"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.zhan.2.option"},
+          "target": "2.1",
+          "visibility_command": "execute if score @s misson_zhan matches 2"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.zhan.5.option"},
+          "target": "5.1",
+          "visibility_command": "execute if score @s misson_zhan matches 5"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "2.1",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.2.1"
+        }
+      ],
+      "next":"2.2"
+    },
+    {
+      "id": "2.2",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.2.2"
+        }
+      ],
+      "next":"2.3"
+    },
+    {
+      "id": "2.3",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.2.3"
+        }
+      ],
+      "next":"2.4"
+    },
+    {
+      "id": "2.4",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.2.4"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/zhan/2"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "5.1",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.5.1"
+        }
+      ],
+      "next":"5.2"
+    },
+    {
+      "id": "5.2",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.5.2"
+        }
+      ],
+      "next":"5.3"
+    },
+    {
+      "id": "5.3",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.5.3"
+        }
+      ],
+      "next":"5.4"
+    },
+    {
+      "id": "5.4",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.5.4"
+        }
+      ],
+      "next":"5.5"
+    },
+    {
+      "id": "5.5",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.5.5"
+        }
+      ],
+      "next":"5.6"
+    },
+    {
+      "id": "5.6",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.5.6"
+        }
+      ],
+      "next":"5.7"
+    },
+    {
+      "id": "5.7",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.5.7"
+        }
+      ],
+      "next":"5.8"
+    },
+    {
+      "id": "5.8",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.5.8"
+        }
+      ],
+      "next":"5.9"
+    },
+    {
+      "id": "5.9",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.5.9"
+        }
+      ],
+      "next":"5.10"
+    },
+    {
+      "id": "5.10",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.5.10"
+        }
+      ],
+      "next":"5.11"
+    },
+    {
+      "id": "5.11",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.5.11"
+        }
+      ],
+      "next":"5.12"
+    },
+    {
+      "id": "5.12",
+      "speaker": {"translate": "pl.npc.name.zhanmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.zhan.5.12"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "panlingre:qing_ying_feather"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/zhan/5"
+      ],
+      "endDialog": true
+    }
+  ]
+}

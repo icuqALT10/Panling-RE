@@ -1,0 +1,15 @@
+{
+    "title": [
+        {"translate":"block.panlingre.zhu_sha_ore"},
+        {"translate":"plre.looktip.ore.available.pickaxe.iron"}
+    ],
+    "entries": [
+        {
+            "type": "block",
+            "name": "panlingre:zhu_sha_ore",
+            "block_state": {
+                "has_ore": "true"
+            }
+        }
+    ]
+}

@@ -33,6 +33,9 @@ import java.util.List;
 
 public class di_shi_dun extends ShieldItem {
 
+    private static final ResourceLocation MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "di_shi_dun");
+
     private static final ResourceLocation JINZHONG_MAX_ABSORPTION_ID =
             ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "di_shi_dun_jinzhong_max_absorption");
 
@@ -107,25 +110,25 @@ public class di_shi_dun extends ShieldItem {
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
 
         builder.add(Attributes.ATTACK_DAMAGE,
-                new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "di_shi_dun"),
+                new AttributeModifier(MODIFIER_ID,
                         10.0,
                         AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.OFFHAND);
 
         builder.add(Attributes.ATTACK_SPEED,
-                new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "di_shi_dun"),
+                new AttributeModifier(MODIFIER_ID,
                         0.15,
                         AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 EquipmentSlotGroup.OFFHAND);
 
         builder.add(Attributes.MOVEMENT_SPEED,
-                new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "di_shi_dun"),
+                new AttributeModifier(MODIFIER_ID,
                         -0.10,
                         AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 EquipmentSlotGroup.OFFHAND);
 
         builder.add(Attributes.ARMOR,
-                new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "di_shi_dun"),
+                new AttributeModifier(MODIFIER_ID,
                         0.05,
                         AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 EquipmentSlotGroup.OFFHAND);
@@ -137,25 +140,25 @@ public class di_shi_dun extends ShieldItem {
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
 
         builder.add(Attributes.ATTACK_DAMAGE,
-                new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "di_shi_dun"),
+                new AttributeModifier(MODIFIER_ID,
                         5.0,
                         AttributeModifier.Operation.ADD_VALUE),
                 EquipmentSlotGroup.OFFHAND);
 
         builder.add(Attributes.ATTACK_SPEED,
-                new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "di_shi_dun"),
+                new AttributeModifier(MODIFIER_ID,
                         -0.1,
                         AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 EquipmentSlotGroup.OFFHAND);
 
         builder.add(Attributes.MOVEMENT_SPEED,
-                new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "di_shi_dun"),
+                new AttributeModifier(MODIFIER_ID,
                         -0.15,
                         AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 EquipmentSlotGroup.OFFHAND);
 
         builder.add(Attributes.ARMOR,
-                new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "di_shi_dun"),
+                new AttributeModifier(MODIFIER_ID,
                         0.15,
                         AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 EquipmentSlotGroup.OFFHAND);

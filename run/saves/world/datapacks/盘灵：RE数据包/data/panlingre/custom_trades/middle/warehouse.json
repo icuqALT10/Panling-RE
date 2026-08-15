@@ -1,0 +1,21 @@
+{
+  "title": {"translate": "plre.npc.name.warehouse"},
+  "offers": [
+    {
+      "buy":  { "item": "panlingre:yin_piao", "count": 1 },
+      "sell": { "item": "beyonddimensions:net_creater", "count": 1}
+    },
+    {
+      "buy":  { "item": "panlingre:yin_piao", "count": 1 },
+      "sell": { "item": "beyonddimensions:net_member_inviter", "count": 1}
+    },
+    {
+      "buy":  { "item": "panlingre:yin_piao", "count": 3 },
+      "sell": { "item": "beyonddimensions:net_terminal_item", "count": 1}
+    },
+    {
+      "buy":  { "item": "panlingre:yin_piao", "count": 10 },
+      "sell": { "item": "beyonddimensions:net_destroyer", "count": 1}
+    }
+  ]
+}

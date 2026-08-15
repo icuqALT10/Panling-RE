@@ -1,0 +1,17 @@
+{
+  "title": {"translate": "plre.npc.name.sell_fish"},
+  "offers": [
+    {"buy":{"item":"panlingre:tong_qian","count":10},
+    "sell":{"item":"minecraft:fishing_rod","count":1, "components": {"custom_data":{"id":"plre:fishing_rod1"},"custom_name":"{\"translate\":\"pl.item.name.fishing_rod1\"}"}}},
+
+    {"buy":{"item":"panlingre:tong_qian","count":15},
+    "sell":{"item":"minecraft:fishing_rod","count":1, "components": {"custom_data":{"id":"plre:fishing_rod2"},"custom_name":"{\"translate\":\"pl.item.name.fishing_rod2\"}","enchantments":{"levels":{"lure":2},"show_in_tooltip":false}}}},
+
+    {"buy":{"item":"panlingre:tong_qian","count":15},
+    "sell":{"item":"minecraft:fishing_rod","count":1, "components": {"custom_data":{"id":"plre:fishing_rod3"},"custom_name":"{\"translate\":\"pl.item.name.fishing_rod3\"}","enchantments":{"levels":{"luck_of_the_sea":2},"show_in_tooltip":false}}}},
+
+    {"buy":{"item":"panlingre:tong_qian","count":25},
+    "sell":{"item":"minecraft:fishing_rod","count":1, "components": {"custom_data":{"id":"plre:fishing_rod4"},"custom_name":"{\"translate\":\"pl.item.name.fishing_rod4\"}","enchantments":{"levels":{"lure":2,"luck_of_the_sea":1},"show_in_tooltip":false}}}}
+
+  ]
+}

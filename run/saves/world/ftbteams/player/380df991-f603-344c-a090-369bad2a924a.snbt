@@ -1,0 +1,19 @@
+{
+	id: "380df991-f603-344c-a090-369bad2a924a"
+	type: "player"
+	player_name: "Dev"
+	ranks: {
+		380df991-f603-344c-a090-369bad2a924a: "owner"
+	}
+	properties: {
+		"ftbteams:display_name": "Dev"
+		"ftbteams:description": ""
+		"ftbteams:color": "#59FFB6"
+		"ftbteams:free_to_join": 0b
+		"ftbteams:max_msg_history_size": 1000
+		"ftbteams:team_stages": [ ]
+		"ftbteams:lives_remaining": 0
+	}
+	message_history: [ ]
+	extra: { }
+}

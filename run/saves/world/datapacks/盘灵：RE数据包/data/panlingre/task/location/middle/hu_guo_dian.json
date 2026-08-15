@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.middle.hu_guo_dian"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": 241,
+                    "y": 61,
+                    "z": -191
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

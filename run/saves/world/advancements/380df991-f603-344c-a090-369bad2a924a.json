@@ -1,0 +1,15 @@
+{
+  "plre:into_game": {
+    "criteria": {
+      "trigger": "2026-08-15 15:07:14 +0800"
+    },
+    "done": true
+  },
+  "plre:biome/null": {
+    "criteria": {
+      "trigger": "2026-08-15 16:45:06 +0800"
+    },
+    "done": true
+  },
+  "DataVersion": 3955
+}

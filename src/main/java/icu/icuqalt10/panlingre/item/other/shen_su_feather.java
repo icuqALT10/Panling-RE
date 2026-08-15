@@ -16,6 +16,9 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 
 public class shen_su_feather extends Item implements ICurioItem {
+
+    private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "shen_su_feather");
+
     public shen_su_feather() {
         super(
                 new Properties()
@@ -27,12 +30,11 @@ public class shen_su_feather extends Item implements ICurioItem {
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers() {
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
-        ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "shen_su_feather");
 
         builder.add(
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
-                        UID,
+                        MODIFIER_ID,
                         1.5,
                         AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                 ),
@@ -41,7 +43,7 @@ public class shen_su_feather extends Item implements ICurioItem {
         builder.add(
                 Attributes.ARMOR,
                 new AttributeModifier(
-                        UID,
+                        MODIFIER_ID,
                         -500,
                         AttributeModifier.Operation.ADD_VALUE
                 ),

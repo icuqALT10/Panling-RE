@@ -1,0 +1,42 @@
+{
+  "id": "npc_ldp_2",
+  "title":"npc/ldp_2",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.ldp_2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.npc.ldp_2"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.npc.ldp_2.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"pl.dialog.npc.ldp_2.option2"}
+        }
+      ],
+      "endDialog": true
+    },
+    
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.ldp_2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.npc.ldp_2.1"
+        }
+      ],
+      "command": [
+        "function plre:give/item/ldp_2"
+      ],
+      "endDialog": true
+    }
+  ]
+}

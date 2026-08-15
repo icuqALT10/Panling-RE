@@ -1,0 +1,4714 @@
+{
+	autofocus_id: "06061FB10795BB38"
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "c"
+	group: "45E9F6E0A0BA2A7B"
+	icon: {
+		id: "minecraft:map"
+	}
+	id: "2CEA7013772151C2"
+	order_index: 4
+	quest_links: [ ]
+	quests: [
+		{
+			id: "06061FB10795BB38"
+			rewards: [
+				{
+					id: "5CCAE0725B78FF7C"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "6A9DD23E67D5BDB3"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				biome: "plre:middle"
+				icon: {
+					id: "panlingre:ys3_tu"
+				}
+				id: "660955D3FBFE92D3"
+				type: "biome"
+			}]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			dependency_requirement: "all_started"
+			id: "6E9E6F49C1B717BC"
+			rewards: [{
+				id: "24B1AE69195F5E85"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				biome: "plre:east"
+				icon: {
+					id: "panlingre:ys3_mu"
+				}
+				id: "731673A1552091A9"
+				type: "biome"
+			}]
+			x: 15.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "2D20462FAAA8D29F"
+			rewards: [{
+				id: "74B320A75182C5A3"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				biome: "plre:north"
+				icon: {
+					id: "panlingre:ys3_shui"
+				}
+				id: "22E824DC8108B0D3"
+				type: "biome"
+			}]
+			x: 0.0d
+			y: -15.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "21C41D176B06BC69"
+			rewards: [{
+				id: "26ACE93140FCC287"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				biome: "plre:west"
+				icon: {
+					id: "panlingre:ys3_jin"
+				}
+				id: "2DE3D2DA06B3E6AD"
+				type: "biome"
+			}]
+			x: -15.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "33367EC78E2F50A0"
+			rewards: [{
+				id: "4B025D68D63082CB"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				biome: "plre:south"
+				icon: {
+					id: "panlingre:ys3_huo"
+				}
+				id: "122A51210FE62C60"
+				type: "biome"
+			}]
+			x: 0.0d
+			y: 15.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "62D1F4DB4BACDC5A"
+			rewards: [
+				{
+					id: "7BC6EFAEAB336F19"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle seller"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "73A4799C2B46287E"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/seller.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "44CF2255BE7A49ED"
+				ignore_dimension: false
+				position: [I;
+					96
+					45
+					179
+				]
+				size: [I;
+					69
+					9
+					11
+				]
+				type: "location"
+			}]
+			x: 0.0d
+			y: 4.5d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "707173009566C534"
+			rewards: [
+				{
+					id: "5AED2247686A570F"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle zhong_lie_ci"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "2EC5FE5F69EFF982"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/zhong_lie_ci.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "159394F368352774"
+				ignore_dimension: false
+				position: [I;
+					185
+					46
+					167
+				]
+				size: [I;
+					21
+					6
+					16
+				]
+				type: "location"
+			}]
+			x: 3.0d
+			y: 3.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "4317967B4A064F1B"
+			rewards: [
+				{
+					id: "53B7C3ACA0319759"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle dan_yao_pu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "3829D19235855A9C"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/dan_yao_pu.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "31C5A1E688711396"
+				ignore_dimension: false
+				position: [I;
+					241
+					44
+					20
+				]
+				size: [I;
+					26
+					14
+					28
+				]
+				type: "location"
+			}]
+			x: 4.0d
+			y: -1.5d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "780E7AD631AC0CC0"
+			rewards: [
+				{
+					id: "1DE06755F0A019C8"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle ling_fu_pu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "7A687747EC3B8F7F"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/ling_fu_pu.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "7753A275BF9F6570"
+				ignore_dimension: false
+				position: [I;
+					295
+					46
+					23
+				]
+				size: [I;
+					9
+					8
+					9
+				]
+				type: "location"
+			}]
+			x: 4.5d
+			y: 0.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "34E85330FF15CC34"
+			rewards: [
+				{
+					id: "6AC6E4A342E79BB8"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle gong_sun_wang_fu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "39B4247303FA6921"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/gong_sun_wang_fu.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "69B6884970AE826F"
+				ignore_dimension: false
+				position: [I;
+					275
+					43
+					-11
+				]
+				size: [I;
+					18
+					7
+					11
+				]
+				type: "location"
+			}]
+			x: 3.0d
+			y: -3.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			icon: {
+				components: {
+					"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/huang_gong.png"
+				}
+				id: "ftbquests:custom_icon"
+			}
+			id: "2BF764FD94C8FB70"
+			rewards: [
+				{
+					id: "21C744550DB4B27A"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle huang_gong"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "33FC980CBA06F535"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/huang_gong.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "10F8D198F44BC5B7"
+				ignore_dimension: false
+				position: [I;
+					144
+					66
+					-182
+				]
+				size: [I;
+					70
+					20
+					47
+				]
+				type: "location"
+			}]
+			x: 0.0d
+			y: -4.5d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "111ADBC24C5CB029"
+			rewards: [
+				{
+					id: "1631750231B483F6"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle yi_zhan"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "5F906478EC3B72C4"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/yi_zhan.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "39D44AA94B24204E"
+				ignore_dimension: false
+				position: [I;
+					70
+					43
+					-109
+				]
+				size: [I;
+					21
+					13
+					16
+				]
+				type: "location"
+			}]
+			x: -1.5d
+			y: -4.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "016A2EFC8CD8C1E1"
+			rewards: [
+				{
+					id: "48D032432D1F49FA"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle feng_hua_lou"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "5B5BBDE77CEAAB00"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/feng_hua_lou.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "459A3CB9F5DF5985"
+				ignore_dimension: false
+				position: [I;
+					50
+					47
+					15
+				]
+				size: [I;
+					12
+					13
+					26
+				]
+				type: "location"
+			}]
+			x: -3.0d
+			y: -3.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "43ECD19A55FD4FAE"
+			rewards: [
+				{
+					id: "21E04373472F8063"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle liu_dao_cha_fang"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "32E89DF1814E73D6"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/liu_dao_cha_fang.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "7975C14E6A4E9809"
+				ignore_dimension: false
+				position: [I;
+					32
+					48
+					46
+				]
+				size: [I;
+					16
+					13
+					7
+				]
+				type: "location"
+			}]
+			x: -4.0d
+			y: -1.5d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "33F93923B33A93B0"
+			rewards: [
+				{
+					id: "2DFD7BFD0969DBE9"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle yi_cha_xuan"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "348FD6B1D8259769"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/yi_cha_xuan.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "09F3139F76F80596"
+				ignore_dimension: false
+				position: [I;
+					55
+					46
+					106
+				]
+				size: [I;
+					15
+					11
+					7
+				]
+				type: "location"
+			}]
+			x: -4.5d
+			y: 0.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "4584BA6F1C55F368"
+			rewards: [
+				{
+					id: "5DB2D7D2F1258F85"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle tie_jiang_pu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "57F09A5F7B36C06C"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/tie_jiang_pu.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "1D8C96325209FEF9"
+				ignore_dimension: false
+				position: [I;
+					74
+					45
+					133
+				]
+				size: [I;
+					17
+					6
+					21
+				]
+				type: "location"
+			}]
+			x: -4.0d
+			y: 1.5d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "37E468A1CDA537DF"
+			rewards: [
+				{
+					id: "7C895783FF658081"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle qian_zhuang"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "6054730C087DD51F"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/qian_zhuang.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "615C3E922725FC17"
+				ignore_dimension: false
+				position: [I;
+					30
+					46
+					157
+				]
+				size: [I;
+					20
+					4
+					9
+				]
+				type: "location"
+			}]
+			x: -3.0d
+			y: 3.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "4BCF7435C398EFEF"
+			rewards: [
+				{
+					id: "463EDA49639AA8E4"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle hu_guo_dian"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "2C183D64C3A69F4D"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/hu_guo_dian.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "68EA3364C68C95C3"
+				ignore_dimension: false
+				position: [I;
+					228
+					62
+					-221
+				]
+				size: [I;
+					31
+					12
+					24
+				]
+				type: "location"
+			}]
+			x: 1.5d
+			y: -4.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "1C2279B5729A8FBC"
+			rewards: [
+				{
+					id: "53C0369AC7B90F11"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle xin_zhan"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "79D47094DCAFABD6"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/xin_zhan.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "52F4B35A756E56C1"
+				ignore_dimension: false
+				position: [I;
+					82
+					48
+					70
+				]
+				size: [I;
+					12
+					5
+					28
+				]
+				type: "location"
+			}]
+			x: -1.5d
+			y: 4.0d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "12B6BEFD37535C6B"
+			rewards: [
+				{
+					id: "7BBCAA215BC4E2BB"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle cang_ku"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "1A12BE1D8340ED1F"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/cang_ku.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "10C89230FAE0179B"
+				ignore_dimension: false
+				position: [I;
+					91
+					48
+					24
+				]
+				size: [I;
+					11
+					5
+					7
+				]
+				type: "location"
+			}]
+			x: -1.5d
+			y: -2.5d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "19E11EB3D8DE8D10"
+			rewards: [
+				{
+					id: "4B7309A923E653E9"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle buyer"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "650D8375386548ED"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/buyer.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "32F91BEE77DED4CC"
+				ignore_dimension: false
+				position: [I;
+					74
+					46
+					100
+				]
+				size: [I;
+					18
+					5
+					17
+				]
+				type: "location"
+			}]
+			x: -2.5d
+			y: 1.5d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "4C2D50E5F4EED3EF"
+			rewards: [
+				{
+					id: "4ABF83E8F9C7E05F"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle biao_ju"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "471F0BA39BAC97B6"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/biao_ju.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "46B9DB1A67E05E30"
+				ignore_dimension: false
+				position: [I;
+					50
+					46
+					136
+				]
+				size: [I;
+					59
+					52
+					141
+				]
+				type: "location"
+			}]
+			x: -1.5d
+			y: 2.5d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "76EE74118336FCA5"
+			rewards: [
+				{
+					id: "04C9F9F161189DB0"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle ren_shen_xian"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "26604942FA52C396"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [
+				{
+					dimension: "minecraft:overworld"
+					icon: {
+						id: "panlingre:race_ren"
+					}
+					id: "2B617EE08A40C316"
+					ignore_dimension: false
+					position: [I;
+						208
+						48
+						27
+					]
+					size: [I;
+						25
+						12
+						20
+					]
+					type: "location"
+				}
+				{
+					dimension: "minecraft:overworld"
+					icon: {
+						id: "panlingre:race_shen"
+					}
+					id: "55FBB5458CF45738"
+					ignore_dimension: false
+					position: [I;
+						208
+						48
+						27
+					]
+					size: [I;
+						25
+						12
+						20
+					]
+					type: "location"
+				}
+				{
+					dimension: "minecraft:overworld"
+					icon: {
+						id: "panlingre:race_xian"
+					}
+					id: "3F8EEDD37C1588FA"
+					ignore_dimension: false
+					position: [I;
+						208
+						48
+						27
+					]
+					size: [I;
+						25
+						12
+						20
+					]
+					type: "location"
+				}
+			]
+			x: 2.5d
+			y: -1.5d
+		}
+		{
+			dependencies: ["6E9E6F49C1B717BC"]
+			id: "1FF7309C7CC4815E"
+			rewards: [
+				{
+					id: "64E7BDE78C9097F2"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add east fei_qi_cun_zhuang"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "174C6D5A38C68E94"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/east/fei_qi_cun_zhuang.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "454D9F4689A40453"
+				ignore_dimension: false
+				position: [I;
+					487
+					25
+					312
+				]
+				size: [I;
+					58
+					35
+					46
+				]
+				type: "location"
+			}]
+			x: 12.0d
+			y: 3.0d
+		}
+		{
+			dependencies: ["6E9E6F49C1B717BC"]
+			id: "601CD18BA28D2094"
+			rewards: [
+				{
+					id: "7E62C1EA8EB6D77D"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add east yao_zu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "25EE31DD8309B25E"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					id: "panlingre:race_yao"
+				}
+				id: "10857B90B540FF37"
+				ignore_dimension: false
+				position: [I;
+					400
+					44
+					76
+				]
+				size: [I;
+					20
+					49
+					18
+				]
+				type: "location"
+			}]
+			x: 11.0d
+			y: 1.5d
+		}
+		{
+			dependencies: ["6E9E6F49C1B717BC"]
+			id: "33141B91CD05A8D6"
+			rewards: [
+				{
+					id: "66C881C0FCCCE8A8"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add east long_xu_zhen"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "75202A5796A65FA4"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/east/long_xu_zhen.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "38C352F4ED4D227E"
+				ignore_dimension: false
+				position: [I;
+					521
+					16
+					-3
+				]
+				size: [I;
+					74
+					50
+					104
+				]
+				type: "location"
+			}]
+			x: 10.5d
+			y: 0.0d
+		}
+		{
+			dependencies: ["6E9E6F49C1B717BC"]
+			id: "7EBBB1B3AEF7B6EE"
+			rewards: [
+				{
+					id: "77FFF5E9B929EFCE"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add east fei_qi_ji_tan"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "77C6C5316259F336"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/east/fei_qi_ji_tan.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "7837392C31B9E208"
+				ignore_dimension: false
+				position: [I;
+					647
+					35
+					15
+				]
+				size: [I;
+					27
+					14
+					24
+				]
+				type: "location"
+			}]
+			x: 12.0d
+			y: -3.0d
+		}
+		{
+			dependencies: ["6E9E6F49C1B717BC"]
+			hide_until_deps_complete: true
+			id: "0CA327B6AFD9A3CC"
+			rewards: [
+				{
+					id: "64B10BB9B00B7680"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add east shi_huang_ling"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "101E5AB43CB65F50"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/east/shi_huang_ling.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "111DCA12146F6B62"
+				ignore_dimension: false
+				position: [I;
+					585
+					3
+					-183
+				]
+				size: [I;
+					104
+					37
+					78
+				]
+				type: "location"
+			}]
+			x: 15.0d
+			y: -4.5d
+		}
+		{
+			dependencies: ["6E9E6F49C1B717BC"]
+			id: "521B7C2BAC04B3E8"
+			rewards: [
+				{
+					id: "5B972ADABDED257D"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add east shen_mu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "6E459D82F13AE9CA"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/east/shen_mu.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "5AE012CEE431A740"
+				ignore_dimension: false
+				position: [I;
+					616
+					39
+					371
+				]
+				size: [I;
+					31
+					29
+					33
+				]
+				type: "location"
+			}]
+			x: 15.0d
+			y: 4.5d
+		}
+		{
+			dependencies: ["6E9E6F49C1B717BC"]
+			id: "65AE677464975C29"
+			rewards: [
+				{
+					id: "1686E0BF466079D4"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add east qing_long"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "54E06239FAC745D2"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/east/qing_long.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "2DB6A669F2B5733E"
+				ignore_dimension: false
+				position: [I;
+					545
+					22
+					369
+				]
+				size: [I;
+					45
+					37
+					47
+				]
+				type: "location"
+			}]
+			x: 13.5d
+			y: 4.0d
+		}
+		{
+			dependencies: ["6E9E6F49C1B717BC"]
+			id: "65B536748D5B7C4C"
+			rewards: [
+				{
+					id: "2E5EB198E7F30ABA"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add east cha_dian_tan"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "60CED090E2C0770D"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/east/cha_dian_tan.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "2F1B65F5B2DF8F09"
+				ignore_dimension: false
+				position: [I;
+					682
+					69
+					105
+				]
+				size: [I;
+					12
+					8
+					14
+				]
+				type: "location"
+			}]
+			x: 18.0d
+			y: 3.0d
+		}
+		{
+			dependencies: ["6E9E6F49C1B717BC"]
+			id: "256DD3D99070EAA6"
+			rewards: [
+				{
+					id: "41A962E4C415EF2B"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add east shan_shen_miao"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "72408D0457D67C2F"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/east/shan_shen_miao.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "4B27498DD04001FE"
+				ignore_dimension: false
+				position: [I;
+					819
+					36
+					95
+				]
+				size: [I;
+					26
+					11
+					21
+				]
+				type: "location"
+			}]
+			x: 19.5d
+			y: 0.0d
+		}
+		{
+			dependencies: ["33367EC78E2F50A0"]
+			id: "69EDD99B818B3D3D"
+			rewards: [
+				{
+					id: "25B361464DDEFFB4"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add south xia_gu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "2D01E3CF229BAAD7"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/south/xia_gu.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "3EC6F37D132B2A87"
+				ignore_dimension: false
+				position: [I;
+					-65
+					0
+					391
+				]
+				size: [I;
+					349
+					46
+					58
+				]
+				type: "location"
+			}]
+			x: 0.0d
+			y: 10.5d
+		}
+		{
+			dependencies: [
+				"33367EC78E2F50A0"
+				"3E8C34E4D07BE512"
+			]
+			hide_until_deps_complete: true
+			id: "2378FAF47966E543"
+			rewards: [
+				{
+					id: "49DB0C7F847CC452"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add south wen_quan_ke_zhan"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "52278A70C6930560"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/south/wen_quan_ke_zhan.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "635EE1A2FE976541"
+				ignore_dimension: false
+				position: [I;
+					-473
+					94
+					329
+				]
+				size: [I;
+					26
+					26
+					36
+				]
+				type: "location"
+			}]
+			x: -3.0d
+			y: 12.0d
+		}
+		{
+			dependencies: ["33367EC78E2F50A0"]
+			id: "7BF6F944B6502781"
+			rewards: [
+				{
+					id: "53E2AD62B121314C"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add south sha_mo_ke_zhan"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "6D55BFE376223AEE"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/south/sha_mo_ke_zhan.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "30DCD1B9B53CBF60"
+				ignore_dimension: false
+				position: [I;
+					-331
+					57
+					580
+				]
+				size: [I;
+					12
+					11
+					20
+				]
+				type: "location"
+			}]
+			x: -4.5d
+			y: 15.0d
+		}
+		{
+			dependencies: ["33367EC78E2F50A0"]
+			hide_until_deps_complete: true
+			id: "4D0A7A3D1E1A6213"
+			rewards: [
+				{
+					id: "4310438D09972C71"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add south huo_mo"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "6E7DA740CD7A4D6A"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/south/huo_mo.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "0DAE48B2AEED1BA2"
+				ignore_dimension: false
+				position: [I;
+					-324
+					7
+					769
+				]
+				size: [I;
+					40
+					33
+					59
+				]
+				type: "location"
+			}]
+			x: -3.0d
+			y: 18.0d
+		}
+		{
+			dependencies: ["33367EC78E2F50A0"]
+			id: "5E11BC67314C47E8"
+			rewards: [
+				{
+					id: "1CB3413D1D2CC3E6"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add south lv_zhou_xiao_zhen"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "47D9E2D4EBB098CF"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/south/lv_zhou_xiao_zhen.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "32EF311A8DBCFA8D"
+				ignore_dimension: false
+				position: [I;
+					-66
+					28
+					797
+				]
+				size: [I;
+					89
+					32
+					81
+				]
+				type: "location"
+			}]
+			x: 0.0d
+			y: 19.5d
+		}
+		{
+			dependencies: ["33367EC78E2F50A0"]
+			id: "34E566258486E1DB"
+			rewards: [
+				{
+					id: "36D36CDF4F179D15"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add south zhu_que"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "29270E82CE162A49"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/south/zhu_que.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "51D9CDA2EF13DC70"
+				ignore_dimension: false
+				position: [I;
+					209
+					12
+					667
+				]
+				size: [I;
+					52
+					38
+					56
+				]
+				type: "location"
+			}]
+			x: 4.5d
+			y: 15.0d
+		}
+		{
+			dependencies: ["33367EC78E2F50A0"]
+			id: "7CD850E4476731B1"
+			rewards: [
+				{
+					id: "02C7028139391F2E"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add south jiu_cun_zhuang"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "0CBC3E435FD5954F"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/south/jiu_cun_zhuang.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "5BEB3D5AE18928E5"
+				ignore_dimension: false
+				position: [I;
+					337
+					36
+					709
+				]
+				size: [I;
+					80
+					34
+					121
+				]
+				type: "location"
+			}]
+			x: 4.0d
+			y: 16.5d
+		}
+		{
+			dependencies: ["33367EC78E2F50A0"]
+			id: "393280750D2786AC"
+			rewards: [
+				{
+					id: "742BD0422ABE2382"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add south wang_yuan_wai"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "01F1AB46AB6C5343"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/south/wang_yuan_wai.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "2FC37CCD7B446943"
+				ignore_dimension: false
+				position: [I;
+					-300
+					49
+					377
+				]
+				size: [I;
+					30
+					21
+					28
+				]
+				type: "location"
+			}]
+			x: -4.0d
+			y: 13.5d
+		}
+		{
+			dependencies: ["33367EC78E2F50A0"]
+			id: "0D3F450574E4C414"
+			rewards: [
+				{
+					id: "76F330E31033F599"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add south shi_bei"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "299EB89E0BC1AAA4"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/south/shi_bei.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "093353167236595F"
+				ignore_dimension: false
+				position: [I;
+					112
+					48
+					798
+				]
+				size: [I;
+					19
+					12
+					16
+				]
+				type: "location"
+			}]
+			x: 3.0d
+			y: 18.0d
+		}
+		{
+			dependencies: ["33367EC78E2F50A0"]
+			id: "6C81BF24264DC1C3"
+			rewards: [
+				{
+					id: "7399AED1C62309FB"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add south ma_zei"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "7492E83EBB84C6ED"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/south/ma_zei.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "24376443A9DDAB29"
+				ignore_dimension: false
+				position: [I;
+					-187
+					44
+					485
+				]
+				size: [I;
+					49
+					20
+					95
+				]
+				type: "location"
+			}]
+			x: -1.5d
+			y: 11.0d
+		}
+		{
+			dependencies: ["2378FAF47966E543"]
+			id: "27748BF2869D01A3"
+			invisible: true
+			rewards: [
+				{
+					id: "35E3DAF787B39457"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add south qian_si_gu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "6587FA5015374520"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				biome: "plre:qian_si_gu"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/south/qian_si_gu.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "4A54F69E2A8D9C48"
+				type: "biome"
+			}]
+			x: -7.5d
+			y: 13.5d
+		}
+		{
+			dependencies: ["21C41D176B06BC69"]
+			id: "6C51D4190AF671B3"
+			rewards: [
+				{
+					id: "24B42EC466003160"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add west guo_yuan"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "2A27627BD9C2D2E5"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/west/guo_yuan.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "7135CA99A3F50754"
+				ignore_dimension: false
+				position: [I;
+					-115
+					66
+					17
+				]
+				size: [I;
+					55
+					13
+					65
+				]
+				type: "location"
+			}]
+			x: -10.5d
+			y: 0.0d
+		}
+		{
+			dependencies: ["21C41D176B06BC69"]
+			id: "754BFC5279074F2A"
+			rewards: [
+				{
+					id: "7AD9F37BE80C017C"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add west chen_dai_fu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "293DDE989A9AE09A"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/west/chen_dai_fu.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "6933121FC7AA69C9"
+				ignore_dimension: false
+				position: [I;
+					-132
+					45
+					129
+				]
+				size: [I;
+					18
+					15
+					20
+				]
+				type: "location"
+			}]
+			x: -12.0d
+			y: 3.0d
+		}
+		{
+			dependencies: ["21C41D176B06BC69"]
+			hide_until_deps_complete: true
+			id: "0A9E0BF1AFBD8F5A"
+			rewards: [
+				{
+					id: "1F8E9FE1DD49F1EB"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add west ku_gu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "79CB953310FB9D29"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/west/ku_gu.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "0DB03834F9A74259"
+				ignore_dimension: false
+				position: [I;
+					-699
+					88
+					-667
+				]
+				size: [I;
+					35
+					67
+					55
+				]
+				type: "location"
+			}]
+			x: -18.0d
+			y: -3.0d
+		}
+		{
+			dependencies: ["21C41D176B06BC69"]
+			id: "18E5F32F5F8CFDC6"
+			rewards: [
+				{
+					id: "1AB59668096CB24C"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add west jiu_miao"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "4B232417451576B2"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/west/jiu_miao.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "16B48910506C570A"
+				ignore_dimension: false
+				position: [I;
+					-326
+					113
+					-433
+				]
+				size: [I;
+					16
+					9
+					14
+				]
+				type: "location"
+			}]
+			x: -12.0d
+			y: -3.0d
+		}
+		{
+			dependencies: ["21C41D176B06BC69"]
+			id: "28C85CC98CF4D15D"
+			rewards: [
+				{
+					id: "2BF6BC97BFFBBDC5"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add west zhen_yao_ta"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "6AB331F4637A28BC"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/west/zhen_yao_ta.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "3A933A65A27C60D2"
+				ignore_dimension: false
+				position: [I;
+					-231
+					52
+					-209
+				]
+				size: [I;
+					65
+					48
+					56
+				]
+				type: "location"
+			}]
+			x: -11.0d
+			y: -1.5d
+		}
+		{
+			dependencies: ["21C41D176B06BC69"]
+			id: "26E100FE63D28CD3"
+			rewards: [
+				{
+					id: "18C2EAEA6F5BE513"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add west bai_hu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "1D9A2FEEAA31653F"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/west/bai_hu.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "4081360B985C0D94"
+				ignore_dimension: false
+				position: [I;
+					-700
+					137
+					-354
+				]
+				size: [I;
+					225
+					63
+					264
+				]
+				type: "location"
+			}]
+			x: -15.0d
+			y: -4.5d
+		}
+		{
+			dependencies: ["2D20462FAAA8D29F"]
+			hide_until_deps_complete: true
+			id: "03BE9AA4FE628CD8"
+			rewards: [
+				{
+					id: "22C2B7B310345BA2"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add north sheng_shan"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "02566B439FE3093B"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				biome: "plre:sheng_shan"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/north/sheng_shan.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "62C853E0B79B87AC"
+				type: "biome"
+			}]
+			x: 0.0d
+			y: -19.5d
+		}
+		{
+			dependencies: ["2D20462FAAA8D29F"]
+			id: "73D3A470A1BEED23"
+			rewards: [
+				{
+					id: "5D83B1EBFF46A072"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add north xuan_wu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "60955B8150C06659"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/north/xuan_wu.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "6CBA352CDE3D00D1"
+				ignore_dimension: false
+				position: [I;
+					-122
+					0
+					-418
+				]
+				size: [I;
+					16
+					25
+					36
+				]
+				type: "location"
+			}]
+			x: 0.0d
+			y: -10.5d
+		}
+		{
+			dependencies: ["2D20462FAAA8D29F"]
+			id: "6DC41472095C05FF"
+			rewards: [
+				{
+					id: "24850F39E509101B"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add north peng_lai"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "07B6B34EB9490DA3"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				biome: "plre:peng_lai"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/north/peng_lai.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "5DD0C383E7377136"
+				type: "biome"
+			}]
+			x: 4.5d
+			y: -15.0d
+		}
+		{
+			dependencies: ["2D20462FAAA8D29F"]
+			id: "005B6191BA16AE97"
+			rewards: [
+				{
+					id: "3847C8CF35FBEA0B"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add north shui_zu_cun_zhuang"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "20F8D7CDA5F215CE"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/north/shui_zu_cun_zhuang.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "6849480935D189B5"
+				ignore_dimension: false
+				position: [I;
+					-346
+					10
+					-710
+				]
+				size: [I;
+					87
+					49
+					91
+				]
+				type: "location"
+			}]
+			x: -4.5d
+			y: -15.0d
+		}
+		{
+			dependencies: ["2D20462FAAA8D29F"]
+			id: "18669E9E9EB0A19D"
+			rewards: [
+				{
+					id: "55D4A0D39A6371F8"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add north li_dai_fu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "349E5E7B637F3F6C"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/north/li_dai_fu.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "24A600597824681E"
+				ignore_dimension: false
+				position: [I;
+					-21
+					50
+					-612
+				]
+				size: [I;
+					20
+					20
+					17
+				]
+				type: "location"
+			}]
+			x: 3.0d
+			y: -12.0d
+		}
+		{
+			dependencies: ["2D20462FAAA8D29F"]
+			id: "150F59BE7EAB02E7"
+			rewards: [
+				{
+					id: "68908B015E83A638"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add north mu_yuan"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "144BE2751985C6E2"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/north/mu_yuan.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "713D669BB8A120DF"
+				ignore_dimension: false
+				position: [I;
+					106
+					31
+					-595
+				]
+				size: [I;
+					107
+					46
+					98
+				]
+				type: "location"
+			}]
+			x: 4.0d
+			y: -13.5d
+		}
+		{
+			dependencies: ["21C41D176B06BC69"]
+			id: "3BE3BD07FBE8062C"
+			rewards: [
+				{
+					id: "15E7D869929FC0A4"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add west zhan_shen_zu"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "46261B32DE3DEAB5"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					id: "panlingre:race_zhan"
+				}
+				id: "08928E0131C9E20F"
+				ignore_dimension: false
+				position: [I;
+					-35
+					22
+					135
+				]
+				size: [I;
+					16
+					13
+					22
+				]
+				type: "location"
+			}]
+			x: -11.0d
+			y: 1.5d
+		}
+		{
+			dependencies: ["6E9E6F49C1B717BC"]
+			id: "51989CDA9DF9D68F"
+			rewards: [
+				{
+					id: "3D312273BE3962C1"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add east ye_lang_qun"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "53B0E1F4D8C371AC"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					id: "panlingre:jing_shou_pi"
+				}
+				id: "41741D4FD56364DD"
+				ignore_dimension: false
+				position: [I;
+					352
+					32
+					-32
+				]
+				size: [I;
+					48
+					28
+					40
+				]
+				type: "location"
+			}]
+			x: 11.0d
+			y: -1.5d
+		}
+		{
+			dependencies: ["21C41D176B06BC69"]
+			id: "38AADE8974BE910D"
+			rewards: [
+				{
+					id: "4BF0330304A6BAED"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add west jin_kuang_xiao_zhen"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "3BC002F2E44337AA"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/west/jin_kuang_xiao_zhen.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "78D9FCFE191893EE"
+				ignore_dimension: false
+				position: [I;
+					-435
+					104
+					120
+				]
+				size: [I;
+					44
+					23
+					53
+				]
+				type: "location"
+			}]
+			x: -19.5d
+			y: 0.0d
+		}
+		{
+			dependencies: ["21C41D176B06BC69"]
+			id: "22161DED01D89AF0"
+			rewards: [
+				{
+					id: "272255707618B4D7"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add west sheng_hu_mi_zhen"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "5D2D74681E954F11"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/west/sheng_hu_mi_zhen.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "6E3B1FE29A130A0D"
+				ignore_dimension: false
+				position: [I;
+					-902
+					100
+					-327
+				]
+				size: [I;
+					457
+					80
+					590
+				]
+				type: "location"
+			}]
+			x: -19.0d
+			y: -1.5d
+		}
+		{
+			dependencies: ["06061FB10795BB38"]
+			id: "6A70BC7C576C79CD"
+			rewards: [
+				{
+					id: "449D0AB43269FEA0"
+					type: "xp"
+					xp: 10
+				}
+				{
+					auto: "no_toast"
+					command: "plre bafangyi add middle middle"
+					icon: {
+						id: "panlingre:ba_fang_yi"
+					}
+					id: "05C066B6C90572FD"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
+			tasks: [{
+				dimension: "minecraft:overworld"
+				icon: {
+					components: {
+						"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/middle.png"
+					}
+					id: "ftbquests:custom_icon"
+				}
+				id: "0E3B8C18C9A73A37"
+				ignore_dimension: false
+				position: [I;
+					153
+					44
+					50
+				]
+				size: [I;
+					45
+					16
+					31
+				]
+				type: "location"
+			}]
+			x: 2.5d
+			y: 1.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"6A70BC7C576C79CD"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "52A9027FA2BCB44C"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/middle"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "7B26B8C1AD49FD26"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "52EFCA42C9686B5E"
+				type: "checkmark"
+			}]
+			x: 2.5d
+			y: 1.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"780E7AD631AC0CC0"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "2481F0626C7D65C2"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/ling_fu_pu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "21663A8191CC071C"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "4A8A48657D646312"
+				type: "checkmark"
+			}]
+			x: 4.5d
+			y: -0.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"4317967B4A064F1B"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "783659853A3C03C7"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/dan_yao_pu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "057F7614FA0A6103"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "2E4D3D2016F767EA"
+				type: "checkmark"
+			}]
+			x: 4.0d
+			y: -2.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"76EE74118336FCA5"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "5A8A3A744157BC46"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/ren_shen_xian"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "6A67FC92815AEA4A"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "64BC9EA33CCA0BFC"
+				type: "checkmark"
+			}]
+			x: 2.5d
+			y: -2.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"34E85330FF15CC34"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "4774C1375BEC13CC"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/gong_sun_wang_fu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "3B608CF2A1820438"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "6ECA2478CD0EF0D6"
+				type: "checkmark"
+			}]
+			x: 3.0d
+			y: -3.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"4BCF7435C398EFEF"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "755F53BD0633C44D"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/hu_guo_dian"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "3E11493D5A1E3C69"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "3DA1067A3DEF6251"
+				type: "checkmark"
+			}]
+			x: 1.5d
+			y: -4.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"2BF764FD94C8FB70"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "0C1B5E4B326D7E1F"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/huang_gong"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "25CE81D0DE9B6FB7"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "5459E660E3FD452A"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: -5.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"111ADBC24C5CB029"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "41950852698D6E70"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/yi_zhan"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "655339BED4BC25E8"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "234BA9087A336F6F"
+				type: "checkmark"
+			}]
+			x: -1.5d
+			y: -4.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"016A2EFC8CD8C1E1"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "6F4BF3339E627B40"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/feng_hua_lou"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "28CED18AC342A792"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "653D7E800579D7B1"
+				type: "checkmark"
+			}]
+			x: -3.0d
+			y: -3.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"12B6BEFD37535C6B"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "4CAFE810D65D76D8"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/cang_ku"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "12EF4FA9EEF0389E"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "35B4DC92C0489F69"
+				type: "checkmark"
+			}]
+			x: -1.5d
+			y: -3.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"43ECD19A55FD4FAE"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "6405233A71A97B4F"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/liu_dao_cha_fang"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "0B4D304DDC9064FF"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "6D2B3BF2380A42E8"
+				type: "checkmark"
+			}]
+			x: -4.0d
+			y: -2.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"33F93923B33A93B0"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "2B80F918A2BE7B15"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/yi_cha_xuan"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "752EEC68A5B64010"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "3B4541EE37CC1227"
+				type: "checkmark"
+			}]
+			x: -4.5d
+			y: -0.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"4584BA6F1C55F368"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "69CE60AE03DBD5FE"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/tie_jiang_pu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "77C4F1CE26ED6DB3"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "3FEFBC36DAF7B497"
+				type: "checkmark"
+			}]
+			x: -4.0d
+			y: 1.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"19E11EB3D8DE8D10"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "2DDACF51522E86F6"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/buyer"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "6DB3C6A5136E818C"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "31ED6A7EDAC824FA"
+				type: "checkmark"
+			}]
+			x: -2.5d
+			y: 1.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"37E468A1CDA537DF"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "5D8BB34F48EC1D36"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/qian_zhuang"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "63DEC57FCDFD80E8"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "1327E20F27CFF9B4"
+				type: "checkmark"
+			}]
+			x: -3.0d
+			y: 2.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"4C2D50E5F4EED3EF"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "48A3AEA429F25CB3"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/biao_ju"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "128750111A9602A1"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "63B327C11B0059F5"
+				type: "checkmark"
+			}]
+			x: -1.5d
+			y: 2.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"1C2279B5729A8FBC"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "19BB1721C7F53BDE"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/xin_zhan"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "2C83058EC4426753"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "1CDB45040D5EB85F"
+				type: "checkmark"
+			}]
+			x: -1.5d
+			y: 3.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"62D1F4DB4BACDC5A"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "7A7856EEEA9383C8"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/seller"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "4499C89D55623E28"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "751258297668505B"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: 4.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"707173009566C534"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "1F1E2170ADFD56EC"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/middle/zhong_lie_ci"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "619F04363D384618"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "52EBA20DD2B9C6EC"
+				type: "checkmark"
+			}]
+			x: 3.0d
+			y: 2.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"256DD3D99070EAA6"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "51EB4DB3DEFA62A1"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/east/shan_shen_miao"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "460C6E975FF78882"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "557A8666CDB58A01"
+				type: "checkmark"
+			}]
+			x: 19.5d
+			y: -0.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"0CA327B6AFD9A3CC"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "244EEB87AFFF6749"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/east/shi_huang_ling"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "3686AB9655DD2413"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "1DED3AD523013C8B"
+				type: "checkmark"
+			}]
+			x: 15.0d
+			y: -5.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7EBBB1B3AEF7B6EE"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "751BC6688EDD9906"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/east/fei_qi_ji_tan"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "05580A252D295096"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "133A7E02E18A2AAA"
+				type: "checkmark"
+			}]
+			x: 12.0d
+			y: -3.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"51989CDA9DF9D68F"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "599EE3DE95DB11B5"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/east/ye_lang_qun"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "555F37C55D2F749B"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "0CB3A8D6811FAAD6"
+				type: "checkmark"
+			}]
+			x: 11.0d
+			y: -2.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"33141B91CD05A8D6"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "098EA384B7470104"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/east/long_xu_zhen"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "0BF42DD278F4125D"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "6061B5C22E55649C"
+				type: "checkmark"
+			}]
+			x: 10.5d
+			y: -0.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"601CD18BA28D2094"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "7F8372F7F43E4083"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/east/yao_zu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "710D2949D69A770B"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "7E9F009A064AD7B6"
+				type: "checkmark"
+			}]
+			x: 11.0d
+			y: 1.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"1FF7309C7CC4815E"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "7D98CE4D2A930ABA"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/east/fei_qi_cun_zhuang"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "08779EA0D923FC00"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "24C39CA14B025523"
+				type: "checkmark"
+			}]
+			x: 12.0d
+			y: 2.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"65AE677464975C29"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "09E4D2B6DB4C8981"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/east/qing_long"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "6060A41830B68C33"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "11C5FF3CB13EA7C2"
+				type: "checkmark"
+			}]
+			x: 13.5d
+			y: 3.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"521B7C2BAC04B3E8"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "55F5CFB2FAEBB6B7"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/east/shen_mu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "768A1A5061E3450E"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "79D9192B4FA3A7F9"
+				type: "checkmark"
+			}]
+			x: 15.0d
+			y: 4.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"65B536748D5B7C4C"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "07389324D051A04B"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/east/cha_dian_tan"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "4C460C104DD229CC"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "4CD762C844B9A5AC"
+				type: "checkmark"
+			}]
+			x: 18.0d
+			y: 2.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"34E566258486E1DB"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "722DFBE9426BCEF2"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/south/zhu_que"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "55CA037085100BDE"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "58FE73CE4286C0A2"
+				type: "checkmark"
+			}]
+			x: 4.5d
+			y: 14.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"69EDD99B818B3D3D"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "2BE1E99017B72695"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/south/xia_gu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "512E7D39BB5886F1"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "2F6815FA87B60983"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: 10.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"6C81BF24264DC1C3"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "2A905E404DAFED54"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/south/ma_zei"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "31AFE4E629BDC672"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "5D0660E71093A996"
+				type: "checkmark"
+			}]
+			x: -1.5d
+			y: 10.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"2378FAF47966E543"
+			]
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "384A4C15BF3F5253"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/south/wen_quan_ke_zhan"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "591CF43659C92944"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "01E9B329D6747113"
+				type: "checkmark"
+			}]
+			x: -3.0d
+			y: 11.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"393280750D2786AC"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "78F83664BE8BCFB3"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/south/wang_yuan_wai"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "7773C58F9B35E38E"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "3BF95E008A2BD1E3"
+				type: "checkmark"
+			}]
+			x: -4.0d
+			y: 13.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7BF6F944B6502781"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "1FE1BD8DBA0BD2B5"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/south/sha_mo_ke_zhan"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "3698A1996E083DFA"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "4D919BADB338EDC6"
+				type: "checkmark"
+			}]
+			x: -4.5d
+			y: 14.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"4D0A7A3D1E1A6213"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "7E41A3EBBD832DA4"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/south/huo_mo"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "61F57E3403D4F6E9"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "3A560EC19619E02E"
+				type: "checkmark"
+			}]
+			x: -3.0d
+			y: 17.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"5E11BC67314C47E8"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "7A59DC992B159DCB"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/south/lv_zhou_xiao_zhen"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "32B2547487E6934D"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "7091BD0B9B7F6D5D"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: 19.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"0D3F450574E4C414"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "6F9908C8B1549B15"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/south/shi_bei"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "68AD0FA62D891286"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "26C08A4478923FBE"
+				type: "checkmark"
+			}]
+			x: 3.0d
+			y: 17.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7CD850E4476731B1"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "4BD6BBE2DC0C25B6"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/south/jiu_cun_zhuang"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "46F5190FBD700CB8"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "2DF00B5AD0281731"
+				type: "checkmark"
+			}]
+			x: 4.0d
+			y: 16.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"754BFC5279074F2A"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "2DE0D3D3BDBBA79C"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/west/chen_dai_fu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "4CDC3A995BE61170"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "4CC8328B7C1131D9"
+				type: "checkmark"
+			}]
+			x: -12.0d
+			y: 2.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"3BE3BD07FBE8062C"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "08D83BA551A2DA94"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/west/zhan_shen_zu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "4F8A942A95CBB837"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "1E6F620C8622F97C"
+				type: "checkmark"
+			}]
+			x: -11.0d
+			y: 1.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"6C51D4190AF671B3"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "701B067EBF013CEC"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/west/guo_yuan"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "4F4531A9C5490EBA"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "67B4D5A61CFBCC6E"
+				type: "checkmark"
+			}]
+			x: -10.5d
+			y: -0.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"28C85CC98CF4D15D"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "727B11E63EC8074E"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/west/zhen_yao_ta"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "66FD827DEF0617C7"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "22F6166CBC93BA53"
+				type: "checkmark"
+			}]
+			x: -11.0d
+			y: -2.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"18E5F32F5F8CFDC6"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "03C5AE3EDA5D81C9"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/west/jiu_miao"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "025AAE57BB40499A"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "312C1E4A330C6076"
+				type: "checkmark"
+			}]
+			x: -12.0d
+			y: -3.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"0A9E0BF1AFBD8F5A"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "33044F13E55BF321"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/west/ku_gu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "0F01F12252052474"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "7FCF61138C590B48"
+				type: "checkmark"
+			}]
+			x: -18.0d
+			y: -3.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"38AADE8974BE910D"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "14B977D84015587B"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/west/jin_kuang_xiao_zhen"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "4EA67B214F138F2D"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "07CF976206BD2725"
+				type: "checkmark"
+			}]
+			x: -19.5d
+			y: -0.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"26E100FE63D28CD3"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "61B153C48B164517"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/west/bai_hu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "0C7041D3E8BD7486"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "151149890F5800FC"
+				type: "checkmark"
+			}]
+			x: -15.0d
+			y: -5.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"22161DED01D89AF0"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "579862CEC15FCBCF"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/west/sheng_hu_mi_zhen"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "7D1B40AA0E3CD7E6"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "1DFBDACA99934F92"
+				type: "checkmark"
+			}]
+			x: -19.0d
+			y: -2.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"73D3A470A1BEED23"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "2C633F72B845156A"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/north/xuan_wu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "74C51A5DDD86C30C"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "34B8504B4C769D8E"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: -11.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"18669E9E9EB0A19D"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "059A26F01F0354B5"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/north/li_dai_fu"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "49D92377FFF111B8"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "51A38B4359B10EFE"
+				type: "checkmark"
+			}]
+			x: 3.0d
+			y: -12.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"150F59BE7EAB02E7"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "2E29667EDBDC9BC3"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/north/mu_yuan"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "78AF90078FB8CA85"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "10C068F3B5D31DD0"
+				type: "checkmark"
+			}]
+			x: 4.0d
+			y: -14.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"6DC41472095C05FF"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "127EF6E0AC1932B1"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/north/peng_lai"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "2991768F133ADAD0"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "0191F6D6FB734A76"
+				type: "checkmark"
+			}]
+			x: 4.5d
+			y: -15.5d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"03BE9AA4FE628CD8"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "51FFE914AC1413C6"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/north/sheng_shan"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "59FAFBE675AB01FB"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "3454197F5473E360"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: -20.0d
+		}
+		{
+			can_repeat: true
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"005B6191BA16AE97"
+			]
+			dependency_requirement: "one_completed"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "40CFF0F936B72749"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/plre task guide on location/north/shui_zu_cun_zhuang"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "70246CC53D53DADD"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 0.5d
+			tasks: [{
+				id: "1F0D6C9C14CE53AD"
+				type: "checkmark"
+			}]
+			x: -4.5d
+			y: -15.5d
+		}
+	]
+}

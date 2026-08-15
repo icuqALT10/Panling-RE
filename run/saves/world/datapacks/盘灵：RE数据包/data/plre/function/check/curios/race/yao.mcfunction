@@ -1,0 +1,1 @@
+return run plre curios @s race panlingre:race_yao

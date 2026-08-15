@@ -1,0 +1,201 @@
+{
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "b"
+	group: "29EB2635133F64C0"
+	icon: {
+		id: "panlingre:ys3_shui"
+	}
+	id: "20F008B931D29E36"
+	order_index: 7
+	quest_links: [ ]
+	quests: [
+		{
+			dependencies: [
+				"1242A0C0F1F43B26"
+				"26F37B53616B8131"
+				"7EDE15B0C147C946"
+				"304CCB66D5BC0D4D"
+				"630C1F8806BF7165"
+			]
+			dependency_requirement: "one_completed"
+			hide_dependency_lines: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: true
+			hide_until_deps_visible: false
+			id: "6904A1E1F39FF9B7"
+			rewards: [{
+				id: "5FC490AC0D1FA16C"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/north/1"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "65E3C9FB62E89CCB"
+				type: "advancement"
+			}]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["6904A1E1F39FF9B7"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "4FD881AF3F3E0EDA"
+			rewards: [{
+				id: "3D079FD03FE454B3"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/north/2"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "4C1866FA6DED77C9"
+				type: "advancement"
+			}]
+			x: 2.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["4FD881AF3F3E0EDA"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "4A736ECCB53CBFE6"
+			rewards: [{
+				id: "700335B533C277AE"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/north/3"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "46425C2F7E31F830"
+				type: "advancement"
+			}]
+			x: 4.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["4A736ECCB53CBFE6"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "00ADABC21ED8A404"
+			rewards: [{
+				id: "05F8C03FA8DD828D"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/north/qualification"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys1_jin"
+				}
+				id: "0AD2733243513D82"
+				type: "advancement"
+			}]
+			x: 6.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["00ADABC21ED8A404"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "7A4B70CD745D836C"
+			rewards: [{
+				id: "2BED2A3535B477D5"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/xuanwu"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys3_shui"
+				}
+				id: "3A7662548CAC09FD"
+				type: "advancement"
+			}]
+			x: 8.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["7A4B70CD745D836C"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "78AB339146EC8473"
+			rewards: [{
+				id: "0BFC1372247A8714"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/north/4"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "7C966F145002FFBA"
+				type: "advancement"
+			}]
+			x: 10.0d
+			y: 0.0d
+		}
+		{
+			can_repeat: true
+			dependencies: ["6904A1E1F39FF9B7"]
+			dependency_requirement: "all_started"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "70D1CD58C19C7A23"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/function plre:task/misson/north/find"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "754F451C6134FAEF"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 1.0d
+			tasks: [{
+				id: "411E6F56DC2BA082"
+				type: "checkmark"
+			}]
+			x: 0.5d
+			y: 1.0d
+		}
+	]
+}

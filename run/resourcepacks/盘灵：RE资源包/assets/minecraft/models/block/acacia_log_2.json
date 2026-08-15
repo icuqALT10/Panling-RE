@@ -1,0 +1,7 @@
+{
+    "parent": "block/acacia_log_0",
+    "textures": {
+        "up": "block/other/acacia_log_2",
+        "side": "block/other/acacia_log_side"
+    }
+}

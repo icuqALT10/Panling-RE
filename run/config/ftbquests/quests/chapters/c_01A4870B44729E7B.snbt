@@ -1,0 +1,225 @@
+{
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "c_01A4870B44729E7B"
+	group: "29EB2635133F64C0"
+	icon: {
+		id: "panlingre:ys3_huo"
+	}
+	id: "01A4870B44729E7B"
+	order_index: 5
+	quest_links: [ ]
+	quests: [
+		{
+			dependencies: [
+				"07C5DFE2553C5D18"
+				"216745F44B297CFE"
+				"4C3BFCFCC4DD4B18"
+				"3F91EDB32927023F"
+				"54D85477CDC3F524"
+			]
+			dependency_requirement: "one_completed"
+			hide_dependency_lines: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: true
+			hide_until_deps_visible: false
+			id: "3678B6EE1AD87710"
+			rewards: [{
+				id: "77D33971AEB1593D"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/south/1"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "299A39DF4EF29785"
+				type: "advancement"
+			}]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["3678B6EE1AD87710"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "7F89D32EE06536AA"
+			rewards: [{
+				id: "316363704F88613B"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/south/2"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "6B938975A3B475EA"
+				type: "advancement"
+			}]
+			x: 2.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["7F89D32EE06536AA"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "47D5AE621E0F00F2"
+			rewards: [{
+				id: "0C4CED22E38D4F3B"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/south/3"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "39542D6E518B2738"
+				type: "advancement"
+			}]
+			x: 4.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["47D5AE621E0F00F2"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "3BDDC613C6290020"
+			rewards: [{
+				id: "49EEA995612280AD"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/south/4"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "1C148F95487A7889"
+				type: "advancement"
+			}]
+			x: 6.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["3BDDC613C6290020"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "5E0632B7940B023A"
+			rewards: [{
+				id: "524D4E29833A1EF9"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/south/5"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "5B0FEAAA24652B81"
+				type: "advancement"
+			}]
+			x: 8.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["5E0632B7940B023A"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "1DFFC69AE8A409F6"
+			rewards: [{
+				id: "0C4183B2731A7175"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/zhuque"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys3_huo"
+				}
+				id: "44E54D38C1A5118A"
+				type: "advancement"
+			}]
+			x: 10.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["1DFFC69AE8A409F6"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "4074C7B23F7E3BCB"
+			rewards: [{
+				id: "1466DEBB80C5785D"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/south/6"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "0DC4BC33C416F254"
+				type: "advancement"
+			}]
+			x: 12.0d
+			y: 0.0d
+		}
+		{
+			can_repeat: true
+			dependencies: ["3678B6EE1AD87710"]
+			dependency_requirement: "all_started"
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "52DFE02269D03241"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/function plre:task/misson/south/find"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "0D0C0EB755BA6D93"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 1.0d
+			tasks: [{
+				id: "1A4DA7B6C544D40D"
+				type: "checkmark"
+			}]
+			x: 0.5d
+			y: 1.0d
+		}
+	]
+}

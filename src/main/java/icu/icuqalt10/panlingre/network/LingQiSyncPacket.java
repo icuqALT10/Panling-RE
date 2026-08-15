@@ -9,11 +9,14 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record LingQiSyncPacket(float current, float max) implements CustomPacketPayload {
+import java.util.UUID;
+
+public record LingQiSyncPacket(UUID owner, float current, float max) implements CustomPacketPayload {
 
     public static final Type<LingQiSyncPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "lingqi_sync"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, LingQiSyncPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8.map(UUID::fromString, UUID::toString), LingQiSyncPacket::owner,
             ByteBufCodecs.FLOAT, LingQiSyncPacket::current,
             ByteBufCodecs.FLOAT, LingQiSyncPacket::max,
             LingQiSyncPacket::new
@@ -26,7 +29,7 @@ public record LingQiSyncPacket(float current, float max) implements CustomPacket
 
     public void handle(IPayloadContext context) {
         context.enqueueWork(() -> {
-            LingQiData.ClientLingQiData.set(this.current, this.max);
+            LingQiData.ClientLingQiData.set(this.owner, this.current, this.max);
         });
     }
 }

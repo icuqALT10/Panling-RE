@@ -1,0 +1,20 @@
+{
+  "title": {"translate": "plre.npc.name.yuansu"},
+  "offers": [
+    {"buy":{"item":"panlingre:yuan_bao","count":1},
+    "sell":{"item":"panlingre:ys1_jin","count":5}},
+
+    {"buy":{"item":"panlingre:yuan_bao","count":1},
+    "sell":{"item":"panlingre:ys1_mu","count":5}},
+
+    {"buy":{"item":"panlingre:yuan_bao","count":1},
+    "sell":{"item":"panlingre:ys1_shui","count":5}},
+
+    {"buy":{"item":"panlingre:yuan_bao","count":1},
+    "sell":{"item":"panlingre:ys1_huo","count":5}},
+
+    {"buy":{"item":"panlingre:yuan_bao","count":1},
+    "sell":{"item":"panlingre:ys1_tu","count":5}}
+
+  ]
+}

@@ -1,0 +1,1 @@
+$summon panlingre:pan_gu 3119.5 129.00 -2237.5 {Rotation:[-90f,0f],attributes:[{id:"generic.max_health",base:$(health)}],Team:"monster"}

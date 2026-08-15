@@ -1,0 +1,14 @@
+{
+	version: 1
+	uuid: "0db8595eb2d63104afa54f224858326a"
+	name: "ten_nights#0db8595e"
+	lock: false
+	rewards_blocked: false
+	task_progress: { }
+	started: { }
+	completed: { }
+	repeatable: { }
+	completion_count: { }
+	claimed_rewards: { }
+	player_data: { }
+}

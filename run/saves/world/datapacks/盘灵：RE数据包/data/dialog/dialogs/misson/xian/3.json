@@ -1,0 +1,94 @@
+{
+  "id": "misson_xian_3",
+  "title":"misson/xian/3",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.xianmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.3"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.xian.3.option"},
+          "target": "1",
+          "visibility_command": "execute if score @s misson_xian matches 3"
+        }
+      ],
+      "endDialog": true
+    },
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.xianmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.3.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "pl.npc.name.xianmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.3.2"
+        }
+      ],
+      "next":"3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "pl.npc.name.xianmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.3.3"
+        }
+      ],
+      "next":"4"
+    },
+    {
+      "id": "4",
+      "speaker": {"translate": "pl.npc.name.xianmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.3.4"
+        }
+      ],
+      "next":"5"
+    },
+    {
+      "id": "5",
+      "speaker": {"translate": "pl.npc.name.xianmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.3.5"
+        }
+      ],
+      "next":"6"
+    },
+    {
+      "id": "6",
+      "speaker": {"translate": "pl.npc.name.xianmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.3.6"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/xian/3"
+      ],
+      "endDialog": true
+    }
+  ]
+}

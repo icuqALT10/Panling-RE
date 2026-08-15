@@ -1,0 +1,14 @@
+{
+	member: {
+		name: "Member"
+		power: 1
+		condition: "always_active"
+		command.ftbteams: false
+	}
+	admin: {
+		name: "Admin"
+		power: 1000
+		condition: "op"
+		ftbranks.name_format: "&2{name}"
+	}
+}

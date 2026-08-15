@@ -1,0 +1,41 @@
+{
+    "__createdwith": "opl's Model Creator",
+    "ambientocclusion": false,
+    "textures": {
+        "particle": "block/other/door_acacia",
+        "top": "block/other/door_acacia"
+    },
+    "elements": [
+        {
+            "from": [0,0,0],
+            "to": [3,16,16],
+            "faces": {
+                "down": {
+                    "uv": [0,15.25,8,16],
+                    "texture": "#top",
+                    "cullface": "down",
+                    "rotation": 270
+                },
+                "west": {
+                    "uv": [0,8,8,16],
+                    "texture": "#top",
+                    "cullface": "west"
+                },
+                "east": {
+                    "uv": [8,8,0,16],
+                    "texture": "#top"
+                },
+                "north": {
+                    "uv": [0.75,8,0,16],
+                    "texture": "#top",
+                    "cullface": "north"
+                },
+                "south": {
+                    "uv": [7.25,8,8,16],
+                    "texture": "#top",
+                    "cullface": "south"
+                }
+            }
+        }
+    ]
+}

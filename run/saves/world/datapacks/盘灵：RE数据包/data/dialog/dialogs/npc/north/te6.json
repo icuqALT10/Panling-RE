@@ -1,0 +1,138 @@
+{
+  "id": "npc_north_te6",
+  "title":"npc/north/te6",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "plre.npc.name.te6"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.north.te6"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.north.te6.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.north.te6.option2"},
+          "command":[
+            "plre opengui villager @s north/te6"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.north.te6.option3"}
+        }
+      ],
+      "endDialog": true
+    },
+    
+
+
+    {
+      "id": "1",
+      "speaker": {"translate": "plre.npc.name.te6"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.north.te6.1"
+        }
+      ],
+      "next": "2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "plre.npc.name.te6"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.north.te6.2"
+        }
+      ],
+      "next": "3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "plre.npc.name.te6"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.north.te6.3"
+        }
+      ],
+      "next": "4"
+    },
+    {
+      "id": "4",
+      "speaker": {"translate": "plre.npc.name.te6"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.north.te6.4"
+        }
+      ],
+      "next": "5"
+    },
+    {
+      "id": "5",
+      "speaker": {"translate": "plre.npc.name.te6"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.north.te6.5"
+        }
+      ],
+      "next": "6"
+    },
+    {
+      "id": "6",
+      "speaker": {"translate": "plre.npc.name.te6"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.north.te6.6"
+        }
+      ],
+      "next": "7"
+    },
+    {
+      "id": "7",
+      "speaker": {"translate": "plre.npc.name.te6"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.north.te6.7"
+        }
+      ],
+      "next": "8"
+    },
+    {
+      "id": "8",
+      "speaker": {"translate": "plre.npc.name.te6"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.north.te6.8"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.north.te6.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.north.te6.option2"},
+          "command":[
+            "plre opengui villager @s north/te6"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.north.te6.option3"}
+        }
+      ]
+    }
+  ]
+}

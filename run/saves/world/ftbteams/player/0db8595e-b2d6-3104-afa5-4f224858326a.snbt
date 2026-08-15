@@ -1,0 +1,19 @@
+{
+	id: "0db8595e-b2d6-3104-afa5-4f224858326a"
+	type: "player"
+	player_name: "ten_nights"
+	ranks: {
+		0db8595e-b2d6-3104-afa5-4f224858326a: "owner"
+	}
+	properties: {
+		"ftbteams:display_name": "ten_nights"
+		"ftbteams:description": ""
+		"ftbteams:color": "#FF59B1"
+		"ftbteams:free_to_join": 0b
+		"ftbteams:max_msg_history_size": 1000
+		"ftbteams:team_stages": [ ]
+		"ftbteams:lives_remaining": 0
+	}
+	message_history: [ ]
+	extra: { }
+}

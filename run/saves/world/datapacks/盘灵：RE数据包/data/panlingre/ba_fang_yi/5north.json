@@ -1,0 +1,43 @@
+{
+    "title": {"translate":"plre.location.north"},
+    "id": "north",
+    "texture": "panlingre:textures/item/ys3_shui.png",
+    "poses": [
+        {
+            "title": {"translate":"plre.location.north.xuan_wu"},
+            "id": "xuan_wu",
+            "texture": "ftbquests:textures/qusets/guide/structure/north/xuan_wu.png",
+            "pos": { "x": -83.5, "y": 34.0, "z": -522.5 }
+        },
+        {
+            "title": {"translate":"plre.location.north.shui_zu_cun_zhuang"},
+            "id": "shui_zu_cun_zhuang",
+            "texture": "ftbquests:textures/qusets/guide/structure/north/shui_zu_cun_zhuang.png",
+            "pos": { "x": -278.5, "y": 31.0, "z": -625.5 }
+        },
+        {
+            "title": {"translate":"plre.location.north.li_dai_fu"},
+            "id": "li_dai_fu",
+            "texture": "ftbquests:textures/qusets/guide/structure/north/li_dai_fu.png",
+            "pos": { "x": -6.5, "y": 43.0, "z": -553.5 }
+        },
+        {
+            "title": {"translate":"plre.location.north.mu_yuan"},
+            "id": "mu_yuan",
+            "texture": "ftbquests:textures/qusets/guide/structure/north/mu_yuan.png",
+            "pos": { "x": 111.5, "y": 49.0, "z": -514.5 }
+        },
+        {
+            "title": {"translate":"plre.location.north.peng_lai"},
+            "id": "peng_lai",
+            "texture": "ftbquests:textures/qusets/guide/structure/north/peng_lai.png",
+            "pos": { "x": 346.0, "y": 34.5, "z": -535.0 }
+        },
+        {
+            "title": {"translate":"plre.location.north.sheng_shan"},
+            "id": "sheng_shan",
+            "texture": "ftbquests:textures/qusets/guide/structure/north/sheng_shan.png",
+            "pos": { "x": 310.5, "y": 34.0, "z": -734.5 }
+        }
+    ]
+}

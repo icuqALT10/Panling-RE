@@ -1,0 +1,1037 @@
+{
+	autofocus_id: "157E1E1A119C0D21"
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "14793D75CA143713"
+	group: "45E9F6E0A0BA2A7B"
+	icon: {
+		id: "panlingre:ys1_jin"
+	}
+	id: "14793D75CA143713"
+	order_index: 3
+	quest_links: [ ]
+	quests: [
+		{
+			id: "157E1E1A119C0D21"
+			tasks: [{
+				id: "00FEBBE57990433D"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["157E1E1A119C0D21"]
+			icon: {
+				id: "panlingre:ys1_jin"
+			}
+			id: "2840D54DDE04CE73"
+			tasks: [{
+				id: "6CEBF2E0D39675FB"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: 2.5d
+		}
+		{
+			dependencies: ["2335B90EFC2A6A8B"]
+			dependency_requirement: "one_completed"
+			id: "54C55AAC26A73F04"
+			optional: true
+			rewards: [{
+				id: "5D28B78103178356"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "2A2409ABA3EEDEB9"
+				item: { count: 1, id: "panlingre:ys1_jin" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: 6.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"54C55AAC26A73F04"
+			]
+			dependency_requirement: "one_completed"
+			id: "2271DFBFED8046BD"
+			optional: true
+			rewards: [{
+				id: "406EE64A922D6A8E"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "70DC0E6036EFAD13"
+				item: { count: 1, id: "panlingre:ys2_jin" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: 6.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"54C55AAC26A73F04"
+			]
+			dependency_requirement: "one_completed"
+			id: "50111C1191EEC4A5"
+			optional: true
+			rewards: [{
+				id: "764BEDC8DA257277"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "36C60E3DF689C35D"
+				item: { count: 1, id: "panlingre:ys1_mu" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: 8.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"50111C1191EEC4A5"
+			]
+			dependency_requirement: "one_completed"
+			id: "771EB33A69C3CA1A"
+			optional: true
+			rewards: [{
+				id: "5E881BA6A4CF25AD"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "59DDD88AD1FD073B"
+				item: { count: 1, id: "panlingre:ys1_shui" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: 9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"771EB33A69C3CA1A"
+			]
+			dependency_requirement: "one_completed"
+			id: "2460A41BBBCD4D30"
+			optional: true
+			rewards: [{
+				id: "2CBAAFE9A45CD80A"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "53B6203CF140AAE4"
+				item: { count: 1, id: "panlingre:ys1_huo" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: 11.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"2460A41BBBCD4D30"
+			]
+			dependency_requirement: "one_completed"
+			id: "5C821776183F3806"
+			optional: true
+			rewards: [{
+				id: "6606BDAFEB6C0570"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "4F3CEF6B2F5870E3"
+				item: { count: 1, id: "panlingre:ys1_tu" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: 12.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"50111C1191EEC4A5"
+			]
+			dependency_requirement: "one_completed"
+			id: "76FD1DD1DFCD6A65"
+			optional: true
+			rewards: [{
+				id: "507348F508086D43"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "54513FD4A5B9D37E"
+				item: { count: 1, id: "panlingre:ys2_mu" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: 8.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"771EB33A69C3CA1A"
+			]
+			dependency_requirement: "one_completed"
+			id: "0DDC33651F1E91F5"
+			optional: true
+			rewards: [{
+				id: "0665EA06EE7CAAE4"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "7EED766070DACCB3"
+				item: { count: 1, id: "panlingre:ys2_shui" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: 9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"2460A41BBBCD4D30"
+			]
+			dependency_requirement: "one_completed"
+			id: "03AB72DBB4F3075C"
+			optional: true
+			rewards: [{
+				id: "0A9404D7296BE061"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "3A294407D1EEE96C"
+				item: { count: 1, id: "panlingre:ys2_huo" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: 11.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"5C821776183F3806"
+			]
+			dependency_requirement: "one_completed"
+			id: "6D37D5C824535075"
+			optional: true
+			rewards: [{
+				id: "5A49C4A5881723EE"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "3BC81B3EE8531570"
+				item: { count: 1, id: "panlingre:ys2_tu" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: 12.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"54C55AAC26A73F04"
+			]
+			dependency_requirement: "one_completed"
+			id: "787F87A5E39E0A0F"
+			optional: true
+			rewards: [{
+				id: "728151B58922CC6E"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "704B762327DF924D"
+				item: { count: 1, id: "panlingre:ys3_jin" }
+				type: "item"
+			}]
+			x: -1.5d
+			y: 6.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"50111C1191EEC4A5"
+			]
+			dependency_requirement: "one_completed"
+			id: "4F910563444F30F3"
+			optional: true
+			rewards: [{
+				id: "39E8ABE8B99077C9"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "3657D89314C2777E"
+				item: { count: 1, id: "panlingre:ys3_mu" }
+				type: "item"
+			}]
+			x: -1.5d
+			y: 8.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"771EB33A69C3CA1A"
+			]
+			dependency_requirement: "one_completed"
+			id: "250D16258DE26932"
+			optional: true
+			rewards: [{
+				id: "3C7791EF21181A40"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "106BEC4DD4897E11"
+				item: { count: 1, id: "panlingre:ys3_shui" }
+				type: "item"
+			}]
+			x: -1.5d
+			y: 9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"2460A41BBBCD4D30"
+			]
+			dependency_requirement: "one_completed"
+			id: "0EDA7FE809AEF911"
+			optional: true
+			rewards: [{
+				id: "23723F6BA2DA8FC9"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "0737000CB44D0D26"
+				item: { count: 1, id: "panlingre:ys3_huo" }
+				type: "item"
+			}]
+			x: -1.5d
+			y: 11.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"5C821776183F3806"
+			]
+			dependency_requirement: "one_completed"
+			id: "1C17FA9F99E9B860"
+			optional: true
+			rewards: [{
+				id: "38245BC5D027A80D"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "7864D7B5384B8A8E"
+				item: { count: 1, id: "panlingre:ys3_tu" }
+				type: "item"
+			}]
+			x: -1.5d
+			y: 12.5d
+		}
+		{
+			dependencies: ["2335B90EFC2A6A8B"]
+			dependency_requirement: "one_completed"
+			id: "554F8D798B8B8290"
+			optional: true
+			rewards: [{
+				id: "79F9E33CCB1AB18D"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "24278AD28C01C914"
+				item: { count: 1, id: "panlingre:rare2_yuanhe_fra" }
+				type: "item"
+			}]
+			x: -4.0d
+			y: 6.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"554F8D798B8B8290"
+			]
+			dependency_requirement: "one_completed"
+			id: "1BEBBFD630E62BEC"
+			optional: true
+			rewards: [{
+				id: "1C47B62C3E8C91A0"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "3956339284F2CB6B"
+				item: { count: 1, id: "panlingre:rare3_yuanhe_fra" }
+				type: "item"
+			}]
+			x: -4.0d
+			y: 8.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"1BEBBFD630E62BEC"
+			]
+			dependency_requirement: "one_completed"
+			id: "7C69E90683AFB4B4"
+			optional: true
+			rewards: [{
+				id: "0B6EA228F6B9D1FC"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "7F76CFD13748B130"
+				item: { count: 1, id: "panlingre:rare4_yuanhe_fra" }
+				type: "item"
+			}]
+			x: -4.0d
+			y: 9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7C69E90683AFB4B4"
+			]
+			dependency_requirement: "one_completed"
+			id: "7867910D74A14D06"
+			optional: true
+			rewards: [{
+				id: "6B6B6B326D1DED3A"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "4E5E5E5B5C83198D"
+				item: { count: 1, id: "panlingre:rare5_yuanhe_fra" }
+				type: "item"
+			}]
+			x: -4.0d
+			y: 11.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"554F8D798B8B8290"
+			]
+			dependency_requirement: "one_completed"
+			id: "15844B0F0B7CBC72"
+			optional: true
+			rewards: [{
+				id: "10DA6020AE063462"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "1837DA73EBCEA33E"
+				item: { count: 1, id: "panlingre:rare2_yuanhe" }
+				type: "item"
+			}]
+			x: -5.5d
+			y: 6.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"1BEBBFD630E62BEC"
+			]
+			dependency_requirement: "one_completed"
+			id: "0B0FB1CF85E9D49C"
+			optional: true
+			rewards: [{
+				id: "73DB32E6D8E532A4"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "689B83B8EBC870BF"
+				item: { count: 1, id: "panlingre:rare3_yuanhe" }
+				type: "item"
+			}]
+			x: -5.5d
+			y: 8.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7C69E90683AFB4B4"
+			]
+			dependency_requirement: "one_completed"
+			id: "08B2E3623F2FFEF6"
+			optional: true
+			rewards: [{
+				id: "35FF5259463C3378"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "25E4F9615B564DD5"
+				item: { count: 1, id: "panlingre:rare4_yuanhe" }
+				type: "item"
+			}]
+			x: -5.5d
+			y: 9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7867910D74A14D06"
+			]
+			dependency_requirement: "one_completed"
+			id: "2CDED647A9A783DB"
+			optional: true
+			rewards: [{
+				id: "27205A0DD6685B47"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "0F40842569D7AAA4"
+				item: { count: 1, id: "panlingre:rare5_yuanhe" }
+				type: "item"
+			}]
+			x: -5.5d
+			y: 11.0d
+		}
+		{
+			dependencies: ["2335B90EFC2A6A8B"]
+			dependency_requirement: "one_completed"
+			id: "400D5BCBC3A10E55"
+			optional: true
+			rewards: [{
+				id: "4125B94B81AB3DC9"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "0DB57AD4009B6681"
+				item: { count: 1, id: "panlingre:yao_yin_1" }
+				type: "item"
+			}]
+			x: 6.5d
+			y: 0.0d
+		}
+		{
+			dependencies: ["157E1E1A119C0D21"]
+			icon: {
+				id: "panlingre:yao_yin_1"
+			}
+			id: "1CBADAE8A40AE1FC"
+			tasks: [{
+				id: "606F0ECBEE30A5BA"
+				type: "checkmark"
+			}]
+			x: 2.5d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"400D5BCBC3A10E55"
+			]
+			dependency_requirement: "one_completed"
+			id: "05A68C704D737E54"
+			optional: true
+			rewards: [{
+				id: "278BA805A6B021B5"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "3AF8AE5DEAF50E1C"
+				item: { count: 1, id: "panlingre:yao_yin_3" }
+				type: "item"
+			}]
+			x: 9.5d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"05A68C704D737E54"
+			]
+			dependency_requirement: "one_completed"
+			id: "54BE836F7E956238"
+			optional: true
+			rewards: [{
+				id: "47AB2BC7F0261664"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "400DFB3E6023B19C"
+				item: { count: 1, id: "panlingre:yao_yin_2" }
+				type: "item"
+			}]
+			x: 8.0d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"54BE836F7E956238"
+			]
+			dependency_requirement: "one_completed"
+			id: "5A61D1025F69289E"
+			optional: true
+			rewards: [{
+				id: "3F1EC87618E6E226"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "5417CAA5E2364A0B"
+				item: { count: 1, id: "panlingre:yao_yin_4" }
+				type: "item"
+			}]
+			x: 11.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["157E1E1A119C0D21"]
+			hide_until_deps_complete: false
+			icon: {
+				id: "panlingre:bamboo"
+			}
+			id: "5B63CF59CF160502"
+			tasks: [{
+				id: "3E80B4916C5ED055"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: -2.5d
+		}
+		{
+			dependencies: ["157E1E1A119C0D21"]
+			id: "6B4B5240696B7565"
+			tasks: [{
+				id: "4664DD05D2B9769D"
+				type: "checkmark"
+			}]
+			x: -2.5d
+			y: 0.0d
+		}
+		{
+			dependencies: ["2335B90EFC2A6A8B"]
+			dependency_requirement: "one_completed"
+			id: "4DB0D352F19D0FC4"
+			optional: true
+			rewards: [{
+				id: "095C37A7C70F7E9E"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "26A21CF44980B2EB"
+				item: { count: 1, id: "panlingre:bamboo" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: -6.5d
+		}
+		{
+			dependencies: ["2335B90EFC2A6A8B"]
+			dependency_requirement: "one_completed"
+			id: "3602098852296F61"
+			optional: true
+			rewards: [{
+				id: "51B4BD39FE2A59F9"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [
+				{
+					id: "504AE12AF84553B5"
+					item: { count: 1, id: "panlingre:he_shou_wu" }
+					type: "item"
+				}
+				{
+					id: "09C44D61874FA0F9"
+					item: { count: 1, id: "panlingre:ling_zhi" }
+					type: "item"
+				}
+			]
+			x: -1.5d
+			y: -6.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"3602098852296F61"
+			]
+			dependency_requirement: "one_completed"
+			id: "7AB0700AB3D51D64"
+			optional: true
+			rewards: [{
+				id: "7530FC7BEEDAE289"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [
+				{
+					id: "25B5BFE548A0E6EF"
+					item: { count: 1, id: "panlingre:ren_shen" }
+					type: "item"
+				}
+				{
+					id: "05BFFDDB3717FCE4"
+					item: { count: 1, id: "panlingre:lan_cao" }
+					type: "item"
+				}
+			]
+			x: -1.5d
+			y: -8.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7AB0700AB3D51D64"
+			]
+			dependency_requirement: "one_completed"
+			id: "6985C7B59DEE765B"
+			optional: true
+			rewards: [{
+				id: "5130D3E66E139FCB"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [
+				{
+					id: "539132A8222A4C94"
+					item: { count: 1, id: "panlingre:zhen_zhu" }
+					type: "item"
+				}
+				{
+					id: "7038D64918017399"
+					item: { count: 1, id: "panlingre:pu_ti_zi" }
+					type: "item"
+				}
+			]
+			x: -1.5d
+			y: -9.5d
+		}
+		{
+			dependencies: ["2335B90EFC2A6A8B"]
+			dependency_requirement: "one_completed"
+			id: "6B933D64C27B676F"
+			optional: true
+			rewards: [{
+				id: "0AEC38F6EE074738"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "3E02014EAC5CE55D"
+				item: { count: 1, id: "panlingre:zhu_sha_1" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: -6.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"6B933D64C27B676F"
+			]
+			dependency_requirement: "one_completed"
+			id: "1CC023340D63AF89"
+			optional: true
+			rewards: [{
+				id: "2E4C7DD7FAB5777B"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "0E61B85C57619B17"
+				item: { count: 1, id: "panlingre:zhu_sha_2" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: -8.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"1CC023340D63AF89"
+			]
+			dependency_requirement: "one_completed"
+			id: "3858CB4075C27119"
+			optional: true
+			rewards: [{
+				id: "45E1E638F65EC8A5"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "7941BAA3A72DCA65"
+				item: { count: 1, id: "panlingre:zhu_sha_3" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: -9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"3858CB4075C27119"
+			]
+			dependency_requirement: "one_completed"
+			id: "01F33A0ED1B1EC5D"
+			optional: true
+			rewards: [{
+				id: "4BF6ACCB93518A4E"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "271B727BF95E5F8E"
+				item: { count: 1, id: "panlingre:zhu_sha_4" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: -11.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"4DB0D352F19D0FC4"
+			]
+			dependency_requirement: "one_completed"
+			id: "59CBCF54944E6479"
+			optional: true
+			rewards: [{
+				id: "1D10CA164712809C"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "027E2DF95BC7CC3F"
+				item: { count: 1, id: "panlingre:fu_zhi" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: -8.0d
+		}
+		{
+			dependencies: ["2335B90EFC2A6A8B"]
+			dependency_requirement: "one_completed"
+			id: "06540101EF5898D6"
+			optional: true
+			rewards: [{
+				id: "5AD6235C1DC0BA9A"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "7B2A20BABB6D170E"
+				item: { count: 1, id: "panlingre:jing_shou_pi" }
+				type: "item"
+			}]
+			x: 3.5d
+			y: 6.5d
+		}
+		{
+			dependencies: ["2335B90EFC2A6A8B"]
+			dependency_requirement: "one_completed"
+			id: "2BE4E5661083E42B"
+			optional: true
+			rewards: [{
+				id: "191E9BC967C12D77"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "4EC758D156516484"
+				item: { count: 1, id: "panlingre:jing_tie" }
+				type: "item"
+			}]
+			x: 3.5d
+			y: -6.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"2BE4E5661083E42B"
+			]
+			dependency_requirement: "one_completed"
+			id: "7E2D79A794ED5D8F"
+			optional: true
+			rewards: [{
+				id: "5D662EF1B43DD52D"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "5C4175444B66CC30"
+				item: { count: 1, id: "panlingre:chi_tong_ding" }
+				type: "item"
+			}]
+			x: 3.5d
+			y: -8.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7E2D79A794ED5D8F"
+			]
+			dependency_requirement: "one_completed"
+			id: "1EB693CD747167DA"
+			optional: true
+			rewards: [{
+				id: "21AB5951E80E6A7A"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "160534F0E1E3D485"
+				item: { count: 1, id: "panlingre:jin_jing" }
+				type: "item"
+			}]
+			x: 5.0d
+			y: -8.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7E2D79A794ED5D8F"
+			]
+			dependency_requirement: "one_completed"
+			id: "67455989A72C774B"
+			optional: true
+			rewards: [{
+				id: "0467FB4C4C600815"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "1EA24BEF1945F7E0"
+				item: { count: 1, id: "panlingre:xuan_tie" }
+				type: "item"
+			}]
+			x: 3.5d
+			y: -9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"67455989A72C774B"
+			]
+			dependency_requirement: "one_completed"
+			id: "23733DD610141791"
+			optional: true
+			rewards: [{
+				id: "08FC745F53E0ED80"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "09003A4BD708070C"
+				item: { count: 1, id: "panlingre:ling_yu_jian" }
+				type: "item"
+			}]
+			x: 3.5d
+			y: -11.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"67455989A72C774B"
+			]
+			dependency_requirement: "one_completed"
+			id: "14DB98BECB77425D"
+			optional: true
+			rewards: [{
+				id: "19C6E536AB6379C7"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "105A58E52B7FAF2A"
+				item: { count: 1, id: "panlingre:bai_yu_jing" }
+				type: "item"
+			}]
+			x: 5.0d
+			y: -9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"23733DD610141791"
+			]
+			dependency_requirement: "one_completed"
+			id: "082BFA8217FD3A0E"
+			optional: true
+			rewards: [{
+				id: "7525B4C19E23782C"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "3EDE0C9B91DA2EE7"
+				item: { count: 1, id: "panlingre:bi_hai_zhu" }
+				type: "item"
+			}]
+			x: 5.0d
+			y: -11.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7867910D74A14D06"
+			]
+			dependency_requirement: "one_completed"
+			id: "5959BF73DB813670"
+			optional: true
+			rewards: [{
+				id: "457DE31630EDD589"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "5CE817548C66C1DC"
+				item: { count: 1, id: "panlingre:rare6_yuanhe_fra" }
+				type: "item"
+			}]
+			x: -4.0d
+			y: 12.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"5959BF73DB813670"
+			]
+			dependency_requirement: "one_completed"
+			id: "3688CFDDB1C6652B"
+			optional: true
+			rewards: [{
+				id: "176E171F6ADCACC6"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "263E25D76C4A20BA"
+				item: { count: 1, id: "panlingre:rare6_yuanhe" }
+				type: "item"
+			}]
+			x: -5.5d
+			y: 12.5d
+		}
+	]
+}

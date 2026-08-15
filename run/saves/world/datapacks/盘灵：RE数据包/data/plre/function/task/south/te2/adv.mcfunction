@@ -1,0 +1,1 @@
+clear @s orange_dye[custom_data~{id:"plre:te2"}] 60

@@ -1,0 +1,12 @@
+{
+  "title": {"translate": "plre.npc.name.food1"},
+  "offers": [
+    
+    {"buy":{"item":"panlingre:tong_qian","count":6},
+    "sell":{"item":"cooked_cod","count":15}},
+    
+    {"buy":{"item":"panlingre:tong_qian","count":10},
+    "sell":{"item":"cooked_salmon","count":12}}
+
+  ]
+}

@@ -31,6 +31,8 @@ import java.util.List;
 
 public class zhong_chui_gong extends BowItem implements skill_trigger {
 
+    private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "zhong_chui_gong");
+
     private final int cooldown = 100;
     private final float cost = 20.0f;
 
@@ -45,12 +47,11 @@ public class zhong_chui_gong extends BowItem implements skill_trigger {
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers() {
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
-        ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "zhong_chui_gong");
 
         builder.add(
                 ModAttributes.ARROW_DAMAGE,
                 new AttributeModifier(
-                        UID,
+                        MODIFIER_ID,
                         20.0,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
@@ -59,7 +60,7 @@ public class zhong_chui_gong extends BowItem implements skill_trigger {
         builder.add(
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
-                        UID,
+                        MODIFIER_ID,
                         -0.45,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
@@ -68,7 +69,7 @@ public class zhong_chui_gong extends BowItem implements skill_trigger {
         builder.add(
                 Attributes.ARMOR,
                 new AttributeModifier(
-                        UID,
+                        MODIFIER_ID,
                         0.1,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),

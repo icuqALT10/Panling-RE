@@ -1,0 +1,23 @@
+{
+    "type":"minecraft:entity",
+    "pools": [
+        {
+            "rolls":2,
+            "entries": [
+                {
+                    "type": "minecraft:loot_table",
+                    "value": "plre:monsters/east/common/zombie"
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:loot_table",
+                    "value": "plre:monsters/east/elite/box"
+                }
+            ]
+        }
+    ]
+}

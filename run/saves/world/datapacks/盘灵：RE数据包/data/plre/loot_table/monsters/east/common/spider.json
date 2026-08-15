@@ -1,0 +1,82 @@
+{
+    "type":"minecraft:entity",
+    "pools": [
+        {
+            "rolls": 2,
+            "functions":[
+                {
+                    "function": "minecraft:set_count",
+                    "count":{
+                        "min": 0,
+                        "max": 2
+                    }
+                }
+            ],
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "panlingre:ys1_shui"
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "panlingre:ys1_mu"
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "panlingre:ys1_tu"
+                }
+                
+            ]
+        },
+        {
+            "rolls":1, 
+            "conditions": [
+                {
+                    "condition": "minecraft:random_chance",
+                    "chance": 0.3
+                }
+            ],
+            "entries": [
+                {   
+                    "type": "minecraft:item",
+                    "name": "panlingre:tong_qian",
+            "functions":[
+                {
+                    "function": "minecraft:set_count",
+                    "count":{
+                        "min": 0,
+                        "max": 2
+                    }
+                }
+                ]
+                }
+
+            ]
+        },
+        {
+            "rolls":1, 
+            "conditions": [
+                {
+                    "condition": "minecraft:random_chance",
+                    "chance": 0.5
+                }
+            ],
+            "entries": [
+                {   
+                    "type": "minecraft:loot_table",
+                    "value": "plre:monsters/spider"
+                }
+
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:loot_table",
+                    "value": "plre:monsters/common"
+                }
+            ]
+        }
+    ]
+}

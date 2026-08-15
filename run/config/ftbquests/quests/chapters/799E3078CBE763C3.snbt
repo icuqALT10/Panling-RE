@@ -1,0 +1,675 @@
+{
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "799E3078CBE763C3"
+	group: "29EB2635133F64C0"
+	icon: {
+		id: "panlingre:race_shen"
+	}
+	id: "799E3078CBE763C3"
+	order_index: 1
+	quest_links: [ ]
+	quests: [
+		{
+			hide_dependency_lines: false
+			icon_scale: 0.65d
+			id: "4DEB7C1135A7536B"
+			invisible: true
+			shape: "diamond"
+			size: 2.0d
+			tasks: [{
+				advancement: "plre:misson/shen/start"
+				criterion: ""
+				icon: {
+					id: "panlingre:race_shen"
+				}
+				id: "43553B238A2AD5B9"
+				type: "advancement"
+			}]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			can_repeat: true
+			dependencies: ["4DEB7C1135A7536B"]
+			disable_toast: true
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "1C317148BB38AF73"
+			require_sequential_tasks: false
+			rewards: [{
+				auto: "enabled"
+				command: "/function plre:task/misson/shen/find"
+				exclude_from_claim_all: true
+				icon: {
+					id: "panlingre:ba_fang_yi"
+				}
+				id: "6B563DBF3FC7ED24"
+				permission_level: 2
+				silent: true
+				type: "command"
+			}]
+			shape: "gear"
+			size: 1.0d
+			tasks: [{
+				id: "7B15218E6E32BC43"
+				type: "checkmark"
+			}]
+			x: 1.0d
+			y: 1.0d
+		}
+		{
+			dependencies: ["4DEB7C1135A7536B"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "minecraft:paper"
+			}
+			id: "5F07C22F90949E41"
+			rewards: [{
+				id: "327B0FCA007A946A"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/1"
+				criterion: ""
+				icon: {
+					id: "minecraft:paper"
+				}
+				id: "118923FC0634A1DE"
+				type: "advancement"
+			}]
+			x: 2.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["5F07C22F90949E41"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "minecraft:lime_dye"
+			}
+			id: "6DAC10818D332A80"
+			rewards: [{
+				id: "7D75AB4AEE251AC6"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/2"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "468D2E5A49B6A090"
+				type: "advancement"
+			}]
+			x: 4.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["6DAC10818D332A80"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "minecraft:lime_dye"
+			}
+			id: "5F2BE27D40612EC2"
+			rewards: [{
+				id: "01253FDB9D505AB4"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/3"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "78C5AB444734DBC2"
+				type: "advancement"
+			}]
+			x: 6.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["5F2BE27D40612EC2"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "minecraft:lime_dye"
+			}
+			id: "4E78263EA13DD3B2"
+			rewards: [{
+				id: "4C02FE4E24BA1BC5"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/4"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "27043F0919BEFA33"
+				type: "advancement"
+			}]
+			x: 8.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["4E78263EA13DD3B2"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "minecraft:lime_dye"
+			}
+			id: "5FD247F69E9A20AB"
+			rewards: [{
+				id: "728BFEEDED55760F"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/5"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "7AC9198183869004"
+				type: "advancement"
+			}]
+			x: 10.0d
+			y: 0.0d
+		}
+		{
+			can_repeat: true
+			dependencies: ["5FD247F69E9A20AB"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: true
+			hide_until_deps_visible: false
+			icon: {
+				id: "panlingre:qing_ying_feather"
+			}
+			id: "7BD472C643CF3303"
+			rewards: [{
+				id: "712875673D919208"
+				item: {
+					count: 1
+					id: "panlingre:qing_ying_feather"
+				}
+				type: "item"
+			}]
+			shape: "rsquare"
+			size: 0.5d
+			tasks: [{
+				id: "64049ECDA744EB7B"
+				type: "checkmark"
+			}]
+			x: 10.5d
+			y: 0.5d
+		}
+		{
+			dependencies: ["5FD247F69E9A20AB"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "minecraft:lime_dye"
+			}
+			id: "6CD87D9F19C18016"
+			rewards: [{
+				id: "1B0AA5FA78ECC343"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/6"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "2B80CA6B7E7D03AF"
+				type: "advancement"
+			}]
+			x: 12.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["6CD87D9F19C18016"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "minecraft:lime_dye"
+			}
+			id: "733B9682908A58DA"
+			rewards: [{
+				id: "63A64CB93617A0BB"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/7"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "459778FECB849769"
+				type: "advancement"
+			}]
+			x: 14.0d
+			y: 0.0d
+		}
+		{
+			can_repeat: true
+			dependencies: ["733B9682908A58DA"]
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: true
+			hide_until_deps_visible: false
+			icon: {
+				id: "panlingre:ba_fang_yi"
+			}
+			id: "1DC436EE6837D4F3"
+			rewards: [{
+				id: "75CF56BECABD7636"
+				item: {
+					count: 1
+					id: "panlingre:ba_fang_yi"
+				}
+				type: "item"
+			}]
+			shape: "rsquare"
+			size: 0.5d
+			tasks: [{
+				id: "69CEACD62B0249D4"
+				type: "checkmark"
+			}]
+			x: 14.5d
+			y: 0.5d
+		}
+		{
+			dependencies: ["733B9682908A58DA"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "minecraft:lime_dye"
+			}
+			id: "2EA411850F605D3E"
+			rewards: [{
+				id: "065D9B9D85F52549"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/8"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "2A01FD07E7256493"
+				type: "advancement"
+			}]
+			x: 16.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["2EA411850F605D3E"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "040CCC4C95E0B0A6"
+			rewards: [{
+				id: "230969905267B4A7"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/qinglong"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys3_mu"
+				}
+				id: "326D7932A76C27CB"
+				type: "advancement"
+			}]
+			x: 18.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["040CCC4C95E0B0A6"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "minecraft:lime_dye"
+			}
+			id: "1886D067EF78DF14"
+			rewards: [{
+				id: "31B0EF303D9917D5"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/9"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "0514FB7D645D0A69"
+				type: "advancement"
+			}]
+			x: 20.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["1886D067EF78DF14"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "54D85477CDC3F524"
+			rewards: [{
+				id: "3D65B103524DE020"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/10"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys3_huo"
+				}
+				id: "1B3F54D699CA3C4D"
+				type: "advancement"
+			}]
+			x: 22.0d
+			y: -1.5d
+		}
+		{
+			dependencies: ["1886D067EF78DF14"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "0D85D408F40791F3"
+			rewards: [{
+				id: "2985999661AFCD49"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/12"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys3_jin"
+				}
+				id: "424810A115E9DF3E"
+				type: "advancement"
+			}]
+			x: 22.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["1886D067EF78DF14"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			id: "7EDE15B0C147C946"
+			rewards: [{
+				id: "520AB96E03CF4992"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/14"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys3_shui"
+				}
+				id: "753396A5B302C053"
+				type: "advancement"
+			}]
+			x: 22.0d
+			y: 1.5d
+		}
+		{
+			dependencies: [
+				"4074C7B23F7E3BCB"
+				"54D85477CDC3F524"
+			]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			id: "236CC85F15AB3E8A"
+			rewards: [{
+				id: "6255D06195155093"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/11"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys3_huo"
+				}
+				id: "7A5A9CB1F81CEDE8"
+				type: "advancement"
+			}]
+			x: 24.0d
+			y: -1.5d
+		}
+		{
+			dependencies: [
+				"4E72A09000CB08AE"
+				"0D85D408F40791F3"
+			]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			id: "364A188ED27E2F2F"
+			rewards: [{
+				id: "03FBC1C1895BA0DB"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/13"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys3_jin"
+				}
+				id: "520A498875E2CFA8"
+				type: "advancement"
+			}]
+			x: 24.0d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"78AB339146EC8473"
+				"7EDE15B0C147C946"
+			]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: true
+			id: "0E1C223D6491BEA4"
+			rewards: [{
+				id: "3BD0B6E75E328776"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/15"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys3_shui"
+				}
+				id: "50CCE1E9C7235BDC"
+				type: "advancement"
+			}]
+			x: 24.0d
+			y: 1.5d
+		}
+		{
+			dependencies: [
+				"236CC85F15AB3E8A"
+				"0E1C223D6491BEA4"
+				"364A188ED27E2F2F"
+			]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "panlingre:ys3_tu"
+			}
+			id: "57DB94CA574B1758"
+			rewards: [{
+				id: "3B1516019EB552B6"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/16"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys3_tu"
+				}
+				id: "77FBAA2E92917DC5"
+				type: "advancement"
+			}]
+			x: 26.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["57DB94CA574B1758"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "minecraft:lime_dye"
+			}
+			id: "260FBDCD5CAA9270"
+			rewards: [{
+				id: "75793263CF9704CE"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/17"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "5043DD24C87B305D"
+				type: "advancement"
+			}]
+			x: 28.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["260FBDCD5CAA9270"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "minecraft:lime_dye"
+			}
+			id: "480FB7055C0ACA8E"
+			rewards: [{
+				id: "48C676830DF56E91"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/18"
+				criterion: ""
+				icon: {
+					id: "minecraft:lime_dye"
+				}
+				id: "49E485FCCDB63C05"
+				type: "advancement"
+			}]
+			x: 30.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["480FB7055C0ACA8E"]
+			hide_dependency_lines: false
+			hide_details_until_startable: false
+			hide_text_until_complete: false
+			hide_until_deps_complete: false
+			hide_until_deps_visible: false
+			icon: {
+				id: "panlingre:ys3_tu"
+			}
+			id: "7AC65370442F8C03"
+			rewards: [{
+				id: "51EE3F1B9AFC1ADD"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:misson/shen/19"
+				criterion: ""
+				icon: {
+					id: "panlingre:ys3_tu"
+				}
+				id: "332BFBC583CD5447"
+				type: "advancement"
+			}]
+			x: 32.0d
+			y: 0.0d
+		}
+	]
+}

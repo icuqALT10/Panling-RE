@@ -1,0 +1,40 @@
+{
+  "title": {"translate": "plre.npc.name.dyp2"},
+  "offers": [
+    {"buy":{"item":"panlingre:ys1_jin","count":3},
+    "buyB":{"item":"panlingre:tong_qian","count":1},
+    "sell":{"item":"panlingre:ys_dhq","count":1}},
+
+    {"buy":{"item":"panlingre:ys1_mu","count":3},
+    "buyB":{"item":"panlingre:tong_qian","count":1},
+    "sell":{"item":"panlingre:ys_dhq","count":1}},
+
+    {"buy":{"item":"panlingre:ys1_shui","count":3},
+    "buyB":{"item":"panlingre:tong_qian","count":1},
+    "sell":{"item":"panlingre:ys_dhq","count":1}},
+
+    {"buy":{"item":"panlingre:ys1_huo","count":3},
+    "buyB":{"item":"panlingre:tong_qian","count":1},
+    "sell":{"item":"panlingre:ys_dhq","count":1}},
+
+    {"buy":{"item":"panlingre:ys1_tu","count":3},
+    "buyB":{"item":"panlingre:tong_qian","count":1},
+    "sell":{"item":"panlingre:ys_dhq","count":1}},
+
+    {"buy":{"item":"panlingre:ys_dhq","count":1},
+    "sell":{"item":"panlingre:ys1_jin","count":3}},
+
+    {"buy":{"item":"panlingre:ys_dhq","count":1},
+    "sell":{"item":"panlingre:ys1_mu","count":3}},
+
+    {"buy":{"item":"panlingre:ys_dhq","count":1},
+    "sell":{"item":"panlingre:ys1_shui","count":3}},
+
+    {"buy":{"item":"panlingre:ys_dhq","count":1},
+    "sell":{"item":"panlingre:ys1_huo","count":3}},
+    
+    {"buy":{"item":"panlingre:ys_dhq","count":1},
+    "sell":{"item":"panlingre:ys1_tu","count":3}}
+
+  ]
+}

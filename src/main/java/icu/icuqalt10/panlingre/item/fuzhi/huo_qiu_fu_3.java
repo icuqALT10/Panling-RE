@@ -28,6 +28,8 @@ import java.util.List;
 
 public class huo_qiu_fu_3 extends Item{
 
+    private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "huo_qiu_fu_3");
+
     private final int cooldown = 80;
     private final float cost = 15.0f;
     public huo_qiu_fu_3() {
@@ -45,7 +47,7 @@ public class huo_qiu_fu_3 extends Item{
         builder.add(
                 ModAttributes.FALIZHI,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "huo_qiu_fu_3"),
+                        MODIFIER_ID,
                         2.0,
                         AttributeModifier.Operation.ADD_VALUE
                 ),

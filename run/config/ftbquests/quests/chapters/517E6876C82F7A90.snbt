@@ -1,0 +1,43 @@
+{
+	always_invisible: true
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	disable_toast: true
+	filename: "517E6876C82F7A90"
+	group: ""
+	id: "517E6876C82F7A90"
+	order_index: 0
+	quest_links: [ ]
+	quests: [
+		{
+			icon: {
+				components: {
+					"!ftbquests:icon": { }
+					"ftbquests:entity_face": "minecraft:pig"
+				}
+				id: "ftbquests:custom_icon"
+			}
+			id: "2335B90EFC2A6A8B"
+			tasks: [{
+				advancement: "plre:into_game"
+				criterion: ""
+				disable_toast: true
+				id: "734FF4E3CAA00203"
+				type: "advancement"
+			}]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			id: "3E8C34E4D07BE512"
+			tasks: [{
+				advancement: "plre:task/south/te2_intel"
+				criterion: ""
+				id: "19C3499398A49EB9"
+				type: "advancement"
+			}]
+			x: 0.0d
+			y: 3.5d
+		}
+	]
+}

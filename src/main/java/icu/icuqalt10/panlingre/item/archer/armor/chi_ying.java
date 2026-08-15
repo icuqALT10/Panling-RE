@@ -17,6 +17,11 @@ import java.util.List;
 
 public class chi_ying extends ArmorItem {
 
+    private static final ResourceLocation HELMET_ID = ResourceLocation.withDefaultNamespace("chi_ying_helmet");
+    private static final ResourceLocation CHESTPLATE_ID = ResourceLocation.withDefaultNamespace("chi_ying_chestplate");
+    private static final ResourceLocation LEGGINGS_ID = ResourceLocation.withDefaultNamespace("chi_ying_leggings");
+    private static final ResourceLocation BOOTS_ID = ResourceLocation.withDefaultNamespace("chi_ying_boots");
+
     public chi_ying(Holder<ArmorMaterial> material, Type type) {
         super(material, type, new Properties()
                 .attributes(createModifiers(type))
@@ -30,113 +35,113 @@ public class chi_ying extends ArmorItem {
         if(slot==EquipmentSlotGroup.HEAD) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_helmet"),
+                            HELMET_ID,
                             8,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MOVEMENT_SPEED,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_helmet"),
+                            HELMET_ID,
                             0.2,
                             AttributeModifier.Operation.ADD_MULTIPLIED_BASE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_helmet"),
+                            HELMET_ID,
                             10,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_helmet"),
+                            HELMET_ID,
                             8,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.ARROW_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_helmet"),
+                            HELMET_ID,
                             6,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_helmet"),
+                            HELMET_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.CHEST) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_chestplate"),
+                            CHESTPLATE_ID,
                             12,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_chestplate"),
+                            CHESTPLATE_ID,
                             14,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_chestplate"),
+                            CHESTPLATE_ID,
                             10,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.ARROW_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_chestplate"),
+                            CHESTPLATE_ID,
                             7,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_chestplate"),
+                            CHESTPLATE_ID,
                             6,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.LEGS) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_leggings"),
+                            LEGGINGS_ID,
                             12,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_leggings"),
+                            LEGGINGS_ID,
                             12,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_leggings"),
+                            LEGGINGS_ID,
                             10,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.ARROW_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_leggings"),
+                            LEGGINGS_ID,
                             6,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_leggings"),
+                            LEGGINGS_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.FEET) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_boots"),
+                            BOOTS_ID,
                             8,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MOVEMENT_SPEED,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_boots"),
+                            BOOTS_ID,
                             0.2,
                             AttributeModifier.Operation.ADD_MULTIPLIED_BASE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_boots"),
+                            BOOTS_ID,
                             8,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.ARROW_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_boots"),
+                            BOOTS_ID,
                             6,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("chi_ying_boots"),
+                            BOOTS_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }

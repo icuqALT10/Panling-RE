@@ -1,0 +1,164 @@
+{
+  "id": "misson_yao_2",
+  "title":"misson/yao/2",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.yaomain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.2"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.yao.2.option"},
+          "target": "2.1",
+          "visibility_command": "execute if score @s misson_yao matches 2"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.yao.6.option"},
+          "target": "6.1",
+          "visibility_command": "execute if score @s misson_yao matches 6"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "2.1",
+      "speaker": {"translate": "pl.npc.name.yaomain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.2.1"
+        }
+      ],
+      "next":"2.2"
+    },
+    {
+      "id": "2.2",
+      "speaker": {"translate": "pl.npc.name.yaomain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.2.2"
+        }
+      ],
+      "next":"2.3"
+    },
+    {
+      "id": "2.3",
+      "speaker": {"translate": "pl.npc.name.yaomain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.2.3"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/2"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "6.1",
+      "speaker": {"translate": "pl.npc.name.yaomain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.6.1"
+        }
+      ],
+      "next":"6.2"
+    },
+    {
+      "id": "6.2",
+      "speaker": {"translate": "pl.npc.name.yaomain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.6.2"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.yao.6.2.option"},
+          "target": "6.3"
+        }
+      ]
+    },
+    {
+      "id": "6.3",
+      "speaker": {"translate": "pl.npc.name.yaomain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.6.3"
+        }
+      ],
+      "next":"6.4"
+    },
+    {
+      "id": "6.4",
+      "speaker": {"translate": "pl.npc.name.yaomain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.6.4"
+        }
+      ],
+      "next":"6.5"
+    },
+    {
+      "id": "6.5",
+      "speaker": {"translate": "pl.npc.name.yaomain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.6.5"
+        }
+      ],
+      "next":"6.6"
+    },
+    {
+      "id": "6.6",
+      "speaker": {"translate": "pl.npc.name.yaomain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.6.6"
+        }
+      ],
+      "next":"6.7"
+    },
+    {
+      "id": "6.7",
+      "speaker": {"translate": "pl.npc.name.yaomain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.6.7"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "panlingre:qing_ying_feather"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/6"
+      ],
+      "endDialog": true
+    }
+  ]
+}

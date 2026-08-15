@@ -1,0 +1,1562 @@
+{
+	chapter.01A4870B44729E7B.title: "&c焱砂大漠篇"
+	chapter.14793D75CA143713.title: "&a材料"
+	chapter.20F008B931D29E36.title: "&b玄水湖泊篇"
+	chapter.2CEA7013772151C2.title: "&d地标"
+	chapter.3985EDDDEB3D7E17.title: "&e法宝"
+	chapter.4EAEAF9B851A0ADB.title: "主线：妖族篇"
+	chapter.517E6876C82F7A90.title: "控制中心"
+	chapter.530AD7A70F09FBC6.title: "主线：仙族篇"
+	chapter.712C4C14BCE2863F.title: "主线：战神族篇"
+	chapter.7683D6F868CA3D19.title: "&b防具"
+	chapter.799E3078CBE763C3.title: "主线：神族篇"
+	chapter.7A6467AFAC4615D9.title: "游戏设定"
+	chapter.7BA77184414B18B8.title: "&6手持物"
+	chapter.7D1B36C11939BE72.title: "&f虎爪山脉篇"
+	chapter.7F9DAC1CAABCBD5D.title: "主线：人族篇"
+	chapter_group.29EB2635133F64C0.title: "第一章&6「圣兽」之谜"
+	chapter_group.45E9F6E0A0BA2A7B.title: "&b图鉴"
+	quest.005B6191BA16AE97.quest_desc: [
+		"&a往虎爪山脉东北的路的尽头&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/north/shui_zu_cun_zhuang.png width:150 height:100 align:center}"
+	]
+	quest.005B6191BA16AE97.quest_subtitle: "-277 33 -623"
+	quest.005B6191BA16AE97.title: "水族村庄"
+	quest.00ADABC21ED8A404.quest_desc: ["向祭坛中供奉5种&9元素&r各10个后即可获得进入&2&o玄武神庙&r的资格"]
+	quest.00ADABC21ED8A404.quest_subtitle: "到&2&o祭司隔壁的祭坛&r供奉元素"
+	quest.00ADABC21ED8A404.title: "供奉元素"
+	quest.011367347B018D5A.quest_desc: [
+		"与左侧的稀有度无关"
+		"名字末尾带有&2[药]&r的丹药&a所以人&r都可使用"
+		"而末尾为&a[法]&r&4[术]&r的丹药&6仅炼丹师&r可使用"
+		""
+		"[ \"丹药可在\", { \"text\": \"丹药铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4317967B4A064F1B\" } }, \"中使用炼丹房内设的炼丹炉炼制\" ]"
+	]
+	quest.011367347B018D5A.quest_subtitle: "丹药"
+	quest.011367347B018D5A.title: "丹药"
+	quest.016A2EFC8CD8C1E1.quest_desc: [
+		"&a位于皇城西偏北处（与仓库售卖处相邻）&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/feng_hua_lou.png width:150 height:100 align:center}"
+	]
+	quest.016A2EFC8CD8C1E1.quest_subtitle: "57 48 36"
+	quest.016A2EFC8CD8C1E1.title: "凤花楼"
+	quest.017C702CFA8BD3A7.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.01BACC2F6FD6F306.quest_desc: [
+		"&a生命值&r："
+		"范围：( 0 , 1000000 ]"
+		""
+		"&a护甲值&r："
+		"&e现在护甲值对绝大部分伤害类型都有效&r"
+		"范围：[ -1000000 , 1000000 ]"
+		"&a护甲值&r >= &60&r时"
+		"&4最终伤害&r = &c伤害值&rx(&6100&r/(&6100&r+&a护甲值&r))"
+		"&a护甲值&r < &60&r时"
+		"&4最终伤害&r = (&c伤害值&rx(&62&r-(&6100&r/(&6100&r-&a护甲值&r)))"
+		"{@pagebreak}"
+		"&a最大灵气值&r："
+		"&e玩家的蓝量&r"
+		"范围为：[ 0 , 100000000 ]"
+		"灵气值每秒恢复&a最大灵气值x2.5%&r点"
+		""
+		""
+		"{image:panlingre:textures/gui/hud/falizhi.png width:20 height:20 align:center}"
+		"&a法力值&r(位于血条上方、护甲值右方)："
+		"&e主要用于某些装备中&r"
+		"范围：[ 0 , 9999.99 ]"
+		""
+		"&a冷却缩减&r："
+		"&e触发大部分冷却时的减免区间&r"
+		"范围：[ 0% , 100% ]"
+		"&4最终冷却&r = &c冷却时间&rx(&61&r-&a冷却缩减&r)"
+		"{@pagebreak}"
+		"&a箭矢强度&r："
+		"&e弓箭手专属属性，用于提高箭矢的伤害&r"
+		"&7(部分远程生物也具有该属性)&r"
+		"范围：[ 0 , 100000000 ]"
+		""
+		"&a炼化强度&r："
+		"&e炼丹师专属属性，用于提升丹药等物品的效果&r"
+		"范围：[ 0 , 100000000 ]"
+	]
+	quest.01BACC2F6FD6F306.title: "属性"
+	quest.01F33A0ED1B1EC5D.quest_desc: ["[ \"由\", { \"text\": \"朱砂(中级)\",\"color\":\"yellow\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6B933D64C27B676F\" } }, \"与\",{ \"text\": \"六阶原核碎片\",\"color\":\"red\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6B933D64C27B676F\" } },\"合成\" ]"]
+	quest.035B351F4623117B.quest_desc: [
+		"副本通常有毕业条件：获得副本中的&c6阶装备&r"
+		"&7该条件为大部分玩家不成文的规定，实际上并没有这一说&r"
+		""
+		"为此将副本分为了两种模式&a(默认经典模式)&r："
+		""
+		"&a经典模式&r："
+		"还原原版副本的模式。每次&6通关&r后给予1次&e开箱机会&r，&c6阶装备&r需要开箱获取"
+		"&7通常该模式需要反复通关副本才可达到毕业条件&r"
+		""
+		"&a体验模式&r："
+		"通关副本后直接给予&6毕业副本&r所需的&c6阶装备&r"
+		"&7该模式不需要反复通关副本，只需通关一次即可&r"
+	]
+	quest.035B351F4623117B.quest_subtitle: "执行该设置需要op权限"
+	quest.035B351F4623117B.title: "副本模式"
+	quest.03AB72DBB4F3075C.quest_desc: ["[ \"由5个\", { \"text\": \"火元素\",color:red, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"2460A41BBBCD4D30\" } }, \"合成\" ]"]
+	quest.03BE9AA4FE628CD8.quest_desc: [
+		"&a由蓬莱北岸的小船进入&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/north/sheng_shan.png width:150 height:100 align:center}"
+	]
+	quest.03BE9AA4FE628CD8.quest_subtitle: "310 34 -735"
+	quest.03BE9AA4FE628CD8.title: "圣山"
+	quest.040CCC4C95E0B0A6.quest_desc: ["进入&2&o青龙神庙&r并成功通过&6青龙试炼"]
+	quest.040CCC4C95E0B0A6.quest_subtitle: "通过&6青龙试炼"
+	quest.040CCC4C95E0B0A6.title: "获得&e青龙祝福"
+	quest.04173E19CDAE035B.quest_desc: ["与&a&l羽罗&r交谈"]
+	quest.04173E19CDAE035B.quest_subtitle: "回到&2&o皇宫"
+	quest.04173E19CDAE035B.title: "复命：&f虎爪山脉篇&r结束"
+	quest.05A68C704D737E54.quest_desc: ["[ \"由\", { \"text\": \"珍贵草药\",color:light_purple, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"7AB0700AB3D51D64\" } }, \"加\",{ \"text\": \"药引(中级)\", color:light_purple,\"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"54BE836F7E956238\" } } ,\"制作\" ]"]
+	quest.06061FB10795BB38.quest_desc: [
+		"本章节所有坐标均为地标门口或附近"
+		"进入地标内才会完成对应任务"
+	]
+	quest.06061FB10795BB38.quest_subtitle: "大陆中心"
+	quest.06061FB10795BB38.title: "&6人族皇城"
+	quest.06537E73AECAD5CD.quest_desc: ["再次与&a&l孤伶伶的小男孩&r的交谈"]
+	quest.06537E73AECAD5CD.quest_subtitle: "回到&a&l虎子&r处"
+	quest.06537E73AECAD5CD.title: "虎子的回报"
+	quest.06540101EF5898D6.quest_desc: ["[ \"可在\", { \"text\": \"野狼群\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"51989CDA9DF9D68F\" } } ,\"处击杀\",{text:\"野狼\",color:green},\"获得\"]"]
+	quest.06680EE46BB423ED.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.0681DC4147351369.quest_desc: [
+		"向&a&l蚀日&r询问下一步事项"
+		"&a推荐三阶装备后继续此任务&r"
+		"&7虎爪山脉篇位于另一个章节&r"
+	]
+	quest.0681DC4147351369.quest_subtitle: "准备完毕后前往&2&o月老小庙"
+	quest.0681DC4147351369.title: "准备出发：&f虎爪山脉"
+	quest.0700EA9275447FDD.quest_desc: ["与&a&l羽罗&r交谈"]
+	quest.0700EA9275447FDD.quest_subtitle: "前往&2&o皇宫"
+	quest.0700EA9275447FDD.title: "羽罗的报告"
+	quest.07608EB16E301FD2.quest_desc: ["与&a&l李公公&r交谈"]
+	quest.07608EB16E301FD2.quest_subtitle: "回到&2&o皇宫"
+	quest.07608EB16E301FD2.title: "复命：&b玄水湖泊篇&r结束"
+	quest.0773EC20C08BC8AC.quest_desc: ["与&a&l孤伶伶的小男孩&r的交谈"]
+	quest.0773EC20C08BC8AC.quest_subtitle: "进入&2&o迷阵&r中寻找&a&l虎子"
+	quest.0773EC20C08BC8AC.title: "不告而别的苦衷"
+	quest.07942DB75AEF50FE.quest_desc: ["[ {text:\"获取配方后可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
+	quest.07942DB75AEF50FE.title: "通用法宝"
+	quest.07974BE9E918886F.quest_desc: ["[ \"于副本\", { \"text\": \"圣山\",\"color\":\"red\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"03BE9AA4FE628CD8\" } }, \"中获得\" ]"]
+	quest.07C5DFE2553C5D18.quest_desc: [
+		"向&a&l蚀日&r询问下一步事项"
+		"&a推荐二阶装备后继续此任务&r"
+		"&7焱砂大漠篇位于另一个章节&r"
+	]
+	quest.07C5DFE2553C5D18.quest_subtitle: "准备完毕后前往&2&o月老小庙"
+	quest.07C5DFE2553C5D18.title: "准备出发：&c焱砂大漠"
+	quest.081411280372B8E8.quest_desc: ["与神庙内的&a&l左焰&r交谈"]
+	quest.081411280372B8E8.quest_subtitle: "前往&2&o青龙神庙"
+	quest.081411280372B8E8.title: "青龙试炼"
+	quest.081F9013117F9D3A.quest_subtitle: "第一章战神族主线历程"
+	quest.081F9013117F9D3A.title: "主线：战神族篇"
+	quest.082BFA8217FD3A0E.quest_desc: [
+		"[ {text:\"在\",color:white}, { \"text\": \"玄水湖泊\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"2D20462FAAA8D29F\" } }, {text:\"使用\",color:white},{text:\"玄铁镐\",color:light_purple},{text:\"或更高等级的镐子采集\",color:white}, {text:\"碧海矿\",color:yellow}, {text:\"获得\",color:white} ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/material/bi_hai_ore.png width:150 height:100 align:center}"
+	]
+	quest.08B2E3623F2FFEF6.quest_desc: [
+		"[ \"可用9个\", { \"text\": \"四阶原核碎片\",color:light_purple, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"7C69E90683AFB4B4\" } }, \"合成\" ]"
+		""
+		"&a由以下类型生物掉落：&r"
+		"[ \"1.在\",  { \"text\": \"圣虎迷阵\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"22161DED01D89AF0\" } } ,\"中击杀\",{text:\"焦骨战士\",color:yellow},\"概率获得\" ]"
+	]
+	quest.08E32A86B1C8EC14.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.094AD5B9402DDA08.quest_desc: ["与&a&l盟主&r交谈"]
+	quest.094AD5B9402DDA08.quest_subtitle: "前往&2&o盟主大殿"
+	quest.094AD5B9402DDA08.title: "与仙族盟主会面"
+	quest.09C2E9D39520A9FE.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.09F5BF434DB71025.quest_desc: ["向&a&l李公公&r汇报结果"]
+	quest.09F5BF434DB71025.quest_subtitle: "回到&2&o皇宫"
+	quest.09F5BF434DB71025.title: "收集&e祝福之力"
+	quest.0A9BF0CDC59E7492.quest_desc: ["[ \"于\", { \"text\": \"山神庙的庙公\",\"color\":\"green\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"256DD3D99070EAA6\" } }, \"处获取\" ]"]
+	quest.0A9E0BF1AFBD8F5A.quest_desc: [
+		"&a虎爪山脉与玄水湖泊交界处的尽头&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/west/ku_gu.png width:150 height:100 align:center}"
+	]
+	quest.0A9E0BF1AFBD8F5A.quest_subtitle: "-670 108 -638"
+	quest.0A9E0BF1AFBD8F5A.title: "哭声回荡的山谷"
+	quest.0B0FB1CF85E9D49C.quest_desc: [
+		"[ \"可用9个\", { \"text\": \"三阶原核碎片\",color:blue, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"1BEBBFD630E62BEC\" } }, \"合成\" ]"
+		""
+		"&a由以下类型生物掉落：&r"
+		"[ \"1.在\",  { \"text\": \"被抢劫的王员外\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"393280750D2786AC\" } }, \"或\", { \"text\": \"马贼团巢穴\", color:gold,\"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6C81BF24264DC1C3\" } },\"击杀\",{text:\"马贼团长\",color:yellow},\"概率获得\" ]"
+	]
+	quest.0B141B2BFFC3B6EA.quest_desc: ["与&a&l白虎分魂&r交谈"]
+	quest.0B141B2BFFC3B6EA.quest_subtitle: "进入&2&o白虎神庙"
+	quest.0B141B2BFFC3B6EA.title: "白虎分魂"
+	quest.0C33CD7F1500AAC8.quest_desc: ["进入&2&o青龙神庙&r并成功通过&6青龙试炼"]
+	quest.0C33CD7F1500AAC8.quest_subtitle: "通过&6青龙试炼"
+	quest.0C33CD7F1500AAC8.title: "获得&e青龙祝福"
+	quest.0CA327B6AFD9A3CC.quest_desc: [
+		"&a位于森林深处第二个湖边&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/east/shi_huang_ling.png width:150 height:100 align:center}"
+	]
+	quest.0CA327B6AFD9A3CC.quest_subtitle: "692 33 -141"
+	quest.0CA327B6AFD9A3CC.title: "始皇陵"
+	quest.0CD367AD81DC5E4F.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.0D3F450574E4C414.quest_desc: [
+		"&a位于通往大漠深处的沿途&r"
+		"&e因存在时间久远也被称为古石碑&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/south/shi_bei.png width:150 height:100 align:center}"
+	]
+	quest.0D3F450574E4C414.quest_subtitle: "122 50 793"
+	quest.0D3F450574E4C414.title: "奇怪的石碑"
+	quest.0D85D408F40791F3.quest_desc: [
+		"向&a&l长老&r询问下一步事项"
+		"&a推荐三阶装备后继续此任务&r"
+		"&7虎爪山脉篇位于另一个章节&r"
+	]
+	quest.0D85D408F40791F3.quest_subtitle: "准备完毕后前往&2&o昆仑大殿"
+	quest.0D85D408F40791F3.title: "准备出发：&f虎爪山脉"
+	quest.0DDC33651F1E91F5.quest_desc: ["[ \"由5个\", { \"text\": \"水元素\",color:dark_gray, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"771EB33A69C3CA1A\" } }, \"合成\" ]"]
+	quest.0DF04E7B7E9D15BC.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.0E1C223D6491BEA4.quest_desc: ["向&a&l长老&r汇报情况"]
+	quest.0E1C223D6491BEA4.quest_subtitle: "回到&2&o昆仑大殿"
+	quest.0E1C223D6491BEA4.title: "复命：&b玄水湖泊篇&r结束"
+	quest.0E45252EE529D4EA.quest_desc: [
+		"本章节的连线仅美观用处"
+		"实际上只要获得对应物品即可完成该任务"
+		"&a物品的合成配方请自行查阅jei并结合其他图鉴"
+		"&a若有特殊获取方式才会在此说明"
+	]
+	quest.0E45252EE529D4EA.quest_subtitle: "手持物"
+	quest.0E45252EE529D4EA.title: "手持物图鉴"
+	quest.0E69FDEDF5DFA5A9.quest_desc: ["再次与&a&l华夭&r交谈"]
+	quest.0E69FDEDF5DFA5A9.quest_subtitle: "回到&2&o镇妖塔"
+	quest.0E69FDEDF5DFA5A9.title: "结界逐渐消失？"
+	quest.0E78FCF2B2FA955F.quest_desc: ["触摸&2&o圣山&r中的大茧"]
+	quest.0E78FCF2B2FA955F.quest_subtitle: "进入&2&o圣山内部"
+	quest.0E78FCF2B2FA955F.title: "触摸大茧"
+	quest.0EDA7FE809AEF911.quest_desc: ["占位，暂无获取方式与用途"]
+	quest.0F15E4F8B21F15BA.quest_desc: ["与&a&l凯歌&r交谈"]
+	quest.0F15E4F8B21F15BA.quest_subtitle: "前往&2&o蓬莱&r寻找&a&l凯歌"
+	quest.0F15E4F8B21F15BA.title: "圣山的异常"
+	quest.0FA47ADC1471F1A0.quest_desc: ["[ \"于\", { \"text\": \"陈大夫\",\"color\":\"green\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"754BFC5279074F2A\" } }, \"处获取\" ]"]
+	quest.102C813AA3D1A3A3.quest_desc: ["与&a&l蚀日&r交谈"]
+	quest.102C813AA3D1A3A3.quest_subtitle: "回到&2&o月老小庙"
+	quest.102C813AA3D1A3A3.title: "复命：&c焱砂大漠篇&r结束"
+	quest.1085E9FF665D48DE.quest_desc: [
+		"所有人都可使用的消耗道具"
+		""
+		"[ \"灵符可在\", { \"text\": \"灵符铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"780E7AD631AC0CC0\" } }, \"中使用制符台炼制\" ]"
+	]
+	quest.1085E9FF665D48DE.quest_subtitle: "灵符"
+	quest.1085E9FF665D48DE.title: "灵符"
+	quest.111AA729E4AF10C0.quest_desc: ["与&a&l炼丹铺掌柜&r交谈"]
+	quest.111AA729E4AF10C0.quest_subtitle: "前往村中的&2&o炼丹铺"
+	quest.111AA729E4AF10C0.title: "炼丹铺掌柜的招待"
+	quest.111ADBC24C5CB029.quest_desc: [
+		"&a位于皇城西偏北处（凤花楼后方）&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/yi_zhan.png width:150 height:100 align:center}"
+	]
+	quest.111ADBC24C5CB029.quest_subtitle: "79 44 -75"
+	quest.111ADBC24C5CB029.title: "驿站"
+	quest.11DA1CA3341C7FF5.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.11DA1CA3341C7FF5.title: "&d蛇鳞套"
+	quest.122DD62BA978DBA1.quest_desc: ["[ {text:\"以下装备可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
+	quest.122DD62BA978DBA1.title: "战士-防具"
+	quest.1242A0C0F1F43B26.quest_desc: [
+		"向&a&l蚀日&r询问下一步事项"
+		"&a推荐四阶装备后继续此任务&r"
+		"&7玄水湖泊篇位于另一个章节&r"
+	]
+	quest.1242A0C0F1F43B26.quest_subtitle: "准备完毕后前往&2&o月老小庙"
+	quest.1242A0C0F1F43B26.title: "准备出发：&b玄水湖泊"
+	quest.1279DB358BAEA173.quest_desc: ["进入&2&o青龙神庙&r并成功通过&6青龙试炼"]
+	quest.1279DB358BAEA173.quest_subtitle: "通过&6青龙试炼"
+	quest.1279DB358BAEA173.title: "获得&e青龙祝福"
+	quest.12B6BEFD37535C6B.quest_desc: [
+		"&a位于皇城西偏北处（与凤花楼相邻）&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/cang_ku.png width:150 height:100 align:center}"
+	]
+	quest.12B6BEFD37535C6B.quest_subtitle: "95 48 32"
+	quest.12B6BEFD37535C6B.title: "仓库售卖处"
+	quest.132A6E80F0081E4B.title: "补领&9八方归位仪"
+	quest.14013C80685F20CA.quest_desc: ["与&a&l村长&r交谈"]
+	quest.14013C80685F20CA.quest_subtitle: "前往&2&o村长家"
+	quest.14013C80685F20CA.title: "见过&a&l村长"
+	quest.1456D5085D618C14.quest_desc: ["触摸&2&o圣山&r中的大茧"]
+	quest.1456D5085D618C14.quest_subtitle: "进入&2&o圣山内部"
+	quest.1456D5085D618C14.title: "触摸大茧"
+	quest.1475A51513347A4E.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.14DB98BECB77425D.quest_desc: [
+		"[ {text:\"在\",color:white}, { \"text\": \"虎爪山脉\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"21C41D176B06BC69\" } }, {text:\"使用\",color:white},{text:\"赤铜镐\",color:blue},{text:\"或更高等级的镐子采集\",color:white}, {text:\"白玉矿\",color:light_purple}, {text:\"获得\",color:white} ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/material/bai_yu_ore.png width:150 height:100 align:center}"
+	]
+	quest.14F0E2064717E50C.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.14F10C154FB1BAF5.quest_desc: ["[ \"于\", { \"text\": \"王员外\",\"color\":\"green\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"393280750D2786AC\" } }, \"处获取\" ]"]
+	quest.14FCCAA210EC8C32.quest_desc: ["[ {text:\"以下装备可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
+	quest.14FCCAA210EC8C32.title: "弓箭手-防具"
+	quest.15047ED3F6B7A65B.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.150F59BE7EAB02E7.quest_desc: [
+		"&a玄水湖泊通往东北方向的路的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/north/mu_yuan.png width:150 height:100 align:center}"
+	]
+	quest.150F59BE7EAB02E7.quest_subtitle: "111 49 -515"
+	quest.150F59BE7EAB02E7.title: "墓园"
+	quest.157E1E1A119C0D21.quest_desc: [
+		"本章节的连线仅美观用处"
+		"实际上只要获得对应物品即可完成该任务"
+	]
+	quest.157E1E1A119C0D21.quest_subtitle: "材料"
+	quest.15844B0F0B7CBC72.quest_desc: [
+		"[ \"可用9个\", { \"text\": \"二阶原核碎片\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"554F8D798B8B8290\" } }, \"合成\" ]"
+		""
+		"&a由以下类型生物掉落：&r"
+		"[ \"1.在\", { \"text\": \"废弃村庄\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"1FF7309C7CC4815E\" } }, \"或\", { \"text\": \"废弃祭坛\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"7EBBB1B3AEF7B6EE\" } },\"击杀\",{text:\"蜘蛛女王\",color:yellow},\"概率获得\" ]"
+	]
+	quest.158949DC15EB708B.quest_desc: [
+		"本章节的连线仅美观用处"
+		"实际上只要获得对应物品即可完成该任务"
+		"&a物品的合成配方请自行查阅jei并结合其他图鉴"
+		"&a若有特殊获取方式才会在此说明"
+	]
+	quest.158949DC15EB708B.quest_subtitle: "法宝"
+	quest.16396CC2C2E9C174.quest_desc: ["再次与&a&l护国法师-法海&r交谈"]
+	quest.16396CC2C2E9C174.quest_subtitle: "准备好后回到&2&o护国殿"
+	quest.16396CC2C2E9C174.title: "出发：&6蓬莱"
+	quest.16457C7881689F60.quest_desc: ["与&a&l青龙分魂&r交谈"]
+	quest.16457C7881689F60.quest_subtitle: "前往&2&o青龙神庙"
+	quest.16457C7881689F60.title: "试探结界"
+	quest.181BB199E6450D2C.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.18669E9E9EB0A19D.quest_desc: [
+		"&a玄水湖泊通往东北方向的路的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/north/li_dai_fu.png width:150 height:100 align:center}"
+	]
+	quest.18669E9E9EB0A19D.quest_subtitle: "-7 43 -554"
+	quest.18669E9E9EB0A19D.title: "李大夫的药草寨"
+	quest.1886D067EF78DF14.quest_desc: ["向&a&l长老&r汇报情况"]
+	quest.1886D067EF78DF14.quest_subtitle: "回到&2&o昆仑大殿"
+	quest.1886D067EF78DF14.title: "收集&e祝福之力"
+	quest.18E5F32F5F8CFDC6.quest_desc: [
+		"&a通往玄水琥珀的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/west/jiu_miao.png width:150 height:100 align:center}"
+	]
+	quest.18E5F32F5F8CFDC6.quest_subtitle: "-310 115 -424"
+	quest.18E5F32F5F8CFDC6.title: "旧庙"
+	quest.18F00B100C77E06B.quest_desc: ["再次与&a&l族长&r交谈"]
+	quest.18F00B100C77E06B.quest_subtitle: "回到&2&o议事厅"
+	quest.18F00B100C77E06B.title: "族长的叮嘱"
+	quest.1914D6E79A5D809A.quest_desc: ["与&a&l墨雨&r交谈"]
+	quest.1914D6E79A5D809A.quest_subtitle: "前往&2&o蓬莱&r寻找族人"
+	quest.1914D6E79A5D809A.title: "圣山结界"
+	quest.1916AD677D03E7B4.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.19E11EB3D8DE8D10.quest_desc: [
+		"&a位于皇城西门处&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/buyer.png width:150 height:100 align:center}"
+	]
+	quest.19E11EB3D8DE8D10.quest_subtitle: "91 47 107"
+	quest.19E11EB3D8DE8D10.title: "收购集市"
+	quest.1A26CDC2BB518AB7.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.1A7F00877BE6CB46.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.1B71D20E529499A7.quest_desc: ["与&a&l丹药管理员&r交谈"]
+	quest.1B71D20E529499A7.quest_subtitle: "前往&2&o炼丹室"
+	quest.1B71D20E529499A7.title: "丹药管理员"
+	quest.1BEBBFD630E62BEC.quest_desc: [
+		"[ \"由\", { \"text\": \"三阶装备原核\",color:blue, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"0B0FB1CF85E9D49C\" } }, \"分解而成\" ]"
+		""
+		"&a由以下类型生物掉落：&r"
+		"[ \"1.在\",  { \"text\": \"被抢劫的王员外\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"393280750D2786AC\" } }, \"或\", { \"text\": \"马贼团巢穴\", color:gold,\"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6C81BF24264DC1C3\" } },\"击杀\",{text:\"马贼团长\",color:yellow},\"获得\" ]"
+	]
+	quest.1C17FA9F99E9B860.quest_desc: ["占位，暂无获取方式与用途"]
+	quest.1C2279B5729A8FBC.quest_desc: [
+		"&a位于皇城西门处（与收购集市相邻）&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/xin_zhan.png width:150 height:100 align:center}"
+	]
+	quest.1C2279B5729A8FBC.quest_subtitle: "94 48 91"
+	quest.1C2279B5729A8FBC.title: "蝙蝠信栈"
+	quest.1CBADAE8A40AE1FC.quest_subtitle: "特殊获取方式的材料"
+	quest.1CBADAE8A40AE1FC.title: "其他类"
+	quest.1CC023340D63AF89.quest_desc: ["[ \"由\", { \"text\": \"朱砂(初级)\",\"color\":\"blue\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6B933D64C27B676F\" } }, \"与\",{ \"text\": \"四阶原核碎片\",\"color\":\"light_purple\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"7C69E90683AFB4B4\" } },\"合成\" ]"]
+	quest.1DC436EE6837D4F3.title: "补领&9八方归位仪"
+	quest.1DFFC69AE8A409F6.quest_desc: ["进入&2&o朱雀神庙&r并成功通过&6朱雀试炼"]
+	quest.1DFFC69AE8A409F6.quest_subtitle: "通过&6朱雀试炼"
+	quest.1DFFC69AE8A409F6.title: "获得&e朱雀祝福"
+	quest.1E45D83D1B2ABD12.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.1E60906FDB88106C.quest_desc: ["与&a&l蚀日&r交谈"]
+	quest.1E60906FDB88106C.quest_subtitle: "回到&2&o月老小庙"
+	quest.1E60906FDB88106C.title: "复命：&b玄水湖泊篇&r结束"
+	quest.1E7872EB16A79252.quest_desc: ["进入&2&o圣山&r的船只位于&2&o蓬莱&r北侧海岸"]
+	quest.1E7872EB16A79252.quest_subtitle: "由&2&o蓬莱&r坐船前往&2&o圣山"
+	quest.1E7872EB16A79252.title: "进入圣山"
+	quest.1E9BB00F9F2AEC41.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.1EB693CD747167DA.quest_desc: [
+		"[ {text:\"在\",color:white}, { \"text\": \"焱砂大漠\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"33367EC78E2F50A0\" } }, {text:\"使用\",color:white},{text:\"铁镐\",color:green},{text:\"或更高等级的镐子采集\",color:white}, {text:\"金精矿\",color:blue}, {text:\"获得\",color:white} ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/material/jin_jing_ore.png width:150 height:100 align:center}"
+	]
+	quest.1F3B7E84B372431D.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.1FF7309C7CC4815E.quest_desc: [
+		"&a位于青龙祭坛附近&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/east/fei_qi_cun_zhuang.png width:150 height:100 align:center}"
+	]
+	quest.1FF7309C7CC4815E.quest_subtitle: "544 38 344"
+	quest.1FF7309C7CC4815E.title: "废弃村庄"
+	quest.216745F44B297CFE.quest_desc: [
+		"向&a&l李公公&r询问下一步事项"
+		"&a推荐二阶装备后继续此任务&r"
+		"&7焱砂大漠篇位于另一个章节&r"
+	]
+	quest.216745F44B297CFE.quest_subtitle: "准备完毕后前往&2&o皇宫"
+	quest.216745F44B297CFE.title: "准备出发：&c焱砂大漠"
+	quest.2171AAF5B0B3F987.quest_desc: ["[ {text:\"可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"购买\",color:white} ]"]
+	quest.2171AAF5B0B3F987.title: "&f初心套"
+	quest.21C41D176B06BC69.quest_subtitle: "大陆西方"
+	quest.21C41D176B06BC69.title: "&f虎爪山脉"
+	quest.22161DED01D89AF0.quest_desc: [
+		"[ {text:\"由\",color:green}, { \"text\": \"废弃的金矿小镇\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"38AADE8974BE910D\" } }, {text:\"进入\",color:green} ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/west/sheng_hu_mi_zhen.png width:150 height:100 align:center}"
+	]
+	quest.22161DED01D89AF0.quest_subtitle: "由金矿小镇进入"
+	quest.22161DED01D89AF0.title: "圣虎迷阵"
+	quest.2271DFBFED8046BD.quest_desc: ["[ \"由5个\", { \"text\": \"金元素\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"54C55AAC26A73F04\" } }, \"合成\" ]"]
+	quest.22F7C5FB445856FC.quest_desc: [
+		"向&a&l华夭&r询问下一步事项"
+		"&a推荐三阶装备后继续此任务&r"
+		"&7虎爪山脉篇位于另一个章节&r"
+	]
+	quest.22F7C5FB445856FC.quest_subtitle: "准备完毕后前往&2&o镇妖塔"
+	quest.22F7C5FB445856FC.title: "准备出发：&f虎爪山脉"
+	quest.231A42B5B9865C1A.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.236CC85F15AB3E8A.quest_desc: ["向&a&l长老&r汇报情况"]
+	quest.236CC85F15AB3E8A.quest_subtitle: "回到&2&o昆仑大殿"
+	quest.236CC85F15AB3E8A.title: "复命：&c焱砂大漠篇&r结束"
+	quest.23733DD610141791.quest_desc: [
+		"[ {text:\"在\",color:white}, { \"text\": \"玄水湖泊\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"2D20462FAAA8D29F\" } }, {text:\"使用\",color:white},{text:\"玄铁镐\",color:light_purple},{text:\"或更高等级的镐子采集\",color:white}, {text:\"灵玉矿\",color:yellow}, {text:\"获得\",color:white} ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/material/ling_yu_ore.png width:150 height:100 align:center}"
+	]
+	quest.2378FAF47966E543.quest_desc: [
+		"&a位于大漠的西北方尽头&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/south/wen_quan_ke_zhan.png width:150 height:100 align:center}"
+	]
+	quest.2378FAF47966E543.quest_subtitle: "-452 95 346"
+	quest.2378FAF47966E543.title: "温泉客栈"
+	quest.23E81563E859D04A.quest_desc: ["与&a&l蚀日&r交谈"]
+	quest.23E81563E859D04A.quest_subtitle: "准备好后回到&2&o月老小庙"
+	quest.23E81563E859D04A.title: "出发：蓬莱"
+	quest.23EF52401BF06B83.quest_desc: ["[ {text:\"可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"购买\",color:white} ]"]
+	quest.2407A07AE13B51B1.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.2460A41BBBCD4D30.quest_desc: [
+		"&a由以下类型生物掉落：&r"
+		"1.火焰特征的生物"
+		"[ \"2.\", { \"text\": \"焱砂大漠\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"33367EC78E2F50A0\" } }, \"大部分生物\" ]"
+	]
+	quest.2481F0626C7D65C2.title: "指引位置"
+	quest.24BF00A0D1F0B1B6.quest_desc: ["[ {text:\"可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"购买\",color:white} ]"]
+	quest.250D16258DE26932.quest_desc: ["占位，暂无获取方式与用途"]
+	quest.256DD3D99070EAA6.quest_desc: [
+		"&a位于通往森林深处的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/east/shan_shen_miao.png width:150 height:100 align:center}"
+	]
+	quest.256DD3D99070EAA6.quest_subtitle: "834 40 108"
+	quest.256DD3D99070EAA6.title: "山神庙"
+	quest.2583C1F4A9FD092D.quest_desc: ["再次与神庙内的&a&l左焰&r交谈"]
+	quest.2583C1F4A9FD092D.quest_subtitle: "返回&2&o青龙神庙"
+	quest.2583C1F4A9FD092D.title: "四兽依旧不知所踪"
+	quest.25C84CAB47B13B3E.quest_desc: ["与&a&l李公公&r交谈"]
+	quest.25C84CAB47B13B3E.quest_subtitle: "回到&2&o皇宫"
+	quest.25C84CAB47B13B3E.title: "复命：&c焱砂大漠篇&r结束"
+	quest.25D639F75A3AEE02.quest_desc: ["向&a&l羽罗&r说明情况"]
+	quest.25D639F75A3AEE02.quest_subtitle: "回到&2&o皇宫"
+	quest.25D639F75A3AEE02.title: "未知的圣兽行踪"
+	quest.25E5FA2D06F7C579.quest_desc: ["再次与&a&l村长&r交谈"]
+	quest.25E5FA2D06F7C579.quest_subtitle: "回到&2&o村长家"
+	quest.25E5FA2D06F7C579.title: "村长担忧的事情"
+	quest.260FBDCD5CAA9270.quest_desc: ["进入&2&o圣山&r的船只位于&2&o蓬莱&r北侧海岸"]
+	quest.260FBDCD5CAA9270.quest_subtitle: "由&2&o蓬莱&r坐船前往&2&o圣山"
+	quest.260FBDCD5CAA9270.title: "进入圣山"
+	quest.264AE794FCB36E64.quest_desc: ["与&a&l图书馆管理员&r交谈"]
+	quest.264AE794FCB36E64.quest_subtitle: "前往&2&o智慧之树根部的图书馆"
+	quest.264AE794FCB36E64.title: "图书馆导览"
+	quest.26E100FE63D28CD3.quest_desc: [
+		"[ \"\",{ \"text\": \"圣虎迷阵\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"22161DED01D89AF0\" } }, {text:\"的尽头\",color:green} ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/west/bai_hu.png width:150 height:100 align:center}"
+	]
+	quest.26E100FE63D28CD3.quest_subtitle: "圣虎迷阵的尽头"
+	quest.26E100FE63D28CD3.title: "白虎祭坛"
+	quest.26F37B53616B8131.quest_desc: [
+		"向&a&l羽罗&r询问下一步事项"
+		"&a推荐四阶装备后继续此任务&r"
+		"&7玄水湖泊篇位于另一个章节&r"
+	]
+	quest.26F37B53616B8131.quest_subtitle: "准备完毕后前往&2&o皇宫"
+	quest.26F37B53616B8131.title: "准备出发：&b玄水湖泊"
+	quest.27748BF2869D01A3.quest_desc: [
+		"&a或许温泉客栈有人知道所在处&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/south/qian_si_gu.png width:150 height:100 align:center}"
+	]
+	quest.27748BF2869D01A3.quest_subtitle: "一处神秘的地界"
+	quest.27748BF2869D01A3.title: "千丝谷"
+	quest.2840D54DDE04CE73.quest_subtitle: "由生物掉落的材料"
+	quest.28C85CC98CF4D15D.quest_desc: [
+		"&a通往玄水琥珀的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/west/zhen_yao_ta.png width:150 height:100 align:center}"
+	]
+	quest.28C85CC98CF4D15D.quest_subtitle: "-114 42 -180"
+	quest.28C85CC98CF4D15D.title: "镇妖塔"
+	quest.28CB39FF7153AD62.quest_desc: [
+		"你感到事情似有蹊跷，似乎有&b解释不通的地方&r"
+		"未完待续……"
+		"&7&m（待更新）&r"
+	]
+	quest.28CB39FF7153AD62.quest_subtitle: "击败&4盘古(?)"
+	quest.28CB39FF7153AD62.title: "暂告段落"
+	quest.29C8459CC4970787.title: "补领&9轻盈之羽"
+	quest.2A25594068CD0C4C.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.2AB5B2FAF4668A62.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.2B3568904D32E709.quest_desc: ["与&a&l青龙分魂&r交谈"]
+	quest.2B3568904D32E709.quest_subtitle: "前往&2&o青龙神庙"
+	quest.2B3568904D32E709.title: "衰退的龙之力"
+	quest.2B49BD2D5FA72AC6.quest_desc: ["进入&2&o白虎神庙&r并成功通过&6白虎试炼"]
+	quest.2B49BD2D5FA72AC6.quest_subtitle: "通过&6白虎试炼"
+	quest.2B49BD2D5FA72AC6.title: "获得&e白虎祝福"
+	quest.2BD71CB62C8BF388.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.2BD71CB62C8BF388.title: "&9华佗套"
+	quest.2BE4E5661083E42B.quest_desc: [
+		"[ {text:\"在\",color:white}, { \"text\": \"龙鳞之森\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6E9E6F49C1B717BC\" } }, {text:\"使用\",color:white},{text:\"铁镐\",color:green},{text:\"或更高等级的镐子采集\",color:white}, {text:\"精铁矿\",color:green}, {text:\"获得\",color:white} ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/material/jing_tie_ore.png width:150 height:100 align:center}"
+	]
+	quest.2BF764FD94C8FB70.quest_desc: [
+		"&a位于皇城正北处&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/huang_gong.png width:150 height:100 align:center}"
+	]
+	quest.2BF764FD94C8FB70.quest_subtitle: "179 66 -131"
+	quest.2BF764FD94C8FB70.title: "皇宫"
+	quest.2C1FD65D9AD95718.quest_desc: ["与&a&l铁匠铺掌柜&r交谈"]
+	quest.2C1FD65D9AD95718.quest_subtitle: "前往村中的&2&o铁匠铺"
+	quest.2C1FD65D9AD95718.title: "铁匠铺掌柜的招待"
+	quest.2C4C24D2FDE436D8.quest_desc: ["与&a&l凯歌&r交谈"]
+	quest.2C4C24D2FDE436D8.quest_subtitle: "前往&2&o蓬莱&r寻找&a&l凯歌"
+	quest.2C4C24D2FDE436D8.title: "沉睡的圣兽们"
+	quest.2CD7E92910FFA187.quest_desc: ["与&a&l蚀日&r交谈"]
+	quest.2CD7E92910FFA187.quest_subtitle: "回到&2&o月老小庙"
+	quest.2CD7E92910FFA187.title: "复命：&f虎爪山脉篇&r结束"
+	quest.2CDED647A9A783DB.quest_desc: [
+		"[ \"可用9个\", { \"text\": \"五阶原核碎片\",color:yellow, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"7867910D74A14D06\" } }, \"合成\" ]"
+		""
+		"&a由以下类型生物掉落：&r"
+		"[ \"1.在\", { \"text\": \"水族村庄\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"005B6191BA16AE97\" } },\"两侧的路上击杀\",{text:\"千里神射手\",color:yellow},\"概率获得\" ]"
+	]
+	quest.2D20462FAAA8D29F.quest_subtitle: "大陆北方"
+	quest.2D20462FAAA8D29F.title: "&b玄水湖泊"
+	quest.2D3D72D4BC3234A9.quest_desc: ["与&a&l镇长王卯&r交谈"]
+	quest.2D3D72D4BC3234A9.quest_subtitle: "前往&2&o龙须镇"
+	quest.2D3D72D4BC3234A9.title: "镇长的不满"
+	quest.2E0CBEF64347F5DB.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.2E0CBEF64347F5DB.title: "&9凶兽套"
+	quest.2E563D6C24821B88.quest_desc: ["与&a&l左焰&r交谈"]
+	quest.2E563D6C24821B88.quest_subtitle: "前往&2&o蓬莱&r寻找&a&l左焰"
+	quest.2E563D6C24821B88.title: "四圣兽沉睡之处"
+	quest.2EA411850F605D3E.quest_desc: [
+		"向&a&l长老&r说明情况"
+		"[ \"可于\", { \"text\": \"人神仙族领地\", \"color\": \"gold\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"76EE74118336FCA5\" } } ,\"处回到神族领地\"]"
+	]
+	quest.2EA411850F605D3E.quest_subtitle: "回到&2&o昆仑大殿"
+	quest.2EA411850F605D3E.title: "无法控制的圣兽们"
+	quest.2ED017B630EFEFC3.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.2F0197907FCDE067.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.2F0BFDB502050A3A.quest_desc: [""]
+	quest.2F0BFDB502050A3A.quest_subtitle: "第一章人族主线历程"
+	quest.2F0BFDB502050A3A.title: "主线：人族篇"
+	quest.304CCB66D5BC0D4D.quest_desc: [
+		"向&a&l华夭&r询问下一步事项"
+		"&a推荐四阶装备后继续此任务&r"
+		"&7玄水湖泊篇位于另一个章节&r"
+	]
+	quest.304CCB66D5BC0D4D.quest_subtitle: "准备完毕后前往&2&o镇妖塔"
+	quest.304CCB66D5BC0D4D.title: "准备出发：&b玄水湖泊"
+	quest.314F82ADFB0E5CA9.quest_desc: ["与&a&l华夭&r交谈"]
+	quest.314F82ADFB0E5CA9.quest_subtitle: "回到&2&o镇妖塔"
+	quest.314F82ADFB0E5CA9.title: "复命：&b玄水湖泊篇&r结束"
+	quest.318DB8A814889AD2.quest_desc: ["与&a&l伤心的老爷爷&r交谈"]
+	quest.318DB8A814889AD2.quest_subtitle: "前往&2&o虎爪镇外的凉亭"
+	quest.318DB8A814889AD2.title: "失踪的儿子"
+	quest.3231A566292C97A5.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.3231A566292C97A5.title: "&e龙鳞套"
+	quest.33141B91CD05A8D6.quest_desc: [
+		"&a位于龙鳞之森入口&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/east/long_xu_zhen.png width:150 height:100 align:center}"
+	]
+	quest.33141B91CD05A8D6.quest_subtitle: "522 33 21"
+	quest.33141B91CD05A8D6.title: "龙须镇"
+	quest.33367EC78E2F50A0.quest_subtitle: "大陆南方"
+	quest.33367EC78E2F50A0.title: "&c焱砂大漠"
+	quest.33BD9D65DDBC2724.quest_desc: ["与&a&l护国法师-法海&r交谈"]
+	quest.33BD9D65DDBC2724.quest_subtitle: "前往&2&o护国殿"
+	quest.33BD9D65DDBC2724.title: "祝福之地"
+	quest.33F93923B33A93B0.quest_desc: [
+		"&a位于皇城西门处&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/yi_cha_xuan.png width:150 height:100 align:center}"
+	]
+	quest.33F93923B33A93B0.quest_subtitle: "66 46 119"
+	quest.33F93923B33A93B0.title: "益茶轩"
+	quest.34E566258486E1DB.quest_desc: [
+		"&a位于通往大漠深处的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/south/zhu_que.png width:150 height:100 align:center}"
+	]
+	quest.34E566258486E1DB.quest_subtitle: "239 88 723"
+	quest.34E566258486E1DB.title: "朱雀祭坛"
+	quest.34E85330FF15CC34.quest_desc: [
+		"&a位于皇城东门靠北侧&r"
+		"&f设有训练场&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/gong_sun_wang_fu.png width:150 height:100 align:center}"
+	]
+	quest.34E85330FF15CC34.quest_subtitle: "283 44 -4"
+	quest.34E85330FF15CC34.title: "公孙王府"
+	quest.34ED698983FD3B1B.quest_desc: ["进入&2&o青龙神庙&r并成功通过&6青龙试炼"]
+	quest.34ED698983FD3B1B.quest_subtitle: "通过&6青龙试炼"
+	quest.34ED698983FD3B1B.title: "获得&e青龙祝福"
+	quest.351FDFE191864A28.quest_desc: [
+		"你感到事情似有蹊跷，似乎有&b解释不通的地方&r"
+		"未完待续……"
+		"&7&m（待更新）&r"
+	]
+	quest.351FDFE191864A28.quest_subtitle: "击败&4盘古(?)"
+	quest.351FDFE191864A28.title: "暂告段落"
+	quest.356EBFBB9BA5C1BA.quest_desc: ["与&a&l妖族大长老-蚩尤&r交谈"]
+	quest.356EBFBB9BA5C1BA.quest_subtitle: "从后门前往&2&o镇妖塔塔顶"
+	quest.356EBFBB9BA5C1BA.title: "振兴妖族"
+	quest.3602098852296F61.quest_desc: [
+		"使用&a铁铲&r挖掘&2可疑的泥土&r获得"
+		""
+		"[ {text:\"铁铲\",color:green},{text:\"可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"购买\",color:white} ]"
+		""
+		"[ {text:\"可疑的泥土\",color:dark_green},{text:\"常见于\",color:white}, { \"text\": \"龙鳞之森\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6E9E6F49C1B717BC\" } }, {text:\"和\",color:white},{ \"text\": \"玄水湖泊\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"2D20462FAAA8D29F\" } } ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/material/dirt.png width:150 height:100 align:center}"
+	]
+	quest.3602098852296F61.title: "&9普通草药"
+	quest.364A188ED27E2F2F.quest_desc: ["向&a&l长老&r汇报情况"]
+	quest.364A188ED27E2F2F.quest_subtitle: "回到&2&o昆仑大殿"
+	quest.364A188ED27E2F2F.title: "复命：&f虎爪山脉篇&r结束"
+	quest.3678B6EE1AD87710.quest_desc: ["与&a&l绿洲小镇的镇长&r交谈"]
+	quest.3678B6EE1AD87710.quest_subtitle: "前往&2&o绿洲小镇"
+	quest.3678B6EE1AD87710.title: "充斥着忧愁气氛的小镇"
+	quest.3678BD91DEEE5454.quest_desc: ["与&a&l护国法师-法海&r交谈"]
+	quest.3678BD91DEEE5454.quest_subtitle: "前往&2&o护国殿"
+	quest.3678BD91DEEE5454.title: "圣兽的去向"
+	quest.3688CFDDB1C6652B.quest_desc: [
+		"[ \"可用9个\", { \"text\": \"六阶原核碎片\",color:red, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"5959BF73DB813670\" } }, \"合成\" ]"
+		""
+		"于&6副本&r中开箱获得"
+		"副本："
+		"[ { \"text\": \"圣山\",\"color\":\"red\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"03BE9AA4FE628CD8\" } } ]"
+	]
+	quest.37E468A1CDA537DF.quest_desc: [
+		"&a位于皇城西门靠南角落&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/qian_zhuang.png width:150 height:100 align:center}"
+	]
+	quest.37E468A1CDA537DF.quest_subtitle: "33 46 160"
+	quest.37E468A1CDA537DF.title: "钱庄"
+	quest.37EBC1428E5DC2BF.quest_desc: ["[ {text:\"以下装备可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
+	quest.37EBC1428E5DC2BF.title: "炼丹师-防具"
+	quest.3858CB4075C27119.quest_desc: ["[ \"由\", { \"text\": \"朱砂(中级)\",\"color\":\"light_purple\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6B933D64C27B676F\" } }, \"与\",{ \"text\": \"五阶原核碎片\",\"color\":\"yellow\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"7867910D74A14D06\" } },\"合成\" ]"]
+	quest.38AADE8974BE910D.quest_desc: [
+		"&a往虎爪山脉西部的路的尽头&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/west/jin_kuang_xiao_zhen.png width:150 height:100 align:center}"
+	]
+	quest.38AADE8974BE910D.quest_subtitle: "-384 112 128"
+	quest.38AADE8974BE910D.title: "废弃的金矿小镇"
+	quest.392044D9378412BE.quest_desc: ["[ \"于\", { \"text\": \"墓园的白骨精\",\"color\":\"green\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"150F59BE7EAB02E7\" } }, \"处获取\" ]"]
+	quest.393280750D2786AC.quest_desc: [
+		"&a位于通往大漠深处的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/south/wang_yuan_wai.png width:150 height:100 align:center}"
+	]
+	quest.393280750D2786AC.quest_subtitle: "-281 55 405"
+	quest.393280750D2786AC.title: "被抢劫的王员外"
+	quest.3A25920E468CED3B.quest_desc: ["[ {text:\"以下装备可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
+	quest.3A25920E468CED3B.title: "炼丹师-武器"
+	quest.3A94DF5F4C6ED71A.quest_subtitle: "向&a&l小仁&r询问接下来的动向"
+	quest.3A94DF5F4C6ED71A.title: "新手上路"
+	quest.3B5599D1520AC45E.quest_desc: [
+		"向&a&l羽罗&r询问下一步事项"
+		"&a推荐三阶装备后继续此任务&r"
+		"&7虎爪山脉篇位于另一个章节&r"
+	]
+	quest.3B5599D1520AC45E.quest_subtitle: "准备完毕后前往&2&o皇宫"
+	quest.3B5599D1520AC45E.title: "准备出发：&f虎爪山脉"
+	quest.3BCB3389BBD8E85E.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.3BDDC613C6290020.quest_desc: ["与&2&o火山内部&r的&a&l莲心&r对话"]
+	quest.3BDDC613C6290020.quest_subtitle: "前往&2&o火山内部"
+	quest.3BDDC613C6290020.title: "火山的真相"
+	quest.3BE3BD07FBE8062C.quest_desc: [
+		"&a皇城西门外附近&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/west/race.png width:150 height:100 align:center}"
+	]
+	quest.3BE3BD07FBE8062C.quest_subtitle: "-19 36 134"
+	quest.3BE3BD07FBE8062C.title: "战神族领地"
+	quest.3C7D95EFD2D5575D.quest_desc: ["触摸&2&o圣山&r中的大茧"]
+	quest.3C7D95EFD2D5575D.quest_subtitle: "进入&2&o圣山内部"
+	quest.3C7D95EFD2D5575D.title: "触摸大茧"
+	quest.3DEC3B18544239C8.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.3DEC3B18544239C8.title: "&d草药套"
+	quest.3E1636BB73019B9C.quest_subtitle: "向&a&l小花&r询问接下来的动向"
+	quest.3E1636BB73019B9C.title: "新手上路"
+	quest.3E8C34E4D07BE512.title: "沙漠客栈-情报前置"
+	quest.3EB9129DC5B88245.quest_desc: ["与&a&l华夭&r交谈"]
+	quest.3EB9129DC5B88245.quest_subtitle: "回到&2&o镇妖塔"
+	quest.3EB9129DC5B88245.title: "复命：&f虎爪山脉篇&r结束"
+	quest.3EC62FF586972565.quest_desc: ["[ {text:\"以下装备可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
+	quest.3EC62FF586972565.title: "战士-武器"
+	quest.3F822E2D607E7455.quest_desc: ["与&a&l华夭&r交谈"]
+	quest.3F822E2D607E7455.quest_subtitle: "回到&2&o镇妖塔"
+	quest.3F822E2D607E7455.title: "复命：&c焱砂大漠篇&r结束"
+	quest.3F91EDB32927023F.quest_desc: [
+		"向&a&l羽罗&r询问下一步事项"
+		"&a推荐二阶装备后继续此任务&r"
+		"&7焱砂大漠篇位于另一个章节&r"
+	]
+	quest.3F91EDB32927023F.quest_subtitle: "准备完毕后前往&2&o皇宫"
+	quest.3F91EDB32927023F.title: "准备出发：&c焱砂大漠"
+	quest.3FE4EEA8418FE6F0.title: "补领&9八方归位仪"
+	quest.400D5BCBC3A10E55.quest_desc: ["[ \"可于\", { \"text\": \"丹药铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4317967B4A064F1B\" } }, \"购买\" ]"]
+	quest.40596EB1C8FC6C01.quest_desc: [
+		"于一处&a客栈&r中获取"
+		"或许&c沙漠&r中有人知道&a客栈&r的情报"
+	]
+	quest.4074C7B23F7E3BCB.quest_desc: ["再次与&a&l绿洲小镇的镇长&r交谈"]
+	quest.4074C7B23F7E3BCB.quest_subtitle: "回到&2&o绿洲小镇"
+	quest.4074C7B23F7E3BCB.title: "揭发真相"
+	quest.4190A743E1D716CE.quest_desc: ["与&a&l铁匠铺掌柜&r交谈"]
+	quest.4190A743E1D716CE.quest_subtitle: "前往谷中的&2&o铁匠铺"
+	quest.4190A743E1D716CE.title: "铁匠铺掌柜的招待"
+	quest.41D5E7B236724AD6.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.424F1D43D41FE268.quest_desc: ["与&a&l羽罗&r交谈"]
+	quest.424F1D43D41FE268.quest_subtitle: "回到&2&o皇宫"
+	quest.424F1D43D41FE268.title: "复命：&b玄水湖泊篇&r结束"
+	quest.42DFCE228419D07E.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.4317967B4A064F1B.quest_desc: [
+		"&a位于皇城中心向东走路旁&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/dan_yao_pu.png width:150 height:100 align:center}"
+	]
+	quest.4317967B4A064F1B.quest_subtitle: "261 44 53"
+	quest.4317967B4A064F1B.title: "丹药铺"
+	quest.433D2FA91DFF785D.title: "补领&9轻盈之羽"
+	quest.43ECD19A55FD4FAE.quest_desc: [
+		"&a位于皇城西偏北处&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/liu_dao_cha_fang.png width:150 height:100 align:center}"
+	]
+	quest.43ECD19A55FD4FAE.quest_subtitle: "46 48 56"
+	quest.43ECD19A55FD4FAE.title: "六道茶坊"
+	quest.4415243225D2EF5E.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.457B17EA49780799.quest_desc: ["[ \"于副本\", { \"text\": \"圣山\",\"color\":\"red\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"03BE9AA4FE628CD8\" } }, \"中获得\" ]"]
+	quest.4584BA6F1C55F368.quest_desc: [
+		"&a位于皇城西门处&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/tie_jiang_pu.png width:150 height:100 align:center}"
+	]
+	quest.4584BA6F1C55F368.quest_subtitle: "83 46 144"
+	quest.4584BA6F1C55F368.title: "铁匠铺"
+	quest.458A81B2D2A0DC86.title: "补领&9八方归位仪"
+	quest.46891858487B9E40.title: "补领&9轻盈之羽"
+	quest.46BA825126932E03.quest_desc: ["触摸&2&o圣山&r中的大茧"]
+	quest.46BA825126932E03.quest_subtitle: "进入&2&o圣山内部"
+	quest.46BA825126932E03.title: "触摸大茧"
+	quest.4739A23D3F7A377B.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.47465AAB6E9B2304.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.47D5AE621E0F00F2.quest_desc: ["与&a&l莲心&r交谈"]
+	quest.47D5AE621E0F00F2.quest_subtitle: "前往&2&o旧村庄废墟"
+	quest.47D5AE621E0F00F2.title: "睿智的少女"
+	quest.47E096E82DC127A5.quest_desc: ["与&a&l族长&r交谈"]
+	quest.47E096E82DC127A5.quest_subtitle: "前往&2&o议事厅"
+	quest.47E096E82DC127A5.title: "族长的关心"
+	quest.480881013C2244B0.quest_desc: ["与&a&l炼丹铺掌柜&r交谈"]
+	quest.480881013C2244B0.quest_subtitle: "前往谷中的&2&o炼丹铺"
+	quest.480881013C2244B0.title: "炼丹铺掌柜的招待"
+	quest.480FB7055C0ACA8E.quest_desc: ["触摸&2&o圣山&r中的大茧"]
+	quest.480FB7055C0ACA8E.quest_subtitle: "进入&2&o圣山内部"
+	quest.480FB7055C0ACA8E.title: "触摸大茧"
+	quest.49B05DCA2666A01E.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.49B05DCA2666A01E.title: "&9虎皮套"
+	quest.4A736ECCB53CBFE6.quest_desc: ["获得10条生鱼后与&a&l水族祭司-洛禾&r交谈"]
+	quest.4A736ECCB53CBFE6.quest_subtitle: "获得10条生鱼后回到祭司处"
+	quest.4A736ECCB53CBFE6.title: "玄武的认可"
+	quest.4AF73B3D7D955CC6.quest_desc: ["[ \"于副本\", { \"text\": \"圣山\",\"color\":\"red\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"03BE9AA4FE628CD8\" } }, \"中获得\" ]"]
+	quest.4B65008BB74E1061.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.4BCF7435C398EFEF.quest_desc: [
+		"&a位于皇宫东北侧&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/hu_guo_dian.png width:150 height:100 align:center}"
+	]
+	quest.4BCF7435C398EFEF.quest_subtitle: "241 61 -192"
+	quest.4BCF7435C398EFEF.title: "护国殿"
+	quest.4C23FBE985D7243F.quest_desc: ["再次与&a&l华夭&r交谈"]
+	quest.4C23FBE985D7243F.quest_subtitle: "回到&2&o镇妖塔入口"
+	quest.4C23FBE985D7243F.title: "森林中的祭坛"
+	quest.4C2D50E5F4EED3EF.quest_desc: [
+		"&a位于皇城西门处&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/biao_ju.png width:150 height:100 align:center}"
+	]
+	quest.4C2D50E5F4EED3EF.quest_subtitle: "52 46 135"
+	quest.4C2D50E5F4EED3EF.title: "镖局"
+	quest.4C3BFCFCC4DD4B18.quest_desc: [
+		"向&a&l华夭&r询问下一步事项"
+		"&a推荐二阶装备后继续此任务&r"
+		"&7焱砂大漠篇位于另一个章节&r"
+	]
+	quest.4C3BFCFCC4DD4B18.quest_subtitle: "准备完毕后前往&2&o镇妖塔"
+	quest.4C3BFCFCC4DD4B18.title: "准备出发：&c焱砂大漠"
+	quest.4D0A7A3D1E1A6213.quest_desc: [
+		"&a位于大漠西南方向的洞穴深处&r"
+		""
+		"&6洞穴：&r"
+		"{image:ftbquests:textures/qusets/guide/picture/south/huo_mo_cave.png width:150 height:100 align:center}"
+		"&6入口：&r"
+		"{image:ftbquests:textures/qusets/guide/picture/south/huo_mo_door.png width:150 height:100 align:center}"
+	]
+	quest.4D0A7A3D1E1A6213.quest_subtitle: "-279 47 789"
+	quest.4D0A7A3D1E1A6213.title: "火焰魔王的巢穴"
+	quest.4D3600EF1D45621D.quest_desc: ["与&a&l妖族大长老-蚩尤&r交谈"]
+	quest.4D3600EF1D45621D.quest_subtitle: "从后门前往&2&o镇妖塔塔顶"
+	quest.4D3600EF1D45621D.title: "被囚禁的大长老"
+	quest.4DB0D352F19D0FC4.quest_desc: [
+		"[ \"常见于\", { \"text\": \"玄水湖泊\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"2D20462FAAA8D29F\" } } ]"
+		""
+		"使用&a铁斧&r或更高等级的斧头采集"
+		""
+		"[ {text:\"铁斧\",color:green},{text:\"可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"购买\",color:white} ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/material/bamboo.png width:150 height:100 align:center}"
+	]
+	quest.4DEB7C1135A7536B.quest_subtitle: "第一章神族主线历程"
+	quest.4DEB7C1135A7536B.title: "主线：神族篇"
+	quest.4E72A09000CB08AE.quest_desc: ["再次与&a&l白虎分魂&r交谈"]
+	quest.4E72A09000CB08AE.quest_subtitle: "回到&2&o白虎神庙"
+	quest.4E72A09000CB08AE.title: "有朝再见"
+	quest.4E78263EA13DD3B2.quest_desc: ["与&a&l丹塔负责人&r交谈"]
+	quest.4E78263EA13DD3B2.quest_subtitle: "前往&2&o昆仑市集&r的&2&o丹塔"
+	quest.4E78263EA13DD3B2.title: "丹塔负责人的解说"
+	quest.4EB126EB20EE3D92.title: "补领&9八方归位仪"
+	quest.4F5AFF9232E04983.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.4F5AFF9232E04983.title: "&e赤鹰套"
+	quest.4F6363B34EA56AD7.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.4F910563444F30F3.quest_desc: ["占位，暂无获取方式与用途"]
+	quest.4FAA3B693435CDE9.quest_subtitle: "第一章仙族主线历程"
+	quest.4FAA3B693435CDE9.title: "主线：仙族篇"
+	quest.4FD881AF3F3E0EDA.quest_desc: ["与&a&l水族祭司-洛禾&r交谈"]
+	quest.4FD881AF3F3E0EDA.quest_subtitle: "在&2&o水族村庄&r中寻找祭司"
+	quest.4FD881AF3F3E0EDA.title: "洄游祭的准备工作"
+	quest.50111C1191EEC4A5.quest_desc: [
+		"&a由以下类型生物掉落：&r"
+		"1.骷髅类生物"
+		"[ \"2.\", { \"text\": \"龙鳞之森\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6E9E6F49C1B717BC\" } }, \"大部分生物\" ]"
+	]
+	quest.51989CDA9DF9D68F.quest_desc: [
+		"&a位于龙鳞之森入口附近&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/east/ye_lang_qun.png width:150 height:100 align:center}"
+	]
+	quest.51989CDA9DF9D68F.quest_subtitle: "384 43 -7"
+	quest.51989CDA9DF9D68F.title: "野狼群"
+	quest.51BFC2D1D00CC186.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.51F37C4DAAB7DB5B.quest_desc: ["[ {text:\"获取配方后可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
+	quest.51F37C4DAAB7DB5B.title: "炼丹师-法宝"
+	quest.521B7C2BAC04B3E8.quest_desc: [
+		"&a位于森林深处第三个湖附近&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/east/shen_mu.png width:150 height:100 align:center}"
+	]
+	quest.521B7C2BAC04B3E8.quest_subtitle: "631 50 373"
+	quest.521B7C2BAC04B3E8.title: "神木"
+	quest.52CDC6465B1D6EEB.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.52E602999D0EF6E1.quest_desc: ["进入&2&o圣山&r的船只位于&2&o蓬莱&r北侧海岸"]
+	quest.52E602999D0EF6E1.quest_subtitle: "由&2&o蓬莱&r坐船前往&2&o圣山"
+	quest.52E602999D0EF6E1.title: "进入圣山"
+	quest.539AD9916DB6C5CB.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.53D343E8C5B1DA3D.title: "补领&9轻盈之羽"
+	quest.54BE836F7E956238.quest_desc: ["[ \"由\", { \"text\": \"普通草药\",color:blue, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"3602098852296F61\" } }, \"加\",{ \"text\": \"药引(初级)\", color:blue,\"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"400D5BCBC3A10E55\" } } ,\"制作\" ]"]
+	quest.54C55AAC26A73F04.quest_desc: [
+		"&a由以下类型生物掉落：&r"
+		"1.僵尸类生物"
+		"[ \"2.\", { \"text\": \"虎爪山脉\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"21C41D176B06BC69\" } }, \"大部分怪物\" ]"
+	]
+	quest.54D012DDE2C09412.quest_desc: ["进入&2&o圣山&r的船只位于&2&o蓬莱&r北侧海岸"]
+	quest.54D012DDE2C09412.quest_subtitle: "由&2&o蓬莱&r坐船前往&2&o圣山"
+	quest.54D012DDE2C09412.title: "进入圣山"
+	quest.54D85477CDC3F524.quest_desc: [
+		"向&a&l长老&r询问下一步事项"
+		"&a推荐二阶装备后继续此任务&r"
+		"&7焱砂大漠篇位于另一个章节&r"
+	]
+	quest.54D85477CDC3F524.quest_subtitle: "准备完毕后前往&2&o昆仑大殿"
+	quest.54D85477CDC3F524.title: "准备出发：&c焱砂大漠"
+	quest.5507404D12D0491D.quest_desc: ["再次与&a&l伤心的老爷爷&r交谈"]
+	quest.5507404D12D0491D.quest_subtitle: "回到&2&o凉亭"
+	quest.5507404D12D0491D.title: "平安就好"
+	quest.5527398909E0B79E.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.554F8D798B8B8290.quest_desc: [
+		"[ \"由\", { \"text\": \"二阶装备原核\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"15844B0F0B7CBC72\" } }, \"分解而成\" ]"
+		""
+		"&a由以下类型生物掉落：&r"
+		"[ \"1.在\", { \"text\": \"废弃村庄\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"1FF7309C7CC4815E\" } }, \"或\", { \"text\": \"废弃祭坛\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"7EBBB1B3AEF7B6EE\" } },\"击杀\",{text:\"蜘蛛女王\",color:yellow},\"获得\" ]"
+	]
+	quest.554F8D798B8B8290.quest_subtitle: "二阶原核碎片"
+	quest.56430946CDFDD1C1.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.567A2BB49DAFC77A.quest_desc: [
+		"本章节的连线仅美观用处"
+		"实际上只要获得对应物品即可完成该任务"
+		"&a物品的合成配方请自行查阅jei并结合其他图鉴"
+		"&a若有特殊获取方式才会在此说明"
+	]
+	quest.567A2BB49DAFC77A.quest_subtitle: "防具"
+	quest.5721DE0057D4C6BF.quest_desc: [
+		"&a力量&r："
+		"每&61&r级提高&63&r点&a攻击伤害&r 改为"
+		"每&61&r级提高&63&r点&a攻击伤害、箭矢强度、炼化强度&r"
+		"{@pagebreak}"
+		"{image:panlingre:textures/mob_effect/jia_yu.png width:20 height:20 align:center}"
+		"&a甲御&r："
+		"每&61&r级提高&610&r点&a护甲值&r"
+		""
+		"{image:panlingre:textures/mob_effect/po_jia.png width:15 height:15 align:center}"
+		"&a破甲&r："
+		"每&61&r级降低&610&r点&a护甲值&r"
+		""
+		"{image:panlingre:textures/mob_effect/freeze.png width:15 height:15 align:center}"
+		"&a冻结&r："
+		"无等级变化"
+		"期间不可攻击、无法使用技能、无法行动"
+	]
+	quest.57ADBEEBFC70B4F8.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.57DB94CA574B1758.quest_desc: ["与&a&l长老&r交谈"]
+	quest.57DB94CA574B1758.quest_subtitle: "前往&2&o蓬莱&r寻找&a&l长老"
+	quest.57DB94CA574B1758.title: "前往蓬莱"
+	quest.58E7EB84EF7BBC54.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.58F22271F74F4C94.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.58F22271F74F4C94.title: "&a战狼套"
+	quest.593A06A3F84BEA2D.quest_desc: ["[ {text:\"以下装备可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
+	quest.593A06A3F84BEA2D.title: "弓箭手-武器"
+	quest.5959BF73DB813670.quest_desc: ["[ \"由\", { \"text\": \"六阶装备原核\",color:red, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"3688CFDDB1C6652B\" } }, \"分解而成\" ]"]
+	quest.59CBCF54944E6479.quest_desc: [
+		"[ \"使用\", { \"text\": \"竹子\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4DB0D352F19D0FC4\" } }, \"合成\" ]"
+		""
+		"[ \"也可在\", { \"text\": \"灵符铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"780E7AD631AC0CC0\" } }, \"直接购买\" ]"
+	]
+	quest.5A61D1025F69289E.quest_desc: ["[ \"由\", { \"text\": \"稀世草药\",color:yellow, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6985C7B59DEE765B\" } }, \"加\",{ \"text\": \"药引(高级)\", color:yellow,\"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"05A68C704D737E54\" } } ,\"制作\" ]"]
+	quest.5B59BCE9A09D8A53.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.5B59BCE9A09D8A53.title: "&d灵龟套"
+	quest.5B63CF59CF160502.quest_subtitle: "由工具采集获得的材料"
+	quest.5B63CF59CF160502.title: "采集类"
+	quest.5C727D5556F82ACE.quest_desc: ["与&a&l战备资源部负责人&r交谈"]
+	quest.5C727D5556F82ACE.quest_subtitle: "前往&2&o战备资源部"
+	quest.5C727D5556F82ACE.title: "战备补给"
+	quest.5C79B89CFAFBC3A8.quest_desc: ["[ {text:\"可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"购买\",color:white} ]"]
+	quest.5C821776183F3806.quest_desc: [
+		"&a由以下类型生物掉落：&r"
+		"大部分生物均有概率掉落"
+	]
+	quest.5C9A2A976866228D.quest_desc: ["[ {text:\"获取配方后可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
+	quest.5C9A2A976866228D.quest_subtitle: "通用手持物"
+	quest.5C9A2A976866228D.title: "通用手持物"
+	quest.5D14E42BCF82A12F.quest_desc: ["与&a&l华夭&r交谈"]
+	quest.5D14E42BCF82A12F.quest_subtitle: "前往&2&o镇妖塔"
+	quest.5D14E42BCF82A12F.title: "华夭的协助"
+	quest.5D76566C5216B9C6.quest_desc: ["再次与&a&l护国法师-法海&r交谈"]
+	quest.5D76566C5216B9C6.quest_subtitle: "准备好后回到&2&o护国殿"
+	quest.5D76566C5216B9C6.title: "出发：&6蓬莱"
+	quest.5DF51AD3B7504A8A.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.5E0632B7940B023A.quest_desc: ["与&a&l朱雀分魂&r交谈"]
+	quest.5E0632B7940B023A.quest_subtitle: "进入&2&o朱雀神庙"
+	quest.5E0632B7940B023A.title: "朱雀分魂"
+	quest.5E11BC67314C47E8.quest_desc: [
+		"&a位于通往大漠深处的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/south/lv_zhou_xiao_zhen.png width:150 height:100 align:center}"
+	]
+	quest.5E11BC67314C47E8.quest_subtitle: "-26 48 795"
+	quest.5E11BC67314C47E8.title: "绿洲小镇"
+	quest.5F07C22F90949E41.quest_subtitle: "向&a&l舒灵&r询问接下来的动向"
+	quest.5F07C22F90949E41.title: "新手上路"
+	quest.5F2BE27D40612EC2.quest_desc: ["与&a&l资源中心负责人&r交谈"]
+	quest.5F2BE27D40612EC2.quest_subtitle: "前往&2&o昆仑市集&r的&2&o资源中心"
+	quest.5F2BE27D40612EC2.title: "资源中心负责人的介绍"
+	quest.5F5991FE242EF220.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.5FD247F69E9A20AB.quest_desc: ["再次与&a&l长老&r交谈"]
+	quest.5FD247F69E9A20AB.quest_subtitle: "回到&2&o昆仑大殿"
+	quest.5FD247F69E9A20AB.title: "神族长老的任务"
+	quest.601CD18BA28D2094.quest_desc: [
+		"&a位于龙鳞之森入口附近"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/east/race.png width:150 height:100 align:center}"
+	]
+	quest.601CD18BA28D2094.quest_subtitle: "408 60 82"
+	quest.601CD18BA28D2094.title: "妖族领地"
+	quest.602BAF01677A55F7.quest_desc: ["[ {text:\"以上装备可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
+	quest.602BAF01677A55F7.title: "通用防具"
+	quest.60A86B75DFC33A10.quest_desc: ["与&a&l李公公&r交谈"]
+	quest.60A86B75DFC33A10.quest_subtitle: "回到&2&o皇宫"
+	quest.60A86B75DFC33A10.title: "复命：&f虎爪山脉篇&r结束"
+	quest.60B6847DEAEA47F2.quest_subtitle: "第一章妖族主线历程"
+	quest.60B6847DEAEA47F2.title: "主线：妖族篇"
+	quest.62C6B847B61449A4.quest_desc: [
+		"向&a&l李公公&r询问下一步事项"
+		"&a推荐三阶装备后继续此任务&r"
+		"&7虎爪山脉篇位于另一个章节&r"
+	]
+	quest.62C6B847B61449A4.quest_subtitle: "准备完毕后前往&2&o皇宫"
+	quest.62C6B847B61449A4.title: "准备出发：&f虎爪山脉"
+	quest.62D1F4DB4BACDC5A.quest_desc: [
+		"&a位于皇城南门旁&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/seller.png width:150 height:100 align:center}"
+	]
+	quest.62D1F4DB4BACDC5A.quest_subtitle: "101 46 181"
+	quest.62D1F4DB4BACDC5A.title: "售卖集市"
+	quest.630C1F8806BF7165.quest_desc: [
+		"向&a&l李公公&r询问下一步事项"
+		"&a推荐四阶装备后继续此任务&r"
+		"&7玄水湖泊篇位于另一个章节&r"
+	]
+	quest.630C1F8806BF7165.quest_subtitle: "准备完毕后前往&2&o皇宫"
+	quest.630C1F8806BF7165.title: "准备出发：&b玄水湖泊"
+	quest.642267F1909B5446.quest_desc: [
+		"&6[enter]&r打开聊天框"
+		""
+		"&6[鼠标中键]&r一键整理"
+		""
+		"&6[~]&r打开ftb任务"
+		""
+		"&6[O]&r打开维度网络仓库"
+		""
+		"&6[G]&r快捷打开饰品栏"
+		""
+		"&6[R]&r释放选中的技能"
+		""
+		"&6[鼠标按键4]&r(&6[侧键]&r)打开技能轮盘"
+		""
+		"&6[V]&r切换技能轮盘的选中模式"
+		""
+		"&6[L]&r炼丹(需要有对应道具)"
+	]
+	quest.642267F1909B5446.title: "按键"
+	quest.6523AE8BF35E9CC6.quest_desc: ["再次与&a&l妖族大长老-蚩尤&r交谈"]
+	quest.6523AE8BF35E9CC6.quest_subtitle: "准备好后回到&2&o镇妖塔塔顶"
+	quest.6523AE8BF35E9CC6.title: "出发：&6蓬莱"
+	quest.6539CAE277810994.quest_desc: ["[ {text:\"获取配方后可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
+	quest.6539CAE277810994.title: "弓箭手-法宝"
+	quest.65AE677464975C29.quest_desc: [
+		"&a位于森林最深处&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/east/qing_long.png width:150 height:100 align:center}"
+	]
+	quest.65AE677464975C29.quest_subtitle: "540 36 394"
+	quest.65AE677464975C29.title: "青龙祭坛"
+	quest.65B536748D5B7C4C.quest_desc: [
+		"&a位于通往森林深处的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/east/cha_dian_tan.png width:150 height:100 align:center}"
+	]
+	quest.65B536748D5B7C4C.quest_subtitle: "689 70 113"
+	quest.65B536748D5B7C4C.title: "茶点摊"
+	quest.65DD7D9A943C8D65.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.67455989A72C774B.quest_desc: [
+		"[ {text:\"在\",color:white}, { \"text\": \"虎爪山脉\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"21C41D176B06BC69\" } }, {text:\"使用\",color:white},{text:\"赤铜镐\",color:blue},{text:\"或更高等级的镐子采集\",color:white}, {text:\"玄铁矿\",color:light_purple}, {text:\"获得\",color:white} ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/material/xuan_tie_ore.png width:150 height:100 align:center}"
+	]
+	quest.680960DE3FC36668.quest_desc: [
+		"你感到事情似有蹊跷，似乎有&b解释不通的地方&r"
+		"未完待续……"
+		"&7&m（待更新）&r"
+	]
+	quest.680960DE3FC36668.quest_subtitle: "击败&4盘古(?)"
+	quest.680960DE3FC36668.title: "暂告段落"
+	quest.68FDBDEE884D3EAD.quest_desc: [
+		"本章节主要介绍整合包的改动与设定以及设置部分游戏规则"
+		"&a上面为介绍&r"
+		"&6下面为设置&r"
+	]
+	quest.68FDBDEE884D3EAD.title: "游戏设定"
+	quest.6904A1E1F39FF9B7.quest_desc: ["与&a&l水族族长-水渊&r交谈"]
+	quest.6904A1E1F39FF9B7.quest_subtitle: "前往&2&o水族村庄"
+	quest.6904A1E1F39FF9B7.title: "住在湖底的民族"
+	quest.696876C73A29FFAE.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.6985C7B59DEE765B.quest_desc: [
+		"于&6副本&r中开箱获得"
+		"副本："
+		"[ { \"text\": \"圣山\",\"color\":\"red\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"03BE9AA4FE628CD8\" } } ]"
+	]
+	quest.6985C7B59DEE765B.title: "&e稀世草药"
+	quest.69EDD99B818B3D3D.quest_desc: [
+		"&a位于大漠的北方&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/south/xia_gu.png width:150 height:100 align:center}"
+	]
+	quest.69EDD99B818B3D3D.quest_subtitle: "-60 46 399"
+	quest.69EDD99B818B3D3D.title: "南方大峡谷"
+	quest.6A70BC7C576C79CD.quest_desc: [
+		"&a位于皇城中心&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/middle.png width:150 height:100 align:center}"
+	]
+	quest.6A70BC7C576C79CD.quest_subtitle: "179 43 63"
+	quest.6A70BC7C576C79CD.title: "皇城中心"
+	quest.6A9A94A7DC8BA08F.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.6A9A94A7DC8BA08F.title: "&a功夫套"
+	quest.6B4B5240696B7565.quest_desc: ["前面的区域以后再来探索吧（bushi"]
+	quest.6B4B5240696B7565.quest_subtitle: "由副本产出的材料"
+	quest.6B4B5240696B7565.title: "副本类"
+	quest.6B933D64C27B676F.quest_desc: [
+		"[ {text:\"在\",color:white}, { \"text\": \"南方大峡谷\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"69EDD99B818B3D3D\" } }, {text:\"使用\",color:white},{text:\"铁镐\",color:green},{text:\"或更高等级的镐子采集\",color:white} ]"
+		""
+		"[ \"也可在\", { \"text\": \"灵符铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"780E7AD631AC0CC0\" } }, \"直接购买\" ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/material/zhu_sha_ore.png width:150 height:100 align:center}"
+	]
+	quest.6C27576A4F99F2FB.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.6C51D4190AF671B3.quest_desc: [
+		"&a通往虎爪山脉的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/west/guo_yuan.png width:150 height:100 align:center}"
+	]
+	quest.6C51D4190AF671B3.quest_subtitle: "-63 68 30"
+	quest.6C51D4190AF671B3.title: "欢乐果园"
+	quest.6C81BF24264DC1C3.quest_desc: [
+		"&a位于大漠的西北方向&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/south/ma_zei.png width:150 height:100 align:center}"
+	]
+	quest.6C81BF24264DC1C3.quest_subtitle: "-159 48 543"
+	quest.6C81BF24264DC1C3.title: "马贼团巢穴"
+	quest.6CA53E15912A8F9D.quest_desc: ["与&a&l蚀日&r交谈"]
+	quest.6CA53E15912A8F9D.quest_subtitle: "前往&2&o皇宫后院东边的月老小庙"
+	quest.6CA53E15912A8F9D.title: "蚀日的报告"
+	quest.6CD87D9F19C18016.quest_desc: ["与&a&l人皇-轩辕氏&r交谈"]
+	quest.6CD87D9F19C18016.quest_subtitle: "前往&2&o皇宫"
+	quest.6CD87D9F19C18016.title: "人皇的顾虑"
+	quest.6D37D5C824535075.quest_desc: ["[ \"由5个\", { \"text\": \"土元素\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"5C821776183F3806\" } }, \"合成\" ]"]
+	quest.6D913F0A2E794AE9.quest_desc: ["与&a&l蚀日&r交谈"]
+	quest.6D913F0A2E794AE9.quest_subtitle: "回到&2&o月老小庙"
+	quest.6D913F0A2E794AE9.title: "收集&e祝福之力"
+	quest.6DAC10818D332A80.quest_desc: ["与&a&l长老&r交谈"]
+	quest.6DAC10818D332A80.quest_subtitle: "前往&2&o昆仑大殿"
+	quest.6DAC10818D332A80.title: "冷漠的神族长老"
+	quest.6DC41472095C05FF.quest_desc: [
+		"&a玄水湖泊通往东北方向的路的尽头&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/north/peng_lai.png width:150 height:100 align:center}"
+	]
+	quest.6DC41472095C05FF.quest_subtitle: "345 33 -541"
+	quest.6DC41472095C05FF.title: "蓬莱"
+	quest.6E585D3C33C82694.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.6E6F3455E766D341.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.6E88EC2809C8344E.quest_desc: ["完成对应的&a主线任务&r后后解锁"]
+	quest.6E9BE763F90D9406.quest_desc: ["与&a&l祭司-楚兰&r交谈"]
+	quest.6E9BE763F90D9406.quest_subtitle: "前往&2&o龙须镇"
+	quest.6E9BE763F90D9406.title: "森林中的异变"
+	quest.6E9E6F49C1B717BC.quest_subtitle: "大陆东方"
+	quest.6E9E6F49C1B717BC.title: "&2龙鳞之森"
+	quest.6F56D2060B8AAADE.quest_desc: ["与&a&l青龙分魂&r交谈"]
+	quest.6F56D2060B8AAADE.quest_subtitle: "前往&2&o青龙神庙"
+	quest.6F56D2060B8AAADE.title: "青龙分魂"
+	quest.6F748B303741D898.quest_desc: ["与&a&l左焰&r交谈"]
+	quest.6F748B303741D898.quest_subtitle: "前往&2&o龙须镇"
+	quest.6F748B303741D898.title: "龙鳞之森的异常"
+	quest.707173009566C534.quest_desc: [
+		"&a位于皇城南门旁&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/zhong_lie_ci.png width:150 height:100 align:center}"
+	]
+	quest.707173009566C534.quest_subtitle: "192 47 173"
+	quest.707173009566C534.title: "忠烈祠"
+	quest.70E830BE61419F3F.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.724ACC3155586CA9.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.724ACC3155586CA9.title: "&a风行套"
+	quest.7311FDDD8D035C54.quest_subtitle: "向&a&l飞虎&r询问接下来的动向"
+	quest.7311FDDD8D035C54.title: "新手上路"
+	quest.733B9682908A58DA.quest_desc: ["与&a&l护国法师-法海&r交谈"]
+	quest.733B9682908A58DA.quest_subtitle: "前往&2&o护国殿"
+	quest.733B9682908A58DA.title: "圣山的异常状态"
+	quest.739382A5900A56CC.quest_desc: ["与&a&l灵丹铺掌柜&r交谈"]
+	quest.739382A5900A56CC.quest_subtitle: "前往&2&o蜀山集市&r的&2&o灵丹铺"
+	quest.739382A5900A56CC.title: "灵丹铺掌柜的招待"
+	quest.73A2E2A2BCEE20F1.quest_desc: ["与&a&l叶灵谷谷主&r交谈"]
+	quest.73A2E2A2BCEE20F1.quest_subtitle: "前往&2&o古树前的水池边"
+	quest.73A2E2A2BCEE20F1.title: "妖族据点-叶灵谷"
+	quest.73D3A470A1BEED23.quest_desc: [
+		"&a水族村庄通往玄水湖泊的路的尽头&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/north/xuan_wu.png width:150 height:100 align:center}"
+	]
+	quest.73D3A470A1BEED23.quest_subtitle: "-84 34 -520"
+	quest.73D3A470A1BEED23.title: "玄武祭坛"
+	quest.73E55DA276D7E39E.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.7435BBB109DC923A.quest_subtitle: "向&a&l小飞&r询问接下来的动向"
+	quest.7435BBB109DC923A.title: "新手上路"
+	quest.7484CF60E2E2A655.quest_desc: ["[ \"于\", { \"text\": \"篆元上仙\",\"color\":\"green\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"0D3F450574E4C414\" } }, \"处获取\" ]"]
+	quest.754BFC5279074F2A.quest_desc: [
+		"&a通往虎爪山脉的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/west/chen_dai_fu.png width:150 height:100 align:center}"
+	]
+	quest.754BFC5279074F2A.quest_subtitle: "-132 45 139"
+	quest.754BFC5279074F2A.title: "陈大夫的药草寨"
+	quest.75A5398DEE6446D0.quest_desc: ["与&a&l仙器铺掌柜&r交谈"]
+	quest.75A5398DEE6446D0.quest_subtitle: "前往&2&o蜀山集市&r的&2&o仙器铺"
+	quest.75A5398DEE6446D0.title: "仙器铺掌柜的“招待”"
+	quest.76EE74118336FCA5.quest_desc: [
+		"&a位于皇城中心东北侧&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/race.png width:150 height:100 align:center}"
+	]
+	quest.76EE74118336FCA5.quest_subtitle: "208 49 37"
+	quest.76EE74118336FCA5.title: "人、神、仙族领地"
+	quest.76F3A740F4014FB5.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.76FD1DD1DFCD6A65.quest_desc: ["[ \"由5个\", { \"text\": \"木元素\",color:dark_aqua, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"50111C1191EEC4A5\" } }, \"合成\" ]"]
+	quest.771EB33A69C3CA1A.quest_desc: [
+		"&a由以下类型生物掉落：&r"
+		"1.蜘蛛类生物"
+		"[ \"2.\", { \"text\": \"玄水湖泊\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"2D20462FAAA8D29F\" } }, \"大部分生物\" ]"
+	]
+	quest.780E7AD631AC0CC0.quest_desc: [
+		"&a位于皇城东门旁&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/ling_fu_pu.png width:150 height:100 align:center}"
+	]
+	quest.780E7AD631AC0CC0.quest_subtitle: "294 46 27"
+	quest.780E7AD631AC0CC0.title: "灵符铺"
+	quest.785CEE7E97CBFD2B.quest_desc: ["[ {text:\"获取配方后可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
+	quest.785CEE7E97CBFD2B.title: "战士-法宝"
+	quest.7867910D74A14D06.quest_desc: [
+		"[ \"由\", { \"text\": \"五阶装备原核\",color:yellow, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"2CDED647A9A783DB\" } }, \"分解而成\" ]"
+		""
+		"&a也由以下类型生物掉落：&r"
+		"[ \"1.在\", { \"text\": \"水族村庄\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"005B6191BA16AE97\" } },\"两侧的路上击杀\",{text:\"千里神射手\",color:yellow},\"获得\" ]"
+	]
+	quest.787F87A5E39E0A0F.quest_desc: ["占位，暂无获取方式与用途"]
+	quest.78AB339146EC8473.quest_desc: ["与&a&l水族祭司-洛禾&r交谈"]
+	quest.78AB339146EC8473.quest_subtitle: "回到&2&o水族村庄"
+	quest.78AB339146EC8473.title: "等待圣兽归来"
+	quest.78F4F16BDB72C30A.quest_desc: ["与&a&l李公公&r交谈"]
+	quest.78F4F16BDB72C30A.quest_subtitle: "前往&2&o皇宫"
+	quest.78F4F16BDB72C30A.title: "李公公的委托"
+	quest.791C74EB15119B68.quest_desc: [
+		"你感到事情似有蹊跷，似乎有&b解释不通的地方&r"
+		"未完待续……"
+		"&7&m（待更新）&r"
+	]
+	quest.791C74EB15119B68.quest_subtitle: "击败&4盘古(?)"
+	quest.791C74EB15119B68.title: "暂告段落"
+	quest.79409E2F1B455F35.quest_desc: ["再次与&a&l盟主&r交谈"]
+	quest.79409E2F1B455F35.quest_subtitle: "回到&2&o盟主大殿"
+	quest.79409E2F1B455F35.title: "人界的动荡"
+	quest.7A3743EDB8C37353.quest_desc: ["进入&2&o圣山&r的船只位于&2&o蓬莱&r北侧海岸"]
+	quest.7A3743EDB8C37353.quest_subtitle: "由&2&o蓬莱&r坐船前往&2&o圣山"
+	quest.7A3743EDB8C37353.title: "进入圣山"
+	quest.7A4B70CD745D836C.quest_desc: ["进入&2&o玄武神庙&r并成功通过&6玄武试炼"]
+	quest.7A4B70CD745D836C.quest_subtitle: "通过&6玄武试炼"
+	quest.7A4B70CD745D836C.title: "获得&e玄武祝福"
+	quest.7AB0700AB3D51D64.quest_desc: [
+		"使用&9赤铜铲&r挖掘&2可疑的泥土&r获得"
+		""
+		"[ {text:\"赤铜铲\",color:blue},{text:\"由\",color:white},{text:\"铁铲\",color:green},{text:\"、\",color:white}, { \"text\": \"三阶装备原核\",color:blue, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"0B0FB1CF85E9D49C\" } },{text:\"、\",color:white},{ \"text\": \"赤铜锭\",color:blue, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"7E2D79A794ED5D8F\" }}, {text:\"合成\",color:white} ]"
+		""
+		"[ {text:\"可疑的泥土\",color:dark_green},{text:\"常见于\",color:white}, { \"text\": \"龙鳞之森\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6E9E6F49C1B717BC\" } }, {text:\"和\",color:white},{ \"text\": \"玄水湖泊\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"2D20462FAAA8D29F\" } } ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/material/dirt.png width:150 height:100 align:center}"
+	]
+	quest.7AB0700AB3D51D64.title: "&d珍贵草药"
+	quest.7AC65370442F8C03.quest_desc: [
+		"你感到事情似有蹊跷，似乎有&b解释不通的地方&r"
+		"未完待续……"
+		"&7&m（待更新）&r"
+	]
+	quest.7AC65370442F8C03.quest_subtitle: "击败&4盘古(?)"
+	quest.7AC65370442F8C03.title: "暂告段落"
+	quest.7B6463B0DB573C2C.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.7BBF000D29B5DBEC.quest_desc: ["再次与&a&l叶灵谷谷主&r交谈"]
+	quest.7BBF000D29B5DBEC.quest_subtitle: "回到&2&o古树前的水池边"
+	quest.7BBF000D29B5DBEC.title: "大长老的求救信息"
+	quest.7BD472C643CF3303.title: "补领&9轻盈之羽"
+	quest.7BF6F944B6502781.quest_desc: [
+		"&a位于通往大漠深处的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/south/sha_mo_ke_zhan.png width:150 height:100 align:center}"
+	]
+	quest.7BF6F944B6502781.quest_subtitle: "-308 58 584"
+	quest.7BF6F944B6502781.title: "沙漠客栈"
+	quest.7C08C99C7AD21A37.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.7C08C99C7AD21A37.title: "&e陨星套"
+	quest.7C69E90683AFB4B4.quest_desc: [
+		"[ \"由\", { \"text\": \"四阶装备原核\",color:light_purple, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"08B2E3623F2FFEF6\" } }, \"分解而成\" ]"
+		""
+		"&a也由以下类型生物掉落：&r"
+		"[ \"1.在\",  { \"text\": \"圣虎迷阵\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"22161DED01D89AF0\" } } ,\"中击杀\",{text:\"焦骨战士\",color:yellow},\"获得\" ]"
+	]
+	quest.7CC25F7B86F40B4D.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.7CD850E4476731B1.quest_desc: [
+		"&a位于大漠的最深处&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/south/jiu_cun_zhuang.png width:150 height:100 align:center}"
+	]
+	quest.7CD850E4476731B1.quest_subtitle: "367 49 754"
+	quest.7CD850E4476731B1.title: "旧村庄"
+	quest.7CE3D7A94E981DF1.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.7E20BE3EE978705A.quest_desc: ["与&a&l羽罗&r交谈"]
+	quest.7E20BE3EE978705A.quest_subtitle: "回到&2&o皇宫"
+	quest.7E20BE3EE978705A.title: "复命：&c焱砂大漠篇&r结束"
+	quest.7E2D79A794ED5D8F.quest_desc: [
+		"[ {text:\"在\",color:white}, { \"text\": \"焱砂大漠\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"33367EC78E2F50A0\" } }, {text:\"使用\",color:white},{text:\"铁镐\",color:green},{text:\"或更高等级的镐子采集\",color:white}, {text:\"赤铜矿\",color:blue}, {text:\"获得\",color:white} ]"
+		""
+		"{image:ftbquests:textures/qusets/guide/material/chi_tong_ore.png width:150 height:100 align:center}"
+	]
+	quest.7EBBB1B3AEF7B6EE.quest_desc: [
+		"&a位于通往森林深处的沿途&r"
+		""
+		"{image:ftbquests:textures/qusets/guide/picture/east/fei_qi_ji_tan.png width:150 height:100 align:center}"
+	]
+	quest.7EBBB1B3AEF7B6EE.quest_subtitle: "666 46 46"
+	quest.7EBBB1B3AEF7B6EE.title: "废弃祭坛"
+	quest.7EDE15B0C147C946.quest_desc: [
+		"向&a&l长老&r询问下一步事项"
+		"&a推荐四阶装备后继续此任务&r"
+		"&7玄水湖泊篇位于另一个章节&r"
+	]
+	quest.7EDE15B0C147C946.quest_subtitle: "准备完毕后前往&2&o昆仑大殿"
+	quest.7EDE15B0C147C946.title: "准备出发：&b玄水湖泊"
+	quest.7F444B61F833C2A6.quest_desc: ["进入&2&o青龙神庙&r并成功通过&6青龙试炼"]
+	quest.7F444B61F833C2A6.quest_subtitle: "通过&6青龙试炼"
+	quest.7F444B61F833C2A6.title: "获得&e青龙祝福"
+	quest.7F89D32EE06536AA.quest_desc: ["与&a&l巫者红鸾&r交谈"]
+	quest.7F89D32EE06536AA.quest_subtitle: "前往小镇中的&2&o丹药铺"
+	quest.7F89D32EE06536AA.title: "火山之神的代言人"
+	reward.01F1AB46AB6C5343.title: "解锁传送点"
+	reward.02566B439FE3093B.title: "解锁传送点"
+	reward.025AAE57BB40499A.title: "定位目标位置"
+	reward.05580A252D295096.title: "定位目标位置"
+	reward.057F7614FA0A6103.title: "定位目标位置"
+	reward.05C066B6C90572FD.title: "解锁传送点"
+	reward.07B6B34EB9490DA3.title: "解锁传送点"
+	reward.08779EA0D923FC00.title: "定位目标位置"
+	reward.0B4D304DDC9064FF.title: "定位目标位置"
+	reward.0BF42DD278F4125D.title: "定位目标位置"
+	reward.0C7041D3E8BD7486.title: "定位目标位置"
+	reward.0CBC3E435FD5954F.title: "解锁传送点"
+	reward.0D0C0EB755BA6D93.title: "指引当前任务"
+	reward.0F01F12252052474.title: "定位目标位置"
+	reward.101E5AB43CB65F50.title: "解锁传送点"
+	reward.128750111A9602A1.title: "定位目标位置"
+	reward.12EF4FA9EEF0389E.title: "定位目标位置"
+	reward.144BE2751985C6E2.title: "解锁传送点"
+	reward.174C6D5A38C68E94.title: "解锁传送点"
+	reward.1A12BE1D8340ED1F.title: "解锁传送点"
+	reward.1D9A2FEEAA31653F.title: "解锁传送点"
+	reward.203C7AA85EABC84A.title: "指引当前任务"
+	reward.20F8D7CDA5F215CE.title: "解锁传送点"
+	reward.21663A8191CC071C.title: "定位目标位置"
+	reward.25CE81D0DE9B6FB7.title: "定位目标位置"
+	reward.25EE31DD8309B25E.title: "解锁传送点"
+	reward.26604942FA52C396.title: "解锁传送点"
+	reward.280E5931BAEDE3B3.title: "指引当前任务"
+	reward.28CED18AC342A792.title: "定位目标位置"
+	reward.29270E82CE162A49.title: "解锁传送点"
+	reward.293DDE989A9AE09A.title: "解锁传送点"
+	reward.2991768F133ADAD0.title: "定位目标位置"
+	reward.299EB89E0BC1AAA4.title: "解锁传送点"
+	reward.2A27627BD9C2D2E5.title: "解锁传送点"
+	reward.2C183D64C3A69F4D.title: "解锁传送点"
+	reward.2C83058EC4426753.title: "定位目标位置"
+	reward.2D01E3CF229BAAD7.title: "解锁传送点"
+	reward.2EC5FE5F69EFF982.title: "解锁传送点"
+	reward.31AFE4E629BDC672.title: "定位目标位置"
+	reward.32B2547487E6934D.title: "定位目标位置"
+	reward.32E89DF1814E73D6.title: "解锁传送点"
+	reward.33FC980CBA06F535.title: "解锁传送点"
+	reward.34531F1E87142E61.title: "&b皇城地图"
+	reward.348FD6B1D8259769.title: "解锁传送点"
+	reward.349E5E7B637F3F6C.title: "解锁传送点"
+	reward.3686AB9655DD2413.title: "定位目标位置"
+	reward.3698A1996E083DFA.title: "定位目标位置"
+	reward.3829D19235855A9C.title: "解锁传送点"
+	reward.39B4247303FA6921.title: "解锁传送点"
+	reward.3B608CF2A1820438.title: "定位目标位置"
+	reward.3BC002F2E44337AA.title: "解锁传送点"
+	reward.3E11493D5A1E3C69.title: "定位目标位置"
+	reward.4499C89D55623E28.title: "定位目标位置"
+	reward.460C6E975FF78882.title: "定位目标位置"
+	reward.46261B32DE3DEAB5.title: "解锁传送点"
+	reward.46F5190FBD700CB8.title: "定位目标位置"
+	reward.471F0BA39BAC97B6.title: "解锁传送点"
+	reward.47D9E2D4EBB098CF.title: "解锁传送点"
+	reward.49D92377FFF111B8.title: "定位目标位置"
+	reward.4B232417451576B2.title: "解锁传送点"
+	reward.4B23B605FDDAA26E.title: "指引当前任务"
+	reward.4C460C104DD229CC.title: "定位目标位置"
+	reward.4CDC3A995BE61170.title: "定位目标位置"
+	reward.4D312287CE93733C.title: "指引当前任务"
+	reward.4EA67B214F138F2D.title: "定位目标位置"
+	reward.4F4531A9C5490EBA.title: "定位目标位置"
+	reward.4F8A942A95CBB837.title: "定位目标位置"
+	reward.512E7D39BB5886F1.title: "定位目标位置"
+	reward.52278A70C6930560.title: "解锁传送点"
+	reward.53B0E1F4D8C371AC.title: "解锁传送点"
+	reward.54E06239FAC745D2.title: "解锁传送点"
+	reward.555F37C55D2F749B.title: "定位目标位置"
+	reward.55CA037085100BDE.title: "定位目标位置"
+	reward.57F09A5F7B36C06C.title: "解锁传送点"
+	reward.591CF43659C92944.title: "定位目标位置"
+	reward.59FAFBE675AB01FB.title: "定位目标位置"
+	reward.5B5BBDE77CEAAB00.title: "解锁传送点"
+	reward.5D2D74681E954F11.title: "解锁传送点"
+	reward.5F906478EC3B72C4.title: "解锁传送点"
+	reward.6054730C087DD51F.title: "解锁传送点"
+	reward.6060A41830B68C33.title: "定位目标位置"
+	reward.60955B8150C06659.title: "解锁传送点"
+	reward.60CED090E2C0770D.title: "解锁传送点"
+	reward.619F04363D384618.title: "定位目标位置"
+	reward.61F57E3403D4F6E9.title: "定位目标位置"
+	reward.63DEC57FCDFD80E8.title: "定位目标位置"
+	reward.650D8375386548ED.title: "解锁传送点"
+	reward.655339BED4BC25E8.title: "定位目标位置"
+	reward.6587FA5015374520.title: "解锁传送点"
+	reward.66FD827DEF0617C7.title: "定位目标位置"
+	reward.68AD0FA62D891286.title: "定位目标位置"
+	reward.6A67FC92815AEA4A.title: "定位目标位置"
+	reward.6A9DD23E67D5BDB3.title: "解锁传送点"
+	reward.6AB331F4637A28BC.title: "解锁传送点"
+	reward.6B563DBF3FC7ED24.title: "指引当前任务"
+	reward.6D55BFE376223AEE.title: "解锁传送点"
+	reward.6DB3C6A5136E818C.title: "定位目标位置"
+	reward.6E459D82F13AE9CA.title: "解锁传送点"
+	reward.6E7DA740CD7A4D6A.title: "解锁传送点"
+	reward.70246CC53D53DADD.title: "定位目标位置"
+	reward.710D2949D69A770B.title: "定位目标位置"
+	reward.72408D0457D67C2F.title: "解锁传送点"
+	reward.73A4799C2B46287E.title: "解锁传送点"
+	reward.7492E83EBB84C6ED.title: "解锁传送点"
+	reward.74C51A5DDD86C30C.title: "定位目标位置"
+	reward.75202A5796A65FA4.title: "解锁传送点"
+	reward.752EEC68A5B64010.title: "定位目标位置"
+	reward.754F451C6134FAEF.title: "指引当前任务"
+	reward.75D91729C47B956A.title: "指引当前任务"
+	reward.768A1A5061E3450E.title: "定位目标位置"
+	reward.7773C58F9B35E38E.title: "定位目标位置"
+	reward.77C4F1CE26ED6DB3.title: "定位目标位置"
+	reward.77C6C5316259F336.title: "解锁传送点"
+	reward.78AF90078FB8CA85.title: "定位目标位置"
+	reward.79CB953310FB9D29.title: "解锁传送点"
+	reward.79D47094DCAFABD6.title: "解锁传送点"
+	reward.7A687747EC3B8F7F.title: "解锁传送点"
+	reward.7B26B8C1AD49FD26.title: "定位目标位置"
+	reward.7D1B40AA0E3CD7E6.title: "定位目标位置"
+	task.00FEBBE57990433D.title: "材料图鉴"
+	task.0191F6D6FB734A76.title: "指引位置"
+	task.01E9B329D6747113.title: "指引位置"
+	task.0337E3A7BCBB5772.title: "&a开启任务指引"
+	task.0397827DBA9B8C4F.title: "武器图鉴"
+	task.03D2CBBF6D682B30.title: "副本设置"
+	task.07CF976206BD2725.title: "指引位置"
+	task.0A91F23B272E4964.title: "丹药"
+	task.0B7FFF14E8FC6283.title: "通用"
+	task.0CB3A8D6811FAAD6.title: "指引位置"
+	task.10C068F3B5D31DD0.title: "指引位置"
+	task.11C5FF3CB13EA7C2.title: "指引位置"
+	task.122A51210FE62C60.title: "进入：&c焱砂大漠"
+	task.12F1E2E46556A4D1.title: "弓箭手"
+	task.1327E20F27CFF9B4.title: "指引位置"
+	task.133A7E02E18A2AAA.title: "指引位置"
+	task.151149890F5800FC.title: "指引位置"
+	task.168EAC0F2497F8E9.title: "&a开启任务指引"
+	task.19AC28A688D7238B.title: "炼丹师"
+	task.1A4DA7B6C544D40D.title: "&a开启任务指引"
+	task.1CDB45040D5EB85F.title: "指引位置"
+	task.1DED3AD523013C8B.title: "指引位置"
+	task.1DFBDACA99934F92.title: "指引位置"
+	task.1E6F620C8622F97C.title: "指引位置"
+	task.1F0D6C9C14CE53AD.title: "指引位置"
+	task.1F681B4632730B0B.title: "属性修改"
+	task.22E824DC8108B0D3.title: "进入：&b玄水湖泊"
+	task.22F6166CBC93BA53.title: "指引位置"
+	task.234BA9087A336F6F.title: "指引位置"
+	task.24C39CA14B025523.title: "指引位置"
+	task.26C08A4478923FBE.title: "指引位置"
+	task.2DE3D2DA06B3E6AD.title: "进入：&f虎爪山脉"
+	task.2DF00B5AD0281731.title: "指引位置"
+	task.2E04F7C98ED6D892.title: "状态效果"
+	task.2E0C76A68EC95737.title: "&a开启任务指引"
+	task.2E4D3D2016F767EA.title: "指引位置"
+	task.2F6815FA87B60983.title: "指引位置"
+	task.312C1E4A330C6076.title: "指引位置"
+	task.31ED6A7EDAC824FA.title: "指引位置"
+	task.3454197F5473E360.title: "指引位置"
+	task.34B8504B4C769D8E.title: "指引位置"
+	task.35B4DC92C0489F69.title: "指引位置"
+	task.3A560EC19619E02E.title: "指引位置"
+	task.3B4541EE37CC1227.title: "指引位置"
+	task.3BF95E008A2BD1E3.title: "指引位置"
+	task.3D030AF3BF3513C0.title: "灵符"
+	task.3DA1067A3DEF6251.title: "指引位置"
+	task.3FEFBC36DAF7B497.title: "指引位置"
+	task.411E6F56DC2BA082.title: "&a开启任务指引"
+	task.4A8A48657D646312.title: "指引位置"
+	task.4C60773DA16B463F.title: "战士"
+	task.4CC8328B7C1131D9.title: "指引位置"
+	task.4CD762C844B9A5AC.title: "指引位置"
+	task.4D919BADB338EDC6.title: "指引位置"
+	task.50FD835E20B61A8F.title: "&a开启任务指引"
+	task.51A38B4359B10EFE.title: "指引位置"
+	task.52EBA20DD2B9C6EC.title: "指引位置"
+	task.52EFCA42C9686B5E.title: "指引位置"
+	task.5459E660E3FD452A.title: "指引位置"
+	task.5548F8605C1F7004.title: "防具图鉴"
+	task.557A8666CDB58A01.title: "指引位置"
+	task.58FE73CE4286C0A2.title: "指引位置"
+	task.5D0660E71093A996.title: "指引位置"
+	task.6061B5C22E55649C.title: "指引位置"
+	task.60D648C2105F0B0F.title: "&a开启任务指引"
+	task.63B327C11B0059F5.title: "指引位置"
+	task.64BC9EA33CCA0BFC.title: "指引位置"
+	task.653D7E800579D7B1.title: "指引位置"
+	task.660955D3FBFE92D3.title: "进入：&6人族皇城"
+	task.67B4D5A61CFBCC6E.title: "指引位置"
+	task.6CEBF2E0D39675FB.title: "战利品类"
+	task.6D2B3BF2380A42E8.title: "指引位置"
+	task.6ECA2478CD0EF0D6.title: "指引位置"
+	task.7091BD0B9B7F6D5D.title: "指引位置"
+	task.731673A1552091A9.title: "进入：&2龙鳞之森"
+	task.734FF4E3CAA00203.title: "通用前置"
+	task.751258297668505B.title: "指引位置"
+	task.7962435726591C44.title: "法宝图鉴"
+	task.79D9192B4FA3A7F9.title: "指引位置"
+	task.7B15218E6E32BC43.title: "&a开启任务指引"
+	task.7E9F009A064AD7B6.title: "指引位置"
+	task.7FCF61138C590B48.title: "指引位置"
+}

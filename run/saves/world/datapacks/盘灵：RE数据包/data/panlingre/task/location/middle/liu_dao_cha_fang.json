@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.middle.liu_dao_cha_fang"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": 46,
+                    "y": 48,
+                    "z": 56
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

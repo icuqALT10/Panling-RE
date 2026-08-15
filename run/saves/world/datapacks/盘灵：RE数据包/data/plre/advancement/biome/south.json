@@ -1,0 +1,19 @@
+{
+    "criteria": {
+        "trigger":{
+            "trigger": "location",
+            "conditions": {
+                "player": {
+                    "location": {
+                        "biomes": [
+                            "plre:south"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "rewards": {
+        "function": "plre:biome/south"
+    }
+}

@@ -1,0 +1,6 @@
+execute as @a[x=-184,y=98,z=-821,distance=..40] unless function plre:check/curios/race/shen run dialog show instance_pangu_3_1
+
+execute as @a[x=-184,y=98,z=-821,distance=..40] if function plre:check/curios/race/shen run dialog show instance_pangu_3_2
+
+
+schedule function plre:instances/pangu/ready/7 4.25s replace

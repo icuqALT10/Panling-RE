@@ -1,0 +1,220 @@
+{
+  "id": "misson_penglai_kai_ge",
+  "title":"misson/penglai/kai_ge",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.kai_ge"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.ren.18.option"},
+          "target": "ren.18.1",
+          "visibility_command": "execute if score @s misson_ren matches 18"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.xian.18.option"},
+          "target": "xian.18.1",
+          "visibility_command": "execute if score @s misson_xian matches 18"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "ren.18.1",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.18.1"
+        }
+      ],
+      "next":"ren.18.2"
+    },
+    {
+      "id": "ren.18.2",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.18.2"
+        }
+      ],
+      "next":"ren.18.3"
+    },
+    {
+      "id": "ren.18.3",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.18.3"
+        }
+      ],
+      "next":"ren.18.4"
+    },
+    {
+      "id": "ren.18.4",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.18.4"
+        }
+      ],
+      "next":"ren.18.5"
+    },
+    {
+      "id": "ren.18.5",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.18.5"
+        }
+      ],
+      "next":"ren.18.6"
+    },
+    {
+      "id": "ren.18.6",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.18.6"
+        }
+      ],
+      "next":"ren.18.7"
+    },
+    {
+      "id": "ren.18.7",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.18.7"
+        }
+      ],
+      "next":"ren.18.8"
+    },
+    {
+      "id": "ren.18.8",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.18.8"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/ren/18"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "xian.18.1",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.18.1"
+        }
+      ],
+      "next":"xian.18.2"
+    },
+    {
+      "id": "xian.18.2",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.18.2"
+        }
+      ],
+      "next":"xian.18.3"
+    },
+    {
+      "id": "xian.18.3",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.18.3"
+        }
+      ],
+      "next":"xian.18.4"
+    },
+    {
+      "id": "xian.18.4",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.18.4"
+        }
+      ],
+      "next":"xian.18.5"
+    },
+    {
+      "id": "xian.18.5",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.18.5"
+        }
+      ],
+      "next":"xian.18.6"
+    },
+    {
+      "id": "xian.18.6",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.18.6"
+        }
+      ],
+      "next":"xian.18.7"
+    },
+    {
+      "id": "xian.18.7",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.18.7"
+        }
+      ],
+      "next":"xian.18.8"
+    },
+    {
+      "id": "xian.18.8",
+      "speaker": {"translate": "pl.npc.name.mainxx"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.xian.18.8"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/xian/18"
+      ],
+      "endDialog": true
+    }
+  ]
+}

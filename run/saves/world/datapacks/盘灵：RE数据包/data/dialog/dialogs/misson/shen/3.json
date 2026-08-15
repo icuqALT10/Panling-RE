@@ -1,0 +1,50 @@
+{
+  "id": "misson_shen_3",
+  "title":"misson/shen/3",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.shenmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.3"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.shen.3.option"},
+          "target": "1",
+          "visibility_command": "execute if score @s misson_shen matches 3"
+        }
+      ],
+      "endDialog": true
+    },
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.shenmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.3.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "pl.npc.name.shenmain3"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.3.2"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/3"
+      ],
+      "endDialog": true
+    }
+  ]
+}

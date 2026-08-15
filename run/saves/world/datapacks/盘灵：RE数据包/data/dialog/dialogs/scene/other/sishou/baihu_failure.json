@@ -1,0 +1,17 @@
+{
+  "id": "baihu_failure",
+  "type": "OVERLAY",
+  "start": "1",
+  "entries": [
+    {
+      "id": "1",
+      "speaker": "",
+      "text": [
+        {
+          "translate": "pl.info.tiger.failure"
+        }
+      ],
+      "out_time":2500
+    }
+  ]
+}

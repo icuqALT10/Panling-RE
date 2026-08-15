@@ -1,0 +1,9 @@
+[
+  {"version":1},
+  {"ingredient":{"id":"minecraft:diamond_pickaxe"},"type":"item_stack","bookmarkType":"INGREDIENT"},
+  {"ingredient":{"id":"minecraft:netherite_shovel"},"type":"item_stack","bookmarkType":"INGREDIENT"},
+  {"ingredient":{"id":"minecraft:netherite_axe"},"type":"item_stack","bookmarkType":"INGREDIENT"},
+  {"ingredient":{"id":"minecraft:netherite_pickaxe"},"type":"item_stack","bookmarkType":"INGREDIENT"},
+  {"ingredient":{"id":"panlingre:yao_yin_1"},"type":"item_stack","bookmarkType":"INGREDIENT"},
+  {"ingredient":{"id":"panlingre:race_yao"},"type":"item_stack","bookmarkType":"INGREDIENT"}
+]

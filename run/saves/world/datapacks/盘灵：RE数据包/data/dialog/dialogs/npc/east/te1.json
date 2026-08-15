@@ -1,0 +1,83 @@
+{
+  "id": "npc_east_te1",
+  "title":"npc/east/te1",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "plre.npc.name.te1"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.east.te1"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.east.te1.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.east.te1.option2"},
+          "command":[
+            "plre opengui villager @s east/te1"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.east.te1.option3"}
+        }
+      ],
+      "endDialog": true
+    },
+    
+
+
+    {
+      "id": "1",
+      "speaker": {"translate": "plre.npc.name.te1"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.east.te1.1"
+        }
+      ],
+      "next": "2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "plre.npc.name.te1"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.east.te1.2"
+        }
+      ],
+      "next": "3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "plre.npc.name.te1"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.east.te1.3"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.east.te1.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.east.te1.option2"},
+          "command":[
+            "plre opengui villager @s east/te1"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.east.te1.option3"}
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+    "title": [
+        {"translate":"block.panlingre.ling_yu_ore"},
+        {"translate":"plre.looktip.ore.available.pickaxe.netherite"}
+    ],
+    "entries": [
+        {
+            "type": "block",
+            "name": "panlingre:ling_yu_ore",
+            "block_state": {
+                "has_ore": "true"
+            }
+        }
+    ]
+}

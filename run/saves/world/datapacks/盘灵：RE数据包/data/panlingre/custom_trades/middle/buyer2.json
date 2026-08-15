@@ -1,0 +1,14 @@
+{
+  "title": {"translate": "plre.npc.name.buyer2"},
+  "offers": [
+    {"buy":{"item":"minecraft:spider_eye","count":1,"components":{"custom_data":{"id":"plre:spider_eye"}}},
+    "sell":{"item":"panlingre:tong_qian","count":1}},
+
+    {"buy":{"item":"minecraft:ink_sac","count":10,"components":{"custom_data":{"id":"plre:ink_sac"}}},
+    "sell":{"item":"panlingre:yuan_bao","count":8}},
+
+    {"buy":{"item":"minecraft:rabbit_hide","count":1,"components":{"custom_data":{"id":"plre:rabbit_hide"}}},
+    "sell":{"item":"panlingre:tong_qian","count":1}}
+
+  ]
+}

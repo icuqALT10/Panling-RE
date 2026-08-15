@@ -1,0 +1,17 @@
+{
+  "id": "instance_pangu_6",
+  "type": "OVERLAY",
+  "start": "1",
+  "entries": [
+    {
+      "id": "1",
+      "speaker": "",
+      "text": [
+        {
+          "translate": "plre.instance.dialog.pangu.6"
+        }
+      ],
+      "out_time":3000
+    }
+  ]
+}

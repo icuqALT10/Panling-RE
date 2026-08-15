@@ -17,6 +17,11 @@ import java.util.List;
 
 public class hua_tuo extends ArmorItem {
 
+    private static final ResourceLocation HELMET_ID = ResourceLocation.withDefaultNamespace("hua_tuo_helmet");
+    private static final ResourceLocation CHESTPLATE_ID = ResourceLocation.withDefaultNamespace("hua_tuo_chestplate");
+    private static final ResourceLocation LEGGINGS_ID = ResourceLocation.withDefaultNamespace("hua_tuo_leggings");
+    private static final ResourceLocation BOOTS_ID = ResourceLocation.withDefaultNamespace("hua_tuo_boots");
+
     public hua_tuo(Holder<ArmorMaterial> material, Type type) {
         super(material, type, new Properties()
                 .attributes(createModifiers(type))
@@ -30,103 +35,103 @@ public class hua_tuo extends ArmorItem {
         if(slot==EquipmentSlotGroup.HEAD) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_helmet"),
+                            HELMET_ID,
                             5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_helmet"),
+                            HELMET_ID,
                             6,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAGIC_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_helmet"),
+                            HELMET_ID,
                             1.5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_helmet"),
+                            HELMET_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.CHEST) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_chestplate"),
+                            CHESTPLATE_ID,
                             8,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_chestplate"),
+                            CHESTPLATE_ID,
                             8,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_chestplate"),
+                            CHESTPLATE_ID,
                             8,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAGIC_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_chestplate"),
+                            CHESTPLATE_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_chestplate"),
+                            CHESTPLATE_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.LEGS) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_leggings"),
+                            LEGGINGS_ID,
                             6,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_leggings"),
+                            LEGGINGS_ID,
                             4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_leggings"),
+                            LEGGINGS_ID,
                             7,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAGIC_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_leggings"),
+                            LEGGINGS_ID,
                             1.5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_leggings"),
+                            LEGGINGS_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }
         else if(slot==EquipmentSlotGroup.FEET) {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_boots"),
+                            BOOTS_ID,
                             5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MOVEMENT_SPEED,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_boots"),
+                            BOOTS_ID,
                             0.15,
                             AttributeModifier.Operation.ADD_MULTIPLIED_BASE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_boots"),
+                            BOOTS_ID,
                             6,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAGIC_DAMAGE,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_boots"),
+                            BOOTS_ID,
                             1.5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
-                            ResourceLocation.withDefaultNamespace("hua_tuo_boots"),
+                            BOOTS_ID,
                             2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
         }

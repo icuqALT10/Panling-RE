@@ -1,0 +1,113 @@
+{
+  "type": "minecraft:fishing",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "panlingre:bamboo",
+          "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather_boots",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "custom_data": {"id":"plre:boot"},
+                "custom_name": "{\"translate\":\"pl.item.name.boot\"}",
+                "lore": ["{\"translate\":\"pl.item.lore.boot\"}"]
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:spider_eye",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "custom_data": {"id":"plre:spider_eye"}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "panlingre:ys1_jin",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count":{
+                "min":1,
+                "max":5
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "panlingre:ys1_mu",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count":{
+                "min":1,
+                "max":5
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "panlingre:ys1_shui",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count":{
+                "min":1,
+                "max":5
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "panlingre:ys1_huo",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count":{
+                "min":1,
+                "max":5
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "panlingre:ys1_tu",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count":{
+                "min":1,
+                "max":5
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

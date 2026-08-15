@@ -1,0 +1,116 @@
+{
+  "id": "npc_south_te3",
+  "title":"npc/south/te3",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "plre.npc.name.te3"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.south.te3"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.south.te3.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.south.te3.option2"},
+          "command":[
+            "plre opengui villager @s south/te3"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.south.te3.option3"}
+        }
+      ],
+      "endDialog": true
+    },
+    
+
+
+    {
+      "id": "1",
+      "speaker": {"translate": "plre.npc.name.te3"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.south.te3.1"
+        }
+      ],
+      "next": "2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "plre.npc.name.te3"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.south.te3.2"
+        }
+      ],
+      "next": "3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "plre.npc.name.te3"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.south.te3.3"
+        }
+      ],
+      "next": "4"
+    },
+    {
+      "id": "4",
+      "speaker": {"translate": "plre.npc.name.te3"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.south.te3.4"
+        }
+      ],
+      "next": "5"
+    },
+    {
+      "id": "5",
+      "speaker": {"translate": "plre.npc.name.te3"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.south.te3.5"
+        }
+      ],
+      "next": "6"
+    },
+    {
+      "id": "6",
+      "speaker": {"translate": "plre.npc.name.te3"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.south.te3.6"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.south.te3.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.south.te3.option2"},
+          "command":[
+            "plre opengui villager @s south/te3"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.south.te3.option3"}
+        }
+      ]
+    }
+  ]
+}

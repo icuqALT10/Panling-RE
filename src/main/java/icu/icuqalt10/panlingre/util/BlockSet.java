@@ -30,8 +30,8 @@ public record BlockSet(ServerLevel level) {
             if (state.isAir()) continue;
 
             // 将方块写入目标位置
-            // 参数 3 是特殊标志位（Flag），代表：更新方块并同步给客户端
-            level.setBlock(destPos, state, 3);
+            // 使用 UPDATE_CLIENTS(2)：只同步给客户端，不触发邻居更新，避免大面积克隆时连锁方块更新
+            level.setBlock(destPos, state, Block.UPDATE_CLIENTS);
 
             // 如果源方块带有容器或特殊数据
             BlockEntity srcTag = level.getBlockEntity(srcPos);
@@ -48,7 +48,7 @@ public record BlockSet(ServerLevel level) {
 
     public void doFill(BlockPos minPos, BlockPos maxPos, BlockState fillState) {
         for (BlockPos currentPos : BlockPos.betweenClosed(minPos, maxPos)) {
-            level.setBlock(currentPos, fillState, 3);
+            level.setBlock(currentPos, fillState, Block.UPDATE_CLIENTS);
         }
     }
 

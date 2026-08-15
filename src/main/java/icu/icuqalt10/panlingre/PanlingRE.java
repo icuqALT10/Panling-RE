@@ -9,7 +9,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import org.slf4j.Logger;
 
@@ -38,6 +37,7 @@ public class PanlingRE {
         modEventBus.addListener(ModBusEvents::onAttributeModification);
         modEventBus.addListener(ModBusEvents::commonSetup);
 
+        // 仅在物理客户端注册客户端事件
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(ClientModEvents::register);
         }
@@ -47,8 +47,5 @@ public class PanlingRE {
         //子功能
         OpenGuiSubTool.init(modEventBus);
     }
-
-
-
 
 }

@@ -1,0 +1,26 @@
+summon skeleton ~ ~ ~ {CanPickUpLoot:false,ArmorDropChances:[0f,0f,0f,0f],HandDropChances:[0f,0f],Health:10000000000.0f,\
+Tags:["monster","baihu","skeleton"],\
+CustomNameVisible:1b,CustomName:'{"translate":"plre.monster.west.tiger_skeleton"}',\
+DeathLootTable:"plre:empty",\
+attributes:\
+[\
+{id:"generic.max_health",base:12},\
+{id:"generic.movement_speed",base:0},\
+{id:"generic.minecraft:attack_damage",base:0},\
+{id:"generic.armor",base:0d},\
+{id:"generic.follow_range",base:100d},\
+{id:"panlingre:arrow_damage",base:1},\
+],\
+ArmorItems:\
+[\
+{},\
+{},\
+{},\
+{id:"minecraft:leather_helmet",count:1b,components:{unbreakable:{}}}\
+],\
+HandItems:\
+[\
+{id:"minecraft:bow",components:{unbreakable:{},enchantments:{punch:9}}},\
+{}\
+],\
+Team:"monster",PersistenceRequired:1b,Invulnerable:1b}

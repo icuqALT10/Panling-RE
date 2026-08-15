@@ -1,0 +1,19 @@
+{
+	id: "184169c5-b45a-42de-9975-d836b159f5b2"
+	type: "party"
+	owner: "0db8595e-b2d6-3104-afa5-4f224858326a"
+	ranks: {
+		0db8595e-b2d6-3104-afa5-4f224858326a: "owner"
+	}
+	properties: {
+		"ftbteams:display_name": "ten_nights's Party"
+		"ftbteams:description": ""
+		"ftbteams:color": "#FF59B1"
+		"ftbteams:free_to_join": 0b
+		"ftbteams:max_msg_history_size": 1000
+		"ftbteams:team_stages": [ ]
+		"ftbteams:lives_remaining": 0
+	}
+	message_history: [{ from: "00000000-0000-0000-0000-000000000000", date: 1781669215238L, text: "{\"translate\":\"ftbteams.message.joined\",\"with\":[\"ten_nights\"],\"color\":\"yellow\"}" }]
+	extra: { }
+}

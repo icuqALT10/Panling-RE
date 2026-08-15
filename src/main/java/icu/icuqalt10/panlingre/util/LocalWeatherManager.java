@@ -181,7 +181,8 @@ public class LocalWeatherManager {
 
     private ServerPlayer getPlayerByUUID(UUID uuid) {
         if (centerEntity.level() instanceof ServerLevel serverLevel) {
-            return (ServerPlayer) serverLevel.getPlayerByUUID(uuid);
+            // PlayerList 内部维护按 UUID 的 Map，O(1) 查找，避免每次遍历在线玩家列表
+            return serverLevel.getServer().getPlayerList().getPlayer(uuid);
         }
         return null;
     }

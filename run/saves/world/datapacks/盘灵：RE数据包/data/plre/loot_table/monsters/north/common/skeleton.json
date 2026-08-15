@@ -1,0 +1,66 @@
+{
+    "type":"minecraft:entity",
+    "pools": [
+        {
+            "rolls": 3,
+            "functions":[
+                {
+                    "function": "minecraft:set_count",
+                    "count":{
+                        "min": 0,
+                        "max": 2
+                    }
+                }
+            ],
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "panlingre:ys1_shui"
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "panlingre:ys1_mu"
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "panlingre:ys1_tu"
+                }
+                
+            ]
+        },
+        {
+            "rolls":1, 
+            "conditions": [
+                {
+                    "condition": "minecraft:random_chance",
+                    "chance": 0.2
+                }
+            ],
+            "entries": [
+                {   
+                    "type": "minecraft:item",
+                    "name": "panlingre:yuan_bao",
+            "functions":[
+                {
+                    "function": "minecraft:set_count",
+                    "count":{
+                        "min": 0,
+                        "max": 2
+                    }
+                }
+                ]
+                }
+
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:loot_table",
+                    "value": "plre:monsters/common"
+                }
+            ]
+        }
+    ]
+}

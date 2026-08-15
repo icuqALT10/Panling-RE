@@ -1,0 +1,14 @@
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","west","common","zombie"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "west.common.zombie"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","west","common","skeleton"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "west.common.skeleton"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","west","common","cave_spider"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "west.common.cave_spider"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","west","elite","box_zombie"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "west.elite.box_zombie"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","west","elite","box_skeleton"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "west.elite.box_skeleton"}']
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","west","elite","box_cave_spider"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:800s,MinSpawnDelay:200s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "west.elite.box_cave_spider"}']
+
+
+give @s spawner[minecraft:block_entity_data={SpawnPotentials:[{data:{entity:{id:"minecraft:marker",NoGravity:1b,Tags:["spawn_entity","west","boss","wither_skeleton"],Silent:1b}},weight:1}],MaxNearbyEntities:2s,RequiredPlayerRange:18s,SpawnCount:1s,MaxSpawnDelay:1600s,MinSpawnDelay:800s,SpawnRange:0,Delay:10s,id:"mob_spawner"},minecraft:custom_name='{"text": "west.boss.wither_skeleton"}']

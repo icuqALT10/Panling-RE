@@ -25,6 +25,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class ys2_jin extends Item {
 
@@ -70,11 +74,27 @@ public class ys2_jin extends Item {
             if (launchRight.lengthSqr() < 0.01D) launchRight = new Vec3(1.0D, 0.0D, 0.0D);
             launchRight = launchRight.normalize();
             double[] launchOffsets = {-0.65D, 0.0D, 0.65D};
+            List<LivingEntity> bladeTargets = new ArrayList<>(3);
             for (int bladeIndex = 0; !targets.isEmpty() && bladeIndex < 3; bladeIndex++) {
-                LivingEntity target = targets.get(bladeIndex % targets.size());
+                bladeTargets.add(targets.get(bladeIndex % targets.size()));
+            }
+
+            // 同一目标会在同一 tick 被命中，逐刃调用 hurt 会被受伤保护合并掉。
+            // 因此每个目标只由第一枚利刃结算一次总伤害，其余利刃仅保留视觉表现。
+            Map<Integer, Integer> bladesPerTarget = new HashMap<>();
+            for (LivingEntity target : bladeTargets) {
+                bladesPerTarget.merge(target.getId(), 1, Integer::sum);
+            }
+            Set<Integer> settledTargets = new HashSet<>();
+            for (int bladeIndex = 0; bladeIndex < bladeTargets.size(); bladeIndex++) {
+                LivingEntity target = bladeTargets.get(bladeIndex);
+                boolean dealsDamage = settledTargets.add(target.getId());
+                double bladeDamage = dealsDamage
+                        ? attack_damage * bladesPerTarget.get(target.getId())
+                        : 0.0D;
                 Vec3 launchPoint = origin.add(launchRight.scale(launchOffsets[bladeIndex]));
                 JinLiRenEntity blade = JinLiRenEntity.createCurved(
-                        level, player, target, attack_damage, launchPoint);
+                        level, player, target, bladeDamage, launchPoint);
                 if (blade != null) level.addFreshEntity(blade);
             }
             if (targets.isEmpty()) {

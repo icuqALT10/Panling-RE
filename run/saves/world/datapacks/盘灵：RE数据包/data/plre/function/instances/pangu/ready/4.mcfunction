@@ -1,0 +1,6 @@
+playsound entity.player.teleport ambient @a[x=-184,y=98,z=-821,distance=..40] -189 112 -832 10 1 1
+
+summon armor_stand -189 112 -832 {ArmorItems:[{id:"minecraft:chainmail_boots",count:1},{id:"minecraft:chainmail_leggings",count:1},{id:"minecraft:chainmail_chestplate",count:1},{id:"minecraft:player_head",count:1,components:{profile:{properties:[{name:"textures",value:"eyJ0aW1lc3RhbXAiOjE0MTEyODYxMjYzMjIsInByb2ZpbGVJZCI6IjViYjE5ZjBjNDBjNjQzMmZhMGY0NTQyZDAzY2YzZGNjIiwicHJvZmlsZU5hbWUiOiJBdWRpYWNlMDgwOSIsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jMTlmYzlhZTM3YmZkMTNlY2I5ZmNkMmJlNWYxOWRhZjkzOWI2OTA2ZjU5NjU3NmFlYWU1M2QxYjE1NGRlYiJ9fX0="}]}}}],CustomNameVisible:0b,Invulnerable:1b,DisabledSlots:2039552,Invisible:0b,NoBasePlate:1b,NoGravity:1b,ShowArms:1b,Small:0b,Pose:{Body:[0.0F,0.0F,0.0F],LeftArm:[20F,0.0F,30F],RightArm:[20F,0.0F,330F],LeftLeg:[0.0F,0.0F,0.0F],RightLeg:[0.0F,0.0F,0.0F],Head:[25.0F,0.0F,0.0F]},Rotation:[-30F,0.0F]}
+
+
+schedule function plre:instances/pangu/ready/5 10t replace

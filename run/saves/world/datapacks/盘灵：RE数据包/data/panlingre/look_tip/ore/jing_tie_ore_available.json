@@ -1,0 +1,15 @@
+{
+    "title": [
+        {"translate":"block.panlingre.jing_tie_ore"},
+        {"translate":"plre.looktip.ore.available.pickaxe.iron"}
+    ],
+    "entries": [
+        {
+            "type": "block",
+            "name": "panlingre:jing_tie_ore",
+            "block_state": {
+                "has_ore": "true"
+            }
+        }
+    ]
+}

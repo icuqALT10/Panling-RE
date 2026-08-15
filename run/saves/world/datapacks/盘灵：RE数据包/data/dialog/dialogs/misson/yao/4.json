@@ -1,0 +1,105 @@
+{
+  "id": "misson_yao_4",
+  "title":"misson/yao/4",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.yaomain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.4"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.yao.4.option"},
+          "target": "1",
+          "visibility_command": "execute if score @s misson_yao matches 4"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.yaomain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.4.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "pl.npc.name.yaomain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.4.2"
+        }
+      ],
+      "next":"3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "pl.npc.name.yaomain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.4.3"
+        }
+      ],
+      "next":"4"
+    },
+    {
+      "id": "4",
+      "speaker": {"translate": "pl.npc.name.yaomain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.4.4"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "minecraft:nether_wart",
+          "count":1,
+          "nbt":"{\"minecraft:custom_name\":{\"translate\":\"pl.item.name.yaomain3\"},\"minecraft:lore\":[{\"translate\":\"pl.item.lore.yaomain3\"}]}"
+        }
+      ],
+      "next":"5"
+    },
+    {
+      "id": "5",
+      "speaker": {"translate": "pl.npc.name.yaomain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.4.5"
+        }
+      ],
+      "next":"6"
+    },
+    {
+      "id": "6",
+      "speaker": {"translate": "pl.npc.name.yaomain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.yao.4.6"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/yao/4"
+      ],
+      "endDialog": true
+    }
+  ]
+}

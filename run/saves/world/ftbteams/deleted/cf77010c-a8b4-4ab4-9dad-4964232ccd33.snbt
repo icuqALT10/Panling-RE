@@ -1,0 +1,24 @@
+{
+	id: "cf77010c-a8b4-4ab4-9dad-4964232ccd33"
+	type: "party"
+	owner: "1dd5b132-2298-4029-8755-438bb46d59f0"
+	ranks: {
+		0db8595e-b2d6-3104-afa5-4f224858326a: "member"
+		1dd5b132-2298-4029-8755-438bb46d59f0: "owner"
+	}
+	properties: {
+		"ftbteams:display_name": "icuqALT10's Party"
+		"ftbteams:description": ""
+		"ftbteams:color": "#BAFF59"
+		"ftbteams:free_to_join": 0b
+		"ftbteams:max_msg_history_size": 1000
+		"ftbteams:team_stages": [ ]
+		"ftbteams:lives_remaining": 0
+	}
+	message_history: [
+		{ from: "00000000-0000-0000-0000-000000000000", date: 1781669434888L, text: "{\"translate\":\"ftbteams.message.joined\",\"with\":[\"icuqALT10\"],\"color\":\"yellow\"}" }
+		{ from: "1dd5b132-2298-4029-8755-438bb46d59f0", date: 1781669470540L, text: "{\"translate\":\"ftbteams.message.invited\",\"with\":[{\"text\":\"ten_nights\",\"color\":\"yellow\"}],\"color\":\"green\"}" }
+		{ from: "00000000-0000-0000-0000-000000000000", date: 1781669474494L, text: "{\"translate\":\"ftbteams.message.joined\",\"with\":[\"ten_nights\"],\"color\":\"green\"}" }
+	]
+	extra: { }
+}

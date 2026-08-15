@@ -1,0 +1,12 @@
+{
+    "criteria": {
+        "trigger":{
+            "trigger": "minecraft:impossible",
+            "conditions": {
+            }
+        }
+    },
+    "rewards": {
+        "function": "plre:task/misson/zhan/17"
+    }
+}

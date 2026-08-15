@@ -187,15 +187,18 @@ public class GameBusEvents {
                 LingQiData data = player.getData(ModAttachments.LINGQI);
                 float max = (float) player.getAttributeValue(ModAttributes.MAX_LINGQI);
 
+                float before = data.getCurrent();
+
                 //每10t恢复（如果没有被冻结）
                 if (!player.hasEffect(ModEffects.freeze) && data.getCurrent() < max) {
                     float recovery = (float) player.getAttributeValue(ModAttributes.LING_QI_RECOVERY) * 0.5f;
                     data.setCurrent(data.getCurrent() + max * recovery, player);
                 }
 
-                //同步灵气条
-                data.setCurrent(Math.min(data.getCurrent(),max),player);
-                data.sync(player);
+                //仅在灵气值实际变化时才同步，避免每10t无意义发包
+                if (data.getCurrent() != before) {
+                    data.sync(player);
+                }
         }
     }
 
@@ -242,7 +245,8 @@ public class GameBusEvents {
         Entity entity = event.getEntity();
 
         // NoAI mobs do not move, so they need an explicit collision check to press plates beneath them.
-        if (entity instanceof Mob mob && mob.isNoAi() && !mob.level().isClientSide()) {
+        // 这些实体不会移动，无需每 tick 检查，每 20 tick（1秒）扫一次即可。
+        if (entity instanceof Mob mob && mob.isNoAi() && !mob.level().isClientSide() && mob.tickCount % 20 == 0) {
             AABB box = mob.getBoundingBox();
             BlockPos min = BlockPos.containing(box.minX + 1.0E-7, box.minY + 1.0E-7, box.minZ + 1.0E-7);
             BlockPos max = BlockPos.containing(box.maxX - 1.0E-7, box.minY + 1.0E-7, box.maxZ - 1.0E-7);
@@ -294,7 +298,7 @@ public class GameBusEvents {
                         bumpedentity.hurt(serverLevel.damageSources().explosion(creeper, damageOwner), damage);
 
                         // 计算击飞向量 (由苦力怕指向玩家的方向，给予 XZ 方向冲量，并给予稳定的向上速度)
-                        if (entity.getType().is(CantKnockAway_TAG)) {
+                        if (!entity.getType().is(CantKnockAway_TAG)) {
                             Vec3 moveDirection = bumpedentity.position().subtract(creeper.position()).normalize().scale(1.4);
                             bumpedentity.setDeltaMovement(moveDirection.x, 0.65, moveDirection.z);
                             bumpedentity.hurtMarked = true;

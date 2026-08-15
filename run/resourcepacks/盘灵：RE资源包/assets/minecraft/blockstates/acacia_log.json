@@ -1,0 +1,31 @@
+{
+    "variants": {
+        "axis=y":   [
+			{ "model": "block/acacia_log_2" },
+			{ "model": "block/acacia_log_3" },
+			{ "model": "block/acacia_log_4" },
+			{ "model": "block/acacia_log_5" },
+			{ "model": "block/acacia_log_2", "y": 90 },
+			{ "model": "block/acacia_log_3", "y": 90 },
+			{ "model": "block/acacia_log_4", "y": 90 },
+			{ "model": "block/acacia_log_5", "y": 90 },
+			{ "model": "block/acacia_log_8" }
+		],
+        "axis=z":   [
+			{ "model": "block/acacia_log_1" },
+			{ "model": "block/acacia_log_1", "y": 90 },
+			{ "model": "block/acacia_log_1", "y": 180 },
+			{ "model": "block/acacia_log_1", "y": 270 }
+		],
+        "axis=x":   [
+			{ "model": "block/acacia_log_6" },
+			{ "model": "block/acacia_log_7" },
+			{ "model": "block/acacia_log_6", "y": 90 },
+			{ "model": "block/acacia_log_7", "y": 90 },
+			{ "model": "block/acacia_log_6", "y": 180 },
+			{ "model": "block/acacia_log_7", "y": 180 },
+			{ "model": "block/acacia_log_6", "y": 270 },
+			{ "model": "block/acacia_log_7", "y": 270 }
+		]
+    }
+}

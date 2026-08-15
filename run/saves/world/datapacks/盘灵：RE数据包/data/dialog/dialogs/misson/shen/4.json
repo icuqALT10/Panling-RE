@@ -1,0 +1,54 @@
+{
+  "id": "misson_shen_4",
+  "title":"misson/shen/4",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.shenmain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.4"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.shen.4.option"},
+          "target": "1",
+          "visibility_command": "execute if score @s misson_shen matches 4"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "1",
+      "speaker": {"translate": "pl.npc.name.shenmain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.4.1"
+        }
+      ],
+      "next":"2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "pl.npc.name.shenmain4"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.4.2"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/4"
+      ],
+      "endDialog": true
+    }
+  ]
+}

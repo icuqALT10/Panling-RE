@@ -1,0 +1,41 @@
+{
+    "__createdwith": "opl's Model Creator",
+    "ambientocclusion": false,
+    "textures": {
+        "particle": "block/other/door_iron_upper",
+        "bottom": "block/other/door_iron_lower",
+        "top": "block/other/door_iron_upper"
+    },
+    "elements": [
+        {
+            "from": [0,0,0],
+            "to": [3,16,16],
+            "faces": {
+                "down": {
+                    "uv": [0,5.5,16,8],
+                    "texture": "#bottom",
+                    "cullface": "down",
+                    "rotation": 270
+                },
+                "west": {
+                    "texture": "#bottom",
+                    "cullface": "west"
+                },
+                "east": {
+                    "uv": [16,0,0,16],
+                    "texture": "#bottom"
+                },
+                "north": {
+                    "uv": [2,0,0,16],
+                    "texture": "#bottom",
+                    "cullface": "north"
+                },
+                "south": {
+                    "uv": [0,0,2,16],
+                    "texture": "#bottom",
+                    "cullface": "south"
+                }
+            }
+        }
+    ]
+}

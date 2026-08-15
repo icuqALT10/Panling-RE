@@ -1,0 +1,7 @@
+#对话系统服务端配置
+[dialog_server]
+
+	#对话控制配置
+	[dialog_server.control]
+		#是否允许玩家使用Ctrl键跳过对话
+		allowSkipDialog = true

@@ -1,0 +1,92 @@
+{
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "7A6467AFAC4615D9"
+	group: ""
+	icon: {
+		id: "minecraft:pink_dye"
+	}
+	id: "7A6467AFAC4615D9"
+	order_index: 1
+	quest_links: [ ]
+	quests: [
+		{
+			icon: {
+				id: "minecraft:pink_dye"
+			}
+			id: "68FDBDEE884D3EAD"
+			tasks: [{
+				id: "61F7540EF96EF851"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			icon: {
+				components: {
+					"ftbquests:icon": "panlingre:textures/gui/hud/armor.png"
+				}
+				id: "ftbquests:custom_icon"
+			}
+			id: "01BACC2F6FD6F306"
+			tasks: [{
+				id: "1F681B4632730B0B"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: -3.5d
+		}
+		{
+			icon: {
+				components: {
+					"ftbquests:icon": "panlingre:textures/mob_effect/freeze.png"
+				}
+				id: "ftbquests:custom_icon"
+			}
+			id: "5721DE0057D4C6BF"
+			tasks: [{
+				id: "2E04F7C98ED6D892"
+				type: "checkmark"
+			}]
+			x: 2.0d
+			y: -2.5d
+		}
+		{
+			icon: {
+				components: {
+					"ftbquests:icon": "ftbteams:textures/accept.png"
+				}
+				id: "ftbquests:custom_icon"
+			}
+			id: "642267F1909B5446"
+			tasks: [{
+				id: "19B13331F2CBB53C"
+				type: "checkmark"
+			}]
+			x: -2.0d
+			y: -2.5d
+		}
+		{
+			can_repeat: true
+			icon: {
+				components: {
+					"ftbquests:icon": "ftbquests:textures/qusets/guide/structure/north/sheng_shan.png"
+				}
+				id: "ftbquests:custom_icon"
+			}
+			id: "035B351F4623117B"
+			rewards: [{
+				command: "/function plre:instances/model_change"
+				id: "71FEFF3A170B7096"
+				type: "command"
+			}]
+			tasks: [{
+				id: "03D2CBBF6D682B30"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: 3.5d
+		}
+	]
+}

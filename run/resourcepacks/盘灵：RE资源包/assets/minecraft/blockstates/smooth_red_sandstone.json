@@ -1,0 +1,31 @@
+{
+    "variants": {
+        "": [
+			{ "model": "block/red_sandstone_smooth_0", "weight": 99 },
+			{ "model": "block/red_sandstone_smooth_1", "weight": 4 },
+			{ "model": "block/red_sandstone_smooth_2", "weight": 3 },
+			{ "model": "block/red_sandstone_smooth_3", "weight": 2 },
+			{ "model": "block/red_sandstone_smooth_4", "weight": 4 },
+			{ "model": "block/red_sandstone_smooth_5", "weight": 3 },
+			{ "model": "block/red_sandstone_smooth_6", "weight": 2 },
+			{ "model": "block/red_sandstone_smooth_1", "y": 90, "weight": 4 },
+			{ "model": "block/red_sandstone_smooth_2", "y": 90, "weight": 3 },
+			{ "model": "block/red_sandstone_smooth_3", "y": 90, "weight": 2 },
+			{ "model": "block/red_sandstone_smooth_4", "y": 90, "weight": 4 },
+			{ "model": "block/red_sandstone_smooth_5", "y": 90, "weight": 3 },
+			{ "model": "block/red_sandstone_smooth_6", "y": 90, "weight": 2 },
+			{ "model": "block/red_sandstone_smooth_1", "y": 180, "weight": 4 },
+			{ "model": "block/red_sandstone_smooth_2", "y": 180, "weight": 3 },
+			{ "model": "block/red_sandstone_smooth_3", "y": 180, "weight": 2 },
+			{ "model": "block/red_sandstone_smooth_4", "y": 180, "weight": 4 },
+			{ "model": "block/red_sandstone_smooth_5", "y": 180, "weight": 3 },
+			{ "model": "block/red_sandstone_smooth_6", "y": 180, "weight": 2 },
+			{ "model": "block/red_sandstone_smooth_1", "y": 270, "weight": 4 },
+			{ "model": "block/red_sandstone_smooth_2", "y": 270, "weight": 3 },
+			{ "model": "block/red_sandstone_smooth_3", "y": 270, "weight": 2 },
+			{ "model": "block/red_sandstone_smooth_4", "y": 270, "weight": 4 },
+			{ "model": "block/red_sandstone_smooth_5", "y": 270, "weight": 3 },
+			{ "model": "block/red_sandstone_smooth_6", "y": 270, "weight": 2 }
+		]
+    }
+}

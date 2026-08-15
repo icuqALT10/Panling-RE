@@ -1,0 +1,17 @@
+{
+  "id": "dan_yao_pu",
+  "type": "OVERLAY",
+  "start": "1",
+  "entries": [
+    {
+      "id": "1",
+      "speaker": "",
+      "text": [
+        {
+          "translate": "plre.dialog.scene.dan_yao_pu.tellraw"
+        }
+      ],
+      "out_time":2000
+    }
+  ]
+}

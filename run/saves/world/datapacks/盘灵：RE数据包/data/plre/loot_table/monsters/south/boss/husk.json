@@ -1,0 +1,83 @@
+{
+    "type":"minecraft:entity",
+    "pools": [
+        {
+            "rolls":3,
+            "entries": [
+                {
+                    "type": "minecraft:loot_table",
+                    "value": "plre:monsters/south/common/husk"
+                }
+            ]
+        },
+        {
+            "rolls":1,
+            "entries": [
+                {   
+                    "type": "minecraft:item",
+                    "name": "panlingre:rare3_yuanhe_fra"
+                }
+
+            ]
+        },
+        {
+            "rolls":1, 
+            "conditions": [
+                {
+                    "condition": "minecraft:random_chance",
+                    "chance": 0.2
+                }
+            ],
+            "entries": [
+                {   
+                    "type": "minecraft:item",
+                    "name": "panlingre:rare3_yuanhe"
+                }
+
+            ]
+        },
+        {
+            "rolls":1, 
+            "conditions": [
+                {
+                    "condition": "minecraft:random_chance",
+                    "chance": 0.3
+                }
+            ],
+            "entries": [
+                {   
+                    "type": "minecraft:item",
+                    "name": "panlingre:yuan_bao",
+            "functions":[
+                {
+                    "function": "minecraft:set_count",
+                    "count":{
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+                ]
+                }
+
+            ]
+        },
+        {
+            "rolls":1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "panlingre:respawn_stone",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,70 @@
+{
+	"pl.special_room.entity.name.1":"纪念品扭蛋机",
+	"pl.special_room.entity.name.2":"右键旋转转盘抽奖",
+	"pl.special_room.entity.name.3":"官方网站",
+	"pl.special_room.entity.name.4":"粉丝专页",
+	
+	"pl.sign.special_room.1.text2":"员工休息室",
+	
+	"pl.sign.special_room.2.text2":"技术总监",
+	"pl.sign.special_room.2.text3":"小坤",
+	
+	"pl.sign.special_room.3.text2":"总召",
+	"pl.sign.special_room.3.text3":"水狼陽介",
+	
+	"pl.sign.special_room.4.text2":"艺术音效总监",
+	"pl.sign.special_room.4.text3":"MR.P",
+	
+	"pl.sign.special_room.5.text2":"NPC与杂物总管",
+	"pl.sign.special_room.5.text3":"Audiace",
+	
+	"pl.sign.special_room.6.text2":"战役总监",
+	"pl.sign.special_room.6.text3":"Jerry",
+	
+	"pl.info.www.1":"§e官方网站  [鼠标点击前往](需要科学上网)",
+	"pl.info.www.2":"§e粉丝专页  [鼠标点击前往](需要科学上网)",
+	
+	"pl.info.gashapon.success":"你花费了一枚代币，获得了一个纪念道具！",
+	"pl.info.gashapon.failing":"你没有PG币呢，请购买代币后再来扭蛋吧！",
+	
+	"pl.item.lore.special_item_all":"§b纪念物品",
+	
+	"pl.item.name.figurine_0":"§b水狼捏面人",
+	"pl.item.lore.figurine_0_a":"§7§o惟妙惟肖的小人",
+	"pl.item.lore.figurine_0_b":"§7§o看起来似乎很好吃？",
+	"pl.item.name.figurines":"§b纪念版限定玩偶",
+	"pl.item.lore.figurine_1":"§7奥迪亚斯玩偶",
+	"pl.item.lore.figurine_2":"§7KY玩偶",
+	"pl.item.lore.figurine_3":"§7仙族玩偶",
+	"pl.item.lore.figurine_4":"§7神族玩偶",
+	"pl.item.lore.figurine_5":"§7人族玩偶",
+	"pl.item.lore.figurine_6":"§7妖族玩偶",
+	"pl.item.lore.figurine_7":"§7战神族玩偶",
+	"pl.item.lore.figurine_8":"§7MTW看板娘玩偶",
+	"pl.item.lore.figurine_8_a":"§7§o貓樂绘制",
+	"pl.item.lore.figurine_9":"§7小坤玩偶",
+	"pl.item.lore.figurine_10":"§7MRP玩偶",
+	"pl.item.lore.figurine_11":"§7阿城玩偶",
+	"pl.item.lore.figurine_12":"§7Jerry玩偶",
+	"pl.item.lore.figurine_13":"§7九秋玩偶",
+
+	"pl.item.name.special_item1":"§b绮凝盏",
+	"pl.item.lore.special_item1a":"§7§o透明美丽的琉璃盏,",
+	"pl.item.lore.special_item1b":"§7§o历经千年岁月不曾黯淡半分。",
+	"pl.item.lore.special_item1c":"§6潇湘有物,似杯似碗。",
+	"pl.item.lore.special_item1d":"§6晶莹剔透,暗香明盏。",
+	"pl.item.lore.special_item1e":"§6盛酒三钱,一梦千载。",
+
+	"pl.item.name.special_egg_norma_1":"§b蚊子搭建副本用剩的石头",
+	"pl.item.lore.special_egg_norma_1_a":"§7§o上面好像写着.....“死亡就过关”？",
+	"pl.item.lore.special_egg_norma_1_b":"§6投稿者：§b蚊子",
+	
+	"pl.item.name.special_egg_norma_2":"§b漆黑的头颅",
+	"pl.item.lore.special_egg_norma_2_a":"§7§o整日追逐太阳却始终无法得到之人的头颅",
+	"pl.item.lore.special_egg_norma_2_b":"§7§o据说是因为始终追逐使身体日渐消瘦",
+	"pl.item.lore.special_egg_norma_2_c":"§7§o最后身体被焚烧殆尽",
+	"pl.item.lore.special_egg_norma_2_d":"§7§o只剩下这漆黑的头颅",
+	"pl.item.lore.special_egg_norma_2_e":"§6投稿者：§b对逐日怨念极深的xy"
+
+
+}

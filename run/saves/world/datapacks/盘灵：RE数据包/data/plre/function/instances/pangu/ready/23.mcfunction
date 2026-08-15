@@ -1,0 +1,1 @@
+tellraw @a[x=2992,y=0,z=-2400,dx=271,dy=255,dz=303] {"translate": "plre.instance.dialog.pangu.9"}

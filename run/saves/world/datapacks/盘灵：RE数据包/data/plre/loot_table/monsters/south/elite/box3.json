@@ -1,0 +1,31 @@
+{
+    "type":"minecraft:entity",
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "orange_dye",
+                    "functions": [
+                        {
+                            "function": "set_components",
+                            "components": {
+                                "custom_data": {"id":"plre:te4"},
+                                "custom_name": "{\"translate\":\"pl.item.name.tezhan\"}",
+                                "lore": ["{\"translate\":\"pl.item.lore.tezhana\"}","{\"translate\":\"pl.item.lore.tezhanb\"}"]
+                            }
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 0,
+                                "max": 3
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

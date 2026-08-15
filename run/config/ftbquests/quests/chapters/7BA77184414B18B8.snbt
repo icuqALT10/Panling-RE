@@ -1,0 +1,1422 @@
+{
+	autofocus_id: "0E45252EE529D4EA"
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "7BA77184414B18B8"
+	group: "45E9F6E0A0BA2A7B"
+	icon: {
+		id: "minecraft:nether_brick"
+	}
+	id: "7BA77184414B18B8"
+	images: [
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare1.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: 4.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare2.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: 7.0d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare3.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: 9.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare4.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: 12.0d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare5.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: 14.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare6.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: 17.0d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare1.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: -4.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare2.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: -6.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare3.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: -8.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare4.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: -10.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare5.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: -12.5d
+		}
+		{
+			height: 2.0d
+			image: "ftbquests:textures/qusets/guide/rare/rare6.png"
+			rotation: 0.0d
+			width: 8.0d
+			x: -12.0d
+			y: -14.5d
+		}
+	]
+	order_index: 0
+	quest_links: [ ]
+	quests: [
+		{
+			id: "0E45252EE529D4EA"
+			tasks: [{
+				id: "0397827DBA9B8C4F"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			dependencies: ["0E45252EE529D4EA"]
+			icon: {
+				id: "panlingre:archer"
+			}
+			id: "593A06A3F84BEA2D"
+			tasks: [{
+				id: "12F1E2E46556A4D1"
+				type: "checkmark"
+			}]
+			x: 0.0d
+			y: 3.0d
+		}
+		{
+			dependencies: ["0E45252EE529D4EA"]
+			icon: {
+				id: "panlingre:warrior"
+			}
+			id: "3EC62FF586972565"
+			tasks: [{
+				id: "4C60773DA16B463F"
+				type: "checkmark"
+			}]
+			x: -6.0d
+			y: 3.0d
+		}
+		{
+			dependencies: ["0E45252EE529D4EA"]
+			icon: {
+				id: "panlingre:warlock"
+			}
+			id: "3A25920E468CED3B"
+			tasks: [{
+				id: "19AC28A688D7238B"
+				type: "checkmark"
+			}]
+			x: 6.0d
+			y: 3.0d
+		}
+		{
+			dependencies: ["0E45252EE529D4EA"]
+			icon: {
+				id: "minecraft:nether_brick"
+			}
+			id: "5C9A2A976866228D"
+			tasks: [{
+				id: "0B7FFF14E8FC6283"
+				type: "checkmark"
+			}]
+			x: -4.0d
+			y: -3.0d
+		}
+		{
+			dependencies: ["3A25920E468CED3B"]
+			icon: {
+				id: "panlingre:wan_ling"
+			}
+			id: "011367347B018D5A"
+			tasks: [{
+				id: "0A91F23B272E4964"
+				type: "checkmark"
+			}]
+			x: 9.5d
+			y: 9.5d
+		}
+		{
+			dependencies: ["0E45252EE529D4EA"]
+			icon: {
+				id: "panlingre:po_di_fu_1"
+			}
+			id: "1085E9FF665D48DE"
+			tasks: [{
+				id: "3D030AF3BF3513C0"
+				type: "checkmark"
+			}]
+			x: 4.0d
+			y: -3.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"3EC62FF586972565"
+			]
+			dependency_requirement: "one_completed"
+			id: "24BF00A0D1F0B1B6"
+			optional: true
+			rewards: [{
+				id: "5B82521B21CD8DBE"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "4E150B941A191B56"
+				item: { count: 1, id: "panlingre:tao_mu_jian" }
+				type: "item"
+			}]
+			x: -6.0d
+			y: 4.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"24BF00A0D1F0B1B6"
+			]
+			dependency_requirement: "one_completed"
+			id: "5527398909E0B79E"
+			optional: true
+			rewards: [{
+				id: "7478359AAF153CA6"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "2274B6859DC02196"
+				item: { count: 1, id: "panlingre:kai_shan_dao" }
+				type: "item"
+			}]
+			x: -7.5d
+			y: 7.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"24BF00A0D1F0B1B6"
+			]
+			dependency_requirement: "one_completed"
+			id: "1E45D83D1B2ABD12"
+			optional: true
+			rewards: [{
+				id: "12AB16AE6540C3A2"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "067FDDDCA7B5B90B"
+				item: { count: 1, id: "panlingre:jing_tie_jian" }
+				type: "item"
+			}]
+			x: -4.5d
+			y: 7.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"5527398909E0B79E"
+			]
+			dependency_requirement: "one_completed"
+			id: "6E585D3C33C82694"
+			optional: true
+			rewards: [{
+				id: "302040E23799CE16"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "35DC7F2980EF26FA"
+				item: { count: 1, id: "panlingre:chi_tong_jian" }
+				type: "item"
+			}]
+			x: -7.5d
+			y: 9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"1E45D83D1B2ABD12"
+			]
+			dependency_requirement: "one_completed"
+			id: "1E9BB00F9F2AEC41"
+			optional: true
+			rewards: [{
+				id: "52776EE591EDE494"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "7F996287AD3A5F3E"
+				item: { count: 1, id: "panlingre:ju_tong_chui" }
+				type: "item"
+			}]
+			x: -4.5d
+			y: 9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"6E585D3C33C82694"
+			]
+			dependency_requirement: "one_completed"
+			id: "42DFCE228419D07E"
+			optional: true
+			rewards: [{
+				id: "3C87BD157A969D52"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "07C0BE6117DF19E1"
+				item: { count: 1, id: "panlingre:po_kong_fu" }
+				type: "item"
+			}]
+			x: -7.5d
+			y: 12.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"1E9BB00F9F2AEC41"
+			]
+			dependency_requirement: "one_completed"
+			id: "14F0E2064717E50C"
+			optional: true
+			rewards: [{
+				id: "1E663B272C4A0221"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "3BB7A1E11DF72F36"
+				item: { count: 1, id: "panlingre:tai_ji_jian" }
+				type: "item"
+			}]
+			x: -4.5d
+			y: 12.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"42DFCE228419D07E"
+			]
+			dependency_requirement: "one_completed"
+			id: "08E32A86B1C8EC14"
+			optional: true
+			rewards: [{
+				id: "35D1B89E21CC9B54"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "03E8009F14C0A68F"
+				item: { count: 1, id: "panlingre:yu_ru_yi" }
+				type: "item"
+			}]
+			x: -7.5d
+			y: 14.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"14F0E2064717E50C"
+			]
+			dependency_requirement: "one_completed"
+			id: "1F3B7E84B372431D"
+			optional: true
+			rewards: [{
+				id: "0CF382C49359B964"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "67C726312A4D3353"
+				item: { count: 1, id: "panlingre:fei_xian_jian" }
+				type: "item"
+			}]
+			x: -4.5d
+			y: 14.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"08E32A86B1C8EC14"
+				"1F3B7E84B372431D"
+			]
+			dependency_requirement: "one_completed"
+			id: "457B17EA49780799"
+			optional: true
+			progression_mode: "flexible"
+			rewards: [{
+				id: "428F7478E0A4855A"
+				type: "xp"
+				xp: 500
+			}]
+			tasks: [{
+				id: "52E1B237D09DD9D3"
+				item: { count: 1, id: "panlingre:ding_hai_shen_zhen" }
+				type: "item"
+			}]
+			x: -6.0d
+			y: 17.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"593A06A3F84BEA2D"
+			]
+			dependency_requirement: "one_completed"
+			id: "23EF52401BF06B83"
+			optional: true
+			rewards: [{
+				id: "4B03DD1899629A75"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "440481C84656777D"
+				item: { count: 1, id: "panlingre:teng_mu_gong" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: 4.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"23EF52401BF06B83"
+			]
+			dependency_requirement: "one_completed"
+			id: "15047ED3F6B7A65B"
+			optional: true
+			rewards: [{
+				id: "07BD2A04C1041F3B"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "3331C8B823BC166D"
+				item: { count: 1, id: "panlingre:jing_tie_gong" }
+				type: "item"
+			}]
+			x: -1.5d
+			y: 7.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"23EF52401BF06B83"
+			]
+			dependency_requirement: "one_completed"
+			id: "017C702CFA8BD3A7"
+			optional: true
+			rewards: [{
+				id: "5FCC830736FC0CB3"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "5D972F2C41746845"
+				item: { count: 1, id: "panlingre:hei_tie_nu" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: 7.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"15047ED3F6B7A65B"
+			]
+			dependency_requirement: "one_completed"
+			id: "3BCB3389BBD8E85E"
+			optional: true
+			rewards: [{
+				id: "161EDC346E1C0CB0"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "4FCF86C8218241D8"
+				item: { count: 1, id: "panlingre:yan_tie_gong" }
+				type: "item"
+			}]
+			x: -1.5d
+			y: 9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"017C702CFA8BD3A7"
+			]
+			dependency_requirement: "one_completed"
+			id: "09C2E9D39520A9FE"
+			optional: true
+			rewards: [{
+				id: "669B5EE67779CB58"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "45AC2EF7D2C132D6"
+				item: { count: 1, id: "panlingre:hong_ling_nu" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: 9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"3BCB3389BBD8E85E"
+			]
+			dependency_requirement: "one_completed"
+			id: "4415243225D2EF5E"
+			optional: true
+			rewards: [{
+				id: "5E3F2FFED3DDFD59"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "19B8B7C3832A50F7"
+				item: { count: 1, id: "panlingre:zhong_chui_gong" }
+				type: "item"
+			}]
+			x: -1.5d
+			y: 12.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"09C2E9D39520A9FE"
+			]
+			dependency_requirement: "one_completed"
+			id: "7CE3D7A94E981DF1"
+			optional: true
+			rewards: [{
+				id: "0FF17EFA428A9263"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "6F19835F28415C3F"
+				item: { count: 1, id: "panlingre:jiao_long_nu" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: 12.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"4415243225D2EF5E"
+			]
+			dependency_requirement: "one_completed"
+			id: "231A42B5B9865C1A"
+			optional: true
+			rewards: [{
+				id: "619CAD5F804A0E3B"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "5189BE616963CC9C"
+				item: { count: 1, id: "panlingre:bei_dou_gong" }
+				type: "item"
+			}]
+			x: -1.5d
+			y: 14.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7CE3D7A94E981DF1"
+			]
+			dependency_requirement: "one_completed"
+			id: "52CDC6465B1D6EEB"
+			optional: true
+			rewards: [{
+				id: "6FC1A54A74179504"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "2FA8B3FFF121BD4D"
+				item: { count: 1, id: "panlingre:liu_xing_nu" }
+				type: "item"
+			}]
+			x: 1.5d
+			y: 14.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"3A25920E468CED3B"
+			]
+			dependency_requirement: "one_completed"
+			id: "5C79B89CFAFBC3A8"
+			optional: true
+			rewards: [{
+				id: "711CA562B9ECDD0E"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "6E18B6C0845C7090"
+				item: { count: 1, id: "panlingre:huang_tong_lu" }
+				type: "item"
+			}]
+			x: 6.0d
+			y: 4.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"5C79B89CFAFBC3A8"
+			]
+			dependency_requirement: "one_completed"
+			id: "41D5E7B236724AD6"
+			optional: true
+			rewards: [{
+				id: "5D21A6C3DDC9942C"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "2D570E51B8059884"
+				item: { count: 1, id: "panlingre:jing_tie_lu" }
+				type: "item"
+			}]
+			x: 6.0d
+			y: 7.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"41D5E7B236724AD6"
+			]
+			dependency_requirement: "one_completed"
+			id: "1916AD677D03E7B4"
+			optional: true
+			rewards: [{
+				id: "4012E735CC1B6680"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "0B8C5118120683F0"
+				item: { count: 1, id: "panlingre:chi_tong_lu" }
+				type: "item"
+			}]
+			x: 6.0d
+			y: 9.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"1916AD677D03E7B4"
+			]
+			dependency_requirement: "one_completed"
+			id: "06680EE46BB423ED"
+			optional: true
+			rewards: [{
+				id: "081B4AFCE4A7A550"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "721FBD696CF2F7D1"
+				item: { count: 1, id: "panlingre:suo_hun_lu" }
+				type: "item"
+			}]
+			x: 6.0d
+			y: 12.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"06680EE46BB423ED"
+			]
+			dependency_requirement: "one_completed"
+			id: "57ADBEEBFC70B4F8"
+			optional: true
+			rewards: [{
+				id: "2F5DF974401F338B"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "15BAE2DBD6F0B730"
+				item: { count: 1, id: "panlingre:qi_sha_din" }
+				type: "item"
+			}]
+			x: 6.0d
+			y: 14.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"011367347B018D5A"
+			]
+			dependency_requirement: "one_completed"
+			id: "5F5991FE242EF220"
+			optional: true
+			rewards: [{
+				id: "0340D67C02CA63E4"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "366BC735FB0805C6"
+				item: { count: 1, id: "panlingre:wan_ling" }
+				type: "item"
+			}]
+			x: 13.0d
+			y: 4.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"011367347B018D5A"
+			]
+			dependency_requirement: "one_completed"
+			id: "4739A23D3F7A377B"
+			optional: true
+			rewards: [{
+				id: "6013A9FE03A1BA93"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "08992586F7D458D4"
+				item: { count: 1, id: "panlingre:luo_shen" }
+				type: "item"
+			}]
+			x: 13.0d
+			y: 5.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"011367347B018D5A"
+			]
+			dependency_requirement: "one_completed"
+			id: "0DF04E7B7E9D15BC"
+			optional: true
+			rewards: [{
+				id: "6DD4B1E9771A4D70"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "6A8B73AC95DC1237"
+				item: { count: 1, id: "panlingre:hun_yuan_1" }
+				type: "item"
+			}]
+			x: 13.0d
+			y: 7.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"011367347B018D5A"
+			]
+			dependency_requirement: "one_completed"
+			id: "2AB5B2FAF4668A62"
+			optional: true
+			rewards: [{
+				id: "5665728F042DB369"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "7025FFE7F08D46D8"
+				item: { count: 1, id: "panlingre:pi_gu_1" }
+				type: "item"
+			}]
+			x: 13.0d
+			y: 8.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"011367347B018D5A"
+			]
+			dependency_requirement: "one_completed"
+			id: "56430946CDFDD1C1"
+			optional: true
+			rewards: [{
+				id: "3E40B50F0FF0DCFD"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "7D69E52D0235C64C"
+				item: { count: 1, id: "panlingre:hui_chun_1" }
+				type: "item"
+			}]
+			x: 13.0d
+			y: 10.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"011367347B018D5A"
+			]
+			dependency_requirement: "one_completed"
+			id: "1475A51513347A4E"
+			optional: true
+			rewards: [{
+				id: "603005A9647A1FC6"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "6223B46F18E1535B"
+				item: { count: 1, id: "panlingre:tian_shen_1" }
+				type: "item"
+			}]
+			x: 13.0d
+			y: 11.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"011367347B018D5A"
+			]
+			dependency_requirement: "one_completed"
+			id: "47465AAB6E9B2304"
+			optional: true
+			rewards: [{
+				id: "22FEE5B80E7ADB2B"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "3D28A4AEFB2EEBC9"
+				item: { count: 1, id: "panlingre:jiu_zhuan_1" }
+				type: "item"
+			}]
+			x: 13.0d
+			y: 13.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"011367347B018D5A"
+			]
+			dependency_requirement: "one_completed"
+			id: "73E55DA276D7E39E"
+			optional: true
+			rewards: [{
+				id: "4C9507BCA1CBAB0B"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "525DEAD3F934734F"
+				item: { count: 1, id: "panlingre:feng_hou_1" }
+				type: "item"
+			}]
+			x: 13.0d
+			y: 14.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"0DF04E7B7E9D15BC"
+			]
+			dependency_requirement: "one_completed"
+			id: "58E7EB84EF7BBC54"
+			optional: true
+			rewards: [{
+				id: "253B77C02C1BB5F2"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "4ED744099DC8D313"
+				item: { count: 1, id: "panlingre:hun_yuan_2" }
+				type: "item"
+			}]
+			x: 14.5d
+			y: 7.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"58E7EB84EF7BBC54"
+			]
+			dependency_requirement: "one_completed"
+			id: "76F3A740F4014FB5"
+			optional: true
+			rewards: [{
+				id: "75202ED83A9222D5"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "1738A16A3BFD0469"
+				item: { count: 1, id: "panlingre:hun_yuan_3" }
+				type: "item"
+			}]
+			x: 16.0d
+			y: 7.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"2AB5B2FAF4668A62"
+			]
+			dependency_requirement: "one_completed"
+			hide_dependency_lines: false
+			id: "2407A07AE13B51B1"
+			optional: true
+			rewards: [{
+				id: "116BF1FE01BB29E6"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "493A8DA24C0D0306"
+				item: { count: 1, id: "panlingre:pi_gu_2" }
+				type: "item"
+			}]
+			x: 14.5d
+			y: 8.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"2407A07AE13B51B1"
+			]
+			dependency_requirement: "one_completed"
+			id: "0CD367AD81DC5E4F"
+			optional: true
+			rewards: [{
+				id: "0662C6D33882C1E6"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "313941F7F92F1E0E"
+				item: { count: 1, id: "panlingre:pi_gu_3" }
+				type: "item"
+			}]
+			x: 16.0d
+			y: 8.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"56430946CDFDD1C1"
+			]
+			dependency_requirement: "one_completed"
+			id: "2F0197907FCDE067"
+			optional: true
+			rewards: [{
+				id: "5FE4F14C8D8C5642"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "36EF70A0AF754336"
+				item: { count: 1, id: "panlingre:hui_chun_2" }
+				type: "item"
+			}]
+			x: 14.5d
+			y: 10.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"2F0197907FCDE067"
+			]
+			dependency_requirement: "one_completed"
+			id: "539AD9916DB6C5CB"
+			optional: true
+			rewards: [{
+				id: "6C0CC65FF2B26BAD"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "0EDD9ECBFF1D3B7A"
+				item: { count: 1, id: "panlingre:hui_chun_3" }
+				type: "item"
+			}]
+			x: 16.0d
+			y: 10.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"1475A51513347A4E"
+			]
+			dependency_requirement: "one_completed"
+			id: "51BFC2D1D00CC186"
+			optional: true
+			rewards: [{
+				id: "51394184A3F62F44"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "062DB665D4F98692"
+				item: { count: 1, id: "panlingre:tian_shen_2" }
+				type: "item"
+			}]
+			x: 14.5d
+			y: 11.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"51BFC2D1D00CC186"
+			]
+			dependency_requirement: "one_completed"
+			id: "2ED017B630EFEFC3"
+			optional: true
+			rewards: [{
+				id: "581320FAC76E72CE"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "5BD3B5F7455FF7C1"
+				item: { count: 1, id: "panlingre:tian_shen_3" }
+				type: "item"
+			}]
+			x: 16.0d
+			y: 11.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"47465AAB6E9B2304"
+			]
+			dependency_requirement: "one_completed"
+			id: "4F6363B34EA56AD7"
+			optional: true
+			rewards: [{
+				id: "5124E6C5F8E4937C"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "7D6412F36A4E4910"
+				item: { count: 1, id: "panlingre:jiu_zhuan_2" }
+				type: "item"
+			}]
+			x: 14.5d
+			y: 13.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"4F6363B34EA56AD7"
+			]
+			dependency_requirement: "one_completed"
+			id: "6E6F3455E766D341"
+			optional: true
+			rewards: [{
+				id: "44FFBFE7200D799D"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "44765EFBDB781281"
+				item: { count: 1, id: "panlingre:jiu_zhuan_3" }
+				type: "item"
+			}]
+			x: 16.0d
+			y: 13.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"539AD9916DB6C5CB"
+			]
+			dependency_requirement: "one_completed"
+			id: "6C27576A4F99F2FB"
+			optional: true
+			rewards: [{
+				id: "27C68ED358EDDCE6"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "0DAB72589CFA6456"
+				item: { count: 1, id: "panlingre:qi_si" }
+				type: "item"
+			}]
+			x: 17.5d
+			y: 10.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"73E55DA276D7E39E"
+			]
+			dependency_requirement: "one_completed"
+			id: "65DD7D9A943C8D65"
+			optional: true
+			rewards: [{
+				id: "1ED243429C899FA6"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "1DF87A0DEAF7BE34"
+				item: { count: 1, id: "panlingre:feng_hou_2" }
+				type: "item"
+			}]
+			x: 14.5d
+			y: 14.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"65DD7D9A943C8D65"
+			]
+			dependency_requirement: "one_completed"
+			id: "2A25594068CD0C4C"
+			optional: true
+			rewards: [{
+				id: "334C529A9F3E16AE"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "262696C21B2BC0A9"
+				item: { count: 1, id: "panlingre:feng_hou_3" }
+				type: "item"
+			}]
+			x: 16.0d
+			y: 14.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"2A25594068CD0C4C"
+			]
+			dependency_requirement: "one_completed"
+			id: "5DF51AD3B7504A8A"
+			optional: true
+			rewards: [{
+				id: "30BAC9297A218810"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "29A08455FD2D0C84"
+				item: { count: 1, id: "panlingre:jian_xue" }
+				type: "item"
+			}]
+			x: 17.5d
+			y: 14.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"5C9A2A976866228D"
+			]
+			dependency_requirement: "one_completed"
+			id: "6E88EC2809C8344E"
+			optional: true
+			rewards: [{
+				id: "6C4DBA819CEB6BEB"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "3E1F4B96A6BC6388"
+				item: { count: 1, id: "panlingre:qing_ying_feather" }
+				type: "item"
+			}]
+			x: -4.0d
+			y: -8.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"6E88EC2809C8344E"
+			]
+			dependency_requirement: "one_completed"
+			id: "40596EB1C8FC6C01"
+			optional: true
+			rewards: [{
+				id: "4381B491B2BE76F3"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "1E39C8F08130AFDA"
+				item: { count: 1, id: "panlingre:shen_su_feather" }
+				type: "item"
+			}]
+			x: -4.0d
+			y: -10.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"1085E9FF665D48DE"
+			]
+			dependency_requirement: "one_completed"
+			id: "70E830BE61419F3F"
+			optional: true
+			rewards: [{
+				id: "49A5758E9E4B728F"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "1E078B4D9BD46421"
+				item: { count: 1, id: "panlingre:po_di_fu_1" }
+				type: "item"
+			}]
+			x: 4.0d
+			y: -8.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"70E830BE61419F3F"
+			]
+			dependency_requirement: "one_completed"
+			id: "4B65008BB74E1061"
+			optional: true
+			rewards: [{
+				id: "11CD2E16A8885777"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "26645998F8F49F2B"
+				item: { count: 1, id: "panlingre:shou_yu_fu_1" }
+				type: "item"
+			}]
+			x: 5.5d
+			y: -8.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"70E830BE61419F3F"
+			]
+			dependency_requirement: "one_completed"
+			id: "181BB199E6450D2C"
+			optional: true
+			rewards: [{
+				id: "00385227D0AC8DA3"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "30608F84C8C72667"
+				item: { count: 1, id: "panlingre:tui_huo_fu" }
+				type: "item"
+			}]
+			x: 7.0d
+			y: -8.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"70E830BE61419F3F"
+			]
+			dependency_requirement: "one_completed"
+			id: "1A26CDC2BB518AB7"
+			optional: true
+			rewards: [{
+				id: "49F5D05D86B29264"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "4B358F91A45DD663"
+				item: { count: 1, id: "panlingre:ju_li_fu" }
+				type: "item"
+			}]
+			x: 2.5d
+			y: -8.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"231A42B5B9865C1A"
+				"52CDC6465B1D6EEB"
+			]
+			dependency_requirement: "one_completed"
+			id: "4AF73B3D7D955CC6"
+			optional: true
+			rewards: [{
+				id: "509DC93E352D49A8"
+				type: "xp"
+				xp: 500
+			}]
+			tasks: [{
+				id: "3EEC9A2F15579CEA"
+				item: { count: 1, id: "panlingre:zhu_ri" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: 17.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"57ADBEEBFC70B4F8"
+			]
+			dependency_requirement: "one_completed"
+			id: "07974BE9E918886F"
+			optional: true
+			rewards: [{
+				id: "2A982C3ECC9D5E95"
+				type: "xp"
+				xp: 500
+			}]
+			tasks: [{
+				id: "6136CC7F0F4042C2"
+				item: { count: 1, id: "panlingre:hun_yuan_shen_din" }
+				type: "item"
+			}]
+			x: 6.0d
+			y: 17.0d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"70E830BE61419F3F"
+			]
+			dependency_requirement: "one_completed"
+			id: "7B6463B0DB573C2C"
+			optional: true
+			rewards: [{
+				id: "65E14D6BCB379168"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "4B1475949186028B"
+				item: { count: 1, id: "panlingre:po_di_fu_2" }
+				type: "item"
+			}]
+			x: 4.0d
+			y: -10.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7B6463B0DB573C2C"
+			]
+			dependency_requirement: "one_completed"
+			id: "1A7F00877BE6CB46"
+			optional: true
+			rewards: [{
+				id: "69DFB6441BDD037B"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "63477D5FA61A2A56"
+				item: { count: 1, id: "panlingre:po_di_fu_3" }
+				type: "item"
+			}]
+			x: 4.0d
+			y: -12.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"7B6463B0DB573C2C"
+			]
+			dependency_requirement: "one_completed"
+			id: "7CC25F7B86F40B4D"
+			optional: true
+			rewards: [{
+				id: "2AAC78F4DC516D83"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "4B4FFC535C98FC23"
+				item: { count: 1, id: "panlingre:shou_yu_fu_2" }
+				type: "item"
+			}]
+			x: 5.5d
+			y: -10.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"1A7F00877BE6CB46"
+			]
+			dependency_requirement: "one_completed"
+			id: "696876C73A29FFAE"
+			optional: true
+			rewards: [{
+				id: "14DF08289A233895"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "481CCEF32D7F01F3"
+				item: { count: 1, id: "panlingre:shou_yu_fu_3" }
+				type: "item"
+			}]
+			x: 5.5d
+			y: -12.5d
+		}
+	]
+}

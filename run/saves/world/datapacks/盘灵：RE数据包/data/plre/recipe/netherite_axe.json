@@ -1,0 +1,40 @@
+{
+  "type": "panlingre:dzt_crafting",
+  "ingredients": [
+    {
+      "slot": 0,
+      "ingredient": {
+        "item": "minecraft:diamond_axe",
+        "count": 1
+      }
+    },
+    {
+      "slot": 1,
+      "ingredient": {
+        "item": "panlingre:rare4_yuanhe",
+        "count": 1
+      }
+    },
+    {
+      "slot": 2,
+      "ingredient": {
+        "item": "panlingre:xuan_tie",
+        "count": 5
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:netherite_axe",
+    "components": {
+      "can_break": {"blocks": "#panlingre:axe_can_break"},
+      "unbreakable": {"show_in_tooltip":false},
+      "enchantments":{"fortune":2},
+      "attribute_modifiers": [],
+      "custom_name":"{\"translate\":\"plre.item.netherite_axe\"}",
+      "lore":[
+        "{\"translate\":\"item.PanlingRE.lore.rare4\"}"
+      ]
+    }
+  }
+}

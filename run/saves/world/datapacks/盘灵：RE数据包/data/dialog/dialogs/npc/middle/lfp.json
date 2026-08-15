@@ -1,0 +1,116 @@
+{
+  "id": "npc_middle_lfp",
+  "title":"npc/middle/lfp",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "plre.npc.name.lfp"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.lfp"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.middle.lfp.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.middle.lfp.option2"},
+          "command":[
+            "plre opengui villager @s middle/lfp"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.middle.lfp.option3"}
+        }
+      ],
+      "endDialog": true
+    },
+    
+
+
+    {
+      "id": "1",
+      "speaker": {"translate": "plre.npc.name.lfp"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.lfp.1"
+        }
+      ],
+      "next": "2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "plre.npc.name.lfp"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.lfp.2"
+        }
+      ],
+      "next": "3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "plre.npc.name.lfp"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.lfp.3"
+        }
+      ],
+      "next": "4"
+    },
+    {
+      "id": "4",
+      "speaker": {"translate": "plre.npc.name.lfp"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.lfp.4"
+        }
+      ],
+      "next": "5"
+    },
+    {
+      "id": "5",
+      "speaker": {"translate": "plre.npc.name.lfp"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.lfp.5"
+        }
+      ],
+      "next": "6"
+    },
+    {
+      "id": "6",
+      "speaker": {"translate": "plre.npc.name.lfp"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.middle.lfp.6"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.middle.lfp.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.middle.lfp.option2"},
+          "command":[
+            "plre opengui villager @s middle/lfp"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.middle.lfp.option3"}
+        }
+      ]
+    }
+  ]
+}

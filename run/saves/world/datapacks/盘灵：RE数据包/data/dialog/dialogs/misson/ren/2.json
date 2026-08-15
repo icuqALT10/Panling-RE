@@ -1,0 +1,109 @@
+{
+  "id": "misson_ren_2",
+  "title":"misson/ren/2",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.renmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.2"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.ren.2.option1"},
+          "target": "2.1",
+          "visibility_command": "execute if score @s misson_ren matches 2"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.ren.2.option2"},
+          "target": "5.1",
+          "visibility_command": "execute if score @s misson_ren matches 5"
+        }
+      ],
+      "endDialog": true
+    },
+    {
+      "id": "2.1",
+      "speaker": {"translate": "pl.npc.name.renmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.2.1"
+        }
+      ],
+      "next":"2.2"
+    },
+    {
+      "id": "2.2",
+      "speaker": {"translate": "pl.npc.name.renmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.2.2"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/ren/2"
+      ],
+      "endDialog": true
+    },
+
+
+    {
+      "id": "5.1",
+      "speaker": {"translate": "pl.npc.name.renmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.5.1"
+        }
+      ],
+      "next":"5.2"
+    },
+    {
+      "id": "5.2",
+      "speaker": {"translate": "pl.npc.name.renmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.5.2"
+        }
+      ],
+      "next":"5.3"
+    },
+    {
+      "id": "5.3",
+      "speaker": {"translate": "pl.npc.name.renmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.5.3"
+        }
+      ],
+      "next":"5.4"
+    },
+    {
+      "id": "5.4",
+      "speaker": {"translate": "pl.npc.name.renmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.ren.5.4"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "panlingre:qing_ying_feather"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/ren/5"
+      ],
+      "endDialog": true
+    }
+  ]
+}

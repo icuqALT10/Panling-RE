@@ -1,0 +1,8 @@
+{
+    "parent": "block/red_sandstone_smooth_",
+    "ambientocclusion": false,
+    "textures": {
+        "up": "block/other/red_sandstone_smooth_5",
+        "side": "block/other/red_sandstone_normal"
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "title": {"translate": "plre.npc.name.food2"},
+  "offers": [
+    
+    {"buy":{"item":"panlingre:tong_qian","count":5},
+    "sell":{"item":"bread","count":12}},
+    
+    {"buy":{"item":"panlingre:tong_qian","count":1},
+    "sell":{"item":"mushroom_stew","count":1}}
+
+  ]
+}

@@ -1,0 +1,628 @@
+{
+  "id": "misson_shen_2",
+  "title":"misson/shen/2",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.2"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.shen.2.option"},
+          "target": "2.1",
+          "visibility_command": "execute if score @s misson_shen matches 2"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.5.option"},
+          "target": "5.1",
+          "visibility_command": "execute if score @s misson_shen matches 5"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.8.option"},
+          "target": "8.1",
+          "visibility_command": "execute if score @s misson_shen matches 8"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.9.option"},
+          "target": "9.1",
+          "visibility_command": "execute if score @s misson_shen matches 9 if function plre:check/bless/qinglong run return 1"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.10.option1"},
+          "target": "10.1",
+          "visibility_command": "execute if score @s misson_shen matches 10"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.10.option2"},
+          "visibility_command": "execute if score @s misson_shen matches 10"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.11.option"},
+          "target": "11.1",
+          "visibility_command": "execute if score @s misson_shen matches 11 if score @s misson_south matches 7"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.12.option1"},
+          "target": "12.1",
+          "visibility_command": "execute if score @s misson_shen matches 12"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.12.option2"},
+          "visibility_command": "execute if score @s misson_shen matches 12"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.13.option"},
+          "target": "13.1",
+          "visibility_command": "execute if score @s misson_shen matches 13 if score @s misson_west matches 7"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.14.option1"},
+          "target": "14.1",
+          "visibility_command": "execute if score @s misson_shen matches 14"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.14.option2"},
+          "visibility_command": "execute if score @s misson_shen matches 14"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.shen.15.option"},
+          "target": "15.1",
+          "visibility_command": "execute if score @s misson_shen matches 15 if score @s misson_north matches 5"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "2.1",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.2.1"
+        }
+      ],
+      "next":"2.2"
+    },
+    {
+      "id": "2.2",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.2.2"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/2"
+      ],
+      "endDialog": true
+    },
+
+
+    {
+      "id": "5.1",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.5.1"
+        }
+      ],
+      "next":"5.2"
+    },
+    {
+      "id": "5.2",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.5.2"
+        }
+      ],
+      "next":"5.3"
+    },
+    {
+      "id": "5.3",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.5.3"
+        }
+      ],
+      "next":"5.4"
+    },
+    {
+      "id": "5.4",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.5.4"
+        }
+      ],
+      "next":"5.5"
+    },
+    {
+      "id": "5.5",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.5.5"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "panlingre:qing_ying_feather"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/5"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "8.1",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.8.1"
+        }
+      ],
+      "next":"8.2"
+    },
+    {
+      "id": "8.2",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.8.2"
+        }
+      ],
+      "next":"8.3"
+    },
+    {
+      "id": "8.3",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.8.3"
+        }
+      ],
+      "next":"8.4"
+    },
+    {
+      "id": "8.4",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.8.4"
+        }
+      ],
+      "next":"8.5"
+    },
+    {
+      "id": "8.5",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.8.5"
+        }
+      ],
+      "next":"8.6"
+    },
+    {
+      "id": "8.6",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.8.6"
+        }
+      ],
+      "next":"8.7"
+    },
+    {
+      "id": "8.7",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.8.7"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/8"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "9.1",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.9.1"
+        }
+      ],
+      "next":"9.2"
+    },
+    {
+      "id": "9.2",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.9.2"
+        }
+      ],
+      "next":"9.3"
+    },
+    {
+      "id": "9.3",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.9.3"
+        }
+      ],
+      "next":"9.4"
+    },
+    {
+      "id": "9.4",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.9.4"
+        }
+      ],
+      "next":"9.5"
+    },
+    {
+      "id": "9.5",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.9.5"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/9"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "10.1",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.10.1"
+        }
+      ],
+      "next":"10.2"
+    },
+    {
+      "id": "10.2",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.10.2"
+        }
+      ],
+      "next":"10.3"
+    },
+    {
+      "id": "10.3",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.10.3"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/10"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "11.1",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.11.1"
+        }
+      ],
+      "next":"11.2"
+    },
+    {
+      "id": "11.2",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.11.2"
+        }
+      ],
+      "next":"11.3"
+    },
+    {
+      "id": "11.3",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.11.3"
+        }
+      ],
+      "next":"11.4"
+    },
+    {
+      "id": "11.4",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.11.4"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/11"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "12.1",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.12.1"
+        }
+      ],
+      "next":"12.2"
+    },
+    {
+      "id": "12.2",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.12.2"
+        }
+      ],
+      "next":"12.3"
+    },
+    {
+      "id": "12.3",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.12.3"
+        }
+      ],
+      "next":"12.4"
+    },
+    {
+      "id": "12.4",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.12.4"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/12"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "13.1",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.13.1"
+        }
+      ],
+      "next":"13.2"
+    },
+    {
+      "id": "13.2",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.13.2"
+        }
+      ],
+      "next":"13.3"
+    },
+    {
+      "id": "13.3",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.13.3"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/13"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "14.1",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.14.1"
+        }
+      ],
+      "next":"14.2"
+    },
+    {
+      "id": "14.2",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.14.2"
+        }
+      ],
+      "next":"14.3"
+    },
+    {
+      "id": "14.3",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.14.3"
+        }
+      ],
+      "next":"14.4"
+    },
+    {
+      "id": "14.4",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.14.4"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/14"
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "15.1",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.15.1"
+        }
+      ],
+      "next":"15.2"
+    },
+    {
+      "id": "15.2",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.15.2"
+        }
+      ],
+      "next":"15.3"
+    },
+    {
+      "id": "15.3",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.15.3"
+        }
+      ],
+      "next":"15.4"
+    },
+    {
+      "id": "15.4",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.15.4"
+        }
+      ],
+      "next":"15.5"
+    },
+    {
+      "id": "15.5",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.15.5"
+        }
+      ],
+      "next":"15.6"
+    },
+    {
+      "id": "15.6",
+      "speaker": {"translate": "pl.npc.name.shenmain2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.shen.15.6"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/shen/15"
+      ],
+      "endDialog": true
+    }
+  ]
+}

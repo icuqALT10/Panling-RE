@@ -1,0 +1,94 @@
+{
+  "id": "npc_south_te4",
+  "title":"npc/south/te4",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "plre.npc.name.te4"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.south.te4"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.south.te4.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.south.te4.option2"},
+          "command":[
+            "plre opengui villager @s south/te4"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.south.te4.option3"}
+        }
+      ],
+      "endDialog": true
+    },
+    
+
+
+    {
+      "id": "1",
+      "speaker": {"translate": "plre.npc.name.te4"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.south.te4.1"
+        }
+      ],
+      "next": "2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "plre.npc.name.te4"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.south.te4.2"
+        }
+      ],
+      "next": "3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "plre.npc.name.te4"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.south.te4.3"
+        }
+      ],
+      "next": "4"
+    },
+    {
+      "id": "4",
+      "speaker": {"translate": "plre.npc.name.te4"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.south.te4.4"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.south.te4.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.south.te4.option2"},
+          "command":[
+            "plre opengui villager @s south/te4"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.south.te4.option3"}
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.east.fei_qi_ji_tan"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": 666,
+                    "y": 47,
+                    "z": 46
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

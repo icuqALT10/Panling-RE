@@ -9,6 +9,7 @@ import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.network.ShockwaveUpdatePayload;
 import icu.icuqalt10.panlingre.network.particle.ParticleLighting;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
+import icu.icuqalt10.panlingre.util.SkillHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -43,6 +44,9 @@ import java.util.List;
 
 public class yu_ru_yi extends Item implements skill_trigger {
 
+    private static final ResourceLocation MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "yu_ru_yi");
+
     private final int cooldown = 100;
     private final float cost = 30.0f;
 
@@ -61,7 +65,7 @@ public class yu_ru_yi extends Item implements skill_trigger {
         builder.add(
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "yu_ru_yi"),
+                        MODIFIER_ID,
                         0.25,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
@@ -71,7 +75,7 @@ public class yu_ru_yi extends Item implements skill_trigger {
         builder.add(
                 Attributes.ARMOR,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "yu_ru_yi"),
+                        MODIFIER_ID,
                         -15,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
@@ -118,17 +122,12 @@ public class yu_ru_yi extends Item implements skill_trigger {
             Vec3 targetPos = hitResult.getLocation();
 
             AABB damageArea = AABB.ofSize(targetPos, 8.0, 8.0, 8.0);
-            java.util.List<LivingEntity> targets = level.getEntities(
-                    EntityTypeTest.forClass(LivingEntity.class),
-                    damageArea,
-                    e -> e != player
-            );
+            List<LivingEntity> targets = level.getEntitiesOfClass(
+                    LivingEntity.class, damageArea, SkillHelper.combatTargetFilter(player));
 
             for (LivingEntity target : targets) {
-                if(target.isAttackable()) {
-                    target.addEffect(new MobEffectInstance(ModEffects.po_jia, 200, 3));
-                    target.hurt(level.damageSources().playerAttack(player), finalDamage);
-                }
+                target.addEffect(new MobEffectInstance(ModEffects.po_jia, 200, 3));
+                target.hurt(level.damageSources().playerAttack(player), finalDamage);
             }
 
             // 4. 局部视觉效果：仅发送给半径16格内的玩家

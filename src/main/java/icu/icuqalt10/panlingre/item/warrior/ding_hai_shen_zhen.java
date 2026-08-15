@@ -31,6 +31,9 @@ import java.util.List;
 
 public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
 
+    private static final ResourceLocation MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ding_hai_shen_zhen");
+
     private final int cooldown = 400;
     private final float cost = 50.0f;
 
@@ -56,7 +59,7 @@ public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
         builder.add(
                 Attributes.ARMOR,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ding_hai_shen_zhen"),
+                        MODIFIER_ID,
                         isPowered ? -50 : 10.0,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
@@ -67,7 +70,7 @@ public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
             builder.add(
                     Attributes.ENTITY_INTERACTION_RANGE,
                     new AttributeModifier(
-                            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ding_hai_shen_zhen"),
+                            MODIFIER_ID,
                             3.0,
                             AttributeModifier.Operation.ADD_VALUE
                     ),

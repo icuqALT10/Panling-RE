@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.west.jin_kuang_xiao_zhen"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": -383,
+                    "y": 112,
+                    "z": 128
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

@@ -1,0 +1,1 @@
+give @s paper[custom_data={id:"plre:west_letter"},custom_name='{"translate":"pl.item.name.west_letter"}',lore=['{"translate":"pl.dialog.misson.letter.1"}','{"translate":"pl.dialog.misson.letter.2"}','{"translate":"pl.dialog.misson.letter.3"}','{"translate":"pl.dialog.misson.letter.4"}']]

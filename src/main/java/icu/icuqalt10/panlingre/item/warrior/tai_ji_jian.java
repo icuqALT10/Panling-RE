@@ -35,6 +35,9 @@ import java.util.List;
 
 public class tai_ji_jian extends SwordItem implements skill_trigger {
 
+    private static final ResourceLocation MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "tai_ji_jian");
+
     private final int cooldown = 100;
     private final float cost = 10.0f;
 
@@ -58,7 +61,7 @@ public class tai_ji_jian extends SwordItem implements skill_trigger {
         builder.add(
                 Attributes.ARMOR,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "tai_ji_jian"),
+                        MODIFIER_ID,
                         15,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
@@ -68,7 +71,7 @@ public class tai_ji_jian extends SwordItem implements skill_trigger {
         builder.add(
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "tai_ji_jian"),
+                        MODIFIER_ID,
                         -0.15,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),

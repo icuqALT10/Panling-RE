@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/big_head_cube",
+  "textures": {
+    "particle": "minecraft:block/shroomlight",
+    "down": "minecraft:block/shroomlight",
+	"up": "minecraft:block/shroomlight",
+	"north": "minecraft:block/shroomlight",
+	"south": "minecraft:block/shroomlight",
+	"west": "minecraft:block/shroomlight",
+	"east": "minecraft:block/shroomlight"
+  }
+}

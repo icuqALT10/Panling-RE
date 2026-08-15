@@ -1,0 +1,18 @@
+{
+  "title": {"translate": "plre.npc.name.money"},
+  "offers": [
+    
+    {"buy":{"item":"panlingre:tong_qian","count":10},
+    "sell":{"item":"panlingre:yuan_bao","count":1}},
+    
+    {"buy":{"item":"panlingre:yuan_bao","count":10},
+    "sell":{"item":"panlingre:yin_piao","count":1}},
+    
+    {"buy":{"item":"panlingre:yin_piao","count":1},
+    "sell":{"item":"panlingre:yuan_bao","count":10}},
+    
+    {"buy":{"item":"panlingre:yuan_bao","count":1},
+    "sell":{"item":"panlingre:tong_qian","count":10}}
+
+  ]
+}

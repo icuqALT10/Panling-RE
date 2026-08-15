@@ -1,0 +1,18 @@
+{
+  "title": {"translate": "plre.npc.name.food3"},
+  "offers": [
+    
+    {"buy":{"item":"panlingre:tong_qian","count":5},
+    "sell":{"item":"cooked_beef","count":6}},
+
+    {"buy":{"item":"panlingre:tong_qian","count":5},
+    "sell":{"item":"cooked_porkchop","count":6}},
+
+    {"buy":{"item":"panlingre:tong_qian","count":4},
+    "sell":{"item":"cooked_chicken","count":6}},
+    
+    {"buy":{"item":"panlingre:tong_qian","count":4},
+    "sell":{"item":"cooked_mutton","count":6}}
+
+  ]
+}

@@ -32,6 +32,8 @@ import java.util.List;
 
 public class jiao_long_nu extends HiddenEnchantedCrossbowItem implements skill_trigger {
 
+    private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "jiao_long_nu");
+
     private final int cooldown = 10;
     private final float cost = 10.0f;
 
@@ -46,12 +48,11 @@ public class jiao_long_nu extends HiddenEnchantedCrossbowItem implements skill_t
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers() {
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
-        ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "jiao_long_nu");
 
         builder.add(
                 ModAttributes.ARROW_DAMAGE,
                 new AttributeModifier(
-                        UID,
+                        MODIFIER_ID,
                         14,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
@@ -60,7 +61,7 @@ public class jiao_long_nu extends HiddenEnchantedCrossbowItem implements skill_t
         builder.add(
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
-                        UID,
+                        MODIFIER_ID,
                         0.25,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
@@ -69,7 +70,7 @@ public class jiao_long_nu extends HiddenEnchantedCrossbowItem implements skill_t
         builder.add(
                 Attributes.ARMOR,
                 new AttributeModifier(
-                        UID,
+                        MODIFIER_ID,
                         -0.15,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),

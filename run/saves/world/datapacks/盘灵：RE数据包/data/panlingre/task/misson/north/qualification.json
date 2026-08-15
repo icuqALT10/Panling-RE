@@ -1,0 +1,128 @@
+{
+    "title": [
+        {"translate": "plre.task.guide.title"},
+        {"translate": "pl.dialog.misson.xuanwu.qualification"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": -340,
+                    "y": 19,
+                    "z": -696
+                }
+            },
+            "command": "execute if score @s locate_at matches 1"
+        },
+        {
+            "target": {
+                "pos": {
+                    "x": 1598,
+                    "y": 132,
+                    "z": 123
+                }
+            },
+            "command": "execute if score @s locate_at matches 2"
+        },
+        {
+            "target": {
+                "pos": {
+                    "x": 3162,
+                    "y": 145,
+                    "z": 106
+                }
+            },
+            "command": "execute if score @s locate_at matches 3"
+        },
+        {
+            "target": {
+                "pos": {
+                    "x": 3167,
+                    "y": 52,
+                    "z": 939
+                }
+            },
+            "command": "execute if score @s locate_at matches 4"
+        },
+        {
+            "target": {
+                "pos": {
+                    "x": 2853,
+                    "y": 53,
+                    "z": 830
+                }
+            },
+            "command": "execute if score @s locate_at matches 5"
+        },
+        {
+            "target": {
+                "pos": {
+                    "x": 3200,
+                    "y": 19,
+                    "z": -346
+                }
+            },
+            "command": "execute if score @s locate_at matches 6"
+        },
+        {
+            "target": {
+                "pos": {
+                    "x": 418,
+                    "y": 33,
+                    "z": -628
+                }
+            },
+            "command": "execute if score @s locate_at matches 7"
+        },
+        {
+            "target": {
+                "pos": {
+                    "x": 14,
+                    "y": 34,
+                    "z": -908
+                }
+            },
+            "command": "execute if score @s locate_at matches 8"
+        },
+        {
+            "target": {
+                "pos": {
+                    "x": 1696,
+                    "y": 102,
+                    "z": 885
+                }
+            },
+            "command": "execute if score @s locate_at matches 9"
+        },
+        {
+            "target": {
+                "pos": {
+                    "x": 3249,
+                    "y": 99,
+                    "z": -743
+                }
+            },
+            "command": "execute if score @s locate_at matches 10"
+        },
+        {
+            "target": {
+                "pos": {
+                    "x": 2298,
+                    "y": 79,
+                    "z": -948
+                }
+            },
+            "command": "execute if score @s locate_at matches 11"
+        },
+        {
+            "target": {
+                "pos": {
+                    "x": 2190,
+                    "y": 87,
+                    "z": 958
+                }
+            },
+            "command": "execute if score @s locate_at matches 12"
+        }
+    ]
+}

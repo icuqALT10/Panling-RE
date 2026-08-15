@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.middle.yi_cha_xuan"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": 66,
+                    "y": 47,
+                    "z": 119
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

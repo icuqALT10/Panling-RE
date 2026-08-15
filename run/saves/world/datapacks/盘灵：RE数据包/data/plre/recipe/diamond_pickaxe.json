@@ -1,0 +1,40 @@
+{
+  "type": "panlingre:dzt_crafting",
+  "ingredients": [
+    {
+      "slot": 0,
+      "ingredient": {
+        "item": "minecraft:iron_pickaxe",
+        "count": 1
+      }
+    },
+    {
+      "slot": 1,
+      "ingredient": {
+        "item": "panlingre:rare3_yuanhe",
+        "count": 1
+      }
+    },
+    {
+      "slot": 2,
+      "ingredient": {
+        "item": "panlingre:chi_tong_ding",
+        "count": 5
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:diamond_pickaxe",
+    "components": {
+      "can_break": {"blocks": "#panlingre:pickaxe_can_break"},
+      "unbreakable": {"show_in_tooltip":false},
+      "enchantments":{"fortune":1},
+      "attribute_modifiers": [],
+      "custom_name":"{\"translate\":\"plre.item.diamond_pickaxe\"}",
+      "lore":[
+        "{\"translate\":\"item.PanlingRE.lore.rare3\"}"
+      ]
+    }
+  }
+}

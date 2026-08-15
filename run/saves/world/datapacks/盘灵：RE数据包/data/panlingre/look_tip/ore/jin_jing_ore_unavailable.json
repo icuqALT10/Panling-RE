@@ -1,0 +1,15 @@
+{
+    "title": [
+        {"translate":"block.panlingre.jin_jing_ore"},
+        {"translate":"plre.looktip.ore.unavailable.ore"}
+    ],
+    "entries": [
+        {
+            "type": "block",
+            "name": "panlingre:jin_jing_ore",
+            "block_state": {
+                "has_ore": "false"
+            }
+        }
+    ]
+}

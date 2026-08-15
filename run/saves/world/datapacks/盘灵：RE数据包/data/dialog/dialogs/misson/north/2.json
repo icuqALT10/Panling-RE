@@ -1,0 +1,269 @@
+{
+  "id": "misson_north_2",
+  "title":"misson/north/2",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.2"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"pl.dialog.misson.north.2.option1"},
+          "target": "2.1",
+          "visibility_command": "execute if score @s misson_north matches 2"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.north.2.option2"},
+          "target": "3.1",
+          "visibility_command": "execute if score @s misson_north matches 3 if function plre:task/north/misson2_check run return 1"
+        },
+        {
+          "text": {"translate":"pl.dialog.misson.north.2.option3"},
+          "visibility_command": "execute if score @s misson_north matches 3 unless function plre:task/north/misson2_check run return 1"
+        },
+        {
+          "text": {"translate": "pl.dialog.misson.north.2.option4"},
+          "target": "4.1",
+          "visibility_command": "execute if score @s misson_north matches 4 if function plre:check/bless/xuanwu run return 1"
+        }
+      ],
+      "endDialog": true
+    },
+
+
+
+
+    {
+      "id": "2.1",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.2.1"
+        }
+      ],
+      "next":"2.2"
+    },
+    {
+      "id": "2.2",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.2.2"
+        }
+      ],
+      "next":"2.3"
+    },
+    {
+      "id": "2.3",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.2.3"
+        }
+      ],
+      "next":"2.4"
+    },
+    {
+      "id": "2.4",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.2.4"
+        }
+      ],
+      "next":"2.5"
+    },
+    {
+      "id": "2.5",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.2.5"
+        }
+      ],
+      "next":"2.6"
+    },
+    {
+      "id": "2.6",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.2.6"
+        }
+      ],
+      "next":"2.7"
+    },
+    {
+      "id": "2.7",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.2.7"
+        }
+      ],
+      "next":"2.8"
+    },
+    {
+      "id": "2.8",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.2.8"
+        }
+      ],
+      "next":"2.9"
+    },
+    {
+      "id": "2.9",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.2.9"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/north/2"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "3.1",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.3.1"
+        }
+      ],
+      "next":"3.2"
+    },
+    {
+      "id": "3.2",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.3.2"
+        }
+      ],
+      "next":"3.3"
+    },
+    {
+      "id": "3.3",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.3.3"
+        }
+      ],
+      "next":"3.4"
+    },
+    {
+      "id": "3.4",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.3.4"
+        }
+      ],
+      "next":"3.5"
+    },
+    {
+      "id": "3.5",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.3.5"
+        }
+      ],
+      "next":"3.6"
+    },
+    {
+      "id": "3.6",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.3.6"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/north/3"
+      ],
+      "endDialog": true
+    },
+
+
+
+    
+    {
+      "id": "4.1",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.4.1"
+        }
+      ],
+      "next":"4.2"
+    },
+    {
+      "id": "4.2",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.4.2"
+        }
+      ],
+      "next":"4.3"
+    },
+    {
+      "id": "4.3",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.4.3"
+        }
+      ],
+      "next":"4.4"
+    },
+    {
+      "id": "4.4",
+      "speaker": {"translate": "pl.npc.name.northm2"},
+      "text":
+      [
+        {
+          "translate": "pl.dialog.misson.north.4.4"
+        }
+      ],
+      "command": [
+        "advancement grant @s only plre:misson/north/4"
+      ],
+      "endDialog": true
+    }
+  ]
+}

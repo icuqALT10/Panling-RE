@@ -1,0 +1,19 @@
+{
+    "title": [
+        {"translate": "plre.location.guide.title"},
+        {"translate": "plre.location.east.cha_dian_tan"}
+    ],
+    "entries": [
+        {
+            "target": {
+                "pos": {
+                    "x": 689,
+                    "y": 70,
+                    "z": 113
+                }
+            },
+            "command": "execute if score @s locate_at matches 1",
+            "off_when_located": true
+        }
+    ]
+}

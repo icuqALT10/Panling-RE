@@ -1,0 +1,127 @@
+{
+  "id": "npc_west_te5",
+  "title":"npc/west/te5",
+  "start":"start",
+  "entries": [
+    {
+      "id":"start",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.west.te5"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.west.te5.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.west.te5.option2"},
+          "command":[
+            "plre opengui villager @s west/te5"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.west.te5.option3"}
+        }
+      ],
+      "endDialog": true
+    },
+    
+
+
+    {
+      "id": "1",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.west.te5.1"
+        }
+      ],
+      "next": "2"
+    },
+    {
+      "id": "2",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.west.te5.2"
+        }
+      ],
+      "next": "3"
+    },
+    {
+      "id": "3",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.west.te5.3"
+        }
+      ],
+      "next": "4"
+    },
+    {
+      "id": "4",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.west.te5.4"
+        }
+      ],
+      "next": "5"
+    },
+    {
+      "id": "5",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.west.te5.5"
+        }
+      ],
+      "next": "6"
+    },
+    {
+      "id": "6",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.west.te5.6"
+        }
+      ],
+      "next": "7"
+    },
+    {
+      "id": "7",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.west.te5.7"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.west.te5.option1"},
+          "target": "1"
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.west.te5.option2"},
+          "command":[
+            "plre opengui villager @s west/te5"
+          ]
+        },
+        {
+          "text": {"translate":"plre.dialog.npc.west.te5.option3"}
+        }
+      ]
+    }
+  ]
+}

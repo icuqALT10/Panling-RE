@@ -1,0 +1,15 @@
+{
+    "title": [
+        {"translate":"block.panlingre.ling_yu_ore"},
+        {"translate":"plre.looktip.ore.unavailable.ore"}
+    ],
+    "entries": [
+        {
+            "type": "block",
+            "name": "panlingre:ling_yu_ore",
+            "block_state": {
+                "has_ore": "false"
+            }
+        }
+    ]
+}

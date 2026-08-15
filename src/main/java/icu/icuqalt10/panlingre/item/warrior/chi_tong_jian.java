@@ -6,6 +6,7 @@ import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
+import icu.icuqalt10.panlingre.util.SkillHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -28,6 +29,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class chi_tong_jian extends SwordItem implements skill_trigger {
+
+    private static final ResourceLocation MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "chi_tong_jian");
 
     private final int cooldown = 200;
     private final float cost = 20.0f;
@@ -52,7 +56,7 @@ public class chi_tong_jian extends SwordItem implements skill_trigger {
         builder.add(
                 Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "chi_tong_jian"),
+                        MODIFIER_ID,
                         0.2,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE
                 ),
@@ -62,7 +66,7 @@ public class chi_tong_jian extends SwordItem implements skill_trigger {
         builder.add(
                 Attributes.ARMOR,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "chi_tong_jian"),
+                        MODIFIER_ID,
                         -10,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
@@ -97,14 +101,13 @@ public class chi_tong_jian extends SwordItem implements skill_trigger {
             //释放技能
         if (!level.isClientSide) {
                 AABB area = player.getBoundingBox().inflate(3.0);
-                List<Entity> entities = level.getEntities(player, area);
+                List<LivingEntity> entities = level.getEntitiesOfClass(
+                        LivingEntity.class, area, SkillHelper.combatTargetFilter(player));
 
                 float attack_damage = (float) (player.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5);
 
-                for (Entity entity : entities) {
-                    if(entity.isAttackable() && entity.isAlive()) {
-                        entity.hurt(player.damageSources().playerAttack(player), attack_damage);
-                    }
+                for (LivingEntity entity : entities) {
+                    entity.hurt(player.damageSources().playerAttack(player), attack_damage);
                 }
             //音效
             level.playSound(null, player.getX(), player.getY(), player.getZ(),

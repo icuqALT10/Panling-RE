@@ -1,0 +1,17 @@
+{
+  "id": "zhuque_into",
+  "type": "OVERLAY",
+  "start": "1",
+  "entries": [
+    {
+      "id": "1",
+      "speaker": "",
+      "text": [
+        {
+          "translate": "pl.info.intobirdtest"
+        }
+      ],
+      "out_time":5000
+    }
+  ]
+}
