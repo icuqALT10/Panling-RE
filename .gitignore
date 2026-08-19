@@ -43,6 +43,14 @@ run/
 !run/xaero/
 !run/XaeroWaypoints_BACKUP240807/
 !run/options.txt
+!run/logs/
+!run/crash-reports/
+!run/debug/
+!run/downloads/
+!run/shaderpacks/
+!run/debug/
+!run/debug/
+!run/debug/
 **/src/generated/**/.cache/
 repo/
 !**/src/**/repo/
