@@ -126,7 +126,7 @@ public class Shockwave {
         );
         for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, aabb)) {
             if (this.hitEntities.contains(entity.getUUID())) continue;
-            if (this.team != null && entity.getTeam() == this.team) continue;
+            if (!SkillHelper.combatTargetFilter(attacker).test(entity)) continue;
             double yDiff = entity.getY() - this.center.y;
             if (yDiff < -1.0 || yDiff > 2.5) continue;
             Vec3 centerToEntityHoriz = new Vec3(entity.getX() - this.center.x, 0, entity.getZ() - this.center.z);

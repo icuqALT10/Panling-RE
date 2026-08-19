@@ -1,5 +1,7 @@
 {
 	chapter.01A4870B44729E7B.title: "&c焱砂大漠篇"
+	chapter.073C1B15DE1C441E.title: "&c地势坤"
+	chapter.0B7D9D76063E1912.title: "&b人合元"
 	chapter.14793D75CA143713.title: "&a材料"
 	chapter.20F008B931D29E36.title: "&b玄水湖泊篇"
 	chapter.2CEA7013772151C2.title: "&d地标"
@@ -7,6 +9,7 @@
 	chapter.4EAEAF9B851A0ADB.title: "主线：妖族篇"
 	chapter.517E6876C82F7A90.title: "控制中心"
 	chapter.530AD7A70F09FBC6.title: "主线：仙族篇"
+	chapter.68DF3EAE746B5776.title: "&a天行健"
 	chapter.712C4C14BCE2863F.title: "主线：战神族篇"
 	chapter.7683D6F868CA3D19.title: "&b防具"
 	chapter.799E3078CBE763C3.title: "主线：神族篇"
@@ -14,8 +17,11 @@
 	chapter.7BA77184414B18B8.title: "&6手持物"
 	chapter.7D1B36C11939BE72.title: "&f虎爪山脉篇"
 	chapter.7F9DAC1CAABCBD5D.title: "主线：人族篇"
-	chapter_group.29EB2635133F64C0.title: "第一章&6「圣兽」之谜"
+	chapter_group.29EB2635133F64C0.title: "&6「世界」真相"
 	chapter_group.45E9F6E0A0BA2A7B.title: "&b图鉴"
+	chapter_group.61E4C915E936B78C.title: "逸闻琐事"
+	quest.002C2D3328959386.quest_subtitle: "人合元，君子以开物成务"
+	quest.002C2D3328959386.title: "人合元"
 	quest.005B6191BA16AE97.quest_desc: [
 		"&a往虎爪山脉东北的路的尽头&r"
 		""
@@ -58,19 +64,22 @@
 		"&a最大灵气值&r："
 		"&e玩家的蓝量&r"
 		"范围为：[ 0 , 100000000 ]"
-		"灵气值每秒恢复&a最大灵气值x2.5%&r点"
 		""
+		"&a灵气恢复&r："
+		"&e每秒恢复灵气速率&r"
+		"范围为：[ -100% , 100% ]"
+		"灵气值每秒根据&b上限&r恢复的速率"
 		""
 		"{image:panlingre:textures/gui/hud/falizhi.png width:20 height:20 align:center}"
 		"&a法力值&r(位于血条上方、护甲值右方)："
 		"&e主要用于某些装备中&r"
 		"范围：[ 0 , 9999.99 ]"
-		""
+		"{@pagebreak}"
 		"&a冷却缩减&r："
 		"&e触发大部分冷却时的减免区间&r"
-		"范围：[ 0% , 100% ]"
+		"范围：[ -10000% , 100% ]"
 		"&4最终冷却&r = &c冷却时间&rx(&61&r-&a冷却缩减&r)"
-		"{@pagebreak}"
+		""
 		"&a箭矢强度&r："
 		"&e弓箭手专属属性，用于提高箭矢的伤害&r"
 		"&7(部分远程生物也具有该属性)&r"
@@ -150,6 +159,8 @@
 	]
 	quest.07C5DFE2553C5D18.quest_subtitle: "准备完毕后前往&2&o月老小庙"
 	quest.07C5DFE2553C5D18.title: "准备出发：&c焱砂大漠"
+	quest.080809CAF2F58708.quest_subtitle: "天行健，君子以自强不息"
+	quest.080809CAF2F58708.title: "天行健"
 	quest.081411280372B8E8.quest_desc: ["与神庙内的&a&l左焰&r交谈"]
 	quest.081411280372B8E8.quest_subtitle: "前往&2&o青龙神庙"
 	quest.081411280372B8E8.title: "青龙试炼"
@@ -283,6 +294,7 @@
 	quest.12B6BEFD37535C6B.quest_subtitle: "95 48 32"
 	quest.12B6BEFD37535C6B.title: "仓库售卖处"
 	quest.132A6E80F0081E4B.title: "补领&9八方归位仪"
+	quest.13E75928775395F7.title: "补领&d地势盾牌"
 	quest.14013C80685F20CA.quest_desc: ["与&a&l村长&r交谈"]
 	quest.14013C80685F20CA.quest_subtitle: "前往&2&o村长家"
 	quest.14013C80685F20CA.title: "见过&a&l村长"
@@ -297,6 +309,8 @@
 	]
 	quest.14F0E2064717E50C.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
 	quest.14F10C154FB1BAF5.quest_desc: ["[ \"于\", { \"text\": \"王员外\",\"color\":\"green\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"393280750D2786AC\" } }, \"处获取\" ]"]
+	quest.14F98F81C8919DCC.quest_desc: ["与&a&l老战士&r交谈"]
+	quest.14F98F81C8919DCC.title: "老战士的过往"
 	quest.14FCCAA210EC8C32.quest_desc: ["[ {text:\"以下装备可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
 	quest.14FCCAA210EC8C32.title: "弓箭手-防具"
 	quest.15047ED3F6B7A65B.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
@@ -368,6 +382,8 @@
 	quest.1B71D20E529499A7.quest_desc: ["与&a&l丹药管理员&r交谈"]
 	quest.1B71D20E529499A7.quest_subtitle: "前往&2&o炼丹室"
 	quest.1B71D20E529499A7.title: "丹药管理员"
+	quest.1B7F08B6ABF1DED3.quest_desc: ["与&a&l老丹师&r交谈"]
+	quest.1B7F08B6ABF1DED3.title: "传遍天下"
 	quest.1BEBBFD630E62BEC.quest_desc: [
 		"[ \"由\", { \"text\": \"三阶装备原核\",color:blue, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"0B0FB1CF85E9D49C\" } }, \"分解而成\" ]"
 		""
@@ -619,6 +635,8 @@
 	]
 	quest.33F93923B33A93B0.quest_subtitle: "66 46 119"
 	quest.33F93923B33A93B0.title: "益茶轩"
+	quest.34D381A05483A227.quest_desc: ["与&a&l老猎户&r交谈"]
+	quest.34D381A05483A227.title: "老猎户的烦恼"
 	quest.34E566258486E1DB.quest_desc: [
 		"&a位于通往大漠深处的沿途&r"
 		""
@@ -702,6 +720,11 @@
 	quest.3A25920E468CED3B.title: "炼丹师-武器"
 	quest.3A94DF5F4C6ED71A.quest_subtitle: "向&a&l小仁&r询问接下来的动向"
 	quest.3A94DF5F4C6ED71A.title: "新手上路"
+	quest.3B0D8EC336CDCF5C.quest_desc: [
+		"给予&a&l老猎户&r材料"
+		"&f精炼金元素&r*30 &d四阶装备原核&r*1 &d玄铁锭&r*8"
+	]
+	quest.3B0D8EC336CDCF5C.title: "老猎户的回报"
 	quest.3B5599D1520AC45E.quest_desc: [
 		"向&a&l羽罗&r询问下一步事项"
 		"&a推荐三阶装备后继续此任务&r"
@@ -727,7 +750,14 @@
 	quest.3DEC3B18544239C8.title: "&d草药套"
 	quest.3E1636BB73019B9C.quest_subtitle: "向&a&l小花&r询问接下来的动向"
 	quest.3E1636BB73019B9C.title: "新手上路"
+	quest.3E772C4D2CDB10B2.quest_desc: [
+		"给予&a&l老战士&r材料"
+		"&6精炼土元素&r*30 &d四阶装备原核&r*1 &d玄铁锭&r*8"
+	]
+	quest.3E772C4D2CDB10B2.title: "老战士的回报"
 	quest.3E8C34E4D07BE512.title: "沙漠客栈-情报前置"
+	quest.3EB8BD3D33CB4FBB.quest_desc: ["与&a&l老猎户&r交谈"]
+	quest.3EB8BD3D33CB4FBB.title: "老猎户的过往"
 	quest.3EB9129DC5B88245.quest_desc: ["与&a&l华夭&r交谈"]
 	quest.3EB9129DC5B88245.quest_subtitle: "回到&2&o镇妖塔"
 	quest.3EB9129DC5B88245.title: "复命：&f虎爪山脉篇&r结束"
@@ -776,6 +806,8 @@
 	quest.43ECD19A55FD4FAE.quest_subtitle: "46 48 56"
 	quest.43ECD19A55FD4FAE.title: "六道茶坊"
 	quest.4415243225D2EF5E.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.4479A9A26205F37B.quest_desc: ["与&a&l陈大夫&r交谈"]
+	quest.4479A9A26205F37B.title: "完成-&b「人合元」"
 	quest.457B17EA49780799.quest_desc: ["[ \"于副本\", { \"text\": \"圣山\",\"color\":\"red\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"03BE9AA4FE628CD8\" } }, \"中获得\" ]"]
 	quest.4584BA6F1C55F368.quest_desc: [
 		"&a位于皇城西门处&r"
@@ -803,6 +835,8 @@
 	quest.480FB7055C0ACA8E.quest_desc: ["触摸&2&o圣山&r中的大茧"]
 	quest.480FB7055C0ACA8E.quest_subtitle: "进入&2&o圣山内部"
 	quest.480FB7055C0ACA8E.title: "触摸大茧"
+	quest.48D1259AE559D72B.quest_desc: ["与&a&l老战士&r交谈"]
+	quest.48D1259AE559D72B.title: "老战士的烦恼"
 	quest.49B05DCA2666A01E.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
 	quest.49B05DCA2666A01E.title: "&9虎皮套"
 	quest.4A736ECCB53CBFE6.quest_desc: ["获得10条生鱼后与&a&l水族祭司-洛禾&r交谈"]
@@ -954,6 +988,10 @@
 		"&a冻结&r："
 		"无等级变化"
 		"期间不可攻击、无法使用技能、无法行动"
+		""
+		"{image:panlingre:textures/mob_effect/ling_qi_recovery.png width:15 height:15 align:center}"
+		"&a灵气恢复&r："
+		"每&61&r级增加&61%&r每秒&b灵气&r恢复"
 	]
 	quest.57ADBEEBFC70B4F8.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
 	quest.57DB94CA574B1758.quest_desc: ["与&a&l长老&r交谈"]
@@ -1058,9 +1096,9 @@
 		""
 		"&6[G]&r快捷打开饰品栏"
 		""
-		"&6[R]&r释放选中的技能"
+		"&6[鼠标按键4]&r(&6[侧键]&r)释放选中的技能"
 		""
-		"&6[鼠标按键4]&r(&6[侧键]&r)打开技能轮盘"
+		"&6[R]&r打开技能轮盘"
 		""
 		"&6[V]&r切换技能轮盘的选中模式"
 		""
@@ -1162,6 +1200,8 @@
 	quest.6CD87D9F19C18016.quest_desc: ["与&a&l人皇-轩辕氏&r交谈"]
 	quest.6CD87D9F19C18016.quest_subtitle: "前往&2&o皇宫"
 	quest.6CD87D9F19C18016.title: "人皇的顾虑"
+	quest.6CDA967E9D153110.quest_subtitle: "地势坤，君子以厚德载物"
+	quest.6CDA967E9D153110.title: "地势坤"
 	quest.6D37D5C824535075.quest_desc: ["[ \"由5个\", { \"text\": \"土元素\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"5C821776183F3806\" } }, \"合成\" ]"]
 	quest.6D913F0A2E794AE9.quest_desc: ["与&a&l蚀日&r交谈"]
 	quest.6D913F0A2E794AE9.quest_subtitle: "回到&2&o月老小庙"
@@ -1198,10 +1238,13 @@
 	quest.707173009566C534.quest_subtitle: "192 47 173"
 	quest.707173009566C534.title: "忠烈祠"
 	quest.70E830BE61419F3F.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.714A9DF1B33D45B4.title: "补领&d天行箭袋"
 	quest.724ACC3155586CA9.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
 	quest.724ACC3155586CA9.title: "&a风行套"
 	quest.7311FDDD8D035C54.quest_subtitle: "向&a&l飞虎&r询问接下来的动向"
 	quest.7311FDDD8D035C54.title: "新手上路"
+	quest.7336401C7BE552A1.quest_desc: ["与&a&l老丹师&r交谈"]
+	quest.7336401C7BE552A1.title: "老丹师的遗憾"
 	quest.733B9682908A58DA.quest_desc: ["与&a&l护国法师-法海&r交谈"]
 	quest.733B9682908A58DA.quest_subtitle: "前往&2&o护国殿"
 	quest.733B9682908A58DA.title: "圣山的异常状态"
@@ -1369,6 +1412,7 @@
 	reward.0B4D304DDC9064FF.title: "定位目标位置"
 	reward.0BF42DD278F4125D.title: "定位目标位置"
 	reward.0C7041D3E8BD7486.title: "定位目标位置"
+	reward.0CA5A88E7FDBD935.title: "获得资格：&d地势盾牌"
 	reward.0CBC3E435FD5954F.title: "解锁传送点"
 	reward.0D0C0EB755BA6D93.title: "指引当前任务"
 	reward.0F01F12252052474.title: "定位目标位置"
@@ -1399,6 +1443,7 @@
 	reward.31AFE4E629BDC672.title: "定位目标位置"
 	reward.32B2547487E6934D.title: "定位目标位置"
 	reward.32E89DF1814E73D6.title: "解锁传送点"
+	reward.33E2F4D82753E440.title: "开启本章节"
 	reward.33FC980CBA06F535.title: "解锁传送点"
 	reward.34531F1E87142E61.title: "&b皇城地图"
 	reward.348FD6B1D8259769.title: "解锁传送点"
@@ -1406,15 +1451,19 @@
 	reward.3686AB9655DD2413.title: "定位目标位置"
 	reward.3698A1996E083DFA.title: "定位目标位置"
 	reward.3829D19235855A9C.title: "解锁传送点"
+	reward.382B9CCD4D3DA6C1.title: "指引当前任务"
 	reward.39B4247303FA6921.title: "解锁传送点"
 	reward.3B608CF2A1820438.title: "定位目标位置"
 	reward.3BC002F2E44337AA.title: "解锁传送点"
+	reward.3D02084DBE1EAEC5.title: "习得：&b「人合元」"
 	reward.3E11493D5A1E3C69.title: "定位目标位置"
 	reward.4499C89D55623E28.title: "定位目标位置"
 	reward.460C6E975FF78882.title: "定位目标位置"
 	reward.46261B32DE3DEAB5.title: "解锁传送点"
 	reward.46F5190FBD700CB8.title: "定位目标位置"
 	reward.471F0BA39BAC97B6.title: "解锁传送点"
+	reward.478CEA4E84DB3F6A.title: "指引当前任务"
+	reward.47CCF67061B2A81B.title: "开启本章节"
 	reward.47D9E2D4EBB098CF.title: "解锁传送点"
 	reward.49D92377FFF111B8.title: "定位目标位置"
 	reward.4B232417451576B2.title: "解锁传送点"
@@ -1427,6 +1476,7 @@
 	reward.4F8A942A95CBB837.title: "定位目标位置"
 	reward.512E7D39BB5886F1.title: "定位目标位置"
 	reward.52278A70C6930560.title: "解锁传送点"
+	reward.53958C77DF7B2B58.title: "指引当前任务"
 	reward.53B0E1F4D8C371AC.title: "解锁传送点"
 	reward.54E06239FAC745D2.title: "解锁传送点"
 	reward.555F37C55D2F749B.title: "定位目标位置"
@@ -1453,6 +1503,8 @@
 	reward.6A9DD23E67D5BDB3.title: "解锁传送点"
 	reward.6AB331F4637A28BC.title: "解锁传送点"
 	reward.6B563DBF3FC7ED24.title: "指引当前任务"
+	reward.6C4433554F0CC762.title: "获得资格：&d天行箭袋"
+	reward.6C8F35F95CA2D99D.title: "开启本章节"
 	reward.6D55BFE376223AEE.title: "解锁传送点"
 	reward.6DB3C6A5136E818C.title: "定位目标位置"
 	reward.6E459D82F13AE9CA.title: "解锁传送点"
@@ -1484,6 +1536,7 @@
 	task.0397827DBA9B8C4F.title: "武器图鉴"
 	task.03D2CBBF6D682B30.title: "副本设置"
 	task.07CF976206BD2725.title: "指引位置"
+	task.0A37CB2826C317F9.title: "检测-炼丹师职业"
 	task.0A91F23B272E4964.title: "丹药"
 	task.0B7FFF14E8FC6283.title: "通用"
 	task.0CB3A8D6811FAAD6.title: "指引位置"
@@ -1507,6 +1560,8 @@
 	task.22F6166CBC93BA53.title: "指引位置"
 	task.234BA9087A336F6F.title: "指引位置"
 	task.24C39CA14B025523.title: "指引位置"
+	task.24DF632FAA7EBD63.title: "检测-战士职业"
+	task.2556447BBA913596.title: "&a开启任务指引"
 	task.26C08A4478923FBE.title: "指引位置"
 	task.2DE3D2DA06B3E6AD.title: "进入：&f虎爪山脉"
 	task.2DF00B5AD0281731.title: "指引位置"
@@ -1526,6 +1581,7 @@
 	task.3DA1067A3DEF6251.title: "指引位置"
 	task.3FEFBC36DAF7B497.title: "指引位置"
 	task.411E6F56DC2BA082.title: "&a开启任务指引"
+	task.433104061DDCA13C.title: "&a开启任务指引"
 	task.4A8A48657D646312.title: "指引位置"
 	task.4C60773DA16B463F.title: "战士"
 	task.4CC8328B7C1131D9.title: "指引位置"
@@ -1539,6 +1595,7 @@
 	task.5548F8605C1F7004.title: "防具图鉴"
 	task.557A8666CDB58A01.title: "指引位置"
 	task.58FE73CE4286C0A2.title: "指引位置"
+	task.5C3E1884A22E8D5D.title: "检测-弓箭手职业"
 	task.5D0660E71093A996.title: "指引位置"
 	task.6061B5C22E55649C.title: "指引位置"
 	task.60D648C2105F0B0F.title: "&a开启任务指引"
@@ -1554,6 +1611,7 @@
 	task.731673A1552091A9.title: "进入：&2龙鳞之森"
 	task.734FF4E3CAA00203.title: "通用前置"
 	task.751258297668505B.title: "指引位置"
+	task.782FED1FA4CC9B5F.title: "&a开启任务指引"
 	task.7962435726591C44.title: "法宝图鉴"
 	task.79D9192B4FA3A7F9.title: "指引位置"
 	task.7B15218E6E32BC43.title: "&a开启任务指引"

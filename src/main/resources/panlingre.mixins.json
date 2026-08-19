@@ -12,7 +12,8 @@
     "BiomeMixin",
     "CanInteractEntityMixin",
     "ItemStackRightClickMixin",
-    "LivingEntityRightClickMixin"
+    "LivingEntityRightClickMixin",
+    "LevelStorageSourceMixin"
   ],
     "client": [
     "client.MinecraftTaskGlowMixin",

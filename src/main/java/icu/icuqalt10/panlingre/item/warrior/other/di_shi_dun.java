@@ -256,20 +256,20 @@ public class di_shi_dun extends ShieldItem {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context,
-                                List<Component> tooltipComponents, TooltipFlag flag) {
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare4"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit0"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.di_shi_dun.lore1"));
+                                List<Component> tooltip, TooltipFlag flag) {
+        tooltip.add(Component.translatable("item.PanlingRE.lore.rare4"));
+        tooltip.add(Component.translatable("item.PanlingRE.lore.limit0"));
+        tooltip.add(Component.translatable("item.PanlingRE.di_shi_dun.lore1"));
 
         switch (getForm(stack)) {
-            case FORM_POJUN -> appendPojunLore(tooltipComponents);
-            case FORM_JINZHONG -> appendJinzhongLore(tooltipComponents);
+            case FORM_POJUN -> appendPojunLore(tooltip);
+            case FORM_JINZHONG -> appendJinzhongLore(tooltip);
             default -> {
                 // 形态 0 只显示到 lore1。
             }
         }
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
     /** 破军形态 lore 模板；可直接在这里增删翻译键。 */

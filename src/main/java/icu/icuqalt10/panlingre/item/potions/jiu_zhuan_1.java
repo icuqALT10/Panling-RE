@@ -37,15 +37,15 @@ public class jiu_zhuan_1 extends CustomPelletItem {
         return cooldown;
     }
 
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit2"));
-        tooltipComponents.add(Component.empty());
-        tooltipComponents.add(Component.translatable("item.panlingre.jiu_zhuan_1.skill1", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown)));
-        tooltipComponents.add(Component.translatable("item.panlingre.jiu_zhuan_1.skill2"));
-        tooltipComponents.add(Component.translatable("item.panlingre.jiu_zhuan_1.skill3"));
-        tooltipComponents.add(Component.translatable("item.panlingre.jiu_zhuan_1.skill4"));
-        tooltipComponents.add(Component.translatable("item.panlingre.jiu_zhuan_1.skill5"));
-        tooltipComponents.add(Component.translatable("item.panlingre.jiu_zhuan_1.skill6"));
+        tooltip.add(Component.translatable("item.PanlingRE.lore.limit2"));
+        tooltip.add(Component.empty());
+        tooltip.add(Component.translatable("item.panlingre.jiu_zhuan_1.skill1", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown)));
+        tooltip.add(Component.translatable("item.panlingre.jiu_zhuan_1.skill2"));
+        tooltip.add(Component.translatable("item.panlingre.jiu_zhuan_1.skill3"));
+        tooltip.add(Component.translatable("item.panlingre.jiu_zhuan_1.skill4"));
+        tooltip.add(Component.translatable("item.panlingre.jiu_zhuan_1.skill5"));
+        tooltip.add(Component.translatable("item.panlingre.jiu_zhuan_1.skill6"));
     }
 }

@@ -54,13 +54,13 @@ public class qing_ying_feather extends Item implements ICurioItem {
         return builder.build();
     }
 
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.qing_ying_feather.lore1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.qing_ying_feather.lore2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.qing_ying_feather.lore3"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare3"));
+            tooltip.add(Component.translatable("item.PanlingRE.qing_ying_feather.lore1"));
+            tooltip.add(Component.translatable("item.PanlingRE.qing_ying_feather.lore2"));
+            tooltip.add(Component.translatable("item.PanlingRE.qing_ying_feather.lore3"));
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

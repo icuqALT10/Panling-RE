@@ -189,6 +189,9 @@ public class GameBusEvents {
 
                 float before = data.getCurrent();
 
+                //防止灵气过量
+                if (data.getCurrent() > max) data.setCurrent(max, player);
+
                 //每10t恢复（如果没有被冻结）
                 if (!player.hasEffect(ModEffects.freeze) && data.getCurrent() < max) {
                     float recovery = (float) player.getAttributeValue(ModAttributes.LING_QI_RECOVERY) * 0.5f;

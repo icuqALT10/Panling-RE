@@ -1,6 +1,5 @@
 package icu.icuqalt10.panlingre.block.chest;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.init.ModBlockEntities;
 import icu.icuqalt10.panlingre.init.ModComponents;
@@ -194,12 +193,13 @@ public class LootChestBlockEntity extends BlockEntity {
                         .withPosition(worldPosition.getCenter())
                         .withSuppressedOutput()
                         .withPermission(4);
-                try {
-                    int result = level.getServer().getCommands().getDispatcher().execute(e.command(), src);
-                    if (result > 0) {
-                        filtered.add(e);
-                    }
-                } catch (CommandSyntaxException ignored) {
+                int[] result = {0};
+                CommandSourceStack callbackSource = src.withCallback(
+                        (success, value) -> result[0] = success ? value : 0
+                );
+                level.getServer().getCommands().performPrefixedCommand(callbackSource, e.command());
+                if (result[0] > 0) {
+                    filtered.add(e);
                 }
             }
         }

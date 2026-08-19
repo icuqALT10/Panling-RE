@@ -150,13 +150,13 @@ public class she_lin extends ArmorItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare4"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.she_lin.lore1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.she_lin.lore2"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare4"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit1"));
+            tooltip.add(Component.translatable("item.PanlingRE.she_lin.lore1"));
+            tooltip.add(Component.translatable("item.PanlingRE.she_lin.lore2"));
 
-            super.appendHoverText(stack, context, tooltipComponents, flag);
+            super.appendHoverText(stack, context, tooltip, flag);
     }
 }

@@ -34,7 +34,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:paper"
@@ -63,7 +63,7 @@
 			disable_toast: true
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: true
 			icon: {
 				id: "panlingre:ba_fang_yi"
@@ -96,7 +96,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -124,7 +124,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -152,7 +152,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -180,7 +180,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -236,7 +236,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -264,7 +264,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -292,7 +292,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -320,7 +320,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "7F444B61F833C2A6"
 			rewards: [{
@@ -345,7 +345,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -401,7 +401,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "3F91EDB32927023F"
 			rewards: [{
@@ -426,7 +426,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "3B5599D1520AC45E"
 			rewards: [{
@@ -451,7 +451,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "26F37B53616B8131"
 			rewards: [{
@@ -479,7 +479,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: true
 			id: "7E20BE3EE978705A"
 			rewards: [{
@@ -507,7 +507,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: true
 			id: "04173E19CDAE035B"
 			rewards: [{
@@ -535,7 +535,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: true
 			id: "424F1D43D41FE268"
 			rewards: [{
@@ -564,7 +564,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "33BD9D65DDBC2724"
 			rewards: [{
@@ -589,7 +589,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -617,7 +617,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -645,7 +645,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -673,7 +673,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -701,7 +701,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "panlingre:ys3_tu"

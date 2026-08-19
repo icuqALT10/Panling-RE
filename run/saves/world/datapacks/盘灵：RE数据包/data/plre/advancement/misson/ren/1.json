@@ -1,4 +1,5 @@
 {
+    "parent": "plre:misson/ren/start",
     "criteria": {
         "trigger":{
             "trigger": "minecraft:impossible",

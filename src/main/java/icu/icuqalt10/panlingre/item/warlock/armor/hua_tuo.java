@@ -140,13 +140,13 @@ public class hua_tuo extends ArmorItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hua_tuo.lore1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hua_tuo.lore2"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare3"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit2"));
+            tooltip.add(Component.translatable("item.PanlingRE.hua_tuo.lore1"));
+            tooltip.add(Component.translatable("item.PanlingRE.hua_tuo.lore2"));
 
-            super.appendHoverText(stack, context, tooltipComponents, flag);
+            super.appendHoverText(stack, context, tooltip, flag);
     }
 }

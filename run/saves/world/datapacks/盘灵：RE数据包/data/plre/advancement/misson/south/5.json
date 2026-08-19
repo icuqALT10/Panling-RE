@@ -1,4 +1,5 @@
 {
+    "parent": "plre:misson/south/4",
     "criteria": {
         "trigger":{
             "trigger": "minecraft:impossible",

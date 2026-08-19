@@ -85,29 +85,29 @@ public class huo_qiu_fu_1 extends Item{
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
         // 检测Shift键
         if (SafeClientAccess.isShiftPressed()) {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.lore1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.lore2"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.skill2"
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare3"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit3"));
+            tooltip.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.lore1"));
+            tooltip.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.lore2"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.skill1.2"));
+            tooltip.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.skill2"
                     ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD),
                     cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
                     LingQiData.getCostText(cost)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.skill3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.skill4"));
+            tooltip.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.skill3"));
+            tooltip.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.skill4"));
         } else {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.skill1.1"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare3"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit3"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.huo_qiu_fu_1.skill1.1"));
         }
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

@@ -26,6 +26,9 @@
 
   "plre.start.final_confirm":"§7请最后确定你的选择",
 
+  "plre.reset.choose_true.cant.curios":"§c请先清空你饰品栏中的法宝、炼丹炉！",
+  "plre.reset.choose_true.cant.inventory":"§c请先清空你背包！",
+
   "plre.sign.start.refresh_ore.text2":"点击下方按钮立刻刷新",
 
   "plre.sign.start.ore.text2":"资源点,用适合的工具",
@@ -36,11 +39,6 @@
 
   "plre.sign.start.zft.text2":"制符台",
   "plre.sign.start.zft.text3":"用于合成灵符",
-
-  "plre.sign.start.way_stone.text1":"对面的是传送石碑",
-  "plre.sign.start.way_stone.text2":"右击激活传送石碑",
-  "plre.sign.start.way_stone.text3":"可通过传送石碑互相传送",
-  "plre.sign.start.way_stone.text4":"每次传送消耗一定经验",
 
   "plre.dialog.npc.middle.warehouse.start":"你好,请问有什么需要的吗？",
   "plre.dialog.npc.middle.warehouse.again":"还有什么事吗？",
@@ -203,6 +201,135 @@
   "plre.dialog.npc.north.te6.8":"所以如果你在附近的怪物身上找到§9怨气的结晶§r,麻烦拿到我这里来。\n我会回报你的,谢谢你喔。",
 
 
+
+
+	"plre.npc.name.lao_zhan_shi.1":"§a§l老战士",
+	"plre.npc.name.lao_zhan_shi.2":"§a§l姬成诵",
+  "plre.dialog.npc.lao_zhan_shi":"……什么人？",
+  "plre.dialog.npc.lao_zhan_shi.option":"(离开)",
+  "plre.dialog.npc.lao_zhan_shi.1.option":"(开启支线-§c地势坤§r)",
+  "plre.dialog.npc.lao_zhan_shi.1.1":"(目光落在你腰间的兵器上)你也是战士？",
+  "plre.dialog.npc.lao_zhan_shi.1.2":"恰巧老夫有一事,不知可否相托。",
+  "plre.dialog.npc.lao_zhan_shi.1.3":"老夫的剑,在数年前一场恶战中损了大半,一直没寻到合用的材料修缮。",
+  "plre.dialog.npc.lao_zhan_shi.1.4":"你若方便,替老夫寻些东西来——\n§6精炼土元素§b30§r个、§d四阶装备原核§b1§r个、§d玄铁锭§b8§r个。",
+  "plre.dialog.npc.lao_zhan_shi.1.5":"老夫不会亏待你的。",
+
+  "plre.dialog.npc.lao_zhan_shi.2.option":"提交材料",
+  "plre.dialog.npc.lao_zhan_shi.2.1":"(接过材料,点了点头)……有劳了。这村中人少,愿替老夫奔波的人,屈指可数。",
+  "plre.dialog.npc.lao_zhan_shi.2.2":"待老夫将盾修缮完毕,你便到这处地方来寻我。",
+  "plre.dialog.npc.lao_zhan_shi.2.3":"到时有东西给你。",
+  "plre.dialog.npc.lao_zhan_shi.2.failure":"§c你没有足够的材料！",
+
+  "plre.dialog.npc.lao_zhan_shi.3":"……",
+  "plre.dialog.npc.lao_zhan_shi.3.option":"(赴约)我来了",
+  "plre.dialog.npc.lao_zhan_shi.3.1":"嗯……先听完老夫的话,再收东西不迟。",
+  "plre.dialog.npc.lao_zhan_shi.3.2":"老夫与幼弟自幼同在恩师§a§l姬文昌§r门下。恩师赐我名为§a§l姬成诵§r,幼弟名为§a§l姬武发§f。",
+  "plre.dialog.npc.lao_zhan_shi.3.3":"恩师教我们射御书数,也教我们何为担当。",
+  "plre.dialog.npc.lao_zhan_shi.3.4":"后来四圣兽骤然失踪,天下大乱,魔物四起。",
+  "plre.dialog.npc.lao_zhan_shi.3.5":"恩师遣我兄弟二人出山,各自持弓持剑,讨伐魔物。",
+  "plre.dialog.npc.lao_zhan_shi.3.6":"我们一路从北西到南,直到入了那片大漠……遇到了一只火焰魔物。",
+  "plre.dialog.npc.lao_zhan_shi.3.7":"那畜生比我们此前所见的一切魔物都强,烈火扑天而来,剑折了,弓断了,丹药吞下去也压不住灼气。",
+  "plre.dialog.npc.lao_zhan_shi.3.8":"我兄弟二人拼死突围,侥幸活了下来。",
+  "plre.dialog.npc.lao_zhan_shi.3.9":"那之后,我落了暗伤,便留在那村子附近,一面静养一面盯着大漠深处——那畜生还在那里,我不能让它再害人。幼弟则向东去了龙须镇,做了猎户。",
+  "plre.dialog.npc.lao_zhan_shi.3.10":"如今恩师也已仙逝多年。老夫这把老骨头,不知还能守那绿洲多久。",
+  "plre.dialog.npc.lao_zhan_shi.3.11":"但你来了。你肯为素不相识的老夫奔波,心性不差。更难得的是,你身上有股不退缩的硬气。",
+  "plre.dialog.npc.lao_zhan_shi.3.12":"这块§6地势盾牌§r,是老夫参悟恩师遗卷并用你给的材料所制。可惜老夫如今气力衰微,只做得半成品……",
+  "plre.dialog.npc.lao_zhan_shi.3.13":"不过恩师当年在此地留有传承。你若能通过他的试炼,或许能引那股力量将它补全。",
+  "plre.dialog.npc.lao_zhan_shi.3.14":"老夫此生无憾,只望有朝一日能见它重归完整,如当年恩师所期——\n§c地势坤,君子以厚德载物。§r\n这天下,终究要交到你们年轻人手上了。",
+
+
+
+	"plre.npc.name.lao_lie_hu.1":"§a§l老猎户",
+	"plre.npc.name.lao_lie_hu.2":"§a§l姬武发",
+	"plre.dialog.npc.lao_lie_hu":"(听到动静,回头)哎哟……对不住对不住,你踩到我布的绳套了。没伤着吧？",
+  "plre.dialog.npc.lao_lie_hu.option":"(离开)",
+  "plre.dialog.npc.lao_lie_hu.1.option":"(开启支线-§a天行健§r)",
+  "plre.dialog.npc.lao_lie_hu.1.1":"(打量你片刻)年轻人,你也是弓箭手吧？",
+  "plre.dialog.npc.lao_lie_hu.1.2":"我有个不情之请,不知你方不方便……",
+  "plre.dialog.npc.lao_lie_hu.1.3":"前些日子,我那把跟了半辈子的弓,崩了。",
+  "plre.dialog.npc.lao_lie_hu.1.4":"我想重打一把,可这镇上缺铁少料的,凑不齐。",
+  "plre.dialog.npc.lao_lie_hu.1.5":"你若方便,替我寻些东西来——\n§f精炼金元素§b30§r个§d四阶装备原核§b1§r个§d玄铁锭§b8§r个。",
+  "plre.dialog.npc.lao_lie_hu.1.6":"我不会让你白跑一趟的。",
+
+  "plre.dialog.npc.lao_lie_hu.2.option":"提交材料",
+  "plre.dialog.npc.lao_lie_hu.2.1":"(接过材料,眼眶微红)……好孩子,我在这镇上住了这些年,你是头一个愿意帮我的。",
+  "plre.dialog.npc.lao_lie_hu.2.2":"待我去铁匠铺把弓打出来,你到这个地方来找我。",
+  "plre.dialog.npc.lao_lie_hu.2.3":"到时,我有样东西给你。",
+  "plre.dialog.npc.lao_lie_hu.2.failure":"§c你没有足够的材料！",
+
+  "plre.dialog.npc.lao_lie_hu.3":"……",
+  "plre.dialog.npc.lao_lie_hu.3.option":"(赴约)我来了",
+  "plre.dialog.npc.lao_lie_hu.3.1":"嗯……在给你东西之前,先听我说几句吧。",
+  "plre.dialog.npc.lao_lie_hu.3.2":"我自幼与兄长一同,跟随恩师§a§l姬文昌§r读书习武。恩师赐我名为§a§l姬武发§r,兄长名为§a§l姬成诵§f。",
+  "plre.dialog.npc.lao_lie_hu.3.3":"那时日子简单,练箭、读书、听恩师讲天地之道……",
+  "plre.dialog.npc.lao_lie_hu.3.4":"可后来四圣兽突然失了踪迹,天下大乱,魔物横行。",
+  "plre.dialog.npc.lao_lie_hu.3.5":"恩师便命我兄弟二人下山,四处讨伐魔物。",
+  "plre.dialog.npc.lao_lie_hu.3.6":"直到那一回……我们在南方大漠中遇上一只火焰魔物。那畜生吐出的火,连丹药都压不住。",
+  "plre.dialog.npc.lao_lie_hu.3.7":"我兄弟二人拼尽全力,仍是不敌,重伤而逃。",
+  "plre.dialog.npc.lao_lie_hu.3.8":"那之后,我落了病根,便在这龙须镇落脚,做了猎户。兄长则留在南方一处绿洲附近,打探那魔物的底细,也好警示来往的人。",
+  "plre.dialog.npc.lao_lie_hu.3.9":"而今恩师已仙逝多年,这世道依旧不太平,我这副身子骨……也快到日子了。",
+  "plre.dialog.npc.lao_lie_hu.3.10":"好在遇见了你。你肯为一个素不相识的老头子跑腿凑材料,心性不坏。更难得的是,你那双眼睛里有股劲。",
+  "plre.dialog.npc.lao_lie_hu.3.11":"我这辈子没教出什么像样的徒弟,但至少……这个箭袋,可以托付给你。",
+  "plre.dialog.npc.lao_lie_hu.3.12":"这是§6天行箭袋§r,我参悟恩师遗书,并用你给我的材料所制。可惜我如今气血衰败,只做得出半成品……",
+  "plre.dialog.npc.lao_lie_hu.3.13":"不过恩师当年在这附近留了些手段。他日你若能通过他的试炼,或许能借那力量将它补全。",
+  "plre.dialog.npc.lao_lie_hu.3.14":"(拍了拍你的肩)我没别的心愿了,就想在闭眼前,看一眼它完整的样子。",
+  "plre.dialog.npc.lao_lie_hu.3.15":"你可记住了——\n§a天行健,君子以自强不息。§r\n替我……把这条路走下去。",
+  
+
+
+
+	"plre.npc.name.lao_dan_shi.1":"§a§l老丹师",
+	"plre.npc.name.lao_dan_shi.2":"§a§l神农氏",
+	"plre.npc.name.lao_dan_shi.3":"§a§l老丹师(年轻时)",
+	"plre.npc.name.lao_dan_shi.4":"§a§l老翁",
+  "plre.item.name.ren_he_yuan":"§b「人合元」",
+  "plre.item.ren_he_yuan.lore1":"§7§o人合元,君子以开物成务",
+  "plre.item.ren_he_yuan.lore2":"§7§o水火交感,刚柔相推,是谓人合其元",
+  "plre.item.ren_he_yuan.lore3":"§7§o元者,万物之始也: 合者,内外之通也",
+  "plre.item.ren_he_yuan.lore4":"§7§o以人合元,则炼化不假外物,造化存乎一心",
+  "plre.item.ren_he_yuan.lore5":"§7§o观其妙而用其精,开万物以为民务,君子之道也",
+	"plre.dialog.npc.lao_dan_shi":"咳咳……",
+	"plre.dialog.npc.lao_dan_shi.option":"(离开)",
+	"plre.dialog.npc.lao_dan_shi.1.option":"(开启支线-§b人合元§r)",
+  "plre.dialog.npc.lao_dan_shi.1.1":"你……也是炼丹师吧？老朽有一事相托。",
+  "plre.dialog.npc.lao_dan_shi.1.2":"说来话长。当年老朽在虎爪山脚下,曾遇一老翁……",
+  "plre.dialog.npc.lao_dan_shi.1.3":"老先生,您这是在……炼丹？",
+  "plre.dialog.npc.lao_dan_shi.1.4":"哎呀,丹药哪是这般炼法！草药和元素一股脑丢进去,跟熬汤似的……应该先以草药合妖丹制成药引,再分次入炉,火候先后皆有章法才对——",
+  "plre.dialog.npc.lao_dan_shi.1.5":"年轻人,我问你——同样的丹方,草药越金贵药效越强,为何？同样的药引,掺入的元素不同功效便天差地别,又是为何？",
+  "plre.dialog.npc.lao_dan_shi.1.6":"因为决定药效的,从来不是你怎么炼,而是你用了什么。",
+  "plre.dialog.npc.lao_dan_shi.1.7":"你看,我伤了皮肉,便放木元素助生长、水元素润经络。伤不重,寻常草药就够。",
+  "plre.dialog.npc.lao_dan_shi.1.8":"你尝尝这碗,是不是也能疗伤？和你炼的丹丸,效用差在哪里？",
+  "plre.dialog.npc.lao_dan_shi.1.9":"(尝了一口,怔住)……确实能疗伤。若草药是把元素带入身体各处的引子,那丹药发挥出的效果便完全来自于元素……",
+  "plre.dialog.npc.lao_dan_shi.1.10":"既然汤羹可以省去炼丹的步骤,那……如果连草药这个“引子”都省了,直接将元素自身的能量运用于身体上呢？",
+  "plre.dialog.npc.lao_dan_shi.1.11":"老朽从那天起,便一直在琢磨这件事。穷尽半生,总差最后一步……",
+  "plre.dialog.npc.lao_dan_shi.1.12":"前些时日老朽听闻西方有一大夫,其实是传说中的神农氏。也许只有这般人物才能完成此法了……",
+  "plre.dialog.npc.lao_dan_shi.1.13":"这是老朽花费半生所写的元素炼化之法,老朽称之为§b「人合元」§r。",
+  "plre.dialog.npc.lao_dan_shi.1.14":"他日若你能遇到§a§l神农氏§r,请你将此书交于他,希望他能完成我这半生的心结。",
+
+	"plre.dialog.npc.lao_dan_shi.2.option":"我有一事相求(支线-§b人合元§r)",
+  "plre.dialog.npc.lao_dan_shi.2.1":"小友何事寻我？",
+  "plre.dialog.npc.lao_dan_shi.2.1.option":"提交§b「人合元」§r并说明情况",
+  "plre.dialog.npc.lao_dan_shi.2.2":"哦？竟有此事。让老朽瞧瞧……",
+  "plre.dialog.npc.lao_dan_shi.2.3":"(翻看片刻,眼神渐亮)妙！这老翁是位奇人,那位炼丹师更是位天才。",
+  "plre.dialog.npc.lao_dan_shi.2.4":"他所说“差最后一步”,怕是熔炼时元素直接化散了吧？炼丹时加的越多散得越快,所以他一直过不去这道坎。",
+  "plre.dialog.npc.lao_dan_shi.2.5":"其实症结不在法子上,在东西上——此法用普通元素不行。普通元素太稀太散,入炉一碰就没了。",
+  "plre.dialog.npc.lao_dan_shi.2.6":"得用§6精炼元素§r。精炼过的元素质地紧实,经得住炉火淬炼。这也是锻造装备时所需的元素是精炼的原因。",
+  "plre.dialog.npc.lao_dan_shi.2.7":"(提笔在书页上勾画)此处改掉……这个火候要往上提……这段全篇重写……好了,老朽已将关节补全,你且带回去。",
+  "plre.dialog.npc.lao_dan_shi.2.8":"不过……老朽总觉得此法不止于此。精炼元素只是通了路,尽头还有什么,老朽一时也看不透。",
+  "plre.dialog.npc.lao_dan_shi.2.9":"对了,神族有位§a§l太上老君§r,炼丹一道远胜老朽。你若能寻到他,将此书与他看,或许能再有进境。",
+
+	"plre.dialog.npc.lao_dan_shi.3.option":"神农氏将它补全了！",
+  "plre.dialog.npc.lao_dan_shi.3.1":"(猛然抬头,声音发颤)什么……？你真的寻到了神农氏？他……真将此法补全了？！",
+  "plre.dialog.npc.lao_dan_shi.3.1.option":"提交§b「人合元」§r并说明情况",
+  "plre.dialog.npc.lao_dan_shi.3.2":"(颤抖着手翻阅书页,忽然顿住,闭目凝神——片刻后,掌心缓缓凝出一团纯净的元素光华)……",
+  "plre.dialog.npc.lao_dan_shi.3.3":"(声音哽咽)成了……真的成了……老朽这辈子没有遗憾了……",
+  "plre.dialog.npc.lao_dan_shi.3.4":"只可惜老朽这副身子,怕是等不到此法传遍天下了……",
+  "plre.dialog.npc.lao_dan_shi.3.5":"小友……老朽能否再托你一事？将此物拿去,替我让它流传于世。就像我书上写的\n——§b人合元,君子以开物成务",
+  "plre.dialog.npc.lao_dan_shi.3.6":"还有……若你寻到§a§l太上老君§r,务必让他再看看这法子。神农氏说此法不止于此,老朽也想知道……它的尽头,到底在何处。",
+
+
+
+
   "plre.task.guide.title":"§6任务指引\n",
   "plre.task.guide.title.speak":"§6任务指引\n§f与%s§f交谈",
   "plre.task.guide.title.ready":"§6任务指引\n§f准备好后与%s§f交谈",
@@ -349,8 +476,8 @@
   "plre.monster.north.box_skeleton":"§c带着怨气的 骷髅",
   "plre.monster.north.box_zombie":"§c带着怨气的 僵尸",
   "plre.monster.north.box_spider":"§c带着怨气的 蜘蛛",
-	
-	"plre.instance.djs":"§b关卡通过倒计时: %s§b秒",
+  
+  "plre.monster.north.xuanwu":"§c玄武试炼守卫",
 	
 	"plre.instance.model_change.1":"§a副本模式已切换为: §6体验模式",
 	"plre.instance.model_change.2":"§a副本模式已切换为: §6经典模式",

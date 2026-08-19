@@ -198,6 +198,7 @@
 			icon: {
 				id: "panlingre:ba_fang_yi"
 			}
+			icon_scale: 0.75d
 			id: "76E1B535211D11EE"
 			require_sequential_tasks: false
 			rewards: [{
@@ -213,13 +214,13 @@
 				type: "command"
 			}]
 			shape: "gear"
-			size: 1.0d
+			size: 0.5d
 			tasks: [{
 				id: "168EAC0F2497F8E9"
 				type: "checkmark"
 			}]
 			x: 0.5d
-			y: 1.0d
+			y: 0.5d
 		}
 	]
 }

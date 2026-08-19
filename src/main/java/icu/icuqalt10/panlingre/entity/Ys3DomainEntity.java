@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.entity;
 
+import icu.icuqalt10.panlingre.util.SkillHelper;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -7,13 +8,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Comparator;
 import java.util.List;
 
 /** Shared timing, animation and teammate selection for tier-three elemental domains. */
@@ -106,21 +105,14 @@ public abstract class Ys3DomainEntity extends Entity {
         float radius = getDomainRadius();
         List<LivingEntity> targets = level().getEntitiesOfClass(LivingEntity.class,
                         new AABB(position(), position()).inflate(radius, 4.0D, radius),
-                        target -> isValidDomainTarget(owner, target))
+                        SkillHelper.friendlyTargetFilter(owner))
                 .stream()
                 .filter(target -> horizontalDistanceSqr(target) <= radius * radius)
-                .sorted(Comparator.comparingInt((LivingEntity target) -> target == owner ? 0
-                                : target instanceof Player ? 1 : 2)
-                        .thenComparingDouble(this::distanceToSqr))
+                .sorted(SkillHelper.friendlyTargetComparator(owner))
                 .limit(MAX_TEAMMATES + 1L)
                 .toList();
         for (LivingEntity target : targets) applyEffect(target, entityData.get(EFFECT_VALUE));
         afterApplyingEffects();
-    }
-
-    private boolean isValidDomainTarget(LivingEntity owner, LivingEntity target) {
-        if (!target.isAlive() || target instanceof Player player && player.isSpectator()) return false;
-        return target == owner || owner.getTeam() != null && owner.isAlliedTo(target);
     }
 
     private double horizontalDistanceSqr(LivingEntity target) {

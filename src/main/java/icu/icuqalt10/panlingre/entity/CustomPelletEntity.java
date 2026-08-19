@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.entity;
 
+import icu.icuqalt10.panlingre.util.SkillHelper;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModEntities;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -92,13 +93,13 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
     }
 
     private boolean isFriendly(Entity owner, LivingEntity target) {
-        if (owner.getTeam() == null || target.getTeam() == null) return true;
-        else return owner.getTeam() == target.getTeam();
+        return owner instanceof LivingEntity livingOwner
+                && !SkillHelper.combatTargetFilter(livingOwner).test(target);
     }
 
     private boolean isUnFriendly(Entity owner, LivingEntity target) {
-        if (owner.getTeam() == null || target.getTeam() == null) return true;
-        else return owner.getTeam() != target.getTeam();
+        return owner instanceof LivingEntity livingOwner
+                && !SkillHelper.friendlyTargetFilter(livingOwner).test(target);
     }
 
     //================= 效果方法区 =================

@@ -49,11 +49,11 @@ public class race_ren extends Item implements ICurioItem {
         return modifiers;
     }
 
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-        tooltipComponents.add(Component.translatable("item.PanlingRE.race_ren.lore1"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.race_ren.lore2"));
+        tooltip.add(Component.translatable("item.PanlingRE.race_ren.lore1"));
+        tooltip.add(Component.translatable("item.PanlingRE.race_ren.lore2"));
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

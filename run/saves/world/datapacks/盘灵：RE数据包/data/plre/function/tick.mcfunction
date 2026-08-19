@@ -12,8 +12,3 @@ execute as @a at @s run function plre:ticks/player
 
 #==================================非玩家实体tick=================================#
 execute as @e[type=!player,type=!item_frame,type=!glow_item_frame,type=!villager,type=!painting] at @s run function plre:ticks/entity
-
-
-#==================================非玩家实体tick=================================#
-#假盘
-execute if score .system instance_pangu_tick matches 1 run function plre:instances/pangu/tick

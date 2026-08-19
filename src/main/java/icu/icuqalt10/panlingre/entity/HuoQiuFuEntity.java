@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.entity;
 
 import icu.icuqalt10.panlingre.init.ModEntities;
 import icu.icuqalt10.panlingre.network.particle.HuoQiuExplosionParticles;
+import icu.icuqalt10.panlingre.util.SkillHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -19,7 +20,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 
 public class HuoQiuFuEntity extends ThrowableItemProjectile {
     private static final double EXPLOSION_RADIUS = 4.0;
@@ -37,6 +40,19 @@ public class HuoQiuFuEntity extends ThrowableItemProjectile {
     public HuoQiuFuEntity(Level level, LivingEntity shooter, float damage) {
         super(ModEntities.HUO_QIU_FU.get(), shooter, level);
         this.setDamage(damage);
+        if (shooter.getTeam() != null) {
+            level.getScoreboard().addPlayerToTeam(this.getStringUUID(), shooter.getTeam());
+        }
+    }
+
+    /** Creates a scripted fireball without a living owner, for example a dungeon meteor. */
+    public HuoQiuFuEntity(Level level, double x, double y, double z, float damage, @Nullable PlayerTeam team) {
+        this(ModEntities.HUO_QIU_FU.get(), level);
+        this.setPos(x, y, z);
+        this.setDamage(damage);
+        if (team != null) {
+            level.getScoreboard().addPlayerToTeam(this.getStringUUID(), team);
+        }
     }
 
     @Override
@@ -96,6 +112,17 @@ public class HuoQiuFuEntity extends ThrowableItemProjectile {
         }
     }
 
+    @Override
+    protected boolean canHitEntity(Entity target) {
+        if (!super.canHitEntity(target) || !(target instanceof LivingEntity livingTarget)) {
+            return false;
+        }
+        Entity owner = this.getOwner();
+        return owner instanceof LivingEntity livingOwner
+                ? SkillHelper.combatTargetFilter(livingOwner).test(livingTarget)
+                : !this.isAlliedTo(livingTarget);
+    }
+
     private void explode(ServerLevel level) {
         Entity owner = this.getOwner();
         double radiusSqr = EXPLOSION_RADIUS * EXPLOSION_RADIUS;
@@ -103,9 +130,10 @@ public class HuoQiuFuEntity extends ThrowableItemProjectile {
         level.getEntitiesOfClass(
                         LivingEntity.class,
                         this.getBoundingBox().inflate(EXPLOSION_RADIUS),
-                        target -> target.isAlive()
-                                && target != owner
-                                && target.distanceToSqr(this) <= radiusSqr
+                        target -> target.distanceToSqr(this) <= radiusSqr
+                                && (owner instanceof LivingEntity livingOwner
+                                ? SkillHelper.combatTargetFilter(livingOwner).test(target)
+                                : !this.isAlliedTo(target))
                 )
                 .forEach(target -> target.hurt(
                         this.damageSources().explosion(this, owner),

@@ -119,27 +119,27 @@ public class bless_shengshou extends Item implements ICurioItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
-        tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.lore1"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.lore2"));
-        tooltipComponents.add(Component.empty());
-        tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill"));
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        tooltip.add(Component.translatable("item.PanlingRE.bless_shengshou.lore1"));
+        tooltip.add(Component.translatable("item.PanlingRE.bless_shengshou.lore2"));
+        tooltip.add(Component.empty());
+        tooltip.add(Component.translatable("item.PanlingRE.bless_shengshou.skill"));
 
         Player player = SafeClientAccess.getClientPlayer();
         if (player != null) {
             if (BlessData.hasBless(player, "qinglong"))
-                tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill1"));
+                tooltip.add(Component.translatable("item.PanlingRE.bless_shengshou.skill1"));
 
             if (BlessData.hasBless(player, "zhuque"))
-                tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill2"));
+                tooltip.add(Component.translatable("item.PanlingRE.bless_shengshou.skill2"));
 
             if (BlessData.hasBless(player, "baihu"))
-                tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill3"));
+                tooltip.add(Component.translatable("item.PanlingRE.bless_shengshou.skill3"));
 
             if (BlessData.hasBless(player, "xuanwu"))
-                tooltipComponents.add(Component.translatable("item.PanlingRE.bless_shengshou.skill4"));
+                tooltip.add(Component.translatable("item.PanlingRE.bless_shengshou.skill4"));
         }
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

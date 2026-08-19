@@ -37,16 +37,16 @@ public class ye_ming_zhu extends Item implements ICurioItem {
 
     }
 
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare2"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.ye_ming_zhu.lore1"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.ye_ming_zhu.lore2"));
-        tooltipComponents.add(Component.empty());
-        tooltipComponents.add(Component.translatable("item.PanlingRE.ye_ming_zhu.skill1"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.ye_ming_zhu.skill2"));
+        tooltip.add(Component.translatable("item.PanlingRE.lore.rare2"));
+        tooltip.add(Component.translatable("item.PanlingRE.lore.limit3"));
+        tooltip.add(Component.translatable("item.PanlingRE.ye_ming_zhu.lore1"));
+        tooltip.add(Component.translatable("item.PanlingRE.ye_ming_zhu.lore2"));
+        tooltip.add(Component.empty());
+        tooltip.add(Component.translatable("item.PanlingRE.ye_ming_zhu.skill1"));
+        tooltip.add(Component.translatable("item.PanlingRE.ye_ming_zhu.skill2"));
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

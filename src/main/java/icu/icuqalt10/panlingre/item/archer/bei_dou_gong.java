@@ -33,7 +33,7 @@ public class bei_dou_gong extends BowItem implements skill_trigger {
     private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bei_dou_gong");
 
     private final int cooldown = 100;
-    private final float cost = 15.0f;
+    private final float cost = 25.0f;
 
     public bei_dou_gong() {
         super(
@@ -89,7 +89,7 @@ public class bei_dou_gong extends BowItem implements skill_trigger {
             arrowEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 0.0F);
 
             arrowEntity.setBaseDamage(
-                    (arrowEntity.getDeltaMovement().length() / 4.5) * (2.0 + player.getAttributeValue(ModAttributes.ARROW_DAMAGE) * 1));
+                    (arrowEntity.getDeltaMovement().length() / 4.5) * (2.0 + player.getAttributeValue(ModAttributes.ARROW_DAMAGE)));
 
             arrowEntity.pickup = AbstractArrow.Pickup.DISALLOWED; // 不可拾取
             arrowEntity.setCritArrow(true); // 暴击
@@ -133,28 +133,28 @@ public class bei_dou_gong extends BowItem implements skill_trigger {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
         // 检测Shift键
         if (SafeClientAccess.isShiftPressed()) {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare5"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.bei_dou_gong.lore1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.bei_dou_gong.lore2"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.bei_dou_gong.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.bei_dou_gong.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare5"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit1"));
+            tooltip.add(Component.translatable("item.PanlingRE.bei_dou_gong.lore1"));
+            tooltip.add(Component.translatable("item.PanlingRE.bei_dou_gong.lore2"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.bei_dou_gong.skill1.2"));
+            tooltip.add(Component.translatable("item.PanlingRE.bei_dou_gong.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
                     LingQiData.getCostText(cost)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.bei_dou_gong.skill3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.bei_dou_gong.skill4"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.bei_dou_gong.skill5"));
+            tooltip.add(Component.translatable("item.PanlingRE.bei_dou_gong.skill3"));
+            tooltip.add(Component.translatable("item.PanlingRE.bei_dou_gong.skill4"));
+            tooltip.add(Component.translatable("item.PanlingRE.bei_dou_gong.skill5"));
         } else {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare5"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit1"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.bei_dou_gong.skill1.1"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare5"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit1"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.bei_dou_gong.skill1.1"));
         }
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

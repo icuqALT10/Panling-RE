@@ -154,28 +154,28 @@ public class po_kong_fu extends Item implements skill_trigger {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
         // 检测Shift键
         if (SafeClientAccess.isShiftPressed()) {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare4"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit0"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.lore1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.lore2"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare4"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit0"));
+            tooltip.add(Component.translatable("item.PanlingRE.po_kong_fu.lore1"));
+            tooltip.add(Component.translatable("item.PanlingRE.po_kong_fu.lore2"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.po_kong_fu.skill1.2"));
+            tooltip.add(Component.translatable("item.PanlingRE.po_kong_fu.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
                     LingQiData.getCostText(cost)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.skill3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.skill4"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.skill5"));
+            tooltip.add(Component.translatable("item.PanlingRE.po_kong_fu.skill3"));
+            tooltip.add(Component.translatable("item.PanlingRE.po_kong_fu.skill4"));
+            tooltip.add(Component.translatable("item.PanlingRE.po_kong_fu.skill5"));
         } else {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare4"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit0"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.po_kong_fu.skill1.1"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare4"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit0"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.po_kong_fu.skill1.1"));
         }
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

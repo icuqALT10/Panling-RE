@@ -7,6 +7,8 @@ give @s panlingre:tong_qian 15
 give @s bread 32
 give @s panlingre:he_ding_dan
 execute if function plre:check/curios/zhiye/warlock run function plre:give/item/start_warlock
+execute if function plre:check/curios/zhiye/warrior run advancement grant @s only plre:check/zhiye/warrior
+execute if function plre:check/curios/zhiye/archer run advancement grant @s only plre:check/zhiye/archer
 
 
 execute if function plre:check/curios/race/ren run return run function plre:start/start/ren

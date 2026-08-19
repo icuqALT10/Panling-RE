@@ -14,6 +14,11 @@
       ],
       "options":[
         {
+          "text": {"translate":"plre.dialog.npc.lao_dan_shi.2.option"},
+          "target": "ren_he_yuan.1",
+          "visibility_command": "execute if score @s task_ren_he_yuan matches 2"
+        },
+        {
           "text": {"translate":"plre.dialog.npc.west.te5.option1"},
           "target": "1"
         },
@@ -122,6 +127,128 @@
           "text": {"translate":"plre.dialog.npc.west.te5.option3"}
         }
       ]
+    },
+    
+
+
+    {
+      "id": "ren_he_yuan.1",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.lao_dan_shi.2.1"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "written_book","count":1,
+          "nbt":"{\"minecraft:custom_name\":{\"translate\":\"plre.item.name.ren_he_yuan\"},\"minecraft:lore\":[{\"translate\":\"plre.item.ren_he_yuan.lore1\"},{\"translate\":\"plre.item.ren_he_yuan.lore2\"},{\"translate\":\"plre.item.ren_he_yuan.lore3\"},{\"translate\":\"plre.item.ren_he_yuan.lore4\"},{\"translate\":\"plre.item.ren_he_yuan.lore5\"}]}"
+        }
+      ],
+      "options":[
+        {
+          "text": {"translate":"plre.dialog.npc.lao_dan_shi.2.1.option"},
+          "target": "ren_he_yuan.2"
+        }
+      ]
+    },
+    {
+      "id": "ren_he_yuan.2",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.lao_dan_shi.2.2"
+        }
+      ],
+      "next": "ren_he_yuan.3"
+    },
+    {
+      "id": "ren_he_yuan.3",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.lao_dan_shi.2.3"
+        }
+      ],
+      "next": "ren_he_yuan.4"
+    },
+    {
+      "id": "ren_he_yuan.4",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.lao_dan_shi.2.4"
+        }
+      ],
+      "next": "ren_he_yuan.5"
+    },
+    {
+      "id": "ren_he_yuan.5",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.lao_dan_shi.2.5"
+        }
+      ],
+      "next": "ren_he_yuan.6"
+    },
+    {
+      "id": "ren_he_yuan.6",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.lao_dan_shi.2.6"
+        }
+      ],
+      "next": "ren_he_yuan.7"
+    },
+    {
+      "id": "ren_he_yuan.7",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.lao_dan_shi.2.7"
+        }
+      ],
+      "next": "ren_he_yuan.8"
+    },
+    {
+      "id": "ren_he_yuan.8",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.lao_dan_shi.2.8"
+        }
+      ],
+      "next": "ren_he_yuan.9"
+    },
+    {
+      "id": "ren_he_yuan.9",
+      "speaker": {"translate": "plre.npc.name.te5"},
+      "text":
+      [
+        {
+          "translate": "plre.dialog.npc.lao_dan_shi.2.9"
+        }
+      ],
+      "display_items": [
+        {
+          "item": "written_book","count":1,
+          "nbt":"{\"minecraft:custom_name\":{\"translate\":\"plre.item.name.ren_he_yuan\"},\"minecraft:lore\":[{\"translate\":\"plre.item.ren_he_yuan.lore1\"},{\"translate\":\"plre.item.ren_he_yuan.lore2\"},{\"translate\":\"plre.item.ren_he_yuan.lore3\"},{\"translate\":\"plre.item.ren_he_yuan.lore4\"},{\"translate\":\"plre.item.ren_he_yuan.lore5\"}]}"
+        }
+      ],
+      "command":[
+      "advancement grant @s only plre:task/other/ren_he_yuan/2"
+      ],
+      "endDialog": true
     }
   ]
 }

@@ -21,16 +21,16 @@ public class yao_yin extends Item {
         );
     }
 
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         Player player = SafeClientAccess.getClientPlayer();
         if (player != null && check.race_check(player, "panlingre:race_yao")) {
-            tooltipComponents.add(Component.translatable("item.panlingre.yao_yin.lore2"));
+            tooltip.add(Component.translatable("item.panlingre.yao_yin.lore2"));
         } else {
-            tooltipComponents.add(Component.translatable("item.panlingre.yao_yin.lore1.1"));
-            tooltipComponents.add(Component.translatable("item.panlingre.yao_yin.lore1.2"));
+            tooltip.add(Component.translatable("item.panlingre.yao_yin.lore1.1"));
+            tooltip.add(Component.translatable("item.panlingre.yao_yin.lore1.2"));
         }
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
 }

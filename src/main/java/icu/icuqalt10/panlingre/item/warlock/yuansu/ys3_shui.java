@@ -65,6 +65,7 @@ public class ys3_shui extends Item {
             return;
         }
         tooltip.add(Component.translatable("item.PanlingRE.lore.limit2"));
+        tooltip.add(Component.translatable("item.panlingre.ren_he_yuan.lore"));
         tooltip.add(Component.empty());
         if (SafeClientAccess.isShiftPressed()) {
             tooltip.add(Component.translatable("item.PanlingRE.ys3_shui.skill1.2"));

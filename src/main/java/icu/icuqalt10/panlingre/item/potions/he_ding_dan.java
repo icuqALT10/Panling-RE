@@ -38,11 +38,11 @@ public class he_ding_dan extends PotionItem {
         return Component.translatable("item.panlingre.he_ding_dan");
     }
 
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-        tooltipComponents.add(Component.translatable("item.panlingre.he_ding_dan.lore"));
+        tooltip.add(Component.translatable("item.panlingre.he_ding_dan.lore"));
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
 

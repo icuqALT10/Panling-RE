@@ -1,4 +1,5 @@
 {
+    "parent": "plre:misson/xian/17",
     "criteria": {
         "trigger":{
             "trigger": "minecraft:impossible",

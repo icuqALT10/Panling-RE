@@ -42,7 +42,7 @@ public class ModEffects {
                             ModAttributes.LING_QI_RECOVERY,
                             ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ling_qi_recovery"),
                             0.01,
-                            AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                            AttributeModifier.Operation.ADD_VALUE
                     ));
 
     public static final DeferredHolder<MobEffect, MobEffect> freeze = EFFECTS.register("freeze", FreezeEffect::new);

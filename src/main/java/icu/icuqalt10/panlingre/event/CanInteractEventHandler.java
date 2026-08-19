@@ -1,6 +1,5 @@
 package icu.icuqalt10.panlingre.event;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.entity.interaction.CanInteractData;
 import net.minecraft.commands.CommandSourceStack;
@@ -52,14 +51,6 @@ public final class CanInteractEventHandler {
         CommandSourceStack source = player.createCommandSourceStack()
                 .withPermission(4)
                 .withSuppressedOutput();
-        try {
-            player.getServer().getCommands().getDispatcher().execute(command, source);
-        } catch (CommandSyntaxException exception) {
-            player.sendSystemMessage(Component.translatable(
-                    "message.panlingre.can_interact.command_failed",
-                    command,
-                    exception.getMessage()
-            ));
-        }
+        player.getServer().getCommands().performPrefixedCommand(source, command);
     }
 }

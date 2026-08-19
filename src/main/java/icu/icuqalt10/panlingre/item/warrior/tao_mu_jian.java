@@ -128,26 +128,26 @@ public class tao_mu_jian extends SwordItem implements skill_trigger {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
         // 检测Shift键
         if (SafeClientAccess.isShiftPressed()) {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit0"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.tao_mu_jian.lore1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.tao_mu_jian.lore2"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.tao_mu_jian.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.tao_mu_jian.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare1"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit0"));
+            tooltip.add(Component.translatable("item.PanlingRE.tao_mu_jian.lore1"));
+            tooltip.add(Component.translatable("item.PanlingRE.tao_mu_jian.lore2"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.tao_mu_jian.skill1.2"));
+            tooltip.add(Component.translatable("item.PanlingRE.tao_mu_jian.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
                     LingQiData.getCostText(cost)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.tao_mu_jian.skill3"));
+            tooltip.add(Component.translatable("item.PanlingRE.tao_mu_jian.skill3"));
         } else {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit0"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.tao_mu_jian.skill1.1"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare1"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit0"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.tao_mu_jian.skill1.1"));
         }
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

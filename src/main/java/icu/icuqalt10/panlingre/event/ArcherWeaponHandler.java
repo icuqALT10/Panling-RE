@@ -17,18 +17,25 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingGetProjectileEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @EventBusSubscriber(modid = PanlingRE.MODID)
 public class ArcherWeaponHandler {
+
+    private static final Map<ServerLevel, List<PendingArrowExplosion>> PENDING_ARROW_EXPLOSIONS = new HashMap<>();
 
     //箭矢命中/落地时
     @SubscribeEvent
@@ -38,13 +45,41 @@ public class ArcherWeaponHandler {
 
         if (!level.isClientSide && projectile instanceof AbstractArrow arrow) {
             if(arrow.getTags().contains("panlingre:zhong_chui_arrow")) {
-                triggerArrowExplosion(level, arrow,10f);
-                arrow.discard();
+                handleExplosiveArrowImpact(event, arrow, 12.0F);
             }
             if(arrow.getTags().contains("panlingre:bei_dou_arrow")) {
-                triggerArrowExplosion(level, arrow,5f);
-                arrow.discard();
+                handleExplosiveArrowImpact(event, arrow, 11.0F);
             }
+        }
+    }
+
+    private static void handleExplosiveArrowImpact(ProjectileImpactEvent event, AbstractArrow arrow, float multiplier) {
+        if (!(arrow.level() instanceof ServerLevel serverLevel)) return;
+
+        if (event.getRayTraceResult().getType() == HitResult.Type.ENTITY) {
+            // ProjectileImpactEvent fires before AbstractArrow#onHitEntity. Defer the
+            // explosion until the end of this level tick so vanilla applies the arrow
+            // hit first, then LivingEntity's hurt cooldown can apply only the positive
+            // explosion difference (for example 50 - 10 = 40).
+            PENDING_ARROW_EXPLOSIONS
+                    .computeIfAbsent(serverLevel, ignored -> new ArrayList<>())
+                    .add(new PendingArrowExplosion(arrow, multiplier));
+        } else {
+            triggerArrowExplosion(serverLevel, arrow, multiplier);
+            arrow.discard();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLevelTickPost(LevelTickEvent.Post event) {
+        if (!(event.getLevel() instanceof ServerLevel serverLevel)) return;
+
+        List<PendingArrowExplosion> pending = PENDING_ARROW_EXPLOSIONS.remove(serverLevel);
+        if (pending == null) return;
+
+        for (PendingArrowExplosion explosion : pending) {
+            triggerArrowExplosion(serverLevel, explosion.arrow(), explosion.multiplier());
+            explosion.arrow().discard();
         }
     }
     //箭矢爆炸效果
@@ -72,6 +107,9 @@ public class ArcherWeaponHandler {
             float explosionDamage = (float) (arrow.getBaseDamage() * multiplied);
             target.hurt(level.damageSources().explosion(arrow, owner), explosionDamage);
         }
+    }
+
+    private record PendingArrowExplosion(AbstractArrow arrow, float multiplier) {
     }
 
     //给玩家自带无限

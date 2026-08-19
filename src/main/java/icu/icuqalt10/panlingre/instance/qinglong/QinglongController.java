@@ -4,10 +4,12 @@ import icu.icuqalt10.panlingre.instance.InstanceController;
 import icu.icuqalt10.panlingre.instance.InstanceManager;
 import icu.icuqalt10.panlingre.instance.InstanceResult;
 import icu.icuqalt10.panlingre.instance.InstanceSession;
-import icu.icuqalt10.panlingre.network.QinglongMusicPayload;
+import icu.icuqalt10.panlingre.network.SiShouMusicPayload;
 import net.minecraft.network.chat.Component;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
+import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -63,14 +65,17 @@ public final class QinglongController implements InstanceController {
         for (int i = 0; i < QUESTIONS.size(); i++) order.add(i);
         Collections.shuffle(order);
         ServerPlayer player = session.player();
-        if (player != null) player.sendSystemMessage(Component.translatable("instance.panlingre.qinglong.preparing", correct, wrong));
         bossBar = new ServerBossEvent(
                 Component.translatable("instance.panlingre.qinglong.countdown"),
                 BossEvent.BossBarColor.GREEN,
                 BossEvent.BossBarOverlay.PROGRESS
         );
-        if (player != null) bossBar.addPlayer(player);
-        if (player != null) PacketDistributor.sendToPlayer(player, new QinglongMusicPayload(true));
+        if (player != null) {
+            player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("instance.panlingre.qinglong.preparing.1")));
+            player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("instance.panlingre.qinglong.preparing.2", correct, wrong)));
+            bossBar.addPlayer(player);
+            PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(true));
+        }
         countdownTicks = START_COUNTDOWN_TICKS;
         updateCountdownBar();
     }
@@ -90,6 +95,7 @@ public final class QinglongController implements InstanceController {
         }
         if (resolving) return;
         if (countdownTicks > 0) {
+            if (countdownTicks % 20 == 0) playAtCenter(session, SoundEvents.NOTE_BLOCK_PLING.value(), SoundSource.HOSTILE, 4.0F, 1.0F);
             countdownTicks--;
             updateCountdownBar();
             if (countdownTicks == 0) beginQuestion(session);
@@ -111,7 +117,7 @@ public final class QinglongController implements InstanceController {
         clearAnswers();
         if (bossBar != null) bossBar.removeAllPlayers();
         ServerPlayer player = session.player();
-        if (player != null) PacketDistributor.sendToPlayer(player, new QinglongMusicPayload(false));
+        if (player != null) PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
     }
 
     private void beginQuestion(InstanceSession session) {
@@ -178,7 +184,7 @@ public final class QinglongController implements InstanceController {
             bossBar.setName(Component.translatable("instance.panlingre.qinglong.completed"));
             bossBar.setProgress(1.0F);
             playForPlayer(session, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0F, 1.0F);
-            if (player != null) PacketDistributor.sendToPlayer(player, new QinglongMusicPayload(false));
+            if (player != null) PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
             successDelayTicks = SUCCESS_DELAY_TICKS;
         } else if (wrong >= MAX_WRONG) {
             session.finish(InstanceResult.FAILURE);

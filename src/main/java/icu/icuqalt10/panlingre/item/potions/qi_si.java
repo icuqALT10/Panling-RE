@@ -37,11 +37,11 @@ public class qi_si extends CustomPelletItem {
         return cooldown;
     }
 
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit2"));
-        tooltipComponents.add(Component.empty());
-        tooltipComponents.add(Component.translatable("item.panlingre.qi_si.skill1", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown)));
-        tooltipComponents.add(Component.translatable("item.panlingre.qi_si.skill2"));
+        tooltip.add(Component.translatable("item.PanlingRE.lore.limit2"));
+        tooltip.add(Component.empty());
+        tooltip.add(Component.translatable("item.panlingre.qi_si.skill1", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown)));
+        tooltip.add(Component.translatable("item.panlingre.qi_si.skill2"));
     }
 }

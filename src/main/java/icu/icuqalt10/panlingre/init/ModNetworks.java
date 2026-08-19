@@ -12,6 +12,7 @@ import icu.icuqalt10.panlingre.network.ShakePayload;
 import icu.icuqalt10.panlingre.network.particle.ParticleCluster;
 import icu.icuqalt10.panlingre.network.particle.ParticleLighting;
 import icu.icuqalt10.panlingre.network.particle.Ys3JinTornadoPayload;
+import icu.icuqalt10.panlingre.network.particle.ZhuqueMeteorWarningPayload;
 import icu.icuqalt10.panlingre.network.task.TaskEntityCheckPayload;
 import icu.icuqalt10.panlingre.network.task.TaskEntityResultPayload;
 import icu.icuqalt10.panlingre.network.task.TaskGuideSyncPayload;
@@ -51,92 +52,97 @@ public class ModNetworks {
         registrar.playToClient(
                 SkillUseSucceededPayload.TYPE,
                 SkillUseSucceededPayload.STREAM_CODEC,
-                SkillUseSucceededPayload::handle
+                ClientPayloadHandlers::handleSkillUseSucceeded
         );
 
         registrar.playToClient(
                 ItemActivationPayload.TYPE,
                 ItemActivationPayload.STREAM_CODEC,
-                ItemActivationPayload::handle
+                ClientPayloadHandlers::handleItemActivation
         );
 
         registrar.playToClient(
                 PojunCounterAttackPayload.TYPE,
                 PojunCounterAttackPayload.STREAM_CODEC,
-                PojunCounterAttackPayload::handle
+                ClientPayloadHandlers::handlePojunCounterAttack
         );
 
         registrar.playToClient(
                 LingQiSyncPacket.TYPE,
                 LingQiSyncPacket.STREAM_CODEC,
-                LingQiSyncPacket::handle
+                ClientPayloadHandlers::handleLingQiSync
         );
 
         registrar.playToClient(
                 SyncBlessPayload.TYPE,
                 SyncBlessPayload.STREAM_CODEC,
-                SyncBlessPayload::handle
+                ClientPayloadHandlers::handleSyncBless
         );
 
         registrar.playToClient(
                 ShockwaveUpdatePayload.TYPE,
                 ShockwaveUpdatePayload.STREAM_CODEC,
-                ShockwaveUpdatePayload::handle
+                ClientPayloadHandlers::handleShockwaveUpdate
         );
 
         registrar.playToClient(
                 GroundSmashPayload.TYPE,
                 GroundSmashPayload.STREAM_CODEC,
-                GroundSmashPayload::handle
+                ClientPayloadHandlers::handleGroundSmash
         );
 
         registrar.playToClient(
                 ParticleLighting.TYPE,
                 ParticleLighting.STREAM_CODEC,
-                ParticleLighting::handle
+                ClientPayloadHandlers::handleParticleLighting
         );
 
         registrar.playToClient(
                 HuoQiuExplosionParticles.TYPE,
                 HuoQiuExplosionParticles.STREAM_CODEC,
-                HuoQiuExplosionParticles::handle
+                ClientPayloadHandlers::handleHuoQiuExplosion
         );
 
         registrar.playToClient(
                 FakeSnowPayload.TYPE,
                 FakeSnowPayload.STREAM_CODEC,
-                FakeSnowPayload::handle
+                ClientPayloadHandlers::handleFakeSnow
         );
 
         registrar.playToClient(
-                QinglongMusicPayload.TYPE,
-                QinglongMusicPayload.STREAM_CODEC,
-                (payload, context) -> context.enqueueWork(() ->
-                        icu.icuqalt10.panlingre.client.sound.QinglongMusicManager.handle(payload.start()))
+                SiShouMusicPayload.TYPE,
+                SiShouMusicPayload.STREAM_CODEC,
+                ClientPayloadHandlers::handleSiShouMusic
         );
 
         registrar.playToClient(
                 GatherBall.TYPE,
                 GatherBall.STREAM_CODEC,
-                GatherBall::handle
+                ClientPayloadHandlers::handleGatherBall
         );
 
         registrar.playToClient(
                 ParticleCluster.TYPE,
                 ParticleCluster.STREAM_CODEC,
-                ParticleCluster::handle
+                ClientPayloadHandlers::handleParticleCluster
         );
 
         registrar.playToClient(
                 Ys3JinTornadoPayload.TYPE,
                 Ys3JinTornadoPayload.STREAM_CODEC,
-                Ys3JinTornadoPayload::handle
+                ClientPayloadHandlers::handleYs3JinTornado
+        );
+
+        registrar.playToClient(
+                ZhuqueMeteorWarningPayload.TYPE,
+                ZhuqueMeteorWarningPayload.STREAM_CODEC,
+                ClientPayloadHandlers::handleZhuqueMeteorWarning
         );
 
         registrar.playToClient(
                 ShakePayload.TYPE,
                 ShakePayload.STREAM_CODEC,
-                ShakePayload::handle
+                ClientPayloadHandlers::handleShake
         );
 
         // Look Tip 网络包
@@ -149,22 +155,14 @@ public class ModNetworks {
         registrar.playToClient(
                 LookTipResponsePayload.TYPE,
                 LookTipResponsePayload.STREAM_CODEC,
-                (payload, context) -> {
-                    context.enqueueWork(() -> {
-                        icu.icuqalt10.panlingre.looktip.LookTipOverlay.handleResponse(payload);
-                    });
-                }
+                ClientPayloadHandlers::handleLookTipResponse
         );
 
         // 八方仪传送
         registrar.playToClient(
                 BaFangYiOpenPayload.TYPE,
                 BaFangYiOpenPayload.STREAM_CODEC,
-                (payload, context) -> {
-                    context.enqueueWork(() -> {
-                        icu.icuqalt10.panlingre.client.gui.BaFangYiScreen.openWith(payload.majors());
-                    });
-                }
+                ClientPayloadHandlers::handleBaFangYiOpen
         );
 
         registrar.playToServer(
@@ -176,8 +174,7 @@ public class ModNetworks {
         registrar.playToClient(
                 TaskGuideSyncPayload.TYPE,
                 TaskGuideSyncPayload.STREAM_CODEC,
-                (payload, context) -> context.enqueueWork(() ->
-                        icu.icuqalt10.panlingre.client.task.ClientTaskGuideState.handleSync(payload))
+                ClientPayloadHandlers::handleTaskGuideSync
         );
 
         registrar.playToServer(
@@ -189,8 +186,7 @@ public class ModNetworks {
         registrar.playToClient(
                 TaskEntityResultPayload.TYPE,
                 TaskEntityResultPayload.STREAM_CODEC,
-                (payload, context) -> context.enqueueWork(() ->
-                        icu.icuqalt10.panlingre.client.task.ClientTaskGuideState.handleEntityResult(payload))
+                ClientPayloadHandlers::handleTaskEntityResult
         );
 
     }

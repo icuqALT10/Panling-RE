@@ -34,7 +34,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:paper"
@@ -62,7 +62,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "14013C80685F20CA"
 			rewards: [{
@@ -87,7 +87,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "2C1FD65D9AD95718"
 			rewards: [{
@@ -112,7 +112,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "111AA729E4AF10C0"
 			rewards: [{
@@ -137,7 +137,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "25E5FA2D06F7C579"
 			rewards: [{
@@ -162,7 +162,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			icon: {
 				id: "minecraft:lime_dye"
@@ -190,7 +190,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "2D3D72D4BC3234A9"
 			rewards: [{
@@ -215,7 +215,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "6F56D2060B8AAADE"
 			rewards: [{
@@ -240,7 +240,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "09F5BF434DB71025"
 			rewards: [{
@@ -265,7 +265,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "216745F44B297CFE"
 			rewards: [{
@@ -290,7 +290,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "34ED698983FD3B1B"
 			rewards: [{
@@ -318,8 +318,8 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
-			hide_until_deps_visible: true
+			hide_until_deps_complete: true
+			hide_until_deps_visible: false
 			id: "25C84CAB47B13B3E"
 			rewards: [{
 				id: "484223DE9A26EBE2"
@@ -343,7 +343,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "62C6B847B61449A4"
 			rewards: [{
@@ -371,8 +371,8 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
-			hide_until_deps_visible: true
+			hide_until_deps_complete: true
+			hide_until_deps_visible: false
 			id: "60A86B75DFC33A10"
 			rewards: [{
 				id: "020F2E99A0402195"
@@ -396,7 +396,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "630C1F8806BF7165"
 			rewards: [{
@@ -424,8 +424,8 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
-			hide_until_deps_visible: true
+			hide_until_deps_complete: true
+			hide_until_deps_visible: false
 			id: "07608EB16E301FD2"
 			rewards: [{
 				id: "151871504B07D687"
@@ -453,7 +453,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "3678BD91DEEE5454"
 			rewards: [{
@@ -478,7 +478,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "16396CC2C2E9C174"
 			rewards: [{
@@ -503,7 +503,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "2C4C24D2FDE436D8"
 			rewards: [{
@@ -528,7 +528,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "1E7872EB16A79252"
 			rewards: [{
@@ -553,7 +553,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "3C7D95EFD2D5575D"
 			rewards: [{
@@ -578,7 +578,7 @@
 			hide_dependency_lines: false
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: false
 			id: "680960DE3FC36668"
 			rewards: [{
@@ -660,7 +660,7 @@
 			disable_toast: true
 			hide_details_until_startable: false
 			hide_text_until_complete: false
-			hide_until_deps_complete: false
+			hide_until_deps_complete: true
 			hide_until_deps_visible: true
 			icon: {
 				id: "panlingre:ba_fang_yi"

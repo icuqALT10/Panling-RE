@@ -50,13 +50,13 @@ public class shen_su_fu extends Item implements ICurioItem {
         return modifiers;
     }
 
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare4"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.shen_su_fu.lore1"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.shen_su_fu.lore2"));
+        tooltip.add(Component.translatable("item.PanlingRE.lore.rare4"));
+        tooltip.add(Component.translatable("item.PanlingRE.lore.limit3"));
+        tooltip.add(Component.translatable("item.PanlingRE.shen_su_fu.lore1"));
+        tooltip.add(Component.translatable("item.PanlingRE.shen_su_fu.lore2"));
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

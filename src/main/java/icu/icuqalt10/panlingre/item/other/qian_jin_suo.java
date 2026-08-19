@@ -36,7 +36,7 @@ public class qian_jin_suo extends Item implements ICurioItem {
 
         modifiers.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(
                 MODIFIER_ID,
-                -0.25,
+                -0.15,
                 AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         ));
 
@@ -49,14 +49,14 @@ public class qian_jin_suo extends Item implements ICurioItem {
         return modifiers;
     }
 
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.qian_jin_suo.lore1"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.qian_jin_suo.lore2"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.qian_jin_suo.lore3"));
+        tooltip.add(Component.translatable("item.PanlingRE.lore.rare3"));
+        tooltip.add(Component.translatable("item.PanlingRE.lore.limit3"));
+        tooltip.add(Component.translatable("item.PanlingRE.qian_jin_suo.lore1"));
+        tooltip.add(Component.translatable("item.PanlingRE.qian_jin_suo.lore2"));
+        tooltip.add(Component.translatable("item.PanlingRE.qian_jin_suo.lore3"));
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

@@ -1,4 +1,5 @@
 {
+    "parent": "plre:misson/shen/2",
     "criteria": {
         "trigger":{
             "trigger": "minecraft:impossible",

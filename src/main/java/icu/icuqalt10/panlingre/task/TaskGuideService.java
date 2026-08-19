@@ -1,6 +1,5 @@
 package icu.icuqalt10.panlingre.task;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.network.task.TaskEntityCheckPayload;
@@ -20,10 +19,8 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @EventBusSubscriber(modid = PanlingRE.MODID)
@@ -31,7 +28,6 @@ public final class TaskGuideService {
     private static final double ENTITY_RANGE_SQUARED = 50.0 * 50.0;
     private static final int REFRESH_INTERVAL_TICKS = 3;
     private static final Map<UUID, SelectionState> SELECTIONS = new HashMap<>();
-    private static final Set<String> REPORTED_COMMAND_ERRORS = new HashSet<>();
     private static int refreshTicks;
 
     private TaskGuideService() {
@@ -149,19 +145,13 @@ public final class TaskGuideService {
             if (command.isEmpty()) {
                 return index;
             }
-            try {
-                int result = player.getServer().getCommands().getDispatcher().execute(command.get(), source);
-                if (result > 0) {
-                    return index;
-                }
-            } catch (CommandSyntaxException exception) {
-                String errorKey = taskId + "#" + index + "#" + exception.getMessage();
-                if (REPORTED_COMMAND_ERRORS.add(errorKey)) {
-                    PanlingRE.LOGGER.warn(
-                            "Task guide condition failed {} entries[{}]: {}",
-                            taskId, index, exception.getMessage()
-                    );
-                }
+            int[] result = {0};
+            CommandSourceStack callbackSource = source.withCallback(
+                    (success, value) -> result[0] = success ? value : 0
+            );
+            player.getServer().getCommands().performPrefixedCommand(callbackSource, command.get());
+            if (result[0] > 0) {
+                return index;
             }
         }
         return -1;

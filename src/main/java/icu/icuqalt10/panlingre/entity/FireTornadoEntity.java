@@ -2,11 +2,13 @@ package icu.icuqalt10.panlingre.entity;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.client.FireTrailRenderer;
+import icu.icuqalt10.panlingre.util.SkillHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import icu.icuqalt10.panlingre.init.ModDamageTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -23,8 +25,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 
 import java.util.List;
+import java.util.UUID;
 
 public class FireTornadoEntity extends Mob {
+
+    private UUID ownerUuid;
 
     private Vec3 targetPos = null;          // 目标位置
     private int lifespan = 40;              // 总寿命（tick）
@@ -64,6 +69,13 @@ public class FireTornadoEntity extends Mob {
     public FireTornadoEntity(
             EntityType<FireTornadoEntity> entityType, Level level,
             Vec3 spawnPos, Vec3 targetPos, int lifeSpanTicks, float damage, PlayerTeam team) {
+        this(entityType, level, spawnPos, targetPos, lifeSpanTicks, damage, team, null);
+    }
+
+    public FireTornadoEntity(
+            EntityType<FireTornadoEntity> entityType, Level level,
+            Vec3 spawnPos, Vec3 targetPos, int lifeSpanTicks, float damage,
+            PlayerTeam team, LivingEntity owner) {
         super(entityType, level);
         this.noPhysics = true;
         this.setInvulnerable(true);
@@ -73,6 +85,7 @@ public class FireTornadoEntity extends Mob {
         this.damage = damage;
 
         if (team != null) this.level().getScoreboard().addPlayerToTeam(this.getStringUUID(), team);
+        if (owner != null) this.ownerUuid = owner.getUUID();
 
         this.targetPos = targetPos;
         this.lifespan = Math.max(1, lifeSpanTicks);
@@ -162,10 +175,17 @@ public class FireTornadoEntity extends Mob {
         // ---------- 攻击所有活体生物 ----------
         AABB tornadoBox = getBoundingBox().inflate(0.1); // 稍微膨胀避免边缘遗漏
         List<LivingEntity> entities = level().getEntitiesOfClass(LivingEntity.class, tornadoBox);
+        LivingEntity owner = ownerUuid != null
+                && level() instanceof ServerLevel serverLevel
+                && serverLevel.getEntity(ownerUuid) instanceof LivingEntity livingOwner
+                ? livingOwner : null;
 
         for (LivingEntity entity : entities) {
             // 排除自身
             if (entity == this) continue;
+
+            // 无论释放者是否有队伍，都不能把释放者本人当作伤害目标
+            if (owner != null && !SkillHelper.combatTargetFilter(owner).test(entity)) continue;
 
             // 排除无敌生物
             if (entity.isInvulnerable()) continue;
@@ -208,6 +228,7 @@ public class FireTornadoEntity extends Mob {
         compound.putInt("Lifespan", lifespan);
         compound.putInt("Age", age);
         compound.putBoolean("Initialized", initialized);
+        if (ownerUuid != null) compound.putUUID("Owner", ownerUuid);
     }
 
     @Override
@@ -228,6 +249,7 @@ public class FireTornadoEntity extends Mob {
         if (compound.contains("Initialized")) {
             initialized = compound.getBoolean("Initialized");
         }
+        ownerUuid = compound.hasUUID("Owner") ? compound.getUUID("Owner") : null;
     }
 
     // ---------- 无敌 ----------

@@ -80,27 +80,28 @@ public class ys2_tu extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context,
-                                List<Component> tooltipComponents, TooltipFlag flag) {
+                                List<Component> tooltip, TooltipFlag flag) {
         if (!YuansuData.hasPermission(SafeClientAccess.getClientPlayer(), "ys2")) {
-            super.appendHoverText(stack, context, tooltipComponents, flag);
+            super.appendHoverText(stack, context, tooltip, flag);
             return;
         }
 
         if (SafeClientAccess.isShiftPressed()) {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit2"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ys2_tu.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ys2_tu.skill2",
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit2"));
+            tooltip.add(Component.translatable("item.panlingre.ren_he_yuan.lore"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.ys2_tu.skill1.2"));
+            tooltip.add(Component.translatable("item.PanlingRE.ys2_tu.skill2",
                     Component.keybind("key.use").withStyle(ChatFormatting.GOLD),
                     cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
                     LingQiData.getCostText(cost)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ys2_tu.skill3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ys2_tu.skill4"));
+            tooltip.add(Component.translatable("item.PanlingRE.ys2_tu.skill3"));
+            tooltip.add(Component.translatable("item.PanlingRE.ys2_tu.skill4"));
         } else {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit2"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ys2_tu.skill1.1"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit2"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.ys2_tu.skill1.1"));
         }
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

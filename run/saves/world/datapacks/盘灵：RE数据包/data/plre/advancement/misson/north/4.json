@@ -1,4 +1,5 @@
 {
+    "parent": "plre:misson/north/qualification",
     "criteria": {
         "trigger":{
             "trigger": "minecraft:impossible",

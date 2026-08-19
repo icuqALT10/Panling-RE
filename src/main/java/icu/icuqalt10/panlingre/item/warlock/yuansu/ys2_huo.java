@@ -73,30 +73,31 @@ public class ys2_huo extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         if (!YuansuData.hasPermission(SafeClientAccess.getClientPlayer(), "ys2")) {
-            super.appendHoverText(stack, context, tooltipComponents, flag);
+            super.appendHoverText(stack, context, tooltip, flag);
             return;
         }
 
         // 检测Shift键
         if (SafeClientAccess.isShiftPressed()) {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit2"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ys2_huo.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ys2_huo.skill2"
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit2"));
+            tooltip.add(Component.translatable("item.panlingre.ren_he_yuan.lore"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.ys2_huo.skill1.2"));
+            tooltip.add(Component.translatable("item.PanlingRE.ys2_huo.skill2"
                     ,Component.keybind("key.use").withStyle(ChatFormatting.GOLD),
                     cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
                     LingQiData.getCostText(cost)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ys2_huo.skill3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ys2_huo.skill4"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ys2_huo.skill5"));
+            tooltip.add(Component.translatable("item.PanlingRE.ys2_huo.skill3"));
+            tooltip.add(Component.translatable("item.PanlingRE.ys2_huo.skill4"));
+            tooltip.add(Component.translatable("item.PanlingRE.ys2_huo.skill5"));
         } else {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit2"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ys2_huo.skill1.1"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit2"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.ys2_huo.skill1.1"));
         }
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

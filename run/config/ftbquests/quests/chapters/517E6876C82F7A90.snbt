@@ -5,6 +5,13 @@
 	disable_toast: true
 	filename: "517E6876C82F7A90"
 	group: ""
+	icon: {
+		components: {
+			"!ftbquests:icon": { }
+			"ftbquests:entity_face": "minecraft:pig"
+		}
+		id: "ftbquests:custom_icon"
+	}
 	id: "517E6876C82F7A90"
 	order_index: 0
 	quest_links: [ ]
@@ -38,6 +45,39 @@
 			}]
 			x: 0.0d
 			y: 3.5d
+		}
+		{
+			id: "6C1003CB744FBD82"
+			tasks: [{
+				advancement: "plre:check/zhiye/warrior"
+				criterion: ""
+				id: "24DF632FAA7EBD63"
+				type: "advancement"
+			}]
+			x: -1.5d
+			y: 1.5d
+		}
+		{
+			id: "219B1205691F4354"
+			tasks: [{
+				advancement: "plre:check/zhiye/archer"
+				criterion: ""
+				id: "5C3E1884A22E8D5D"
+				type: "advancement"
+			}]
+			x: 0.0d
+			y: 1.5d
+		}
+		{
+			id: "396913F7715725AC"
+			tasks: [{
+				advancement: "plre:check/zhiye/warlock"
+				criterion: ""
+				id: "0A37CB2826C317F9"
+				type: "advancement"
+			}]
+			x: 1.5d
+			y: 1.5d
 		}
 	]
 }

@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.item.warlock.yuansu;
 
 import icu.icuqalt10.panlingre.entity.YsMuHealingEntity;
 import icu.icuqalt10.panlingre.network.ItemActivationPayload;
+import icu.icuqalt10.panlingre.util.SkillHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,7 +15,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -59,11 +59,12 @@ public final class Ys2HealingSkill {
 
         AABB searchArea = owner.getBoundingBox().inflate(TARGET_RADIUS);
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, searchArea,
-                        target -> isValidTarget(owner, target))
+                        SkillHelper.friendlyTargetFilter(owner)
+                                .and(target -> !target.is(owner)
+                                        && owner.distanceToSqr(target)
+                                        <= TARGET_RADIUS * TARGET_RADIUS))
                 .stream()
-                .sorted(Comparator
-                        .comparingInt((LivingEntity target) -> target instanceof Player ? 0 : 1)
-                        .thenComparingDouble(owner::distanceToSqr))
+                .sorted(SkillHelper.friendlyTargetComparator(owner))
                 .limit(MAX_TEAMMATES)
                 .toList();
 
@@ -72,14 +73,6 @@ public final class Ys2HealingSkill {
                     trailColor, effectValue, targetEffect);
         }
 
-    }
-
-    private static boolean isValidTarget(Player owner, LivingEntity target) {
-        return target != owner
-                && target.isAlive()
-                && (!(target instanceof Player player) || !player.isSpectator())
-                && owner.distanceToSqr(target) <= TARGET_RADIUS * TARGET_RADIUS
-                && (owner.getTeam() == null || owner.isAlliedTo(target));
     }
 
     private static void spawnHealingItem(ServerLevel level, Player owner,

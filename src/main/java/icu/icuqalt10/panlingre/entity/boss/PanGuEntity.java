@@ -59,6 +59,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
 
@@ -138,6 +139,8 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         return this.spawnPos;
     }
 
+    private int PlayerCount;
+
     // ========== 技能控制 =========
     public boolean SkillPhase1Triggered = false;
     public boolean SkillPhase2Triggered = false;
@@ -213,10 +216,28 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         super.onAddedToLevel();
         if (!this.level().isClientSide) {
 
+            if (this.level() instanceof ServerLevel serverLevel) {
+                serverLevel.getEntitiesOfClass(
+                                PanGuEntity.class,
+                                this.getBoundingBox().inflate(100.0D),
+                                other -> other != this && other.distanceToSqr(this) <= 100.0D * 100.0D
+                        )
+                        .forEach(Entity::discard);
+            }
+
             if (this.firstSpawnInitialized) {
                 this.firstSpawnInitialized = false;
                 //记录初始坐标
                 this.spawnPos = this.position();
+            }
+
+            //记录玩家数量并刷新血量
+            if (this.level() instanceof ServerLevel serverLevel) {
+                this.PlayerCount = (int) serverLevel.players().stream()
+                        .filter(player -> player.distanceToSqr(this) <= 100.0D * 100.0D)
+                        .count();
+
+                Objects.requireNonNull(this.getAttribute(Attributes.MAX_HEALTH)).setBaseValue(this.PlayerCount * 2000.0D);
             }
 
             //清理渲染
@@ -351,15 +372,20 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         }
     }
 
-    //移除时
+    // 防止因距离玩家过远而自然消失
     @Override
     public boolean removeWhenFarAway(double distanceToClosestPlayer) {
-        if (!this.level().isClientSide()) {
-            //清理渲染
-            weatherManager.cleanup();
-            this.bossEvent.removeAllPlayers();
-        }
+        return false;
+    }
+
+    @Override
+    public boolean requiresCustomPersistence() {
         return true;
+    }
+
+    @Override
+    public boolean shouldDespawnInPeaceful() {
+        return false;
     }
 
     // 实体被移除（如自然刷掉、代码强制移除、死亡动画播完后）时
@@ -671,7 +697,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
                 switch (tick) {
                     case 2,7 -> doTeleportToTarget();
                     case 15 -> {
-                        doDamage(20.0f, AttackKind.MELEE);
+                        doDamage(15.0f);
                         this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
                                 SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.5f,1.0f);
                     }
@@ -688,6 +714,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
             }
             case "attack.skill1" -> {
                 switch (tick) {
+                    case 0 -> {if (this.level() instanceof ServerLevel sl) runCommand(sl, "execute as @a[distance=..80] run dialog show boss_pangu_skill_1");}
                     case 6 -> this.setInvulnerable(true);
                     case 18 -> DamageSkill1();
                     case 25 -> AttackWeakness();
@@ -696,6 +723,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
             }
             case "attack.skill2" -> {
                 switch (tick) {
+                    case 0 -> {if (this.level() instanceof ServerLevel sl) runCommand(sl, "execute as @a[distance=..80] run dialog show boss_pangu_skill_2");}
                     case 6 -> this.setInvulnerable(true);
                     case 18 -> DamageSkill2();
                     case 25 -> AttackWeakness();
@@ -704,6 +732,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
             }
             case "attack.skill3" -> {
                 switch (tick) {
+                    case 0 -> {if (this.level() instanceof ServerLevel sl) runCommand(sl, "execute as @a[distance=..80] run dialog show boss_pangu_skill_3");}
                     case 6 -> this.setInvulnerable(true);
                     case 18 -> DamageSkill3();
                     case 25 -> AttackWeakness();
@@ -712,6 +741,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
             }
             case "attack.skill4" -> {
                 switch (tick) {
+                    case 0 -> {if (this.level() instanceof ServerLevel sl) runCommand(sl, "execute as @a[distance=..80] run dialog show boss_pangu_skill_4");}
                     case 6 -> this.setInvulnerable(true);
                     case 18 -> DamageSkill4();
                     case 25 -> AttackWeakness();
@@ -722,7 +752,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
                 switch (tick) {
                     case 2,12,22 -> doTeleportToTarget();
                     case 5,15,25 -> {
-                        doDamage(5.0f, AttackKind.MELEE);
+                        doDamage(5.0f);
                         this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
                                 SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.HOSTILE, 0.5f,1.0f);
                     }
@@ -739,7 +769,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
                 switch (tick) {
                     case 0 -> doCatchStart();
                     case 8 -> {
-                        doDamage(20.0f, AttackKind.MELEE);
+                        doDamage(15.0f);
                         this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
                                 SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.HOSTILE, 0.5f,1.0f);
                     }
@@ -905,19 +935,21 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         this.setYHeadRot(yaw);
         this.getNavigation().stop();
     }
-    private void doDamage(float amount, AttackKind kind) {
+    private void doDamage(float amount) {
         LivingEntity target = this.getAttackTarget();
         if (target == null) return;
         if (this.getTeam() != null && target.getTeam() == this.getTeam()) return;
         if (this.distanceTo(target) < 3.0) {
+            amount = amount * ( 1 + ( (PlayerCount - 1) * 0.1f ) );
             target.hurt(this.damageSources().mobAttack(this), amount);
         }
     }
-    private void doDamage(Vec3 Pos,float amount, AttackKind kind,float rad) {
+    private void doDamage(Vec3 Pos, float amount, float rad) {
         LivingEntity target = this.getAttackTarget();
         if (target == null) return;
         if (this.getTeam() != null && target.getTeam() == this.getTeam()) return;
         if (target.distanceToSqr(Pos) < rad*rad) {
+            amount = amount * ( 1 + ( (PlayerCount - 1) * 0.1f ) );
             target.hurt(this.damageSources().mobAttack(this), amount);
         }
     }
@@ -958,7 +990,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
     }
 
     private void doCatchStart() {
-        doDamage(10.0f, AttackKind.DASH);
+        doDamage(10.0f);
         this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
                 SoundEvents.PLAYER_ATTACK_WEAK, SoundSource.HOSTILE, 0.5f,1.0f);
         LivingEntity target = this.getAttackTarget();
@@ -987,7 +1019,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         Vec3 position = this.position();
         Vec3 lookVec = this.getLookAngle();
         Vec3 targetPos = position.add(lookVec.scale(13));;
-        doDamage(targetPos,25.0f, AttackKind.MELEE,5);
+        doDamage(targetPos,20.0f, 5);
         this.level().playSound(null, targetPos.x,targetPos.y,targetPos.z,
                 SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.NEUTRAL, 5f,1.0f);
         PacketDistributor.sendToPlayersTrackingEntity(this, new GroundSmashPayload(targetPos, 4, 10));
@@ -1016,10 +1048,6 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
 
         this.level().playSound(null, this.position().x,this.position().y,this.position().z,
                 SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 5f,1.0f);
-
-        if (this.level() instanceof ServerLevel sl) {
-            runCommand(sl, "execute as @a[distance=..80] run dialog show boss_pangu_skill_1");
-        }
     }
 
     private void DamageSkill2() {
@@ -1056,20 +1084,12 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
 
         this.level().playSound(null, this.position().x,this.position().y,this.position().z,
                 SoundEvents.BREEZE_SHOOT, SoundSource.NEUTRAL, 5f,1.0f);
-
-        if (this.level() instanceof ServerLevel sl) {
-            runCommand(sl, "execute as @a[distance=..80] run dialog show boss_pangu_skill_2");
-        }
     }
 
     private void DamageSkill3() {
         PacketDistributor.sendToPlayersTrackingEntity(this, new ShakePayload(this.position(), 80, 3, 1.5f));
 
         SkillPhase2Lighting();
-
-        if (this.level() instanceof ServerLevel sl) {
-            runCommand(sl, "execute as @a[distance=..80] run dialog show boss_pangu_skill_3");
-        }
     }
 
     private void DamageSkill4() {
@@ -1077,16 +1097,12 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         Vec3 position = this.position();
         Vec3 lookVec = this.getLookAngle();
         Vec3 targetPos = position.add(lookVec.scale(3.5));;
-        doDamage(targetPos,15.0f, AttackKind.MELEE,3.5f);
+        doDamage(targetPos,15.0f, 3.5f);
         this.level().playSound(null, targetPos.x,targetPos.y,targetPos.z,
                 SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.NEUTRAL, 5f,1.0f);
 
         PacketDistributor.sendToPlayersTrackingEntity(this, new GroundSmashPayload(targetPos, 4, 15));
         GameBusEvents.addShockwave(this, new Shockwave(targetPos,6,15,this.getTeam()));
-
-        if (this.level() instanceof ServerLevel sl) {
-            runCommand(sl, "execute as @a[distance=..80] run dialog show boss_pangu_skill_4");
-        }
     }
 
     private void SkillPhase1Cold() {
@@ -1276,7 +1292,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         Vec3 WaveCenter = this.spawnPos.add(22.0D, 0.0D, 0.0D);
 
         //攻击
-        doDamage(WaveCenter,30.0f, AttackKind.MELEE,12);
+        doDamage(WaveCenter,30.0f, 12);
 
         //裂地效果
         PacketDistributor.sendToPlayersTrackingEntity(this, new GroundSmashPayload(WaveCenter, 16, 30));
@@ -1420,7 +1436,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         }
 
         if (this.level() instanceof ServerLevel sl) {
-            runCommand(sl, "function plre:instances/pangu/boss_died");
+            runCommand(sl, "schedule function plre:instances/pangu/success 2s replace");
         }
         this.remove(RemovalReason.KILLED);
     }

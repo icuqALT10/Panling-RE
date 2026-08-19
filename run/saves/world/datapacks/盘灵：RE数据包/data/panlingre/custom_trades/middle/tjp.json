@@ -2,19 +2,19 @@
   "title": {"translate": "plre.npc.name.tjp"},
   "offers": [
 
-    {"buy":{"item":"panlingre:yuan_bao","count":5},
+    {"buy":{"item":"panlingre:yuan_bao","count":2},
     "sell":{"item":"minecraft:iron_pickaxe","count":1,"components":{
       "unbreakable":{"show_in_tooltip":false},"attribute_modifiers":[],"can_break":{"blocks":"#panlingre:pickaxe_can_break"},
       "custom_name":"{\"translate\":\"plre.item.iron_pickaxe\"}","lore":["{\"translate\":\"item.PanlingRE.lore.rare2\"}"]
       }}},
 
-    {"buy":{"item":"panlingre:yuan_bao","count":5},
+    {"buy":{"item":"panlingre:yuan_bao","count":2},
     "sell":{"item":"minecraft:iron_axe","count":1,"components":{
       "unbreakable":{"show_in_tooltip":false},"attribute_modifiers":[],"can_break":{"blocks":"#panlingre:axe_can_break"},
       "custom_name":"{\"translate\":\"plre.item.iron_axe\"}","lore":["{\"translate\":\"item.PanlingRE.lore.rare2\"}"]
       }}},
 
-    {"buy":{"item":"panlingre:yuan_bao","count":5},
+    {"buy":{"item":"panlingre:yuan_bao","count":2},
     "sell":{"item":"minecraft:iron_shovel","count":1,"components":{
       "unbreakable":{"show_in_tooltip":false},"attribute_modifiers":[],"can_break":{"blocks":"#panlingre:shovel_can_break"},
       "custom_name":"{\"translate\":\"plre.item.iron_shovel\"}","lore":["{\"translate\":\"item.PanlingRE.lore.rare2\"}"]

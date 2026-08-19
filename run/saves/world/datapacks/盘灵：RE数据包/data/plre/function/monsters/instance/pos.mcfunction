@@ -1,1 +1,0 @@
-execute if entity @s[tag=zhuque] run return run function plre:monsters/instance/zhuque/pos

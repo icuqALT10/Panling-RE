@@ -25,10 +25,10 @@ public class archer extends Item implements ICurioItem {
         return slotContext.entity() instanceof Player player && player.isCreative();
     }
 
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-            tooltipComponents.add(Component.translatable("item.PanlingRE.archer.lore1"));
+            tooltip.add(Component.translatable("item.PanlingRE.archer.lore1"));
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

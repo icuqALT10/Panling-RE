@@ -5,7 +5,10 @@
     "entries": [
         {
             "type": "entity",
-            "name": "villager",
+            "name": [
+                "villager",
+                "interaction"
+            ],
             "nbt": "{can_interact:{active:true}}"
         }
     ]

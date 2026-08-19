@@ -1,7 +1,6 @@
 execute as @e[x=2992,y=0,z=-2400,dx=271,dy=255,dz=303,type=panlingre:pan_gu] in the_end run tp @s -3000 0 -3000
 
-execute store result storage plre:boss boss.health float 2000 run execute if entity @a[x=2992,y=0,z=-2400,dx=271,dy=255,dz=303]
-function plre:instances/pangu/ready/summon with storage plre:boss boss
+summon panlingre:pan_gu 3119.5 129.00 -2237.5 {Rotation:[-90f,0f],Team:"monster",PersistenceRequired:1b}
 
 
 scoreboard players set .system instance_pangu_tick 1

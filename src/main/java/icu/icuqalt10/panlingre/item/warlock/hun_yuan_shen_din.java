@@ -170,44 +170,44 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
         // 检测Shift键
         if (SafeClientAccess.isShiftPressed()) {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare6"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.lore1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.lore2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.lore3"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.lore4"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill1.1",
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare6"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit2"));
+            tooltip.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.lore1"));
+            tooltip.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.lore2"));
+            tooltip.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.lore3"));
+            tooltip.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.lore4"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill.2"));
+            tooltip.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill1.1",
                     cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown1),
                     LingQiData.getCostText(cost1)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill2.1",
+            tooltip.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill2.1",
                     cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown2),
                     LingQiData.getCostText(cost2)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill3.1",
+            tooltip.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill3.1",
                     cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown3),
                     LingQiData.getCostText(cost3)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill4.1",
+            tooltip.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill4.1",
                     cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown4),
                     LingQiData.getCostText(cost4)));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill1.2"
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.ldl.skill1.2"
                     ,Component.keybind("key.PanlingRE.liandan").withStyle(ChatFormatting.GOLD)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill2"));
+            tooltip.add(Component.translatable("item.PanlingRE.ldl.skill2"));
         } else {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare6"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit2"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill.1"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill1.1"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare6"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit2"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.hun_yuan_shen_din.skill.1"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.ldl.skill1.1"));
         }
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
     private void Skill1(Player player) {
@@ -227,7 +227,7 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
         List<LivingEntity> entities = serverLevel.getEntitiesOfClass(LivingEntity.class, searchBox);
 
         for (LivingEntity entity : entities) {
-            if (player.getTeam() != null && player.getTeam() != entity.getTeam()) {
+            if (SkillHelper.combatTargetFilter(player).test(entity)) {
                 // 记录实体当前的位置
                 final Vec3 targetPos = entity.position();
 
@@ -363,7 +363,7 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
 
         List<LivingEntity> targetEntities = SkillHelper.getLivingEntitiesInFront(player, width, width, length);
         for (LivingEntity entity : targetEntities) {
-            if (player.getTeam() != null && player.getTeam() != entity.getTeam()) {
+            if (SkillHelper.combatTargetFilter(player).test(entity)) {
                 entity.addEffect(new MobEffectInstance(ModEffects.freeze, duration, 0));
             }
         }
@@ -403,15 +403,15 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
 
         //生成3个火龙卷
         FireTornadoEntity tornado = new FireTornadoEntity(ModEntities.FIRE_TORNADO.get(), serverLevel,
-                midStart, midTarget, 20, damage, team);
+                midStart, midTarget, 20, damage, team, player);
         serverLevel.addFreshEntity(tornado);
 
         FireTornadoEntity tornadoL = new FireTornadoEntity(ModEntities.FIRE_TORNADO.get(), serverLevel,
-                leftStart, leftTarget, 20, damage, team);
+                leftStart, leftTarget, 20, damage, team, player);
         serverLevel.addFreshEntity(tornadoL);
 
         FireTornadoEntity tornadoR = new FireTornadoEntity(ModEntities.FIRE_TORNADO.get(), serverLevel,
-                rightStart, rightTarget, 20, damage, team);
+                rightStart, rightTarget, 20, damage, team, player);
         serverLevel.addFreshEntity(tornadoR);
 
         // 音效

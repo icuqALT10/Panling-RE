@@ -1,6 +1,7 @@
 package icu.icuqalt10.panlingre.entity;
 
 import icu.icuqalt10.panlingre.init.ModEntities;
+import icu.icuqalt10.panlingre.util.SkillHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -120,7 +121,7 @@ public class TuBarrierEntity extends Entity {
 
         Player owner = getOwner();
         return owner != null
-                && (target == owner || owner.getTeam() != null && owner.isAlliedTo(target));
+                && SkillHelper.friendlyTargetFilter(owner).test(target);
     }
 
     public void absorbDamage(float amount) {

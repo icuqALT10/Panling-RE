@@ -1,0 +1,16 @@
+{
+  "controller": "panlingre:baihu",
+  
+  "template": "panlingre:instance/baihu",
+
+  "center_pos": [0.0, 70.0, 2700.0],
+  "player_spawn_pos": [14.0, 96.0, 2691.0],
+
+  "spacing": 512,
+
+  "prewarm_slots": 5,
+  "arena_version": 1,
+
+  "success": "plre:instances/baihu/success",
+  "failure": "plre:instances/baihu/failure"
+}

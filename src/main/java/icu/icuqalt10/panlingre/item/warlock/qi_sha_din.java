@@ -193,33 +193,33 @@ public class qi_sha_din extends Item implements ICurioItem,skill_trigger, lianda
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
         // 检测Shift键
         if (SafeClientAccess.isShiftPressed()) {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare5"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.qi_sha_din.lore1"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.qi_sha_din.lore2"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.qi_sha_din.skill1.2"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.qi_sha_din.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare5"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit2"));
+            tooltip.add(Component.translatable("item.PanlingRE.qi_sha_din.lore1"));
+            tooltip.add(Component.translatable("item.PanlingRE.qi_sha_din.lore2"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.qi_sha_din.skill1.2"));
+            tooltip.add(Component.translatable("item.PanlingRE.qi_sha_din.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),
                     LingQiData.getCostText(cost)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.qi_sha_din.skill3"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill1.2"
+            tooltip.add(Component.translatable("item.PanlingRE.qi_sha_din.skill3"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.ldl.skill1.2"
                     ,Component.keybind("key.PanlingRE.liandan").withStyle(ChatFormatting.GOLD)));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill2"));
+            tooltip.add(Component.translatable("item.PanlingRE.ldl.skill2"));
         } else {
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare5"));
-            tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit2"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.qi_sha_din.skill1.1"));
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("item.PanlingRE.ldl.skill1.1"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.rare5"));
+            tooltip.add(Component.translatable("item.PanlingRE.lore.limit2"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.qi_sha_din.skill1.1"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.ldl.skill1.1"));
         }
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
     @Override

@@ -44,12 +44,12 @@ public class kong_ming_shi extends Item implements ICurioItem {
         return modifiers;
     }
 
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.rare3"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.lore.limit3"));
-        tooltipComponents.add(Component.translatable("item.PanlingRE.kong_ming_shi.lore1"));
+        tooltip.add(Component.translatable("item.PanlingRE.lore.rare3"));
+        tooltip.add(Component.translatable("item.PanlingRE.lore.limit3"));
+        tooltip.add(Component.translatable("item.PanlingRE.kong_ming_shi.lore1"));
 
-        super.appendHoverText(stack, context, tooltipComponents, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 }

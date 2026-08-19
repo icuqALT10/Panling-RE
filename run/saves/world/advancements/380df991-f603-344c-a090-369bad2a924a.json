@@ -5,15 +5,261 @@
     },
     "done": true
   },
+  "plre:misson/ren/start": {
+    "criteria": {
+      "trigger": "2026-08-18 01:47:45 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/21": {
+    "criteria": {
+      "trigger": "2026-08-18 20:51:54 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/west/1": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:34 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/west/2": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:34 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/west/5": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:34 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/west/6": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:34 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/west/3": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:34 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/west/4": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:34 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/20": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/18": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/19": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/9": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/8": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/7": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/12": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/13": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/10": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/11": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/16": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/17": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/14": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/15": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/2": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/1": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/6": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/5": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/4": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/ren/3": {
+    "criteria": {
+      "trigger": "2026-08-18 22:47:48 +0800"
+    },
+    "done": true
+  },
   "plre:misson/qinglong": {
     "criteria": {
-      "trigger": "2026-08-15 21:20:27 +0800"
+      "trigger": "2026-08-18 22:48:13 +0800"
+    },
+    "done": true
+  },
+  "plre:misson/baihu": {
+    "criteria": {
+      "trigger": "2026-08-18 22:48:16 +0800"
+    },
+    "done": true
+  },
+  "plre:task/other/di_shi_kun/1": {
+    "criteria": {
+      "trigger": "2026-08-18 22:49:03 +0800"
+    },
+    "done": true
+  },
+  "plre:task/other/di_shi_kun/2": {
+    "criteria": {
+      "trigger": "2026-08-18 22:51:11 +0800"
+    },
+    "done": true
+  },
+  "plre:task/other/di_shi_kun/3": {
+    "criteria": {
+      "trigger": "2026-08-18 22:56:57 +0800"
+    },
+    "done": true
+  },
+  "plre:task/other/tian_xing_jian/1": {
+    "criteria": {
+      "trigger": "2026-08-18 23:07:31 +0800"
+    },
+    "done": true
+  },
+  "plre:task/other/tian_xing_jian/2": {
+    "criteria": {
+      "trigger": "2026-08-18 23:08:06 +0800"
+    },
+    "done": true
+  },
+  "plre:task/other/tian_xing_jian/3": {
+    "criteria": {
+      "trigger": "2026-08-18 23:10:51 +0800"
+    },
+    "done": true
+  },
+  "plre:task/other/ren_he_yuan/1": {
+    "criteria": {
+      "trigger": "2026-08-18 23:37:35 +0800"
+    },
+    "done": true
+  },
+  "plre:task/other/ren_he_yuan/2": {
+    "criteria": {
+      "trigger": "2026-08-18 23:37:50 +0800"
+    },
+    "done": true
+  },
+  "plre:task/other/ren_he_yuan/3": {
+    "criteria": {
+      "trigger": "2026-08-18 23:38:06 +0800"
+    },
+    "done": true
+  },
+  "plre:check/zhiye/archer": {
+    "criteria": {
+      "trigger": "2026-08-18 23:48:44 +0800"
+    },
+    "done": true
+  },
+  "plre:check/zhiye/warlock": {
+    "criteria": {
+      "trigger": "2026-08-18 23:54:00 +0800"
+    },
+    "done": true
+  },
+  "plre:check/zhiye/warrior": {
+    "criteria": {
+      "trigger": "2026-08-18 23:54:02 +0800"
     },
     "done": true
   },
   "plre:biome/null": {
     "criteria": {
-      "trigger": "2026-08-15 21:24:56 +0800"
+      "trigger": "2026-08-19 02:15:30 +0800"
     },
     "done": true
   },

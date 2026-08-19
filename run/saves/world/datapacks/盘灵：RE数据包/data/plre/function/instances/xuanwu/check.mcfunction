@@ -6,4 +6,4 @@ scoreboard players set @s locate_at -1
 
 plre bafangyi off @s
 
-tp @s 948.5 37.00 -1218.5 0 ~
+plre instance start xuanwu
