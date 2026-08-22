@@ -16,6 +16,9 @@ description='''
 [[mixins]]
 config="${mod_id}.mixins.json"
 
+[[mixins]]
+config="${mod_id}.beyonddimensions.mixins.json"
+
 [[dependencies.${mod_id}]]
     modId="neoforge"
     type="required"
@@ -35,3 +38,9 @@ modId="jei"
 type="optional"
 ordering="AFTER"
 side="CLIENT"
+
+[[dependencies.${mod_id}]]
+modId="beyonddimensions"
+type="optional"
+ordering="AFTER"
+side="BOTH"

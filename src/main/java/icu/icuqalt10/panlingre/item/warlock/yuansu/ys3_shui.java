@@ -4,6 +4,7 @@ import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attachment.YuansuData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.entity.Ys3ShuiDomainEntity;
+import icu.icuqalt10.panlingre.entity.Ys3DomainEntity;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModSounds;
@@ -19,7 +20,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +41,7 @@ public class ys3_shui extends Item {
         if (level instanceof ServerLevel serverLevel) {
             float restoreValue = (float) (player.getAttributeValue(ModAttributes.MAGIC_DAMAGE) * 0.1D);
             serverLevel.addFreshEntity(new Ys3ShuiDomainEntity(
-                    serverLevel, player, groundPosition(serverLevel, player), stack, restoreValue));
+                    serverLevel, player, Ys3DomainEntity.findGroundPosition(serverLevel, player), stack, restoreValue));
             stack.consume(1, player);
             cooldown_remove.cd_remove(player, this, COOLDOWN);
             serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(),
@@ -49,12 +49,6 @@ public class ys3_shui extends Item {
             player.displayClientMessage(Component.translatable("item.PanlingRE.ys3_shui.skill.success"), true);
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
-    }
-
-    static Vec3 groundPosition(ServerLevel level, Player player) {
-        int x = player.blockPosition().getX(), z = player.blockPosition().getZ();
-        return new Vec3(x + 0.5D,
-                level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), z + 0.5D);
     }
 
     @Override

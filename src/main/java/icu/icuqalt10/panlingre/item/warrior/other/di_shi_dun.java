@@ -44,7 +44,7 @@ public class di_shi_dun extends ShieldItem {
     public static final int FORM_JINZHONG = 2;
     public static final int POJUN_COOLDOWN_TICKS_SUCCESS = 20;
     public static final int POJUN_COOLDOWN_TICKS_FAIL = 150;
-    public static final int POJUN_BLOCK_TICKS = 7;
+    public static final int POJUN_BLOCK_TICKS = 15;
 
     public static final TagKey<Item> POJUN_ITEMS = ItemTags.create(
             ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "warrior/pojun"));
@@ -73,14 +73,24 @@ public class di_shi_dun extends ShieldItem {
         return FORM_INACTIVE;
     }
 
+    /**
+     * 返回玩家此刻实际可用的盾牌形态。物品组件主要用于模型、名称和属性同步，
+     * 服务端技能判定不能依赖可能落后一 tick 的组件值。
+     */
+    public static int getActiveForm(Player player, ItemStack shield) {
+        if (!(shield.getItem() instanceof di_shi_dun)
+                || player.getOffhandItem() != shield
+                || !WarriorShieldData.hasPermission(player)) {
+            return FORM_INACTIVE;
+        }
+        return getFormForWeapon(player.getMainHandItem());
+    }
+
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if (!(entity instanceof Player player)) return;
 
-        boolean isOffhandStack = player.getOffhandItem() == stack;
-        int form = isOffhandStack && WarriorShieldData.hasPermission(player)
-                ? getFormForWeapon(player.getMainHandItem())
-                : FORM_INACTIVE;
+        int form = getActiveForm(player, stack);
         if (form == getForm(stack)) return;
 
         stack.set(ModComponents.DI_SHI_DUN_FORM.get(), form);
@@ -111,8 +121,8 @@ public class di_shi_dun extends ShieldItem {
 
         builder.add(Attributes.ATTACK_DAMAGE,
                 new AttributeModifier(MODIFIER_ID,
-                        10.0,
-                        AttributeModifier.Operation.ADD_VALUE),
+                        0.15,
+                        AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                         EquipmentSlotGroup.OFFHAND);
 
         builder.add(Attributes.ATTACK_SPEED,
@@ -129,7 +139,7 @@ public class di_shi_dun extends ShieldItem {
 
         builder.add(Attributes.ARMOR,
                 new AttributeModifier(MODIFIER_ID,
-                        0.05,
+                        0.15,
                         AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 EquipmentSlotGroup.OFFHAND);
 
@@ -138,12 +148,6 @@ public class di_shi_dun extends ShieldItem {
 
     private static ItemAttributeModifiers createJinzhongAttributeModifiers() {
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
-
-        builder.add(Attributes.ATTACK_DAMAGE,
-                new AttributeModifier(MODIFIER_ID,
-                        5.0,
-                        AttributeModifier.Operation.ADD_VALUE),
-                EquipmentSlotGroup.OFFHAND);
 
         builder.add(Attributes.ATTACK_SPEED,
                 new AttributeModifier(MODIFIER_ID,
@@ -159,7 +163,7 @@ public class di_shi_dun extends ShieldItem {
 
         builder.add(Attributes.ARMOR,
                 new AttributeModifier(MODIFIER_ID,
-                        0.15,
+                        0.35,
                         AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 EquipmentSlotGroup.OFFHAND);
 
@@ -172,20 +176,19 @@ public class di_shi_dun extends ShieldItem {
         if (maxAbsorption == null) return;
 
         ItemStack offhand = player.getOffhandItem();
-        boolean jinzhongActive = offhand.getItem() instanceof di_shi_dun
-                && getForm(offhand) == FORM_JINZHONG;
-        double desiredBonus = jinzhongActive
-                ? player.getAttributeValue(Attributes.ARMOR) * 0.5D
-                : 0.0D;
+        boolean jinzhongActive = getActiveForm(player, offhand) == FORM_JINZHONG;
+        // 离开金钟形态后保留上限，已有黄心不会因切换武器而被截掉。
+        if (!jinzhongActive) return;
+
+        double desiredBonus = player.getAttributeValue(Attributes.ARMOR) * 0.25D;
 
         AttributeModifier current = maxAbsorption.getModifier(JINZHONG_MAX_ABSORPTION_ID);
         if (desiredBonus <= 0.0D) {
-            if (current != null) maxAbsorption.removeModifier(JINZHONG_MAX_ABSORPTION_ID);
             return;
         }
 
         if (current == null || Math.abs(current.amount() - desiredBonus) > 1.0E-6D) {
-            maxAbsorption.addOrUpdateTransientModifier(new AttributeModifier(
+            maxAbsorption.addOrReplacePermanentModifier(new AttributeModifier(
                     JINZHONG_MAX_ABSORPTION_ID,
                     desiredBonus,
                     AttributeModifier.Operation.ADD_VALUE));
@@ -200,7 +203,7 @@ public class di_shi_dun extends ShieldItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (getForm(stack) == FORM_INACTIVE) {
+        if (hand != InteractionHand.OFF_HAND || getActiveForm(player, stack) == FORM_INACTIVE) {
             return InteractionResultHolder.fail(stack);
         }
         return super.use(level, player, hand);
@@ -210,7 +213,7 @@ public class di_shi_dun extends ShieldItem {
     public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
         if (!level.isClientSide
                 && livingEntity instanceof Player player
-                && getForm(stack) == FORM_POJUN
+                && getActiveForm(player, stack) == FORM_POJUN
                 && getUseDuration(stack, livingEntity) - remainingUseDuration >= POJUN_BLOCK_TICKS) {
             applyPojunCooldown(player, false);
             player.stopUsingItem();
@@ -219,7 +222,8 @@ public class di_shi_dun extends ShieldItem {
 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int timeLeft) {
-        if (!level.isClientSide && livingEntity instanceof Player player && getForm(stack) == FORM_POJUN) {
+        if (!level.isClientSide && livingEntity instanceof Player player
+                && getActiveForm(player, stack) == FORM_POJUN) {
             applyPojunCooldown(player, false);
         }
         super.releaseUsing(stack, level, livingEntity, timeLeft);
@@ -278,7 +282,8 @@ public class di_shi_dun extends ShieldItem {
         tooltip.add(Component.translatable("item.PanlingRE.di_shi_dun.pojun.skill1"));
         tooltip.add(Component.translatable("item.PanlingRE.di_shi_dun.pojun.skill2",
                 Component.keybind("key.use").withStyle(ChatFormatting.GOLD),
-                cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), POJUN_COOLDOWN_TICKS_SUCCESS)));
+                cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), POJUN_COOLDOWN_TICKS_SUCCESS),
+                cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), POJUN_COOLDOWN_TICKS_FAIL)));
         tooltip.add(Component.translatable("item.PanlingRE.di_shi_dun.pojun.skill3"));
         tooltip.add(Component.translatable("item.PanlingRE.di_shi_dun.pojun.skill4"));
     }

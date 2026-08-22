@@ -1,6 +1,7 @@
 package icu.icuqalt10.panlingre.skill;
 
 import icu.icuqalt10.panlingre.init.ModAttributes;
+import icu.icuqalt10.panlingre.item.fuzhi.FuZhiBagItem;
 import icu.icuqalt10.panlingre.item.skill_trigger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +13,8 @@ import java.util.*;
 
 public class ClientSkillState {
 
-    public record SkillSlot(ResourceLocation itemId, int skillIndex, SkillData data, ItemStack source) {}
+    public record SkillSlot(ResourceLocation itemId, int skillIndex, SkillData data,
+                            ItemStack source, ItemStack displayStack) {}
 
     private static final List<SkillSlot> availableSkills = new ArrayList<>();
     private static int selectedIndex = -1;
@@ -29,12 +31,33 @@ public class ClientSkillState {
         CuriosApi.getCuriosInventory(player).ifPresent(handler -> {
             var equippedCurios = handler.getEquippedCurios();
             for (int slot = 0; slot < equippedCurios.getSlots(); slot++) {
-                addSkillsFromStack(equippedCurios.getStackInSlot(slot));
+                ItemStack equipped = equippedCurios.getStackInSlot(slot);
+                if (!(equipped.getItem() instanceof FuZhiBagItem)) {
+                    addSkillsFromStack(equipped);
+                }
             }
+
+            // A talisman bag only provides skills from the dedicated fabao slot.
+            handler.getStacksHandler(FuZhiBagItem.CURIO_SLOT).ifPresent(stackHandler -> {
+                var stacks = stackHandler.getStacks();
+                for (int slot = 0; slot < stacks.getSlots(); slot++) {
+                    ItemStack equipped = stacks.getStackInSlot(slot);
+                    if (equipped.getItem() instanceof FuZhiBagItem
+                            && handler.isSlotActive(FuZhiBagItem.CURIO_SLOT, slot)) {
+                        addSkillsFromStack(equipped);
+                    }
+                }
+            });
         });
-        player.getArmorSlots().forEach(ClientSkillState::addSkillsFromStack);
-        addSkillsFromStack(player.getOffhandItem());
-        addSkillsFromStack(player.getMainHandItem());
+        player.getArmorSlots().forEach(stack -> {
+            if (!(stack.getItem() instanceof FuZhiBagItem)) addSkillsFromStack(stack);
+        });
+        if (!(player.getOffhandItem().getItem() instanceof FuZhiBagItem)) {
+            addSkillsFromStack(player.getOffhandItem());
+        }
+        if (!(player.getMainHandItem().getItem() instanceof FuZhiBagItem)) {
+            addSkillsFromStack(player.getMainHandItem());
+        }
 
         // 恢复上次选中
         selectedIndex = -1;
@@ -57,18 +80,21 @@ public class ClientSkillState {
         if (stack.isEmpty()) return;
         if (stack.getItem() instanceof skill_trigger st) {
             ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
-            int count = st.getSkillCount();
+            int count = st.getSkillCount(stack);
             for (int i = 0; i < count; i++) {
-                String name = st.getSkillNameKey(i);
+                String name = st.getSkillNameKey(stack, i);
                 if (name.isEmpty()) name = stack.getDescriptionId();
                 // 同名技能只保留第一个
                 if (addedNameKeys.contains(name)) continue;
                 addedNameKeys.add(name);
 
                 SkillData sd = new SkillData("skill_use",
-                        st.getSkillIcon(i), name,
-                        st.getSkillLingQiCost(i), st.getSkillCD(i));
-                availableSkills.add(new SkillSlot(id, i, sd, stack));
+                        st.getSkillIcon(stack, i), name,
+                        st.getSkillLingQiCost(stack, i), st.getSkillCD(stack, i),
+                        Math.max(0, st.getSkillCastTimeTicks(stack, i)));
+                ItemStack displayStack = st.getSkillDisplayStack(stack, i);
+                if (displayStack.isEmpty()) displayStack = stack;
+                availableSkills.add(new SkillSlot(id, i, sd, stack, displayStack));
             }
         }
     }

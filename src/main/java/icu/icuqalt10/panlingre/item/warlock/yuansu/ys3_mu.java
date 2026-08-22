@@ -4,6 +4,7 @@ import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attachment.YuansuData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.entity.Ys3MuDomainEntity;
+import icu.icuqalt10.panlingre.entity.Ys3DomainEntity;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModSounds;
@@ -19,7 +20,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,7 +45,7 @@ public class ys3_mu extends Item {
 
         if (level instanceof ServerLevel serverLevel) {
             float healValue = (float) (player.getAttributeValue(ModAttributes.MAGIC_DAMAGE) * 0.1D);
-            Vec3 center = groundPosition(serverLevel, player);
+            Vec3 center = Ys3DomainEntity.findGroundPosition(serverLevel, player);
             serverLevel.addFreshEntity(new Ys3MuDomainEntity(
                     serverLevel, player, center, itemstack, healValue));
 
@@ -57,13 +57,6 @@ public class ys3_mu extends Item {
         }
 
         return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
-    }
-
-    private static Vec3 groundPosition(ServerLevel level, Player player) {
-        int x = player.blockPosition().getX();
-        int z = player.blockPosition().getZ();
-        int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
-        return new Vec3(x + 0.5D, y, z + 0.5D);
     }
 
     @Override

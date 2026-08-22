@@ -26,18 +26,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class po_di_fu_2 extends Item{
+public class po_di_fu_2 extends FuZhiItem {
 
+    public static final int CAST_TIME_TICKS = 10;
+    public static final double FALIZHI_BONUS = 2.0D;
     private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "po_di_fu_2");
 
-    private final int cooldown = 60;
-    private final float cost = 10.0f;
     public po_di_fu_2() {
-        super(
-                new Properties()
-                        .stacksTo(64)
-                        .fireResistant()
-        );
+        super(60, 10.0f, CAST_TIME_TICKS, FALIZHI_BONUS, "po_di_fu_2", 3);
     }
 
     @Override
@@ -48,7 +44,7 @@ public class po_di_fu_2 extends Item{
                 ModAttributes.FALIZHI,
                 new AttributeModifier(
                         MODIFIER_ID,
-                        2.0,
+                        FALIZHI_BONUS,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -58,30 +54,10 @@ public class po_di_fu_2 extends Item{
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        //如果灵气不足
-        if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
-        //释放技能
-        if (!level.isClientSide) {
-
-            PoDiFuEntity projectile = new PoDiFuEntity(level, player, 2.5f);
-            projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
-            level.addFreshEntity(projectile);
-
-            //消耗
-            itemstack.consume(1, player);
-            //cd
-            cooldown_remove.cd_remove(player, this, cooldown);
-            //音效
-            level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.SNOWBALL_THROW, SoundSource.PLAYERS, 0.5f,1.0f);
-        }
-
-        return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
-
+    protected void applyEffect(Level level, Player player) {
+        PoDiFuEntity projectile = new PoDiFuEntity(level, player, 3.5f);
+        projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
+        level.addFreshEntity(projectile);
     }
 
     @Override

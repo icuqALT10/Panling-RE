@@ -87,7 +87,7 @@ public final class BaihuController implements InstanceController {
             {id:"generic.follow_range",base:100d},{id:"panlingre:arrow_damage",base:1},{id:"generic.knockback_resistance",base:1d}],
             ArmorItems:[{},{},{},{id:"minecraft:leather_helmet",count:1b,components:{unbreakable:{}}}],
             HandItems:[{id:"minecraft:bow",components:{unbreakable:{},enchantments:{punch:9}}},{}],
-            Team:"monster",PersistenceRequired:0b,Invulnerable:1b,Glowing:1b,NoAI:1b}
+            Team:"monster",PersistenceRequired:1b,Invulnerable:1b,Glowing:1b,NoAI:1b}
             """);
 
     private final List<Skeleton> skeletons = new ArrayList<>();

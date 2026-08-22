@@ -38,6 +38,12 @@ public class ModNetworks {
         );
 
         registrar.playToServer(
+                SkillCastCancelPayload.TYPE,
+                SkillCastCancelPayload.STREAM_CODEC,
+                SkillCastCancelPayload::handle
+        );
+
+        registrar.playToServer(
                 TianXingTargetPayload.TYPE,
                 TianXingTargetPayload.STREAM_CODEC,
                 TianXingTargetPayload::handle
@@ -53,6 +59,18 @@ public class ModNetworks {
                 SkillUseSucceededPayload.TYPE,
                 SkillUseSucceededPayload.STREAM_CODEC,
                 ClientPayloadHandlers::handleSkillUseSucceeded
+        );
+
+        registrar.playToClient(
+                SkillCastStatePayload.TYPE,
+                SkillCastStatePayload.STREAM_CODEC,
+                ClientPayloadHandlers::handleSkillCastState
+        );
+
+        registrar.playToClient(
+                SkillCastReleasePayload.TYPE,
+                SkillCastReleasePayload.STREAM_CODEC,
+                ClientPayloadHandlers::handleSkillCastRelease
         );
 
         registrar.playToClient(

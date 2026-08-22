@@ -8,6 +8,7 @@ import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.entity.ZhuRiArrowEntity;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModComponents;
+import icu.icuqalt10.panlingre.item.archer.other.tian_xing_jian;
 import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import net.minecraft.core.component.DataComponents;
@@ -59,7 +60,7 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
                 ModAttributes.ARROW_DAMAGE,
                 new AttributeModifier(
                         MODIFIER_ID,
-                        isPowered ? 25.0 : 35.0,
+                        isPowered ? 30.0 : 40.0,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND

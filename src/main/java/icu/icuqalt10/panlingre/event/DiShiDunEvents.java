@@ -37,7 +37,7 @@ public final class DiShiDunEvents {
         if (!(shield.getItem() instanceof di_shi_dun item)) return;
         event.setShieldDamage(0.0F);
 
-        int form = di_shi_dun.getForm(shield);
+        int form = di_shi_dun.getActiveForm(player, shield);
         if (form == di_shi_dun.FORM_POJUN) {
             handlePojunBlock(player, item);
         }
@@ -49,7 +49,7 @@ public final class DiShiDunEvents {
 
         ItemStack shield = player.getUseItem();
         if (!(shield.getItem() instanceof di_shi_dun shieldItem)
-                || di_shi_dun.getForm(shield) != di_shi_dun.FORM_JINZHONG) return;
+                || di_shi_dun.getActiveForm(player, shield) != di_shi_dun.FORM_JINZHONG) return;
 
         float armor = (float) player.getAttributeValue(Attributes.ARMOR);
         float originalDamage = event.getOriginalAmount();
@@ -64,6 +64,7 @@ public final class DiShiDunEvents {
                 player.setAbsorptionAmount(Math.min(
                         absorptionCap, player.getAbsorptionAmount() + 4.0F));
             }
+            player.heal(3.0F);
 
             player.displayClientMessage(Component.translatable(
                     "item.PanlingRE.di_shi_dun.jinzhong.skill.success"), true);
@@ -103,7 +104,9 @@ public final class DiShiDunEvents {
     public static void armAuthorizedCounterAttack(ServerPlayer player) {
         long now = player.level().getGameTime();
         Long authorizedUntil = AUTHORIZED_COUNTER_ATTACKS.remove(player.getUUID());
-        if (authorizedUntil != null && authorizedUntil >= now) {
+        if (authorizedUntil != null
+                && authorizedUntil >= now
+                && di_shi_dun.getActiveForm(player, player.getOffhandItem()) == di_shi_dun.FORM_POJUN) {
             ARMED_COUNTER_ATTACKS.put(player.getUUID(), now + 2L);
         }
     }
@@ -111,7 +114,9 @@ public final class DiShiDunEvents {
     public static boolean consumeArmedCounterAttack(Player player) {
         if (player.level().isClientSide) return false;
         Long armedUntil = ARMED_COUNTER_ATTACKS.remove(player.getUUID());
-        return armedUntil != null && armedUntil >= player.level().getGameTime();
+        return armedUntil != null
+                && armedUntil >= player.level().getGameTime()
+                && di_shi_dun.getActiveForm(player, player.getOffhandItem()) == di_shi_dun.FORM_POJUN;
     }
 
 }

@@ -12,6 +12,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+
 
 import java.util.List;
 
@@ -131,6 +135,22 @@ public abstract class Ys3DomainEntity extends Entity {
     public ItemStack getItem() { return entityData.get(STACK); }
     public float getDomainRadius() { return DEFAULT_DOMAIN_RADIUS; }
     public float getItemScale() { return 15.0F; }
+
+    /** Finds the first collidable floor below the caster, including cave floors. */
+    public static Vec3 findGroundPosition(Level level, LivingEntity caster) {
+        int x = Mth.floor(caster.getX());
+        int z = Mth.floor(caster.getZ());
+        int startY = Math.min(Mth.floor(caster.getY()), level.getMaxBuildHeight() - 1);
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos(x, startY, z);
+        for (int y = startY; y >= level.getMinBuildHeight(); y--) {
+            cursor.setY(y);
+            VoxelShape collision = level.getBlockState(cursor).getCollisionShape(level, cursor);
+            if (!collision.isEmpty()) {
+                return new Vec3(caster.getX(), y + collision.max(Direction.Axis.Y), caster.getZ());
+            }
+        }
+        return new Vec3(caster.getX(), caster.getY() - 5.0D, caster.getZ());
+    }
     public boolean isActive() { return age > ANIMATION_TICKS; }
     public float flattenProgress(float partialTick) {
         return Math.min(1.0F, (age + partialTick) / LAND_AND_FLATTEN_TICKS);

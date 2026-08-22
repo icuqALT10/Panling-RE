@@ -1,6 +1,7 @@
 package icu.icuqalt10.panlingre.init;
 
 import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.world.inventory.FuZhiBagMenu;
 import icu.icuqalt10.panlingre.world.inventory.dztMenu;
 import icu.icuqalt10.panlingre.world.inventory.ldlMenu;
 import icu.icuqalt10.panlingre.world.inventory.zftMenu;
@@ -23,6 +24,9 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<dztMenu>> dzt_menu =
             MENUS.register("dzt_menu", () -> IMenuTypeExtension.create(dztMenu::new));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<FuZhiBagMenu>> fu_zhi_bag_menu =
+            MENUS.register("fu_zhi_bag_menu", () -> IMenuTypeExtension.create(FuZhiBagMenu::new));
 
     public static void register(IEventBus eventBus) {
         MENUS.register(eventBus);

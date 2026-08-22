@@ -49,7 +49,7 @@ public class SkillIconOverlay implements LayeredDraw.Layer {
             if (slot.data().icon() != null) {
                 g.blit(slot.data().icon(), x + 2, y + 2, 18, 18, 0, 0, 32, 32, 32, 32);
             } else {
-                g.renderItem(slot.source(), x + 3, y + 3);
+                g.renderItem(slot.displayStack(), x + 3, y + 3);
             }
 
             float cd = ClientSkillState.getCooldownProgress(skills.get(i));

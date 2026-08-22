@@ -4,6 +4,7 @@ import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attachment.YuansuData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.entity.Ys3HuoDomainEntity;
+import icu.icuqalt10.panlingre.entity.Ys3DomainEntity;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModSounds;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
@@ -37,7 +38,7 @@ public class ys3_huo extends Item {
         }
         if (level instanceof ServerLevel serverLevel) {
             serverLevel.addFreshEntity(new Ys3HuoDomainEntity(
-                    serverLevel, player, ys3_shui.groundPosition(serverLevel, player), stack));
+                    serverLevel, player, Ys3DomainEntity.findGroundPosition(serverLevel, player), stack));
 
             stack.consume(1, player);
             cooldown_remove.cd_remove(player, this, COOLDOWN);

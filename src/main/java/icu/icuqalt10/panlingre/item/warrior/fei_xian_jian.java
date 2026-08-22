@@ -36,7 +36,7 @@ public class fei_xian_jian extends SwordItem implements skill_trigger {
             ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "fei_xian_jian");
 
     private final int cooldown = 200;
-    private final float cost = 30.0f;
+    private final float cost = 45.0f;
 
     public fei_xian_jian() {
         super(

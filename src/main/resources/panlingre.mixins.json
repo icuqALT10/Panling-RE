@@ -13,12 +13,15 @@
     "CanInteractEntityMixin",
     "ItemStackRightClickMixin",
     "LivingEntityRightClickMixin",
-    "LevelStorageSourceMixin"
+    "LevelStorageSourceMixin",
+    "ServerPlayerMenuMixin"
   ],
     "client": [
     "client.MinecraftTaskGlowMixin",
     "client.EntityTaskGlowColorMixin",
-    "client.GameRendererActivationMixin"
+    "client.GameRendererActivationMixin",
+    "client.ItemInHandRendererMixin",
+    "client.PlayerModelCastingMixin"
   ],
   "injectors": {
     "defaultRequire": 1

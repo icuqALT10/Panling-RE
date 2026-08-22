@@ -3,7 +3,7 @@ package icu.icuqalt10.panlingre.event;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModItems;
-import icu.icuqalt10.panlingre.item.archer.tian_xing_jian;
+import icu.icuqalt10.panlingre.item.archer.other.tian_xing_jian;
 import icu.icuqalt10.panlingre.network.TianXingTargetPayload;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;

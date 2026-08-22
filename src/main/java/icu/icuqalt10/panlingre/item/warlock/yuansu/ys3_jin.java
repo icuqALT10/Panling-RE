@@ -4,6 +4,7 @@ import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attachment.YuansuData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.entity.Ys3JinTornadoEntity;
+import icu.icuqalt10.panlingre.entity.Ys3DomainEntity;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModSounds;
@@ -12,7 +13,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -52,7 +52,7 @@ public class ys3_jin extends Item {
         // 释放技能
         if (level instanceof ServerLevel serverLevel) {
             float attackDamage = (float) (player.getAttributeValue(ModAttributes.MAGIC_DAMAGE) * 2);
-            Vec3 ground = groundPosition(serverLevel, player);
+            Vec3 ground = Ys3DomainEntity.findGroundPosition(serverLevel, player);
 
             serverLevel.addFreshEntity(new Ys3JinTornadoEntity(serverLevel, player, ground,
                     itemstack, attackDamage));
@@ -76,14 +76,6 @@ public class ys3_jin extends Item {
 
         return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
     }
-
-    private static Vec3 groundPosition(ServerLevel level, Player player) {
-        int x = player.blockPosition().getX();
-        int z = player.blockPosition().getZ();
-        int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
-        return new Vec3(x + 0.5D, y, z + 0.5D);
-    }
-
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context,

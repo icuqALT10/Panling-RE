@@ -27,18 +27,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ju_li_fu extends Item{
+public class ju_li_fu extends FuZhiItem {
 
+    public static final int CAST_TIME_TICKS = 10;
+    public static final double FALIZHI_BONUS = 2.0D;
     private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "ju_li_fu");
 
-    private final int cooldown = 600;
-    private final float cost = 15.0f;
     public ju_li_fu() {
-        super(
-                new Properties()
-                        .stacksTo(64)
-                        .fireResistant()
-        );
+        super(600, 15.0f, CAST_TIME_TICKS, FALIZHI_BONUS, "ju_li_fu", 3);
     }
 
     @Override
@@ -49,7 +45,7 @@ public class ju_li_fu extends Item{
                 ModAttributes.FALIZHI,
                 new AttributeModifier(
                         MODIFIER_ID,
-                        1.0,
+                        FALIZHI_BONUS,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -59,28 +55,9 @@ public class ju_li_fu extends Item{
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        //如果灵气不足
-        if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
-        //释放技能
-        if (!level.isClientSide) {
-            int duration = (int) (5 * player.getAttributeValue(ModAttributes.FALIZHI) * 20);
-            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, duration, 0,false,false,true));
-
-            //消耗
-            itemstack.consume(1, player);
-            //cd
-            cooldown_remove.cd_remove(player, this, cooldown);
-            //音效
-            level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.SNOWBALL_THROW, SoundSource.PLAYERS, 0.5f,1.0f);
-        }
-
-        return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
-
+    protected void applyEffect(Level level, Player player) {
+        int duration = (int) (5 * player.getAttributeValue(ModAttributes.FALIZHI) * 20);
+        player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, duration, 0, false, false, true));
     }
 
     @Override

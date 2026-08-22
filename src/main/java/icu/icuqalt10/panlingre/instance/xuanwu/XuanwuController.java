@@ -60,7 +60,7 @@ public final class XuanwuController implements InstanceController {
             attributes:[{id:"generic.max_health",base:200},{id:"generic.movement_speed",base:0.2},
             {id:"generic.minecraft:attack_damage",base:15},{id:"generic.armor",base:0d},
             {id:"generic.follow_range",base:40d}],ArmorItems:[{},{},{},{}],HandItems:[{},{}],
-            Team:"monster",PersistenceRequired:0b}
+            Team:"monster",PersistenceRequired:1b}
             """);
 
     private static final CompoundTag CAVE_SPIDER_NBT = parseNbt("""
@@ -70,7 +70,7 @@ public final class XuanwuController implements InstanceController {
             attributes:[{id:"generic.max_health",base:180},{id:"generic.movement_speed",base:0.3},
             {id:"generic.minecraft:attack_damage",base:12},{id:"generic.armor",base:0d},
             {id:"generic.follow_range",base:40d}],ArmorItems:[{},{},{},{}],HandItems:[{},{}],
-            Team:"monster",PersistenceRequired:0b}
+            Team:"monster",PersistenceRequired:1b}
             """);
 
     private static final CompoundTag SKELETON_NBT = parseNbt("""
@@ -82,7 +82,7 @@ public final class XuanwuController implements InstanceController {
             {id:"generic.follow_range",base:40d},{id:"panlingre:arrow_damage",base:8}],
             ArmorItems:[{},{},{},{id:"minecraft:leather_helmet",count:1b,components:{unbreakable:{}}}],
             HandItems:[{id:"minecraft:bow",components:{unbreakable:{},enchantments:{punch:1}}},{}],
-            Team:"monster",PersistenceRequired:0b}
+            Team:"monster",PersistenceRequired:1b}
             """);
 
     private final List<Mob> spawnedMonsters = new ArrayList<>();

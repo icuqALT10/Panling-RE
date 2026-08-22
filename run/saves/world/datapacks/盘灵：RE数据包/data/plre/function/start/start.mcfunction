@@ -3,6 +3,9 @@ spawnpoint @s 205 54 -1771 0
 curios replace ldl 0 @s with air
 clear @s
 
+#仓库 开启
+plre byd on
+
 give @s panlingre:tong_qian 15
 give @s bread 32
 give @s panlingre:he_ding_dan

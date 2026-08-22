@@ -1,7 +1,7 @@
 package icu.icuqalt10.panlingre.client;
 
 import icu.icuqalt10.panlingre.PanlingRE;
-import icu.icuqalt10.panlingre.item.archer.tian_xing_jian;
+import icu.icuqalt10.panlingre.item.archer.other.tian_xing_jian;
 import icu.icuqalt10.panlingre.item.archer.zhu_ri;
 import icu.icuqalt10.panlingre.network.TianXingTargetPayload;
 import net.minecraft.client.Minecraft;

@@ -35,6 +35,8 @@ public class SkillWheelOverlay implements LayeredDraw.Layer {
     private static final float RING_INNER = 16f;
     private static final int ICON_SIZE = 20;
     private static final float ICON_RADIUS = 65f;
+    private static final int COMPACT_GUI_HEIGHT = 320;
+    private static final float COMPACT_SCALE = 0.75f;
 
     public boolean active;
     private int hoveredIndex = -1;
@@ -93,6 +95,14 @@ public class SkillWheelOverlay implements LayeredDraw.Layer {
         // --- 半透明遮罩 ---
         g.fill(0, 0, g.guiWidth(), g.guiHeight(), 0x60000000);
 
+        // A large GUI scale leaves less logical screen space. Scale around the wheel center
+        // so the skill information above it remains visible.
+        float wheelScale = g.guiHeight() < COMPACT_GUI_HEIGHT ? COMPACT_SCALE : 1.0f;
+        g.pose().pushPose();
+        g.pose().translate(cX, cY, 0);
+        g.pose().scale(wheelScale, wheelScale, 1.0f);
+        g.pose().translate(-cX, -cY, 0);
+
         // --- 分割线 (line.png 纹理，从指针位置向外延伸) ---
         int lineH = (int)RING_OUTER;
         for (int i = 0; i < count; i++) {
@@ -126,7 +136,7 @@ public class SkillWheelOverlay implements LayeredDraw.Layer {
             if (slot.data().icon() != null) {
                 g.blit(slot.data().icon(), ix + 2, iy + 2, 16, 16, 0, 0, 32, 32, 32, 32);
             } else {
-                g.renderItem(slot.source(), ix + 2, iy + 2);
+                g.renderItem(slot.displayStack(), ix + 2, iy + 2);
             }
         }
 
@@ -137,6 +147,7 @@ public class SkillWheelOverlay implements LayeredDraw.Layer {
 
         String modeKey = ClientSkillState.isActivateMode() ? "overlay.mode.1" : "overlay.mode.2";
         g.drawCenteredString(Minecraft.getInstance().font, Component.translatable(modeKey), cX, cY + (int) RING_OUTER + 10, 0xCCCCCC);
+        g.pose().popPose();
     }
 
     private void renderSkillInfo(GuiGraphics g, ClientSkillState.SkillSlot slot, int cx, int cy) {
@@ -150,13 +161,15 @@ public class SkillWheelOverlay implements LayeredDraw.Layer {
         long base = data.cooldown();
         long reduced = player != null ? ClientSkillState.getReducedCooldown(player, base) : base;
         String combined = Component.translatable("overlay.lingqi").getString() + String.format("%.1f", data.lingqiCost())
-                + " | " + Component.translatable("overlay.cd").getString() + String.format("%.1fs", reduced / 1000f);
+                + " | " + Component.translatable("overlay.cd").getString() + String.format("%.1fs", reduced / 1000f)
+                + " | " + Component.translatable("overlay.cast_time").getString()
+                + String.format("%.1fs", data.castTimeTicks() / 20.0f);
         g.drawCenteredString(Minecraft.getInstance().font, combined, cx, y - 16, 0xFFFFFF);
 
         // 3行自定义描述
         String[] descriptions = null;
         if (slot.source().getItem() instanceof icu.icuqalt10.panlingre.item.skill_trigger trigger) {
-            descriptions = trigger.getSkillDescription(slot.skillIndex());
+            descriptions = trigger.getSkillDescription(slot.source(), slot.skillIndex());
         }
         for (int i = 0; i < 3; i++) {
             String key = (descriptions != null && i < descriptions.length && descriptions[i] != null)

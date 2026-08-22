@@ -18,6 +18,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.OptionalLong;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -67,6 +68,8 @@ public final class WorldTemplateUpdater {
             throw new IOException("Panling world template has no level.dat: " + templateLevelDat);
         }
 
+        OptionalLong existingGameTime = readGameTime(oldLevelDat);
+
         Path targetData = world.resolve("data");
         Path versionFile = targetData.resolve(VERSION_FILE);
         if (modVersion.equals(readInstalledVersion(versionFile))) {
@@ -87,7 +90,7 @@ public final class WorldTemplateUpdater {
         updateMapIndex(targetData.resolve(MAP_INDEX_FILE),
                 Math.max(Math.max(existingMapIndex, templateMapIndex), greatestTemplateMap));
 
-        copyRegularFile(templateLevelDat, world.resolve("level.dat"));
+        copyLevelDat(templateLevelDat, world.resolve("level.dat"), existingGameTime);
         writeInstalledVersion(versionFile, modVersion);
         PanlingRE.LOGGER.info("Finished updating Panling world {} to mod version {}", world, modVersion);
     }
@@ -101,6 +104,21 @@ public final class WorldTemplateUpdater {
         }
         // Worlds created before 1.16 stored their seed directly in Data.RandomSeed.
         return data.getLong("RandomSeed");
+    }
+
+    private static OptionalLong readGameTime(Path levelDat) throws IOException {
+        CompoundTag data = NbtIo.readCompressed(levelDat, NbtAccounter.unlimitedHeap()).getCompound("Data");
+        return data.contains("Time", 99) ? OptionalLong.of(data.getLong("Time")) : OptionalLong.empty();
+    }
+
+    private static void copyLevelDat(Path source, Path target, OptionalLong existingGameTime) throws IOException {
+        CompoundTag root = NbtIo.readCompressed(source, NbtAccounter.unlimitedHeap());
+        if (existingGameTime.isPresent()) {
+            CompoundTag data = root.getCompound("Data");
+            data.putLong("Time", existingGameTime.getAsLong());
+            root.put("Data", data);
+        }
+        writeCompressedAtomically(root, target);
     }
 
     private static String currentModVersion() throws IOException {

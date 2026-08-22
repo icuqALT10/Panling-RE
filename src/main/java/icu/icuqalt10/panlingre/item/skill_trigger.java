@@ -1,7 +1,9 @@
 package icu.icuqalt10.panlingre.item;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -15,20 +17,60 @@ public interface skill_trigger {
     /** 该物品提供的技能数量 */
     default int getSkillCount() { return 1; }
 
+    /** Stack-aware variant used by items whose skills are stored in data components. */
+    default int getSkillCount(ItemStack stack) { return getSkillCount(); }
+
     /** 每个技能的冷却（毫秒） */
     default long getSkillCD(int skillIndex) { return 0L; }
 
-    /** 每个技能的翻译键，空串则用物品描述ID */
+    default long getSkillCD(ItemStack stack, int skillIndex) { return getSkillCD(skillIndex); }
+
+    /** Cast wind-up in game ticks. Skills are instant unless they explicitly override this. */
+    default int getSkillCastTimeTicks(int skillIndex) { return 0; }
+
+    default int getSkillCastTimeTicks(ItemStack stack, int skillIndex) {
+        return getSkillCastTimeTicks(skillIndex);
+    }
+
+    /** Translation key for the skill name; an empty value falls back to the item description ID. */
     default String getSkillNameKey(int skillIndex) { return ""; }
+
+    default String getSkillNameKey(ItemStack stack, int skillIndex) { return getSkillNameKey(skillIndex); }
 
     /** 每个技能的灵气消耗 */
     default float getSkillLingQiCost(int skillIndex) { return 0f; }
+
+    default float getSkillLingQiCost(ItemStack stack, int skillIndex) {
+        return getSkillLingQiCost(skillIndex);
+    }
 
     /** 自定义图标纹理路径，null则渲染物品本身 */
     @Nullable
     default ResourceLocation getSkillIcon(int skillIndex) { return null; }
 
+    @Nullable
+    default ResourceLocation getSkillIcon(ItemStack stack, int skillIndex) {
+        return getSkillIcon(skillIndex);
+    }
+
     /** 技能描述行（最多3行），返回null或空数组则显示空行 */
     @Nullable
     default String[] getSkillDescription(int skillIndex) { return null; }
+
+    @Nullable
+    default String[] getSkillDescription(ItemStack stack, int skillIndex) {
+        return getSkillDescription(skillIndex);
+    }
+
+    /** Item rendered for the skill when no custom icon texture is supplied. */
+    default ItemStack getSkillDisplayStack(ItemStack stack, int skillIndex) { return stack; }
+
+    /** Stable server-side cooldown identity. */
+    default String getSkillCooldownKey(ItemStack stack, int skillIndex) {
+        return BuiltInRegistries.ITEM.getKey(stack.getItem()) + ".skill_" + skillIndex;
+    }
+
+    /** Optional vanilla item cooldown applied after a successful wheel activation. */
+    @Nullable
+    default Item getSkillCooldownItem(ItemStack stack, int skillIndex) { return null; }
 }

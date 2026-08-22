@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.client;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.client.gui.dztScreen;
+import icu.icuqalt10.panlingre.client.gui.FuZhiBagScreen;
 import icu.icuqalt10.panlingre.client.gui.ldlScreen;
 import icu.icuqalt10.panlingre.client.gui.zftScreen;
 import icu.icuqalt10.panlingre.client.layer.FireTornadoWindLayer;
@@ -10,6 +11,7 @@ import icu.icuqalt10.panlingre.client.renderer.*;
 import icu.icuqalt10.panlingre.client.task.TaskGuideOverlay;
 import icu.icuqalt10.panlingre.client.renderer.boss.PanGuRenderer;
 import icu.icuqalt10.panlingre.init.*;
+import icu.icuqalt10.panlingre.item.fuzhi.FuZhiBagItem;
 import icu.icuqalt10.panlingre.looktip.LookTipOverlay;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -111,6 +113,12 @@ public class ClientModEvents {
         );
 
         event.registerAbove(
+                VanillaGuiLayers.CROSSHAIR,
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "skill_cast_overlay"),
+                SkillCastOverlay.INSTANCE
+        );
+
+        event.registerAbove(
                 VanillaGuiLayers.FOOD_LEVEL,
                 ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "skill_wheel_overlay"),
                 SkillWheelOverlay.INSTANCE
@@ -132,6 +140,7 @@ public class ClientModEvents {
         event.register(ModMenus.ldl_menu.get(), ldlScreen::new);
         event.register(ModMenus.zft_menu.get(), zftScreen::new);
         event.register(ModMenus.dzt_menu.get(), dztScreen::new);
+        event.register(ModMenus.fu_zhi_bag_menu.get(), FuZhiBagScreen::new);
     }
 
     @SubscribeEvent
@@ -216,6 +225,14 @@ public class ClientModEvents {
                             default -> 0.0f;
                         };
                     }
+            );
+
+            // Switch between the empty and filled talisman bag textures.
+            ItemProperties.register(
+                    ModItems.fu_zhi_bao.get(),
+                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "filled"),
+                    (stack, level, entity, seed) ->
+                            FuZhiBagItem.getContents(stack).entries().isEmpty() ? 0.0F : 1.0F
             );
 
         });

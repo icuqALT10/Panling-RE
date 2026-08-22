@@ -208,15 +208,20 @@ public class GameBusEvents {
     // 处理 Boss 技能的延迟任务队列机制 + 火焰轨迹跟踪
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
-        // 更新延迟任务队列
+        // 先从主队列移出本 tick 到期的任务，再执行它们。任务执行期间可能因伤害事件
+        // 再次调用 queueTask；若直接在迭代器中执行，会修改 SKILL_TASKS 并导致 CME。
+        List<RunnableTask> readyTasks = new ArrayList<>();
         Iterator<RunnableTask> iterator = SKILL_TASKS.iterator();
         while (iterator.hasNext()) {
             RunnableTask task = iterator.next();
             task.ticks--;
             if (task.ticks <= 0) {
-                task.runnable.run();
                 iterator.remove();
+                readyTasks.add(task);
             }
+        }
+        for (RunnableTask task : readyTasks) {
+            task.runnable.run();
         }
 
         // 更新服务端火焰轨迹数据

@@ -36,12 +36,12 @@ public class ling_gui extends ArmorItem {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
                             HELMET_ID,
-                            12,
+                            16,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             HELMET_ID,
-                            10,
+                            20,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -51,7 +51,7 @@ public class ling_gui extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             HELMET_ID,
-                            4,
+                            8,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
@@ -68,12 +68,12 @@ public class ling_gui extends ArmorItem {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
                             CHESTPLATE_ID,
-                            20,
+                            22,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             CHESTPLATE_ID,
-                            16,
+                            26,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -83,7 +83,7 @@ public class ling_gui extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             CHESTPLATE_ID,
-                            5,
+                            9,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
@@ -100,12 +100,12 @@ public class ling_gui extends ArmorItem {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
                             LEGGINGS_ID,
-                            16,
+                            18,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             LEGGINGS_ID,
-                            14,
+                            24,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -115,7 +115,7 @@ public class ling_gui extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             LEGGINGS_ID,
-                            4,
+                            8,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
@@ -132,12 +132,12 @@ public class ling_gui extends ArmorItem {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
                             BOOTS_ID,
-                            12,
+                            14,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             BOOTS_ID,
-                            8,
+                            18,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -147,7 +147,7 @@ public class ling_gui extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             BOOTS_ID,
-                            4,
+                            7,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(

@@ -41,7 +41,8 @@ public final class ZhuqueController implements InstanceController {
     private static final int TWO_METEORS_REMAINING_TICKS = 90 * 20;
     private static final int THREE_METEORS_REMAINING_TICKS = 30 * 20;
     private static final int MONSTER_OVERLOAD_LIMIT = 20;
-    private static final float OVERLOAD_FIRE_DAMAGE = 30.0F;
+    private static final int MONSTERS_PER_WAVE = 2;
+    private static final float OVERLOAD_FIRE_DAMAGE = 40.0F;
     private static final int OVERLOAD_FIRE_SECONDS = 20;
     private static final float METEOR_DAMAGE = 5.0F;
     private static final double METEOR_SPAWN_Y = 80.0;
@@ -77,7 +78,7 @@ public final class ZhuqueController implements InstanceController {
             attributes:[{id:"generic.max_health",base:45},{id:"generic.movement_speed",base:0.2},
             {id:"generic.minecraft:attack_damage",base:4},{id:"generic.armor",base:0d},
             {id:"generic.follow_range",base:40d}],ArmorItems:[{},{},{},{}],HandItems:[{},{}],
-            Team:"monster",PersistenceRequired:0b,Size:3}
+            Team:"monster",PersistenceRequired:1b,Size:3}
             """);
 
     private static final CompoundTag ZOMBIE_NBT = parseNbt("""
@@ -89,7 +90,7 @@ public final class ZhuqueController implements InstanceController {
             {id:"generic.follow_range",base:40d}],ArmorItems:[{},{},{},
             {id:"iron_helmet",count:1b,components:{unbreakable:{}}}],
             HandItems:[{id:"golden_sword",count:1b,components:{unbreakable:{},
-            enchantments:{fire_aspect:1,knockback:1}}},{}],Team:"monster",PersistenceRequired:0b}
+            enchantments:{fire_aspect:1,knockback:1}}},{}],Team:"monster",PersistenceRequired:1b}
             """);
 
     private static final CompoundTag BLAZE_NBT = parseNbt("""
@@ -99,7 +100,7 @@ public final class ZhuqueController implements InstanceController {
             attributes:[{id:"generic.max_health",base:35},{id:"generic.movement_speed",base:0.2},
             {id:"generic.minecraft:attack_damage",base:0},{id:"generic.armor",base:0d},
             {id:"generic.follow_range",base:40d}],ArmorItems:[{},{},{},{}],HandItems:[{},{}],
-            Team:"monster",PersistenceRequired:0b}
+            Team:"monster",PersistenceRequired:1b}
             """);
 
     private final List<Entity> spawnedEntities = new ArrayList<>();
@@ -194,15 +195,15 @@ public final class ZhuqueController implements InstanceController {
         ServerPlayer player = session.player();
         if (level == null || player == null) return;
 
-        if (countZhuqueMonsters(session) > MONSTER_OVERLOAD_LIMIT) {
+        if (countZhuqueMonsters(session) + MONSTERS_PER_WAVE > MONSTER_OVERLOAD_LIMIT) {
             player.igniteForSeconds(OVERLOAD_FIRE_SECONDS);
             player.hurt(level.damageSources().onFire(), OVERLOAD_FIRE_DAMAGE);
             return;
         }
 
         double slotOffset = (double) session.slot() * session.definition().spacing();
-        int firstSpawnIndex = waveStep * 2;
-        for (int index = firstSpawnIndex; index < firstSpawnIndex + 2; index++) {
+        int firstSpawnIndex = waveStep * MONSTERS_PER_WAVE;
+        for (int index = firstSpawnIndex; index < firstSpawnIndex + MONSTERS_PER_WAVE; index++) {
             Mob mob = MONSTER_TYPES.get(index).create(level);
             if (mob == null) continue;
             CompoundTag entityNbt = mob.saveWithoutId(new CompoundTag());

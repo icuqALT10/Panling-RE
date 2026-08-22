@@ -38,7 +38,6 @@ public class ModItems {
     public static final DeferredItem<Item> qing_ying_feather = ITEMS.register("qing_ying_feather", qing_ying_feather::new);
     public static final DeferredItem<Item> shen_su_feather = ITEMS.register("shen_su_feather", shen_su_feather::new);
     public static final DeferredItem<Item> ye_ming_zhu = ITEMS.register("ye_ming_zhu", ye_ming_zhu::new);
-    public static final DeferredItem<Item> qian_jin_suo = ITEMS.register("qian_jin_suo", qian_jin_suo::new);
     public static final DeferredItem<Item> kong_ming_shi = ITEMS.register("kong_ming_shi", kong_ming_shi::new);
     public static final DeferredItem<Item> shen_su_fu = ITEMS.register("shen_su_fu", shen_su_fu::new);
     public static final DeferredItem<Item> ling_shi = ITEMS.register("ling_shi", ling_shi::new);
@@ -223,6 +222,7 @@ public class ModItems {
     public static final DeferredItem<Item> shou_yu_fu_3 = ITEMS.register("shou_yu_fu_3", shou_yu_fu_3::new);
     public static final DeferredItem<Item> tui_huo_fu = ITEMS.register("tui_huo_fu", tui_huo_fu::new);
     public static final DeferredItem<Item> ju_li_fu = ITEMS.register("ju_li_fu", ju_li_fu::new);
+    public static final DeferredItem<Item> fu_zhi_bao = ITEMS.register("fu_zhi_bao", FuZhiBagItem::new);
 
 
     //丹药
@@ -320,7 +320,7 @@ public class ModItems {
     public static final DeferredItem<Item> zhu_ri =
             ITEMS.register("zhu_ri", zhu_ri::new);
     public static final DeferredItem<Item> tian_xing_jian =
-            ITEMS.register("tian_xing_jian", tian_xing_jian::new);
+            ITEMS.register("tian_xing_jian", icu.icuqalt10.panlingre.item.archer.other.tian_xing_jian::new);
 
     public static final DeferredItem<Item> huang_tong_lu =
             ITEMS.register("huang_tong_lu", huang_tong_lu::new);

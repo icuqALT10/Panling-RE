@@ -33,7 +33,7 @@ public class bei_dou_gong extends BowItem implements skill_trigger {
     private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "bei_dou_gong");
 
     private final int cooldown = 100;
-    private final float cost = 25.0f;
+    private final float cost = 35.0f;
 
     public bei_dou_gong() {
         super(

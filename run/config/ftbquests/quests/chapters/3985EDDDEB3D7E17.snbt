@@ -275,5 +275,72 @@
 			x: 0.0d
 			y: -9.5d
 		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"785CEE7E97CBFD2B"
+			]
+			dependency_requirement: "one_completed"
+			id: "40099FCF5C0DE64C"
+			optional: true
+			rewards: [{
+				id: "0E11E30ED57D5AF0"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "4705E7452600BAE9"
+				item: { count: 1, id: "panlingre:di_shi_dun" }
+				type: "item"
+			}]
+			x: -6.0d
+			y: 11.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"6539CAE277810994"
+			]
+			dependency_requirement: "one_completed"
+			id: "1D67F70DBA36D232"
+			optional: true
+			rewards: [{
+				id: "5DA0576A8E439EFD"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "682766AC9EBBABFD"
+				item: { count: 1, id: "panlingre:tian_xing_jian" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: 11.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"51F37C4DAAB7DB5B"
+			]
+			dependency_requirement: "one_completed"
+			id: "4465D6A2AD998814"
+			optional: true
+			rewards: [{
+				id: "65057C79BC9C5D59"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				advancement: "plre:task/other/ren_he_yuan/3"
+				criterion: ""
+				icon: {
+					id: "minecraft:book"
+				}
+				id: "10E11BCD3792F2CF"
+				type: "advancement"
+			}]
+			x: 6.0d
+			y: 11.5d
+		}
 	]
 }

@@ -2,11 +2,19 @@
   "title": {"translate": "plre.npc.name.te1"},
   "offers": [
     {"buy":{"item":"minecraft:orange_dye","count":50,"components":{"custom_data":{"id":"plre:te1"},"custom_name":"{\"translate\":\"pl.item.name.teren\"}","lore":["{\"translate\":\"pl.item.lore.terena\"}","{\"translate\":\"pl.item.lore.terenb\"}"]}},
+    "sell":{"item":"panlingre:rare2_yuanhe","count":1}},
+
+    {"buy":{"item":"minecraft:orange_dye","count":50,"components":{"custom_data":{"id":"plre:te1"},"custom_name":"{\"translate\":\"pl.item.name.teren\"}","lore":["{\"translate\":\"pl.item.lore.terena\"}","{\"translate\":\"pl.item.lore.terenb\"}"]}},
     "sell":{"item":"panlingre:ye_ming_zhu","count":1}},
+
     {"buy":{"item":"minecraft:orange_dye","count":30,"components":{"custom_data":{"id":"plre:te1"},"custom_name":"{\"translate\":\"pl.item.name.teren\"}","lore":["{\"translate\":\"pl.item.lore.terena\"}","{\"translate\":\"pl.item.lore.terenb\"}"]}},
     "sell":{"item":"panlingre:yuan_bao","count":2}},
+
     {"buy":{"item":"minecraft:orange_dye","count":30,"components":{"custom_data":{"id":"plre:te1"},"custom_name":"{\"translate\":\"pl.item.name.teren\"}","lore":["{\"translate\":\"pl.item.lore.terena\"}","{\"translate\":\"pl.item.lore.terenb\"}"]}},
-    "sell":{"item":"panlingre:yao_yin_1","count":3}}
+    "sell":{"item":"panlingre:yao_yin_1","count":3}},
+
+    {"buy":{"item":"minecraft:orange_dye","count":10,"components":{"custom_data":{"id":"plre:te1"},"custom_name":"{\"translate\":\"pl.item.name.teren\"}","lore":["{\"translate\":\"pl.item.lore.terena\"}","{\"translate\":\"pl.item.lore.terenb\"}"]}},
+    "sell":{"item":"panlingre:ys_dhq","count":2}}
 
   ]
 }

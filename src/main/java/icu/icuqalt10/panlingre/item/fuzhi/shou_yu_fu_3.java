@@ -27,18 +27,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class shou_yu_fu_3 extends Item{
+public class shou_yu_fu_3 extends FuZhiItem {
 
+    public static final int CAST_TIME_TICKS = 60;
+    public static final double FALIZHI_BONUS = 1.0D;
     private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "shou_yu_fu_3");
 
-    private final int cooldown = 300;
-    private final float cost = 20.0f;
     public shou_yu_fu_3() {
-        super(
-                new Properties()
-                        .stacksTo(64)
-                        .fireResistant()
-        );
+        super(400, 20.0f, CAST_TIME_TICKS, FALIZHI_BONUS, "shou_yu_fu_3", 3, 4);
     }
 
     @Override
@@ -49,7 +45,7 @@ public class shou_yu_fu_3 extends Item{
                 ModAttributes.FALIZHI,
                 new AttributeModifier(
                         MODIFIER_ID,
-                        3.0,
+                        FALIZHI_BONUS,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -59,30 +55,10 @@ public class shou_yu_fu_3 extends Item{
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-
-        LingQiData data = player.getData(ModAttachments.LINGQI);
-        //如果灵气不足
-        if (!data.consume(player,cost)) return InteractionResultHolder.fail(itemstack);
-        //释放技能
-        if (!level.isClientSide) {
-            float healAmount = (float) (player.getAttributeValue(ModAttributes.FALIZHI) * 2);
-            player.heal(healAmount);
-            player.addEffect(new MobEffectInstance(
-                    MobEffects.ABSORPTION, 600, 2));
-
-            //消耗
-            itemstack.consume(1, player);
-            //cd
-            cooldown_remove.cd_remove(player, this, cooldown);
-            //音效
-            level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.SNOWBALL_THROW, SoundSource.PLAYERS, 0.5f,1.0f);
-        }
-
-        return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
-
+    protected void applyEffect(Level level, Player player) {
+        float healAmount = (float) player.getAttributeValue(ModAttributes.FALIZHI) * 2f;
+        player.heal(healAmount);
+        player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 600, 2));
     }
 
     @Override

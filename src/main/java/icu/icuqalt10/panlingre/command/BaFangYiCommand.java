@@ -234,6 +234,10 @@ public class BaFangYiCommand {
                             java.util.Collections.EMPTY_SET,
                             serverPlayer.getYRot(), serverPlayer.getXRot()
                     );
+                    serverPlayer.getServer().getCommands().performPrefixedCommand(
+                            serverPlayer.createCommandSourceStack().withPermission(2).withSuppressedOutput(),
+                            "function plre:player/ba_bang_yi/use"
+                    );
                     serverPlayer.sendSystemMessage(Component.translatable(PREFIX + "teleport.success", sub.title()), true);
                 } else {
                     serverPlayer.sendSystemMessage(Component.translatable(PREFIX + "teleport.not_found"), true);

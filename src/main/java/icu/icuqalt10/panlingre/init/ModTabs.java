@@ -164,7 +164,6 @@ public class ModTabs {
                         output.accept(ModItems.qing_ying_feather.get());
                         output.accept(ModItems.shen_su_feather.get());
                         output.accept(ModItems.ye_ming_zhu.get());
-                        output.accept(ModItems.qian_jin_suo.get());
                         output.accept(ModItems.kong_ming_shi.get());
                         output.accept(ModItems.shen_su_fu.get());
                         output.accept(ModItems.ling_shi.get());
@@ -324,6 +323,7 @@ public class ModTabs {
                         output.accept(ModItems.shou_yu_fu_3.get());
                         output.accept(ModItems.tui_huo_fu.get());
                         output.accept(ModItems.ju_li_fu.get());
+                        output.accept(ModItems.fu_zhi_bao.get());
                     })
                     .build()
             );

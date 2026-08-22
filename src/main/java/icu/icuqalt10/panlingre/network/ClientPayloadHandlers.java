@@ -3,10 +3,12 @@ package icu.icuqalt10.panlingre.network;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.client.ClientModEvents;
+import icu.icuqalt10.panlingre.client.ClientSkillCastState;
 import icu.icuqalt10.panlingre.client.GroundSmashRenderer;
 import icu.icuqalt10.panlingre.client.Ys3JinTornadoParticles;
 import icu.icuqalt10.panlingre.client.ZhuqueMeteorWarningParticles;
 import icu.icuqalt10.panlingre.init.ModAttachments;
+import icu.icuqalt10.panlingre.item.warrior.other.di_shi_dun;
 import icu.icuqalt10.panlingre.looktip.LookTipOverlay;
 import icu.icuqalt10.panlingre.looktip.LookTipResponsePayload;
 import icu.icuqalt10.panlingre.network.particle.GatherBall;
@@ -49,6 +51,14 @@ public final class ClientPayloadHandlers {
 
     public static void handleSkillUseSucceeded(SkillUseSucceededPayload payload, IPayloadContext context) {
         if (FMLEnvironment.dist == Dist.CLIENT) ClientOnly.handleSkillUseSucceeded(payload, context);
+    }
+
+    public static void handleSkillCastState(SkillCastStatePayload payload, IPayloadContext context) {
+        if (FMLEnvironment.dist == Dist.CLIENT) ClientOnly.handleSkillCastState(payload, context);
+    }
+
+    public static void handleSkillCastRelease(SkillCastReleasePayload payload, IPayloadContext context) {
+        if (FMLEnvironment.dist == Dist.CLIENT) ClientOnly.handleSkillCastRelease(payload, context);
     }
 
     public static void handleItemActivation(ItemActivationPayload payload, IPayloadContext context) {
@@ -136,6 +146,14 @@ public final class ClientPayloadHandlers {
             context.enqueueWork(() -> ClientSkillState.recordCooldown(payload.cooldownKey(), payload.cooldown()));
         }
 
+        private static void handleSkillCastState(SkillCastStatePayload payload, IPayloadContext context) {
+            context.enqueueWork(() -> ClientSkillCastState.update(payload));
+        }
+
+        private static void handleSkillCastRelease(SkillCastReleasePayload payload, IPayloadContext context) {
+            context.enqueueWork(() -> ClientSkillCastState.startRelease(payload));
+        }
+
         private static void handleItemActivation(ItemActivationPayload payload, IPayloadContext context) {
             context.enqueueWork(() -> Minecraft.getInstance().gameRenderer.displayItemActivation(payload.stack()));
         }
@@ -144,7 +162,9 @@ public final class ClientPayloadHandlers {
             context.enqueueWork(() -> {
                 Minecraft minecraft = Minecraft.getInstance();
                 if (minecraft.player == null || minecraft.gameMode == null) return;
-                if (minecraft.hitResult instanceof EntityHitResult entityHit) {
+                boolean pojunActive = minecraft.player.getOffhandItem().getItem() instanceof di_shi_dun
+                        && di_shi_dun.getForm(minecraft.player.getOffhandItem()) == di_shi_dun.FORM_POJUN;
+                if (pojunActive && minecraft.hitResult instanceof EntityHitResult entityHit) {
                     PacketDistributor.sendToServer(new PojunCounterAttackReadyPayload());
                     minecraft.gameMode.attack(minecraft.player, entityHit.getEntity());
                 }

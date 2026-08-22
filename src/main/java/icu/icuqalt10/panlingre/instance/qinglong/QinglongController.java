@@ -19,7 +19,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -43,13 +43,13 @@ public final class QinglongController implements InstanceController {
             new Vec3(-8.5, 60.0, 2010.5),
             new Vec3(-8.5, 60.0, 2024.5)
     );
-    // Edit this SNBT to tune the four answer skeletons. Position and custom name are applied afterwards.
-    private static final CompoundTag ANSWER_SKELETON_NBT = parseSkeletonNbt("{CanPickUpLoot:false,ArmorDropChances:[0f,0f,0f,0f],HandDropChances:[0f,0f],Health:10000000000.0f,Tags:[\"monster\",\"instance\",\"dragon\"],CustomNameVisible:1b,DeathLootTable:\"empty\",attributes:[{id:\"generic.max_health\",base:24},{id:\"generic.movement_speed\",base:0.2},{id:\"generic.minecraft:attack_damage\",base:0},{id:\"generic.armor\",base:0d},{id:\"generic.follow_range\",base:50d},{id:\"panlingre:arrow_damage\",base:2},],ArmorItems:[{},{},{},{id:\"minecraft:leather_helmet\",count:1b,components:{unbreakable:{}}}],HandItems:[{id:\"minecraft:bow\"},{}],Team:\"monster\",PersistenceRequired:1b,Glowing:1b}");
+    // Edit this SNBT to tune the four answer zombies. Position and custom name are applied afterwards.
+    private static final CompoundTag ANSWER_ZOMBIE_NBT = parseZombieNbt("{CanPickUpLoot:false,ArmorDropChances:[0f,0f,0f,0f],HandDropChances:[0f,0f],Health:10000000000.0f,Tags:[\"monster\",\"instance\",\"dragon\"],CustomNameVisible:1b,DeathLootTable:\"empty\",attributes:[{id:\"generic.max_health\",base:24},{id:\"generic.movement_speed\",base:0.2},{id:\"generic.minecraft:attack_damage\",base:4},{id:\"generic.armor\",base:0d},{id:\"generic.follow_range\",base:50d}],ArmorItems:[{},{},{},{id:\"minecraft:leather_helmet\",count:1b,components:{unbreakable:{}}}],HandItems:[{},{}],Team:\"monster\",PersistenceRequired:1b,Glowing:1b}");
     private static final List<Question> QUESTIONS = createQuestions();
 
     private final List<Integer> order = new ArrayList<>();
     private final Map<UUID, Integer> answers = new HashMap<>();
-    private final List<Skeleton> skeletons = new ArrayList<>();
+    private final List<Zombie> zombies = new ArrayList<>();
     private ServerBossEvent bossBar;
     private int questionCursor;
     private int correct;
@@ -145,21 +145,21 @@ public final class QinglongController implements InstanceController {
         Collections.shuffle(randomizedAnswers);
         for (int position = 0; position < 4; position++) {
             int answer = randomizedAnswers.get(position);
-            Skeleton skeleton = EntityType.SKELETON.create(level);
-            if (skeleton == null) {
+            Zombie zombie = EntityType.ZOMBIE.create(level);
+            if (zombie == null) {
                 session.finish(InstanceResult.FAILURE);
                 return;
             }
-            CompoundTag entityNbt = skeleton.saveWithoutId(new CompoundTag());
-            entityNbt.merge(ANSWER_SKELETON_NBT.copy());
-            skeleton.load(entityNbt);
-            skeleton.setPos(positions.get(position));
-            skeleton.setCustomName(Component.translatable(question.answerKeys[answer]));
-            skeleton.setCustomNameVisible(true);
-            level.addFreshEntity(skeleton);
-            skeletons.add(skeleton);
-            answers.put(skeleton.getUUID(), answer);
-            InstanceManager.ownEntity(session, skeleton);
+            CompoundTag entityNbt = zombie.saveWithoutId(new CompoundTag());
+            entityNbt.merge(ANSWER_ZOMBIE_NBT.copy());
+            zombie.load(entityNbt);
+            zombie.setPos(positions.get(position));
+            zombie.setCustomName(Component.translatable(question.answerKeys[answer]));
+            zombie.setCustomNameVisible(true);
+            level.addFreshEntity(zombie);
+            zombies.add(zombie);
+            answers.put(zombie.getUUID(), answer);
+            InstanceManager.ownEntity(session, zombie);
         }
     }
 
@@ -195,11 +195,11 @@ public final class QinglongController implements InstanceController {
     }
 
     private void clearAnswers() {
-        for (Skeleton skeleton : skeletons) {
-            InstanceManager.releaseEntity(skeleton);
-            if (!skeleton.isRemoved()) skeleton.discard();
+        for (Zombie zombie : zombies) {
+            InstanceManager.releaseEntity(zombie);
+            if (!zombie.isRemoved()) zombie.discard();
         }
-        skeletons.clear();
+        zombies.clear();
         answers.clear();
     }
 
@@ -222,11 +222,11 @@ public final class QinglongController implements InstanceController {
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(), sound, source, volume, pitch);
     }
 
-    private static CompoundTag parseSkeletonNbt(String snbt) {
+    private static CompoundTag parseZombieNbt(String snbt) {
         try {
             return TagParser.parseTag(snbt);
         } catch (Exception exception) {
-            throw new IllegalStateException("Invalid Qinglong answer skeleton SNBT", exception);
+            throw new IllegalStateException("Invalid Qinglong answer zombie SNBT", exception);
         }
     }
 

@@ -7,10 +7,13 @@
     },
     {
       "item": "panlingre:zhu_sha_2"
+    },
+    {
+      "item": "panlingre:zhu_sha_2"
     }
   ],
   "result": {
-    "count": 1,
+    "count": 2,
     "id": "panlingre:zhu_sha_3"
   }
 }

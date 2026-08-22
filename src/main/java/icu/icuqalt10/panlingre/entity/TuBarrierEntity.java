@@ -70,7 +70,7 @@ public class TuBarrierEntity extends Entity {
         entityData.set(DURATION, durationTicks);
         entityData.set(DIAMETER, diameter);
         entityData.set(GROUND_STYLE, groundStyle);
-        double baseY = findGroundY(level, owner);
+        double baseY = Ys3DomainEntity.findGroundPosition(level, owner).y;
         entityData.set(START_Y, (float) (owner.getY() + 0.5));
         entityData.set(BASE_Y, (float) baseY);
         entityData.set(TARGET_Y, (float) (baseY + (groundStyle ? 0.0D : 5.0D)));
@@ -162,21 +162,6 @@ public class TuBarrierEntity extends Entity {
         return Mth.clamp((age + partialTick - 5.0F) / 10.0F, 0.0F, 1.0F);
     }
     public int getDurationTicks() { return entityData.get(DURATION); }
-
-    private static double findGroundY(Level level, Player owner) {
-        int x = Mth.floor(owner.getX());
-        int z = Mth.floor(owner.getZ());
-        int startY = Math.min(Mth.floor(owner.getY()), level.getMaxBuildHeight() - 1);
-        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos(x, startY, z);
-        for (int y = startY; y >= level.getMinBuildHeight(); y--) {
-            cursor.setY(y);
-            VoxelShape collision = level.getBlockState(cursor).getCollisionShape(level, cursor);
-            if (!collision.isEmpty()) {
-                return y + collision.max(Direction.Axis.Y);
-            }
-        }
-        return owner.getY() - 5.0;
-    }
 
     @Override protected void readAdditionalSaveData(CompoundTag tag) { }
     @Override protected void addAdditionalSaveData(CompoundTag tag) { }

@@ -2,11 +2,19 @@
   "title": {"translate": "plre.npc.name.te2"},
   "offers": [
     {"buy":{"item":"minecraft:orange_dye","count":50,"components":{"custom_data":{"id":"plre:te2"},"custom_name":"{\"translate\":\"pl.item.name.te1\"}","lore":["{\"translate\":\"pl.item.lore.te1a\"}","{\"translate\":\"pl.item.lore.te1b\"}"]}},
-    "sell":{"item":"panlingre:qian_jin_suo","count":1}},
+    "sell":{"item":"panlingre:rare3_yuanhe","count":1}},
+
+    {"buy":{"item":"minecraft:orange_dye","count":50,"components":{"custom_data":{"id":"plre:te2"},"custom_name":"{\"translate\":\"pl.item.name.te1\"}","lore":["{\"translate\":\"pl.item.lore.te1a\"}","{\"translate\":\"pl.item.lore.te1b\"}"]}},
+    "sell":{"item":"beyonddimensions:net_magnet_item","count":1, "components": {"custom_data":{"id":"plre:net_magnet_item"},"custom_name":"{\"translate\":\"item.panlingre.net_magnet_item\"}","lore":["{\"translate\":\"item.PanlingRE.lore.rare3\"}","{\"translate\":\"item.PanlingRE.lore.limit3\"}","{\"translate\":\"item.PanlingRE.net_magnet_item.lore1\"}","{\"translate\":\"item.PanlingRE.net_magnet_item.lore2\"}","{\"translate\":\"\"}","{\"translate\":\"item.PanlingRE.net_magnet_item.skill1\"}","{\"translate\":\"item.PanlingRE.net_magnet_item.skill2\"}","{\"translate\":\"item.PanlingRE.net_magnet_item.skill3\"}"]}}},
+
     {"buy":{"item":"minecraft:orange_dye","count":30,"components":{"custom_data":{"id":"plre:te2"},"custom_name":"{\"translate\":\"pl.item.name.te1\"}","lore":["{\"translate\":\"pl.item.lore.te1a\"}","{\"translate\":\"pl.item.lore.te1b\"}"]}},
     "sell":{"item":"panlingre:yuan_bao","count":5}},
+
     {"buy":{"item":"minecraft:orange_dye","count":20,"components":{"custom_data":{"id":"plre:te2"},"custom_name":"{\"translate\":\"pl.item.name.te1\"}","lore":["{\"translate\":\"pl.item.lore.te1a\"}","{\"translate\":\"pl.item.lore.te1b\"}"]}},
-    "sell":{"item":"panlingre:yao_yin_2","count":1}}
+    "sell":{"item":"panlingre:yao_yin_2","count":1}},
+
+    {"buy":{"item":"minecraft:orange_dye","count":10,"components":{"custom_data":{"id":"plre:te2"},"custom_name":"{\"translate\":\"pl.item.name.te1\"}","lore":["{\"translate\":\"pl.item.lore.te1a\"}","{\"translate\":\"pl.item.lore.te1b\"}"]}},
+    "sell":{"item":"panlingre:ys_dhq","count":5}}
 
   ]
 }

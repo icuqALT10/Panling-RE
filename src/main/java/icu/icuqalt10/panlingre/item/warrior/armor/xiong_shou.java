@@ -36,12 +36,12 @@ public class xiong_shou extends ArmorItem {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
                             HELMET_ID,
-                            8,
+                            10,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             HELMET_ID,
-                            8,
+                            14,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -51,7 +51,7 @@ public class xiong_shou extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             HELMET_ID,
-                            2,
+                            4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
@@ -68,12 +68,12 @@ public class xiong_shou extends ArmorItem {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
                             CHESTPLATE_ID,
-                            16,
+                            20,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             CHESTPLATE_ID,
-                            14,
+                            20,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -83,7 +83,7 @@ public class xiong_shou extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             CHESTPLATE_ID,
-                            3,
+                            5,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
@@ -100,12 +100,12 @@ public class xiong_shou extends ArmorItem {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
                             LEGGINGS_ID,
-                            12,
+                            14,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             LEGGINGS_ID,
-                            12,
+                            18,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -115,7 +115,7 @@ public class xiong_shou extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             LEGGINGS_ID,
-                            2,
+                            4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
@@ -132,12 +132,12 @@ public class xiong_shou extends ArmorItem {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
                             BOOTS_ID,
-                            8,
+                            10,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             BOOTS_ID,
-                            6,
+                            12,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -147,7 +147,7 @@ public class xiong_shou extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             BOOTS_ID,
-                            2,
+                            4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(

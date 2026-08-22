@@ -7,6 +7,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
@@ -31,6 +32,10 @@ public class ModBusEvents {
     @SubscribeEvent
     public static void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            // NeoForge's PercentageAttribute for knockback resistance is not
+            // client-syncable by default. L2 reads attributes on the client.
+            Attributes.KNOCKBACK_RESISTANCE.value().setSyncable(true);
+
             MobEffect strength = MobEffects.DAMAGE_BOOST.value();
 
             strength.addAttributeModifier(

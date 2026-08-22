@@ -172,7 +172,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 2000.0)
+                .add(Attributes.MAX_HEALTH, 4000.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.25)
                 .add(Attributes.ARMOR, 500)
                 .add(Attributes.ATTACK_DAMAGE, 8.0)
@@ -237,7 +237,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
                         .filter(player -> player.distanceToSqr(this) <= 100.0D * 100.0D)
                         .count();
 
-                Objects.requireNonNull(this.getAttribute(Attributes.MAX_HEALTH)).setBaseValue(this.PlayerCount * 2000.0D);
+                Objects.requireNonNull(this.getAttribute(Attributes.MAX_HEALTH)).setBaseValue(this.PlayerCount * 4000.0D);
             }
 
             //清理渲染
@@ -337,13 +337,12 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
 
         //攻击冷却
         if (this.getActionState() == ActionState.ATTACK_COOLDOWN) {
-            this.attackCooldown--;
-
-            LivingEntity target = this.getTarget();
-            if (target == null || this.distanceTo(target) > 15.0) {
-                this.attackCooldown = 0;
+            if (this.attackCooldown > 0) {
+                this.attackCooldown--;
             }
+
             if (this.attackCooldown <= 0) {
+                this.attackCooldown = 0;
                 this.setActionState(PanGuEntity.ActionState.IDLE_OR_WALK);
             }
         }
@@ -416,7 +415,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
     public boolean cooldownStartedThisAttack = false;
 
     public void startAttackCooldown() {
-        this.attackCooldown = 30;
+        this.attackCooldown = 50;
         this.setActionState(ActionState.ATTACK_COOLDOWN);
     }
 
@@ -603,11 +602,6 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
                     if (nearest == null) {
                         event.getController().setAnimationSpeed(1.0D);
                         return event.setAndContinue(RawAnimation.begin().thenLoop("walk"));
-                    }
-
-                    if (event.getAnimatable().distanceTo(nearest) > 15) {
-                        event.getController().setAnimationSpeed(1.0D);
-                        return event.setAndContinue(RawAnimation.begin().thenLoop("running"));
                     }
 
                     event.getController().setAnimationSpeed(0.75D);

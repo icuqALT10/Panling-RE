@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.init;
 
 import com.mojang.serialization.Codec;
 import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.component.FuZhiBagContents;
 import icu.icuqalt10.panlingre.component.RightClickComponent;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -75,6 +76,15 @@ public class ModComponents {
                     DataComponentType.<RightClickComponent>builder()
                             .persistent(RightClickComponent.CODEC)
                             .networkSynchronized(RightClickComponent.STREAM_CODEC)
+                            .build()
+            );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<FuZhiBagContents>> FU_ZHI_BAG_CONTENTS =
+            COMPONENTS.register("fu_zhi_bag_contents", () ->
+                    DataComponentType.<FuZhiBagContents>builder()
+                            .persistent(FuZhiBagContents.CODEC)
+                            .networkSynchronized(FuZhiBagContents.STREAM_CODEC)
+                            .cacheEncoding()
                             .build()
             );
 }

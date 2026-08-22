@@ -36,12 +36,12 @@ public class long_lin extends ArmorItem {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
                             HELMET_ID,
-                            16,
+                            20,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             HELMET_ID,
-                            12,
+                            25,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -51,7 +51,7 @@ public class long_lin extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             HELMET_ID,
-                            6,
+                            9,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
@@ -68,12 +68,12 @@ public class long_lin extends ArmorItem {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
                             CHESTPLATE_ID,
-                            24,
+                            30,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             CHESTPLATE_ID,
-                            18,
+                            30,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -83,7 +83,7 @@ public class long_lin extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             CHESTPLATE_ID,
-                            7,
+                            14,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
@@ -100,12 +100,12 @@ public class long_lin extends ArmorItem {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
                             LEGGINGS_ID,
-                            20,
+                            26,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             LEGGINGS_ID,
-                            14,
+                            28,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -115,7 +115,7 @@ public class long_lin extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             LEGGINGS_ID,
-                            6,
+                            12,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(
@@ -132,12 +132,12 @@ public class long_lin extends ArmorItem {
             builder.add(Attributes.ARMOR,
                     new AttributeModifier(
                             BOOTS_ID,
-                            16,
+                            40,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.MAX_HEALTH,
                     new AttributeModifier(
                             BOOTS_ID,
-                            10,
+                            25,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
@@ -147,7 +147,7 @@ public class long_lin extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             BOOTS_ID,
-                            6,
+                            10,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.FALIZHI,
                     new AttributeModifier(

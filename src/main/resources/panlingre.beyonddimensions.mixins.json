@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "package": "icu.icuqalt10.panlingre.mixin.compat.beyonddimensions",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "NetMagnetItemMixin",
+    "NetMagnetMenuMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

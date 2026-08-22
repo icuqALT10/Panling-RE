@@ -4,7 +4,7 @@ import com.mojang.brigadier.context.CommandContext;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.ArcherQuiverData;
 import icu.icuqalt10.panlingre.init.ModAttachments;
-import icu.icuqalt10.panlingre.item.archer.tian_xing_jian;
+import icu.icuqalt10.panlingre.item.archer.other.tian_xing_jian;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;

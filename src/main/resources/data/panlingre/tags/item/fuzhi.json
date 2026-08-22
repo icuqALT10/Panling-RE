@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "panlingre:po_di_fu_1",
+    "panlingre:po_di_fu_2",
+    "panlingre:po_di_fu_3",
+    "panlingre:huo_qiu_fu_1",
+    "panlingre:huo_qiu_fu_2",
+    "panlingre:huo_qiu_fu_3",
+    "panlingre:shou_yu_fu_1",
+    "panlingre:shou_yu_fu_2",
+    "panlingre:shou_yu_fu_3",
+    "panlingre:tui_huo_fu",
+    "panlingre:ju_li_fu"
+  ]
+}

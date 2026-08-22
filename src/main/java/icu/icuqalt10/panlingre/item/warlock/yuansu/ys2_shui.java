@@ -66,7 +66,7 @@ public class ys2_shui extends Item {
 
     public static void applyTargetEffect(LivingEntity target) {
         target.addEffect(new MobEffectInstance(
-                MobEffects.HEAL, 1200, 1));
+                MobEffects.REGENERATION, 1200, 1));
         target.addEffect(new MobEffectInstance(
                 MobEffects.MOVEMENT_SPEED, 1200, 1));
         target.addEffect(new MobEffectInstance(

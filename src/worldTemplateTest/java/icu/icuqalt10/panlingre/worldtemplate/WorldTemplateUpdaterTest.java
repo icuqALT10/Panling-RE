@@ -28,6 +28,8 @@ public final class WorldTemplateUpdaterTest {
             Path world = root.resolve("world");
             createLevelDat(template.resolve("level.dat"), WorldTemplateUpdater.TARGET_SEED);
             createLevelDat(world.resolve("level.dat"), WorldTemplateUpdater.TARGET_SEED);
+            setGameTime(template.resolve("level.dat"), 123L);
+            setGameTime(world.resolve("level.dat"), 987654L);
 
             write(template.resolve("region/r.0.0.mca"), "new-region");
             write(template.resolve("region/r.1.0.mca"), "");
@@ -58,6 +60,7 @@ public final class WorldTemplateUpdaterTest {
             require(read(world.resolve("data/custom_mod.dat")).equals("keep-data"), "unrelated saved data changed");
             require(readMapIndex(world.resolve("data/idcounts.dat")) == 450, "higher target map index was lowered");
             require(readSeed(world.resolve("level.dat")) == WorldTemplateUpdater.TARGET_SEED, "level.dat was not copied");
+            require(readGameTime(world.resolve("level.dat")) == 987654L, "target game time was overwritten");
 
             write(world.resolve("region/r.0.0.mca"), "changed-after-install");
             WorldTemplateUpdater.updateIfNeeded(world, template, "test-1");
@@ -120,6 +123,18 @@ public final class WorldTemplateUpdaterTest {
         root.put("Data", data);
         Files.createDirectories(path.getParent());
         NbtIo.writeCompressed(root, path);
+    }
+
+    private static void setGameTime(Path path, long gameTime) throws IOException {
+        CompoundTag root = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
+        CompoundTag data = root.getCompound("Data");
+        data.putLong("Time", gameTime);
+        root.put("Data", data);
+        NbtIo.writeCompressed(root, path);
+    }
+
+    private static long readGameTime(Path path) throws IOException {
+        return NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap()).getCompound("Data").getLong("Time");
     }
 
     private static void createMapIndex(Path path, int value) throws IOException {

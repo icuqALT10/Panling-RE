@@ -31,7 +31,7 @@ public class liu_xing_nu extends HiddenEnchantedCrossbowItem implements skill_tr
     private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "liu_xing_nu");
 
     private final int cooldown = 200;
-    private final float cost = 30.0f;
+    private final float cost = 50.0f;
 
     public liu_xing_nu() {
         super(

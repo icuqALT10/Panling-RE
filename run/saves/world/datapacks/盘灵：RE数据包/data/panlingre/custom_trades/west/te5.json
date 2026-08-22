@@ -2,11 +2,19 @@
   "title": {"translate": "plre.npc.name.te5"},
   "offers": [
     {"buy":{"item":"minecraft:orange_dye","count":50,"components":{"custom_data":{"id":"plre:te5"},"custom_name":"{\"translate\":\"pl.item.name.teshen\"}","lore":["{\"translate\":\"pl.item.lore.teshena\"}","{\"translate\":\"pl.item.lore.teshenb\"}"]}},
+    "sell":{"item":"panlingre:rare4_yuanhe","count":1}},
+
+    {"buy":{"item":"minecraft:orange_dye","count":50,"components":{"custom_data":{"id":"plre:te5"},"custom_name":"{\"translate\":\"pl.item.name.teshen\"}","lore":["{\"translate\":\"pl.item.lore.teshena\"}","{\"translate\":\"pl.item.lore.teshenb\"}"]}},
     "sell":{"item":"panlingre:shen_su_fu","count":1}},
+
     {"buy":{"item":"minecraft:orange_dye","count":30,"components":{"custom_data":{"id":"plre:te5"},"custom_name":"{\"translate\":\"pl.item.name.teshen\"}","lore":["{\"translate\":\"pl.item.lore.teshena\"}","{\"translate\":\"pl.item.lore.teshenb\"}"]}},
     "sell":{"item":"panlingre:yuan_bao","count":8}},
+
     {"buy":{"item":"minecraft:orange_dye","count":20,"components":{"custom_data":{"id":"plre:te5"},"custom_name":"{\"translate\":\"pl.item.name.teshen\"}","lore":["{\"translate\":\"pl.item.lore.teshena\"}","{\"translate\":\"pl.item.lore.teshenb\"}"]}},
-    "sell":{"item":"panlingre:yao_yin_3","count":1}}
+    "sell":{"item":"panlingre:yao_yin_3","count":1}},
+
+    {"buy":{"item":"minecraft:orange_dye","count":10,"components":{"custom_data":{"id":"plre:te5"},"custom_name":"{\"translate\":\"pl.item.name.teshen\"}","lore":["{\"translate\":\"pl.item.lore.teshena\"}","{\"translate\":\"pl.item.lore.teshenb\"}"]}},
+    "sell":{"item":"panlingre:ys_dhq","count":7}}
 
   ]
 }

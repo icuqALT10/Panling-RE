@@ -401,6 +401,11 @@
 	quest.1CBADAE8A40AE1FC.quest_subtitle: "特殊获取方式的材料"
 	quest.1CBADAE8A40AE1FC.title: "其他类"
 	quest.1CC023340D63AF89.quest_desc: ["[ \"由\", { \"text\": \"朱砂(初级)\",\"color\":\"blue\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6B933D64C27B676F\" } }, \"与\",{ \"text\": \"四阶原核碎片\",\"color\":\"light_purple\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"7C69E90683AFB4B4\" } },\"合成\" ]"]
+	quest.1D67F70DBA36D232.quest_desc: [
+		"[ \"完成任务\", { \"text\": \"「天行健」\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"080809CAF2F58708\" } }, \"获得\" ]"
+		""
+		"&a任务在完成西方支线后解锁（弓箭手限定）"
+	]
 	quest.1DC436EE6837D4F3.title: "补领&9八方归位仪"
 	quest.1DFFC69AE8A409F6.quest_desc: ["进入&2&o朱雀神庙&r并成功通过&6朱雀试炼"]
 	quest.1DFFC69AE8A409F6.quest_subtitle: "通过&6朱雀试炼"
@@ -774,6 +779,11 @@
 	quest.3F91EDB32927023F.quest_subtitle: "准备完毕后前往&2&o皇宫"
 	quest.3F91EDB32927023F.title: "准备出发：&c焱砂大漠"
 	quest.3FE4EEA8418FE6F0.title: "补领&9八方归位仪"
+	quest.40099FCF5C0DE64C.quest_desc: [
+		"[ \"完成任务\", { \"text\": \"「地势坤」\",color:red, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6CDA967E9D153110\" } }, \"获得\" ]"
+		""
+		"&a任务在完成西方支线后解锁（战士限定）"
+	]
 	quest.400D5BCBC3A10E55.quest_desc: ["[ \"可于\", { \"text\": \"丹药铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4317967B4A064F1B\" } }, \"购买\" ]"]
 	quest.40596EB1C8FC6C01.quest_desc: [
 		"于一处&a客栈&r中获取"
@@ -806,6 +816,13 @@
 	quest.43ECD19A55FD4FAE.quest_subtitle: "46 48 56"
 	quest.43ECD19A55FD4FAE.title: "六道茶坊"
 	quest.4415243225D2EF5E.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.4465D6A2AD998814.quest_desc: [
+		"[ \"完成任务\", { \"text\": \"「人合元」\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"002C2D3328959386\" } }, \"习得\" ]"
+		""
+		"&a任务在完成西方支线后解锁（炼丹师限定）"
+		""
+		"此功法用于解锁&6精炼元素炼化&r，&c并不会获得实物&r"
+	]
 	quest.4479A9A26205F37B.quest_desc: ["与&a&l陈大夫&r交谈"]
 	quest.4479A9A26205F37B.title: "完成-&b「人合元」"
 	quest.457B17EA49780799.quest_desc: ["[ \"于副本\", { \"text\": \"圣山\",\"color\":\"red\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"03BE9AA4FE628CD8\" } }, \"中获得\" ]"]
@@ -975,6 +992,10 @@
 		"&a力量&r："
 		"每&61&r级提高&63&r点&a攻击伤害&r 改为"
 		"每&61&r级提高&63&r点&a攻击伤害、箭矢强度、炼化强度&r"
+		""
+		"&a急迫&r："
+		"每&61&r级提高&610%&a攻击速度&r 改为"
+		"每&61&r级提高&610%&a攻击速度&r、&65%&a冷却缩减&r"
 		"{@pagebreak}"
 		"{image:panlingre:textures/mob_effect/jia_yu.png width:20 height:20 align:center}"
 		"&a甲御&r："
@@ -1541,6 +1562,7 @@
 	task.0B7FFF14E8FC6283.title: "通用"
 	task.0CB3A8D6811FAAD6.title: "指引位置"
 	task.10C068F3B5D31DD0.title: "指引位置"
+	task.10E11BCD3792F2CF.title: "&b「人合元」"
 	task.11C5FF3CB13EA7C2.title: "指引位置"
 	task.122A51210FE62C60.title: "进入：&c焱砂大漠"
 	task.12F1E2E46556A4D1.title: "弓箭手"

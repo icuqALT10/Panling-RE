@@ -38,7 +38,7 @@ public abstract class PlayerAttackMixin {
         attackDamage.removeModifier(PANLINGRE$POJUN_COUNTER_DAMAGE_ID);
         attackDamage.addTransientModifier(new AttributeModifier(
                 PANLINGRE$POJUN_COUNTER_DAMAGE_ID,
-                1.0D,
+                2.0D,
                 AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
         panlingre$pojunCounterDamageApplied = true;
     }

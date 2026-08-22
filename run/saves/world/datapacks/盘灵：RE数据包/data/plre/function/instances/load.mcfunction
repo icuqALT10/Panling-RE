@@ -1,1 +1,3 @@
 scoreboard objectives add instance_model dummy "副本模式 默认经典 为1体验模式"
+
+scoreboard objectives add in_instance dummy

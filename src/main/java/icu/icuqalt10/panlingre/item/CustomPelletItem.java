@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -40,7 +41,8 @@ public abstract class CustomPelletItem extends Item {
 
             entity.setColor(this.getParticleColor());
 
-            entity.shootFromRotation(player, player.getXRot(), player.getYRot(), -20.0F, 0.4F, 1.0F);
+            Vec3 lookDirection = player.getLookAngle();
+            entity.shoot(lookDirection.x, lookDirection.y, lookDirection.z, 0.5F, 0.0F);
             level.addFreshEntity(entity);
         }
         //cd
