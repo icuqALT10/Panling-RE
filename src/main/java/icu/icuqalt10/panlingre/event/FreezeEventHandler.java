@@ -3,12 +3,14 @@ package icu.icuqalt10.panlingre.event;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.effect.FreezeEffect;
 import icu.icuqalt10.panlingre.init.ModEffects;
+import icu.icuqalt10.panlingre.player.ProfessionEquipmentGuard;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -49,28 +51,50 @@ public class FreezeEventHandler {
 
     @SubscribeEvent
     public static void onPlayerAttack(AttackEntityEvent event) {
-        if (isFrozen(event.getEntity())) {
+        if (ProfessionEquipmentGuard.shouldBlockActions(event.getEntity())) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
-        if (isFrozen(event.getEntity())) {
+        if (ProfessionEquipmentGuard.shouldBlockActions(event.getEntity())) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        if (isFrozen(event.getEntity())) {
+        if (ProfessionEquipmentGuard.shouldBlockActions(event.getEntity())) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-        if (isFrozen(event.getEntity())) {
+        if (ProfessionEquipmentGuard.shouldBlockActions(event.getEntity())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
+        if (ProfessionEquipmentGuard.shouldBlockActions(event.getEntity())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRightClickEntitySpecific(PlayerInteractEvent.EntityInteractSpecific event) {
+        if (ProfessionEquipmentGuard.shouldBlockActions(event.getEntity())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onUseItemStart(LivingEntityUseItemEvent.Start event) {
+        if (event.getEntity() instanceof net.minecraft.world.entity.player.Player player
+                && ProfessionEquipmentGuard.shouldBlockActions(player)) {
             event.setCanceled(true);
         }
     }

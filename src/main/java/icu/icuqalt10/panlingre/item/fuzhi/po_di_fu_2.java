@@ -28,7 +28,7 @@ import java.util.List;
 
 public class po_di_fu_2 extends FuZhiItem {
 
-    public static final int CAST_TIME_TICKS = 10;
+    public static final int CAST_TIME_TICKS = 15;
     public static final double FALIZHI_BONUS = 2.0D;
     private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "po_di_fu_2");
 

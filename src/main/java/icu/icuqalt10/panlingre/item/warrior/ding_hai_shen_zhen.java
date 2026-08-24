@@ -82,7 +82,7 @@ public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
                 Attributes.ATTACK_DAMAGE,
                 new AttributeModifier(
                         BASE_ATTACK_DAMAGE_ID,
-                        isPowered ? 15 : 40,
+                        isPowered ? 10 : 40,
                         AttributeModifier.Operation.ADD_VALUE
                 ),
                 EquipmentSlotGroup.MAINHAND
@@ -153,6 +153,9 @@ public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
                 "item.PanlingRE.ding_hai_shen_zhen.skill5"
         };
     }
+
+    @Override
+    public int getSkillCastTimeTicks(int skillIndex) { return 5; }
 
     @Override
     public Component getName(ItemStack stack) {

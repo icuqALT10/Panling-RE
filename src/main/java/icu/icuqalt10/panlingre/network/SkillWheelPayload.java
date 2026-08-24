@@ -5,7 +5,9 @@ import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.item.fuzhi.FuZhiBagItem;
+import icu.icuqalt10.panlingre.item.common.WeaponCaseItem;
 import icu.icuqalt10.panlingre.item.skill_trigger;
+import icu.icuqalt10.panlingre.player.ProfessionEquipmentGuard;
 import icu.icuqalt10.panlingre.skill.SkillCastManager;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -61,6 +63,11 @@ public record SkillWheelPayload(ResourceLocation itemId, int skillIndex) impleme
                                int skillIndex, boolean allowWindup,
                                @Nullable InteractionHand sourceHand,
                                InteractionHand castingHand) {
+        if (ProfessionEquipmentGuard.shouldBlockActions(player)) {
+            SkillCastManager.cancel(player);
+            return;
+        }
+
         ItemStack stack = findSkillStack(player, itemId, sourceHand);
         if (!BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(itemId)
                 || !(stack.getItem() instanceof skill_trigger skillItem)) {
@@ -156,7 +163,7 @@ public record SkillWheelPayload(ResourceLocation itemId, int skillIndex) impleme
         AtomicReference<ItemStack> foundStack = new AtomicReference<>(ItemStack.EMPTY);
 
         CuriosApi.getCuriosInventory(player).ifPresent(handler -> {
-            if (BuiltInRegistries.ITEM.get(itemId) instanceof FuZhiBagItem) {
+            if (isSkillContainer(BuiltInRegistries.ITEM.get(itemId))) {
                 handler.getStacksHandler(FuZhiBagItem.CURIO_SLOT).ifPresent(stackHandler -> {
                     var stacks = stackHandler.getStacks();
                     for (int slot = 0; slot < stacks.getSlots(); slot++) {
@@ -180,7 +187,7 @@ public record SkillWheelPayload(ResourceLocation itemId, int skillIndex) impleme
             }
         });
 
-        boolean bagRequest = BuiltInRegistries.ITEM.get(itemId) instanceof FuZhiBagItem;
+        boolean bagRequest = isSkillContainer(BuiltInRegistries.ITEM.get(itemId));
         if (!bagRequest && foundStack.get().isEmpty()) {
             for (ItemStack armor : player.getArmorSlots()) {
                 if (BuiltInRegistries.ITEM.getKey(armor.getItem()).equals(itemId)) {
@@ -199,6 +206,10 @@ public record SkillWheelPayload(ResourceLocation itemId, int skillIndex) impleme
             foundStack.set(player.getMainHandItem());
         }
         return foundStack.get();
+    }
+
+    private static boolean isSkillContainer(Item item) {
+        return item instanceof FuZhiBagItem || item instanceof WeaponCaseItem;
     }
 
     @Override

@@ -178,7 +178,7 @@ public class yu_ru_yi extends Item implements skill_trigger {
     }
 
     @Override
-    public int getSkillCastTimeTicks(int skillIndex) { return 20; }
+    public int getSkillCastTimeTicks(int skillIndex) { return 10; }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {

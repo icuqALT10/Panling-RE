@@ -51,7 +51,7 @@ public class zhan_lang extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             HELMET_ID,
-                            1,
+                            2,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.KNOCKBACK_RESISTANCE,
                     new AttributeModifier(
@@ -78,7 +78,7 @@ public class zhan_lang extends ArmorItem {
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             CHESTPLATE_ID,
-                            2,
+                            4,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.KNOCKBACK_RESISTANCE,
                     new AttributeModifier(
@@ -100,12 +100,12 @@ public class zhan_lang extends ArmorItem {
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             LEGGINGS_ID,
-                            8,
+                            3,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(
                             LEGGINGS_ID,
-                            2,
+                            3,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(Attributes.KNOCKBACK_RESISTANCE,
                     new AttributeModifier(

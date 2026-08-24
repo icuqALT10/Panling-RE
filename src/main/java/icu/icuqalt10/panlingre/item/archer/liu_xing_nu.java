@@ -124,6 +124,9 @@ public class liu_xing_nu extends HiddenEnchantedCrossbowItem implements skill_tr
     }
 
     @Override
+    public int getSkillCastTimeTicks(int skillIndex) { return 40; }
+
+    @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
         // 检测Shift键

@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.component.FuZhiBagContents;
 import icu.icuqalt10.panlingre.component.RightClickComponent;
+import icu.icuqalt10.panlingre.component.WeaponCaseContents;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -84,6 +85,15 @@ public class ModComponents {
                     DataComponentType.<FuZhiBagContents>builder()
                             .persistent(FuZhiBagContents.CODEC)
                             .networkSynchronized(FuZhiBagContents.STREAM_CODEC)
+                            .cacheEncoding()
+                            .build()
+            );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<WeaponCaseContents>> WEAPON_CASE_CONTENTS =
+            COMPONENTS.register("weapon_case_contents", () ->
+                    DataComponentType.<WeaponCaseContents>builder()
+                            .persistent(WeaponCaseContents.CODEC)
+                            .networkSynchronized(WeaponCaseContents.STREAM_CODEC)
                             .cacheEncoding()
                             .build()
             );

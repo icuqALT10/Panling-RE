@@ -1,6 +1,7 @@
 package icu.icuqalt10.panlingre.network;
 
 import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.player.ProfessionEquipmentGuard;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -27,6 +28,10 @@ public record TianXingTargetPayload(int entityId) implements CustomPacketPayload
     public static void handle(TianXingTargetPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer player)) return;
+            if (ProfessionEquipmentGuard.shouldBlockActions(player)) {
+                TARGETS.remove(player.getUUID());
+                return;
+            }
             if (payload.entityId() < 0) {
                 TARGETS.remove(player.getUUID());
             } else {

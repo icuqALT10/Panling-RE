@@ -28,7 +28,7 @@ public class na_qi_2 extends PotionItem {
                         Optional.empty(),
                         Optional.of(118504),
                         List.of(
-                                new MobEffectInstance(ModEffects.ling_qi_recovery, 600, 2,false,false,true)
+                                new MobEffectInstance(ModEffects.ling_qi_recovery, 1200, 2,false,false,true)
                         ))));
     }
 

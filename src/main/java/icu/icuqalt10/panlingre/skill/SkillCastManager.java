@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -111,13 +110,6 @@ public final class SkillCastManager {
             SkillWheelPayload.completeCast(
                     completedCast.player(), pending.itemId(), pending.skillIndex(),
                     pending.sourceHand(), pending.castingHand());
-        }
-    }
-
-    @SubscribeEvent
-    public static void onLivingDamage(LivingDamageEvent.Post event) {
-        if (event.getOriginalDamage() > 0.0F && event.getEntity() instanceof ServerPlayer player) {
-            cancel(player);
         }
     }
 

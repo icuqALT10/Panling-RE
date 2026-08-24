@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.init;
 import icu.icuqalt10.panlingre.item.archer.*;
 import icu.icuqalt10.panlingre.item.archer.armor.*;
 import icu.icuqalt10.panlingre.item.common.armor.*;
+import icu.icuqalt10.panlingre.item.common.WeaponCaseItem;
 import icu.icuqalt10.panlingre.item.fuzhi.*;
 import icu.icuqalt10.panlingre.item.other.LootKeyItem;
 import icu.icuqalt10.panlingre.item.other.*;
@@ -38,7 +39,6 @@ public class ModItems {
     public static final DeferredItem<Item> qing_ying_feather = ITEMS.register("qing_ying_feather", qing_ying_feather::new);
     public static final DeferredItem<Item> shen_su_feather = ITEMS.register("shen_su_feather", shen_su_feather::new);
     public static final DeferredItem<Item> ye_ming_zhu = ITEMS.register("ye_ming_zhu", ye_ming_zhu::new);
-    public static final DeferredItem<Item> kong_ming_shi = ITEMS.register("kong_ming_shi", kong_ming_shi::new);
     public static final DeferredItem<Item> shen_su_fu = ITEMS.register("shen_su_fu", shen_su_fu::new);
     public static final DeferredItem<Item> ling_shi = ITEMS.register("ling_shi", ling_shi::new);
 
@@ -223,6 +223,7 @@ public class ModItems {
     public static final DeferredItem<Item> tui_huo_fu = ITEMS.register("tui_huo_fu", tui_huo_fu::new);
     public static final DeferredItem<Item> ju_li_fu = ITEMS.register("ju_li_fu", ju_li_fu::new);
     public static final DeferredItem<Item> fu_zhi_bao = ITEMS.register("fu_zhi_bao", FuZhiBagItem::new);
+    public static final DeferredItem<Item> wu_qi_xia = ITEMS.register("wu_qi_xia", WeaponCaseItem::new);
 
 
     //丹药

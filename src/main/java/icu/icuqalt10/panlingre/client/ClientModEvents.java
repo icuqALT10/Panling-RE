@@ -3,15 +3,19 @@ package icu.icuqalt10.panlingre.client;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.client.gui.dztScreen;
 import icu.icuqalt10.panlingre.client.gui.FuZhiBagScreen;
+import icu.icuqalt10.panlingre.client.gui.WeaponCaseScreen;
 import icu.icuqalt10.panlingre.client.gui.ldlScreen;
 import icu.icuqalt10.panlingre.client.gui.zftScreen;
 import icu.icuqalt10.panlingre.client.layer.FireTornadoWindLayer;
 import icu.icuqalt10.panlingre.client.models.FireTornadoModel;
+import icu.icuqalt10.panlingre.client.models.boss.ShiHuang.GraveDragonModel;
 import icu.icuqalt10.panlingre.client.renderer.*;
+import icu.icuqalt10.panlingre.client.renderer.boss.ShiHuang.GraveDragonRenderer;
 import icu.icuqalt10.panlingre.client.task.TaskGuideOverlay;
 import icu.icuqalt10.panlingre.client.renderer.boss.PanGuRenderer;
 import icu.icuqalt10.panlingre.init.*;
 import icu.icuqalt10.panlingre.item.fuzhi.FuZhiBagItem;
+import icu.icuqalt10.panlingre.item.common.WeaponCaseItem;
 import icu.icuqalt10.panlingre.looktip.LookTipOverlay;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -84,8 +88,10 @@ public class ClientModEvents {
         event.registerEntityRenderer(ModEntities.FEI_XIAN_JIAN_ZHEN.get(), FeiXianJianZhenRenderer::new);
         event.registerEntityRenderer(ModEntities.XING_HAI.get(), XingHaiRenderer::new);
 
+        //假盘
         event.registerEntityRenderer(ModEntities.PAN_GU.get(), PanGuRenderer::new);
-        //event.registerEntityRenderer(ModEntities.PAN_GU_LARGE.get(), PanGuLargeRenderer::new);
+        //始皇
+        event.registerEntityRenderer(ModEntities.GRAVE_DRAGON.get(), GraveDragonRenderer::new);
     }
 
     @SubscribeEvent
@@ -141,6 +147,7 @@ public class ClientModEvents {
         event.register(ModMenus.zft_menu.get(), zftScreen::new);
         event.register(ModMenus.dzt_menu.get(), dztScreen::new);
         event.register(ModMenus.fu_zhi_bag_menu.get(), FuZhiBagScreen::new);
+        event.register(ModMenus.weapon_case_menu.get(), WeaponCaseScreen::new);
     }
 
     @SubscribeEvent
@@ -233,6 +240,14 @@ public class ClientModEvents {
                     ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "filled"),
                     (stack, level, entity, seed) ->
                             FuZhiBagItem.getContents(stack).entries().isEmpty() ? 0.0F : 1.0F
+            );
+
+            // Switch between the closed and filled/open weapon case textures.
+            ItemProperties.register(
+                    ModItems.wu_qi_xia.get(),
+                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "filled"),
+                    (stack, level, entity, seed) ->
+                            WeaponCaseItem.getContents(stack).entries().isEmpty() ? 0.0F : 1.0F
             );
 
         });

@@ -23,6 +23,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ChargedProjectiles;
@@ -38,6 +40,7 @@ import java.util.List;
 public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger {
 
     private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "zhu_ri");
+    private static final int POWERED_SHOT_COOLDOWN_TICKS = 2;
 
     private final int cooldown = 400;
     private final float cost = 50.0f;
@@ -94,11 +97,25 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
     }
 
     @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!stack.getOrDefault(ModComponents.IS_POWERED.get(), false)) {
+            return super.use(level, player, hand);
+        }
+
+        // Fire on press instead of entering CrossbowItem's continuous-use state. The client
+        // drains every queued click in a tick, but drops the later ones once isUsingItem is set.
+        // Keeping powered shots stateless makes one accepted click equal exactly one shot.
+        poweredShoot(stack, level, player);
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+    }
+
+    @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
         if (entity instanceof Player player) {
             boolean isPowered = stack.getOrDefault(ModComponents.IS_POWERED.get(), false);
             if (isPowered) {
-                poweredShoot(stack, level, player, timeLeft);
+                poweredShoot(stack, level, player);
             } else {
                 super.releaseUsing(stack, level, entity, timeLeft);
             }
@@ -107,11 +124,12 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
         }
     }
 
-    private void poweredShoot(ItemStack stack, Level level, Player player, int timeLeft) {
+    private void poweredShoot(ItemStack stack, Level level, Player player) {
         ItemStack ammo = player.getProjectile(stack);
         if (ammo.isEmpty()) return;
 
         if (!(level instanceof ServerLevel serverLevel)) return;
+        if (player.getCooldowns().isOnCooldown(stack.getItem())) return;
 
         Vec3 eye = player.getEyePosition();
         Vec3 look = player.getLookAngle();
@@ -194,6 +212,7 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
         ZhuRiArrowEntity arrow = new ZhuRiArrowEntity(level, player,
                 P0, P1, P2, P3, arrowDmg, lockedTarget);
         serverLevel.addFreshEntity(arrow);
+        player.getCooldowns().addCooldown(stack.getItem(), POWERED_SHOT_COOLDOWN_TICKS);
         if (tian_xing_jian.isSniperActive(player)) {
             tian_xing_jian.notifySniperShot(player);
         }
@@ -286,6 +305,9 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
                 "item.PanlingRE.zhu_ri.skill5"
         };
     }
+
+    @Override
+    public int getSkillCastTimeTicks(int skillIndex) { return 5; }
 
     @Override
     public Component getName(ItemStack stack) {

@@ -264,12 +264,14 @@ public class di_shi_dun extends ShieldItem {
         tooltip.add(Component.translatable("item.PanlingRE.lore.rare4"));
         tooltip.add(Component.translatable("item.PanlingRE.lore.limit0"));
         tooltip.add(Component.translatable("item.PanlingRE.di_shi_dun.lore1"));
+        tooltip.add(Component.empty());
 
         switch (getForm(stack)) {
             case FORM_POJUN -> appendPojunLore(tooltip);
             case FORM_JINZHONG -> appendJinzhongLore(tooltip);
             default -> {
-                // 形态 0 只显示到 lore1。
+                tooltip.add(Component.translatable("item.PanlingRE.di_shi_dun.lore2"));
+                tooltip.add(Component.translatable("item.PanlingRE.di_shi_dun.lore3"));
             }
         }
 
@@ -278,7 +280,6 @@ public class di_shi_dun extends ShieldItem {
 
     /** 破军形态 lore 模板；可直接在这里增删翻译键。 */
     private static void appendPojunLore(List<Component> tooltip) {
-        tooltip.add(Component.empty());
         tooltip.add(Component.translatable("item.PanlingRE.di_shi_dun.pojun.skill1"));
         tooltip.add(Component.translatable("item.PanlingRE.di_shi_dun.pojun.skill2",
                 Component.keybind("key.use").withStyle(ChatFormatting.GOLD),
@@ -289,7 +290,6 @@ public class di_shi_dun extends ShieldItem {
     }
 
     private static void appendJinzhongLore(List<Component> tooltip) {
-        tooltip.add(Component.empty());
         tooltip.add(Component.translatable("item.PanlingRE.di_shi_dun.jinzhong.skill1",
                 Component.keybind("key.use").withStyle(ChatFormatting.GOLD)));
         tooltip.add(Component.translatable("item.PanlingRE.di_shi_dun.jinzhong.skill2"));

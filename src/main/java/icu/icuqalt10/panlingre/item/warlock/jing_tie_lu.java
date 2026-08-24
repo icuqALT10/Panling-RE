@@ -70,6 +70,12 @@ public class jing_tie_lu extends Item implements ICurioItem,skill_trigger {
                 AttributeModifier.Operation.ADD_VALUE
         ));
 
+        modifiers.put(ModAttributes.COOLDOWN_REMOVE, new AttributeModifier(
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "huang_tong_lu"),
+                0.05,
+                AttributeModifier.Operation.ADD_VALUE
+        ));
+
         return modifiers;
     }
 
@@ -138,6 +144,9 @@ public class jing_tie_lu extends Item implements ICurioItem,skill_trigger {
                 "item.PanlingRE.jing_tie_lu.skill3"
         };
     }
+
+    @Override
+    public int getSkillCastTimeTicks(int skillIndex) { return 3; }
 
     private static LivingEntity findAlchemistTarget(ServerPlayer player, double range) {
         Level level = player.level();

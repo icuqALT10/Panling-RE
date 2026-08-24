@@ -204,7 +204,7 @@ public class tian_xing_jian extends Item implements ICurioItem {
 
         modifiers.put(ModAttributes.ARROW_DAMAGE, new AttributeModifier(
                 id,
-                0.25,
+                0.35,
                 AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 
         modifiers.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(
@@ -258,18 +258,24 @@ public class tian_xing_jian extends Item implements ICurioItem {
         tooltip.add(Component.translatable("item.PanlingRE.lore.rare4"));
         tooltip.add(Component.translatable("item.PanlingRE.lore.limit1"));
         tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.lore1"));
+        tooltip.add(Component.empty());
 
-        if (getForm(stack) == FORM_SNIPER) {
-            tooltip.add(Component.empty());
-            tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.juji.skill1"));
-            tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.juji.skill2"));
-        } else if (getForm(stack) == FORM_RANGER) {
-            tooltip.add(Component.empty());
-            tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.youxia.skill1",
-                    cooldown_remove.getCooldownText(
-                            SafeClientAccess.getClientPlayer(), RANGER_COOLDOWN_TICKS)));
-            tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.youxia.skill2"));
-            tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.youxia.skill3"));
+        switch (getForm(stack)) {
+            case FORM_SNIPER -> {
+                tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.juji.skill1"));
+                tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.juji.skill2"));
+            }
+            case FORM_RANGER -> {
+                tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.youxia.skill1",
+                        cooldown_remove.getCooldownText(
+                                SafeClientAccess.getClientPlayer(), RANGER_COOLDOWN_TICKS)));
+                tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.youxia.skill2"));
+                tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.youxia.skill3"));
+            }
+            default -> {
+                tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.lore2"));
+                tooltip.add(Component.translatable("item.PanlingRE.tian_xing_jian.lore3"));
+            }
         }
 
         super.appendHoverText(stack, context, tooltip, flag);

@@ -288,6 +288,12 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         super.tick();
         if (this.level().isClientSide) return;
 
+        if (DiedTick > 0) {
+            DiedTick -= 1;
+            if (DiedTick == 0) ActionDied();
+            return;
+        }
+
         // 同步 BossBar 血量进度
         this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
 
@@ -472,6 +478,8 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         return super.hurt(source, amount);
     }
 
+    private int DiedTick = 0;
+
     @Override
     public void die(DamageSource source) {
         //技能判定
@@ -502,6 +510,8 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
             this.setActionState(ActionState.DYING);
             this.setNoAi(true);
             this.setInvulnerable(true);
+
+            DiedTick = 56;
 
             startAnimation("died");
         }
@@ -774,9 +784,9 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
             case "attack.throw.end" -> {
                 if (tick == 15) DamageFinish();
             }
-            case "died" -> {
-                if (tick == 56) ActionDied();
-            }
+            //case "died" -> {
+            //    if (tick == 56) ActionDied();
+            //}
             case "skill.phase1" -> {
                 switch (tick) {
                     case 80,83,86,89,92,95,98,101,104,107,110 -> SkillPhase1Cold();

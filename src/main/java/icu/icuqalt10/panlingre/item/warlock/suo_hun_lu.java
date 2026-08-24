@@ -74,6 +74,12 @@ public class suo_hun_lu extends Item implements ICurioItem,skill_trigger, lianda
                 AttributeModifier.Operation.ADD_VALUE
         ));
 
+        modifiers.put(ModAttributes.COOLDOWN_REMOVE, new AttributeModifier(
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "huang_tong_lu"),
+                0.15,
+                AttributeModifier.Operation.ADD_VALUE
+        ));
+
         return modifiers;
     }
 
@@ -142,6 +148,9 @@ public class suo_hun_lu extends Item implements ICurioItem,skill_trigger, lianda
                 "item.PanlingRE.suo_hun_lu.skill3"
         };
     }
+
+    @Override
+    public int getSkillCastTimeTicks(int skillIndex) { return 4; }
 
     private static LivingEntity findAlchemistTarget(ServerPlayer player, double range) {
         Level level = player.level();

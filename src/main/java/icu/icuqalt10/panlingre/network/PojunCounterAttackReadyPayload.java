@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.network;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.event.DiShiDunEvents;
+import icu.icuqalt10.panlingre.player.ProfessionEquipmentGuard;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -20,6 +21,7 @@ public record PojunCounterAttackReadyPayload() implements CustomPacketPayload {
     public static void handle(PojunCounterAttackReadyPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {
+                if (ProfessionEquipmentGuard.shouldBlockActions(player)) return;
                 DiShiDunEvents.armAuthorizedCounterAttack(player);
             }
         });

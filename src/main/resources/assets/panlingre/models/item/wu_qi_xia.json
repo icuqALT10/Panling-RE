@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "panlingre:item/wu_qi_xia"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "panlingre:filled": 1.0
+      },
+      "model": "panlingre:item/wu_qi_xia_filled"
+    }
+  ]
+}

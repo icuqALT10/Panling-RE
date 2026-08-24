@@ -126,6 +126,9 @@ public class huang_tong_lu extends Item implements ICurioItem,skill_trigger {
         };
     }
 
+    @Override
+    public int getSkillCastTimeTicks(int skillIndex) { return 2; }
+
     private static LivingEntity findAlchemistTarget(ServerPlayer player, double range) {
         Level level = player.level();
         // 找出范围内所有的生物

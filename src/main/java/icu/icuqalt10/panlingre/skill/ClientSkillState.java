@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.skill;
 
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.item.fuzhi.FuZhiBagItem;
+import icu.icuqalt10.panlingre.item.common.WeaponCaseItem;
 import icu.icuqalt10.panlingre.item.skill_trigger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -32,17 +33,20 @@ public class ClientSkillState {
             var equippedCurios = handler.getEquippedCurios();
             for (int slot = 0; slot < equippedCurios.getSlots(); slot++) {
                 ItemStack equipped = equippedCurios.getStackInSlot(slot);
-                if (!(equipped.getItem() instanceof FuZhiBagItem)) {
+                if (!(equipped.getItem() instanceof FuZhiBagItem)
+                        && !(equipped.getItem() instanceof WeaponCaseItem)) {
                     addSkillsFromStack(equipped);
                 }
             }
 
-            // A talisman bag only provides skills from the dedicated fabao slot.
+            // Skill containers only provide their nested skills from an active fabao slot.
             handler.getStacksHandler(FuZhiBagItem.CURIO_SLOT).ifPresent(stackHandler -> {
                 var stacks = stackHandler.getStacks();
                 for (int slot = 0; slot < stacks.getSlots(); slot++) {
                     ItemStack equipped = stacks.getStackInSlot(slot);
-                    if (equipped.getItem() instanceof FuZhiBagItem
+                    if ((equipped.getItem() instanceof FuZhiBagItem
+                            || equipped.getItem() instanceof WeaponCaseItem weaponCase
+                            && weaponCase.canProvideSkills(player, equipped))
                             && handler.isSlotActive(FuZhiBagItem.CURIO_SLOT, slot)) {
                         addSkillsFromStack(equipped);
                     }
@@ -50,12 +54,15 @@ public class ClientSkillState {
             });
         });
         player.getArmorSlots().forEach(stack -> {
-            if (!(stack.getItem() instanceof FuZhiBagItem)) addSkillsFromStack(stack);
+            if (!(stack.getItem() instanceof FuZhiBagItem)
+                    && !(stack.getItem() instanceof WeaponCaseItem)) addSkillsFromStack(stack);
         });
-        if (!(player.getOffhandItem().getItem() instanceof FuZhiBagItem)) {
+        if (!(player.getOffhandItem().getItem() instanceof FuZhiBagItem)
+                && !(player.getOffhandItem().getItem() instanceof WeaponCaseItem)) {
             addSkillsFromStack(player.getOffhandItem());
         }
-        if (!(player.getMainHandItem().getItem() instanceof FuZhiBagItem)) {
+        if (!(player.getMainHandItem().getItem() instanceof FuZhiBagItem)
+                && !(player.getMainHandItem().getItem() instanceof WeaponCaseItem)) {
             addSkillsFromStack(player.getMainHandItem());
         }
 

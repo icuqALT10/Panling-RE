@@ -31,8 +31,8 @@ public class FeiXianJianZhenEntity extends Entity implements GeoEntity {
         this.noPhysics = true;
     }
 
-    public void setSummonerArmor(float armor) {
-        this.summonerArmorValue = armor * 0.5f;
+    public void setSummonerArmor(float damage) {
+        this.summonerArmorValue = damage;
     }
 
     @Override

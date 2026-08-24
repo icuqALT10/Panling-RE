@@ -102,10 +102,11 @@ public class fei_xian_jian extends SwordItem implements skill_trigger {
     public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
         //释放技能
         if (!level.isClientSide) {
+            float damage = (float) player.getArmorValue() * 0.35f;
             FeiXianJianZhenEntity entity = new FeiXianJianZhenEntity(ModEntities.FEI_XIAN_JIAN_ZHEN.get(), level);
             entity.moveTo(player.getX(), player.getY(), player.getZ());
             entity.setOwner(player);
-            entity.setSummonerArmor((float) player.getArmorValue());
+            entity.setSummonerArmor(damage);
 
             level.addFreshEntity(entity);
 
@@ -142,6 +143,9 @@ public class fei_xian_jian extends SwordItem implements skill_trigger {
                 "item.PanlingRE.fei_xian_jian.skill5"
         };
     }
+
+    @Override
+    public int getSkillCastTimeTicks(int skillIndex) { return 40; }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {

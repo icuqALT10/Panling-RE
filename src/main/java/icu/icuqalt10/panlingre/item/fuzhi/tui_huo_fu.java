@@ -29,7 +29,7 @@ import java.util.List;
 
 public class tui_huo_fu extends FuZhiItem {
 
-    public static final int CAST_TIME_TICKS = 10;
+    public static final int CAST_TIME_TICKS = 40;
     public static final double FALIZHI_BONUS = 2.0D;
     private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "tui_huo_fu");
 

@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.network;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.item.liandan;
+import icu.icuqalt10.panlingre.player.ProfessionEquipmentGuard;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -23,6 +24,8 @@ public record LdPayload() implements CustomPacketPayload {
     public static void handle(final LdPayload payload, final IPayloadContext context) {
         context.enqueueWork(() -> {
             Player player = context.player();
+
+                if (ProfessionEquipmentGuard.shouldBlockActions(player)) return;
 
                 AtomicReference<ItemStack> foundStack = new AtomicReference<>(player.getMainHandItem());
 

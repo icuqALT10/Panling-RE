@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.init;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.entity.FireTornadoEntity;
 import icu.icuqalt10.panlingre.entity.boss.PanGuEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -14,5 +15,6 @@ public class ModEntityAttributes {
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(ModEntities.PAN_GU.get(), PanGuEntity.createAttributes().build());
         event.put(ModEntities.FIRE_TORNADO.get(), FireTornadoEntity.createAttributes().build());
+        event.put(ModEntities.GRAVE_DRAGON.get(), GraveDragonEntity.createAttributes().build());
     }
 }

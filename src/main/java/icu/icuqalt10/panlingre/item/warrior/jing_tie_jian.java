@@ -120,6 +120,9 @@ public class jing_tie_jian extends SwordItem implements skill_trigger {
     }
 
     @Override
+    public int getSkillCastTimeTicks(int skillIndex) { return 3; }
+
+    @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
         // 检测Shift键

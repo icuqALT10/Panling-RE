@@ -134,6 +134,9 @@ public class zhong_chui_gong extends BowItem implements skill_trigger {
     }
 
     @Override
+    public int getSkillCastTimeTicks(int skillIndex) { return 7; }
+
+    @Override
     public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
         // 检测Shift键

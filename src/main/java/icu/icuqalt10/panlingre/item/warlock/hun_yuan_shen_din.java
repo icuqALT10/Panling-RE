@@ -95,6 +95,12 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
                 AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         ));
 
+        modifiers.put(ModAttributes.COOLDOWN_REMOVE, new AttributeModifier(
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "huang_tong_lu"),
+                0.25,
+                AttributeModifier.Operation.ADD_VALUE
+        ));
+
         return modifiers;
     }
 
@@ -166,6 +172,17 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
             case 2 -> new String[]{"item.PanlingRE.hun_yuan_shen_din.skill3.2","item.PanlingRE.hun_yuan_shen_din.skill3.3"};
             case 3 -> new String[]{"item.PanlingRE.hun_yuan_shen_din.skill4.2","item.PanlingRE.hun_yuan_shen_din.skill4.3"};
             default -> null;
+        };
+    }
+
+    @Override
+    public int getSkillCastTimeTicks(int skillIndex) {
+        return switch (skillIndex) {
+            case 0 -> 30;
+            case 1 -> 20;
+            case 2 -> 5;
+            case 3 -> 10;
+            default -> 20;
         };
     }
 

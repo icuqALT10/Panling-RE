@@ -12,9 +12,11 @@
     "BiomeMixin",
     "CanInteractEntityMixin",
     "ItemStackRightClickMixin",
+    "ItemStackEquipMixin",
     "LivingEntityRightClickMixin",
     "LevelStorageSourceMixin",
-    "ServerPlayerMenuMixin"
+    "ServerPlayerMenuMixin",
+    "OffhandSlotMixin"
   ],
     "client": [
     "client.MinecraftTaskGlowMixin",

@@ -51,7 +51,7 @@ public class chi_ying extends ArmorItem {
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             HELMET_ID,
-                            8,
+                            12,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.ARROW_DAMAGE,
                     new AttributeModifier(
@@ -78,7 +78,7 @@ public class chi_ying extends ArmorItem {
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             CHESTPLATE_ID,
-                            10,
+                            18,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.ARROW_DAMAGE,
                     new AttributeModifier(
@@ -105,7 +105,7 @@ public class chi_ying extends ArmorItem {
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             LEGGINGS_ID,
-                            10,
+                            14,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.ARROW_DAMAGE,
                     new AttributeModifier(
@@ -132,7 +132,7 @@ public class chi_ying extends ArmorItem {
             builder.add(ModAttributes.MAX_LINGQI,
                     new AttributeModifier(
                             BOOTS_ID,
-                            8,
+                            12,
                             AttributeModifier.Operation.ADD_VALUE), slot);
             builder.add(ModAttributes.ARROW_DAMAGE,
                     new AttributeModifier(

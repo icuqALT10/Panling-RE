@@ -7,7 +7,7 @@ import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModEffects;
 import icu.icuqalt10.panlingre.looktip.LookTipLoader;
-import icu.icuqalt10.panlingre.player.check;
+import icu.icuqalt10.panlingre.player.ProfessionEquipmentGuard;
 import icu.icuqalt10.panlingre.task.TaskGuideLoader;
 import icu.icuqalt10.panlingre.task.TaskGuideService;
 import icu.icuqalt10.panlingre.util.Shockwave;
@@ -25,6 +25,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Creeper;
@@ -134,49 +135,44 @@ public class GameBusEvents {
         if (event.getEntity().level().isClientSide || !(event.getEntity() instanceof Player player)) return;
 
         ItemStack newStack = event.getTo();
-        if (newStack.isEmpty()) return;
+        String messageKey = ProfessionEquipmentGuard.getRestrictionMessageKey(player, newStack);
+        if (messageKey == null) return;
 
-        if (newStack.is(WARRIOR_TAG) && !check.zhiye_check(player, "panlingre:warrior")){
-            player.displayClientMessage(Component.translatable("zhiye.cant_use.0"),false);
-            player.setItemSlot(event.getSlot(), ItemStack.EMPTY);player.drop(newStack.copy(), true);}
+        ProfessionEquipmentGuard.applyRejectionFreeze(player);
+        player.displayClientMessage(Component.translatable(messageKey), false);
 
-        else if (newStack.is(ARCHER_TAG) && !check.zhiye_check(player, "panlingre:archer")){
-            player.displayClientMessage(Component.translatable("zhiye.cant_use.1"),false);
-            player.setItemSlot(event.getSlot(), ItemStack.EMPTY);player.drop(newStack.copy(), true);}
+        if (event.getSlot() == EquipmentSlot.MAINHAND) {
+            player.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+            player.drop(newStack.copy(), true);
+            return;
+        }
 
-        else if (newStack.is(WARLOCK_TAG) && !check.zhiye_check(player, "panlingre:warlock")){
-            player.displayClientMessage(Component.translatable("zhiye.cant_use.2"),false);
-            player.setItemSlot(event.getSlot(), ItemStack.EMPTY);player.drop(newStack.copy(), true);}
+        // Armor/offhand menu insertion is normally rejected before this event.
+        // Restore direct slot writes and return the rejected item to inventory.
+        player.setItemSlot(event.getSlot(), event.getFrom().copy());
+        ItemStack returned = newStack.copy();
+        if (!player.getInventory().add(returned)) {
+            player.drop(returned, true);
+        }
     }
     //饰品栏变更 职业限制 饰品栏
     @SubscribeEvent
     public static void onCurioChange(CurioChangeEvent event) {
-        if (event.getEntity().level().isClientSide || !(event.getEntity() instanceof Player player)) return;
+        if (event.getEntity().level().isClientSide
+                || !(event.getEntity() instanceof Player player)) return;
 
-        String slotIdentifier = event.getIdentifier();
         ItemStack newStack = event.getTo();
-        if (newStack.isEmpty()) return;
+        String messageKey = ProfessionEquipmentGuard.getRestrictionMessageKey(player, newStack);
+        if (messageKey == null) return;
 
-        if (newStack.is(WARRIOR_TAG) && !check.zhiye_check(player, "panlingre:warrior")){
-            player.displayClientMessage(Component.translatable("zhiye.cant_use.0"), false);
-            CuriosApi.getCuriosInventory(player).ifPresent(inv -> {
-                inv.setEquippedCurio(slotIdentifier, event.getSlotIndex(), ItemStack.EMPTY);});
-            player.drop(newStack.copy(), true);
-        }
-
-        else if (newStack.is(ARCHER_TAG) && !check.zhiye_check(player, "panlingre:archer")){
-            player.displayClientMessage(Component.translatable("zhiye.cant_use.1"),false);
-            CuriosApi.getCuriosInventory(player).ifPresent(inv -> {
-                inv.setEquippedCurio(slotIdentifier, event.getSlotIndex(), ItemStack.EMPTY);});
-            player.drop(newStack.copy(), true);
-        }
-
-        else if (newStack.is(WARLOCK_TAG) && !check.zhiye_check(player, "panlingre:warlock")){
-            player.displayClientMessage(Component.translatable("zhiye.cant_use.2"),false);
-            CuriosApi.getCuriosInventory(player).ifPresent(inv -> {
-                inv.setEquippedCurio(slotIdentifier, event.getSlotIndex(), ItemStack.EMPTY);});
-            player.drop(newStack.copy(), true);
-        }
+        // CurioChangeEvent is dispatched on the server tick after Curios has completely restored
+        // every slot. Unlike CurioCanEquipEvent, it does not inspect a half-loaded profession slot.
+        ProfessionEquipmentGuard.applyRejectionFreeze(player);
+        player.displayClientMessage(Component.translatable(messageKey), false);
+        CuriosApi.getCuriosInventory(player).ifPresent(inventory ->
+                inventory.setEquippedCurio(
+                        event.getIdentifier(), event.getSlotIndex(), ItemStack.EMPTY));
+        player.drop(newStack.copy(), true);
     }
 
     //玩家tick

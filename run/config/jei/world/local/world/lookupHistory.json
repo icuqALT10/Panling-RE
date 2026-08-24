@@ -1,5 +1,7 @@
 [
   {"version":1},
+  {"ingredient":{"id":"panlingre:wu_qi_xia"},"type":"item_stack","bookmarkType":"INGREDIENT"},
+  {"ingredient":{"id":"minecraft:jungle_wood"},"type":"item_stack","bookmarkType":"INGREDIENT"},
   {"ingredient":{"id":"panlingre:ju_tong_chui"},"type":"item_stack","bookmarkType":"INGREDIENT"},
   {"ingredient":{"id":"panlingre:po_kong_fu"},"type":"item_stack","bookmarkType":"INGREDIENT"},
   {"ingredient":{"id":"panlingre:jiao_long_nu"},"type":"item_stack","bookmarkType":"INGREDIENT"},
@@ -97,7 +99,5 @@
   {"ingredient":{"id":"powerful_dummy:dummy_stand"},"type":"item_stack","bookmarkType":"INGREDIENT"},
   {"ingredient":{"id":"beyonddimensions:net_destroyer"},"type":"item_stack","bookmarkType":"INGREDIENT"},
   {"ingredient":{"id":"beyonddimensions:net_manager_inviter"},"type":"item_stack","bookmarkType":"INGREDIENT"},
-  {"ingredient":{"id":"beyonddimensions:net_member_inviter"},"type":"item_stack","bookmarkType":"INGREDIENT"},
-  {"ingredient":{"id":"beyonddimensions:net_creater"},"type":"item_stack","bookmarkType":"INGREDIENT"},
-  {"ingredient":{"id":"beyonddimensions:unstable_space_time_fragment"},"type":"item_stack","bookmarkType":"INGREDIENT"}
+  {"ingredient":{"id":"beyonddimensions:net_member_inviter"},"type":"item_stack","bookmarkType":"INGREDIENT"}
 ]

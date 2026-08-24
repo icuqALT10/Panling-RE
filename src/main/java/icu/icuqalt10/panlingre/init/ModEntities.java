@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.init;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.entity.*;
 import icu.icuqalt10.panlingre.entity.boss.PanGuEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -55,13 +56,20 @@ public class ModEntities {
                     .build("xing_hai"));
 
     //生物
-    //boss
+    //盘古
     public static final DeferredHolder<EntityType<?>, EntityType<PanGuEntity>> PAN_GU =
             ENTITIES.register("pan_gu", () -> EntityType.Builder.of(PanGuEntity::new, MobCategory.MISC)
                     .sized(0.8F, 1.9F)
                     .clientTrackingRange(12)
                     .updateInterval(1)
                     .build("pan_gu"));
+    //始皇 墓龙
+    public static final DeferredHolder<EntityType<?>, EntityType<GraveDragonEntity>> GRAVE_DRAGON =
+            ENTITIES.register("grave_dragon", () -> EntityType.Builder.of(GraveDragonEntity::new, MobCategory.MISC)
+                    .sized(1F, 1F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .build("grave_dragon"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<ZhuRiArrowEntity>> ZHU_RI_ARROW =
             ENTITIES.register("zhu_ri_arrow", () -> EntityType.Builder.<ZhuRiArrowEntity>of(ZhuRiArrowEntity::new, MobCategory.MISC)

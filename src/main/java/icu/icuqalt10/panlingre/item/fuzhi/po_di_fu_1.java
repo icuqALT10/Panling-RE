@@ -55,7 +55,7 @@ public class po_di_fu_1 extends FuZhiItem {
 
     @Override
     protected void applyEffect(Level level, Player player) {
-        PoDiFuEntity projectile = new PoDiFuEntity(level, player, 1.5f);
+        PoDiFuEntity projectile = new PoDiFuEntity(level, player, 2.5f);
         projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
         level.addFreshEntity(projectile);
     }

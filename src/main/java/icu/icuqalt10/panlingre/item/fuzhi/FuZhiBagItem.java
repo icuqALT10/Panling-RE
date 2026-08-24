@@ -6,10 +6,13 @@ import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.component.FuZhiBagContents;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModComponents;
+import icu.icuqalt10.panlingre.item.common.WeaponCaseItem;
 import icu.icuqalt10.panlingre.item.skill_trigger;
+import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import icu.icuqalt10.panlingre.world.inventory.FuZhiBagMenu;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;
@@ -23,6 +26,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
@@ -207,4 +211,29 @@ public class FuZhiBagItem extends Item implements ICurioItem, skill_trigger {
 
     private record SkillRef(FuZhiBagContents.Entry entry, skill_trigger trigger,
                             ItemStack skillStack, int nestedIndex) {}
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context,
+                                List<Component> tooltip, TooltipFlag flag) {
+
+        tooltip.add(Component.translatable("item.PanlingRE.lore.rare3"));
+        tooltip.add(Component.translatable("item.PanlingRE.lore.limit3"));
+
+        // 检测Shift键
+        if (SafeClientAccess.isShiftPressed()) {
+            tooltip.add(Component.translatable("item.PanlingRE.fu_zhi_bag.lore1"));
+            tooltip.add(Component.translatable("item.PanlingRE.fu_zhi_bag.lore2"));
+            tooltip.add(Component.translatable("item.PanlingRE.fu_zhi_bag.lore3"));
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.fu_zhi_bag.skill1.2"));
+            tooltip.add(Component.translatable("item.PanlingRE.fu_zhi_bag.skill2"));
+            tooltip.add(Component.translatable("item.PanlingRE.fu_zhi_bag.skill3"));
+            tooltip.add(Component.translatable("item.PanlingRE.fu_zhi_bag.skill4"));
+        } else {
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("item.PanlingRE.fu_zhi_bag.skill1.1"));
+        }
+
+        super.appendHoverText(stack, context, tooltip, flag);
+    }
 }
