@@ -16,16 +16,16 @@
       }
     },
     {
-      "slot": 2,
+      "slot": 3,
       "ingredient": {
-        "item": "panlingre:ys1_huo",
+        "item": "panlingre:ys1_tu",
         "count": 10
       }
     },
     {
-      "slot": 3,
+      "slot": 6,
       "ingredient": {
-        "item": "panlingre:ys1_tu",
+        "item": "panlingre:ys1_huo",
         "count": 10
       }
     }

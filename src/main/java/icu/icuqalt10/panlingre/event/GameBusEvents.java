@@ -47,8 +47,8 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.event.CurioChangeEvent;
+import net.neoforged.neoforge.common.util.TriState;
+import top.theillusivec4.curios.api.event.CurioCanEquipEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -135,6 +135,9 @@ public class GameBusEvents {
         if (event.getEntity().level().isClientSide || !(event.getEntity() instanceof Player player)) return;
 
         ItemStack newStack = event.getTo();
+        if ((event.getSlot() == EquipmentSlot.MAINHAND || event.getSlot() == EquipmentSlot.OFFHAND)
+                && ProfessionEquipmentGuard.isHandCarryExempt(newStack)) return;
+
         String messageKey = ProfessionEquipmentGuard.getRestrictionMessageKey(player, newStack);
         if (messageKey == null) return;
 
@@ -156,23 +159,15 @@ public class GameBusEvents {
         }
     }
     //饰品栏变更 职业限制 饰品栏
+    // Normal Curios insertion is rejected before the stack reaches the slot.
     @SubscribeEvent
-    public static void onCurioChange(CurioChangeEvent event) {
-        if (event.getEntity().level().isClientSide
-                || !(event.getEntity() instanceof Player player)) return;
+    public static void onCurioCanEquip(CurioCanEquipEvent event) {
+        if (!(event.getEntity() instanceof Player player)
+                || !ProfessionEquipmentGuard.isInvalidForProfession(player, event.getStack())) {
+            return;
+        }
 
-        ItemStack newStack = event.getTo();
-        String messageKey = ProfessionEquipmentGuard.getRestrictionMessageKey(player, newStack);
-        if (messageKey == null) return;
-
-        // CurioChangeEvent is dispatched on the server tick after Curios has completely restored
-        // every slot. Unlike CurioCanEquipEvent, it does not inspect a half-loaded profession slot.
-        ProfessionEquipmentGuard.applyRejectionFreeze(player);
-        player.displayClientMessage(Component.translatable(messageKey), false);
-        CuriosApi.getCuriosInventory(player).ifPresent(inventory ->
-                inventory.setEquippedCurio(
-                        event.getIdentifier(), event.getSlotIndex(), ItemStack.EMPTY));
-        player.drop(newStack.copy(), true);
+        event.setEquipResult(TriState.FALSE);
     }
 
     //玩家tick

@@ -1,4 +1,4 @@
-package icu.icuqalt10.panlingre.item.other;
+package icu.icuqalt10.panlingre.item.common;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;

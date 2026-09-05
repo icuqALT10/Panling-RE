@@ -3,8 +3,7 @@
   "package": "icu.icuqalt10.panlingre.mixin.compat.beyonddimensions",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "NetMagnetItemMixin",
-    "NetMagnetMenuMixin"
+    "DisabledNetMagnetItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -194,7 +194,7 @@
 		{
 			dependencies: [
 				"2335B90EFC2A6A8B"
-				"0A9BF0CDC59E7492"
+				"7484CF60E2E2A655"
 			]
 			dependency_requirement: "one_completed"
 			id: "14F10C154FB1BAF5"
@@ -206,11 +206,11 @@
 			}]
 			tasks: [{
 				id: "10549002017C244B"
-				item: { count: 1, id: "panlingre:qian_jin_suo" }
+				item: { count: 1, id: "panlingre:fu_zhi_bao" }
 				type: "item"
 			}]
 			x: 1.5d
-			y: -7.0d
+			y: -9.5d
 		}
 		{
 			dependencies: [
@@ -269,7 +269,7 @@
 			}]
 			tasks: [{
 				id: "32D4F2B8D5815762"
-				item: { count: 1, id: "panlingre:kong_ming_shi" }
+				item: { count: 1, id: "panlingre:na_wu_ci_shi" }
 				type: "item"
 			}]
 			x: 0.0d
@@ -341,6 +341,27 @@
 			}]
 			x: 6.0d
 			y: 11.5d
+		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"0FA47ADC1471F1A0"
+			]
+			dependency_requirement: "one_completed"
+			id: "37F8108949C9150F"
+			optional: true
+			rewards: [{
+				id: "5F0BC5BD5F79C80E"
+				type: "xp"
+				xp: 10
+			}]
+			tasks: [{
+				id: "72DEE813D32C516C"
+				item: { count: 1, id: "panlingre:wu_qi_xia" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: -17.0d
 		}
 	]
 }

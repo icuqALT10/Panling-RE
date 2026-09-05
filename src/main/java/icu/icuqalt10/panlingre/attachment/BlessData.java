@@ -3,7 +3,7 @@ package icu.icuqalt10.panlingre.attachment;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import icu.icuqalt10.panlingre.init.ModAttachments;
-import icu.icuqalt10.panlingre.item.other.bless_shengshou;
+import icu.icuqalt10.panlingre.item.common.bless_shengshou;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;

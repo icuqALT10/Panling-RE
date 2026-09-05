@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.skill;
 
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.item.fuzhi.FuZhiBagItem;
+import icu.icuqalt10.panlingre.item.fuzhi.FuZhiItem;
 import icu.icuqalt10.panlingre.item.common.WeaponCaseItem;
 import icu.icuqalt10.panlingre.item.skill_trigger;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -66,7 +67,8 @@ public class ClientSkillState {
             addSkillsFromStack(player.getMainHandItem());
         }
 
-        // 恢复上次选中
+        // 恢复上次选中。如果该技能只是暂时不可用，保留 nameKey，
+        // 这样玩家重新换回对应武器时会自动恢复原选中技能。
         selectedIndex = -1;
         if (!lastSelectedNameKey.isEmpty()) {
             for (int i = 0; i < availableSkills.size(); i++) {
@@ -76,15 +78,17 @@ public class ClientSkillState {
                 }
             }
         }
-        // 没找到 → 默认第一个
-        if (selectedIndex == -1 && !availableSkills.isEmpty()) {
+        // 只有尚未选过任何技能时才初始化为第一个。
+        if (lastSelectedNameKey.isEmpty() && !availableSkills.isEmpty()) {
             selectedIndex = 0;
             lastSelectedNameKey = availableSkills.get(0).data().name();
         }
     }
 
     private static void addSkillsFromStack(ItemStack stack) {
-        if (stack.isEmpty()) return;
+        // Individual talismans are right-click consumables, not independent skill sources.
+        // A FuZhiBagItem exposes its stored talismans through its own skill_trigger methods.
+        if (stack.isEmpty() || stack.getItem() instanceof FuZhiItem) return;
         if (stack.getItem() instanceof skill_trigger st) {
             ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
             int count = st.getSkillCount(stack);
@@ -114,6 +118,19 @@ public class ClientSkillState {
             return availableSkills.get(selectedIndex);
         return null;
     }
+
+    /**
+     * 返回当前选中技能；原选中技能已消失时，才在玩家主动释放的这一刻
+     * 改选第一个可用技能。没有可用技能时保留原记忆。
+     */
+    public static SkillSlot getSkillForActivation() {
+        SkillSlot selected = getSelectedSkill();
+        if (selected != null || availableSkills.isEmpty()) return selected;
+
+        selectSkill(0);
+        return availableSkills.get(0);
+    }
+
     public static void selectSkill(int index) {
         selectedIndex = index;
         if (index >= 0 && index < availableSkills.size())

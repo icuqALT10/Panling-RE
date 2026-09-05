@@ -1,6 +1,8 @@
 package icu.icuqalt10.panlingre.player;
 
 import icu.icuqalt10.panlingre.event.GameBusEvents;
+import icu.icuqalt10.panlingre.attachment.ZhiyeData;
+import icu.icuqalt10.panlingre.attachment.ZhiyeData.Profession;
 import icu.icuqalt10.panlingre.init.ModEffects;
 import icu.icuqalt10.panlingre.item.common.WeaponCaseItem;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -20,6 +22,11 @@ public final class ProfessionEquipmentGuard {
         return getRestrictionMessageKey(player, stack) != null;
     }
 
+    /** Weapon cases may be carried and lent regardless of the stored weapons' profession. */
+    public static boolean isHandCarryExempt(ItemStack stack) {
+        return stack.getItem() instanceof WeaponCaseItem;
+    }
+
     public static @Nullable String getRestrictionMessageKey(Player player, ItemStack stack) {
         if (stack.isEmpty()) return null;
 
@@ -30,17 +37,19 @@ public final class ProfessionEquipmentGuard {
         }
 
         if (stack.is(GameBusEvents.WARRIOR_TAG)
-                && !check.zhiye_check(player, "panlingre:warrior")) return "zhiye.cant_use.0";
+                && !ZhiyeData.has(player, Profession.WARRIOR)) return "zhiye.cant_use.0";
         if (stack.is(GameBusEvents.ARCHER_TAG)
-                && !check.zhiye_check(player, "panlingre:archer")) return "zhiye.cant_use.1";
+                && !ZhiyeData.has(player, Profession.ARCHER)) return "zhiye.cant_use.1";
         if (stack.is(GameBusEvents.WARLOCK_TAG)
-                && !check.zhiye_check(player, "panlingre:warlock")) return "zhiye.cant_use.2";
+                && !ZhiyeData.has(player, Profession.WARLOCK)) return "zhiye.cant_use.2";
         return null;
     }
 
     public static boolean hasInvalidEquippedItem(Player player) {
-        if (isInvalidForProfession(player, player.getMainHandItem())
-                || isInvalidForProfession(player, player.getOffhandItem())) {
+        ItemStack mainHand = player.getMainHandItem();
+        ItemStack offhand = player.getOffhandItem();
+        if ((!isHandCarryExempt(mainHand) && isInvalidForProfession(player, mainHand))
+                || (!isHandCarryExempt(offhand) && isInvalidForProfession(player, offhand))) {
             return true;
         }
 

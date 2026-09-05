@@ -73,6 +73,9 @@
   "zhiye.cant_use.0": "§c职业不符：该装备仅限§6战士§c使用！",
   "zhiye.cant_use.1": "§c职业不符：该装备仅限§6弓箭手§c使用！",
   "zhiye.cant_use.2": "§c职业不符：该装备仅限§6炼丹师§c使用！",
+  "command.panlingre.zhiye.set": "§aProfession permission %s set to %s",
+  "command.panlingre.zhiye.query": "§aProfession permission %s is %s",
+  "command.panlingre.zhiye.player_only": "§cThis command can only be used by a player",
 
   "itemGroup.PanlingRE.item_tab.other": "盘灵：RE 其他物品",
   "itemGroup.PanlingRE.item_tab.weapon": "盘灵：RE 手持物",
@@ -610,12 +613,14 @@
   "item.PanlingRE.ye_ming_zhu.skill1": "§a「夜明」",
   "item.PanlingRE.ye_ming_zhu.skill2": "§f获得§9<夜视>§f效果",
 
-  "item.panlingre.net_magnet_item": "§9网络磁铁",
-  "item.PanlingRE.net_magnet_item.lore1": "§7§o能够吸取附近物品",
-  "item.PanlingRE.net_magnet_item.lore2": "§7§o并将物品置于网络中的奇物",
-  "item.PanlingRE.net_magnet_item.skill1": "§f于网络控制器与网络绑定后激活",
-  "item.PanlingRE.net_magnet_item.skill2": "§f可手持右键对其进行设置",
-  "item.PanlingRE.net_magnet_item.skill3": "§f放入饰品栏后生效",
+  "item.panlingre.na_wu_ci_shi": "§9纳物磁石",
+  "item.PanlingRE.na_wu_ci_shi.lore1": "§7§o能够吸引物品的奇物",
+  "item.PanlingRE.na_wu_ci_shi.skill1": "§f固定吸取十五格内的物品与经验",
+  "item.PanlingRE.na_wu_ci_shi.skill2": "§f右键切换背包或维度网络模式",
+  "item.PanlingRE.na_wu_ci_shi.skill3": "§f潜行右键绑定或解绑当前主维度网络",
+  "item.PanlingRE.na_wu_ci_shi.skill4": "§f仅放入法宝栏后生效",
+  "item.PanlingRE.na_wu_ci_shi.tip1": "§f当前模式: §a吸入网络",
+  "item.PanlingRE.na_wu_ci_shi.tip2": "§f当前模式: §a吸入背包",
 
   "item.panlingre.kong_ming_shi": "§9空明石",
   "item.PanlingRE.kong_ming_shi.lore1": "§7§o眼眸一样的石头",
@@ -1158,5 +1163,14 @@
   "command.panlingre.byd.off":"§c已关闭超越维度网络仓库访问，并关闭了 %s 个正在使用的仓库界面",
   "command.panlingre.byd.query.on":"超越维度网络仓库访问状态：§a开启",
   "command.panlingre.byd.query.off":"超越维度网络仓库访问状态：§c关闭",
-  "command.panlingre.byd.blocked":"§c当前禁止打开维度网络仓库"
+  "command.panlingre.byd.blocked":"§c当前禁止打开维度网络仓库",
+
+  "item.panlingre.na_wu_ci_shi.mode.inventory":"§a纳物磁石已切换为背包模式",
+  "item.panlingre.na_wu_ci_shi.mode.network":"§b纳物磁石已切换为网络模式",
+  "item.panlingre.na_wu_ci_shi.bound":"§a纳物磁石已绑定维度网络 #%s",
+  "item.panlingre.na_wu_ci_shi.unbound":"§e纳物磁石已解除维度网络 #%s 的绑定",
+  "item.panlingre.na_wu_ci_shi.no_byd":"§c未安装超越维度，无法绑定维度网络",
+  "item.panlingre.na_wu_ci_shi.no_network":"§c你当前没有可绑定的主维度网络",
+  "item.panlingre.na_wu_ci_shi.tooltip.bound":"已绑定网络：#%s",
+  "item.panlingre.na_wu_ci_shi.tooltip.unbound":"未绑定维度网络"
 }

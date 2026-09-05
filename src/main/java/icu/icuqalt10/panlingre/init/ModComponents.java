@@ -72,6 +72,24 @@ public class ModComponents {
                             .build()
             );
 
+    /** false = collect into the player inventory, true = collect into a bound BeyondDimensions network. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> NA_WU_CI_SHI_NETWORK_MODE =
+            COMPONENTS.register("na_wu_ci_shi_network_mode", () ->
+                    DataComponentType.<Boolean>builder()
+                            .persistent(Codec.BOOL)
+                            .networkSynchronized(ByteBufCodecs.BOOL)
+                            .build()
+            );
+
+    /** BeyondDimensions network id, or -1 when the magnet is unbound. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> NA_WU_CI_SHI_NET_ID =
+            COMPONENTS.register("na_wu_ci_shi_net_id", () ->
+                    DataComponentType.<Integer>builder()
+                            .persistent(Codec.INT)
+                            .networkSynchronized(ByteBufCodecs.VAR_INT)
+                            .build()
+            );
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<RightClickComponent>> RIGHT_CLICK =
             COMPONENTS.register("right_click", () ->
                     DataComponentType.<RightClickComponent>builder()

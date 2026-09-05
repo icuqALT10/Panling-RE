@@ -19,6 +19,6 @@ execute if function plre:check/curios/race/zhan run advancement grant @s only pl
 give @s panlingre:loot_key[panlingre:key_type="golden",panlingre:key_id="sheng_shan"]
 execute unless score .system instance_model matches 1 run return 1
 
-execute if function plre:check/curios/zhiye/warrior unless items entity @s container.* panlingre:ding_hai_shen_zhen run return run function plre:instances/pangu/reward/warrior
-execute if function plre:check/curios/zhiye/archer unless items entity @s container.* panlingre:zhu_ri run return run function plre:instances/pangu/reward/archer
-execute if function plre:check/curios/zhiye/warlock unless items entity @s container.* panlingre:hun_yuan_shen_din unless function plre:check/curios/ldl/hun_yuan_shen_din run return run function plre:instances/pangu/reward/warlock
+execute if function plre:check/zhiye/warrior unless items entity @s container.* panlingre:ding_hai_shen_zhen run return run function plre:instances/pangu/reward/warrior
+execute if function plre:check/zhiye/archer unless items entity @s container.* panlingre:zhu_ri run return run function plre:instances/pangu/reward/archer
+execute if function plre:check/zhiye/warlock unless items entity @s container.* panlingre:hun_yuan_shen_din unless function plre:check/curios/ldl/hun_yuan_shen_din run return run function plre:instances/pangu/reward/warlock

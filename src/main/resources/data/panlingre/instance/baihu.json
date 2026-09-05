@@ -8,7 +8,7 @@
 
   "spacing": 512,
 
-  "prewarm_slots": 5,
+  "prewarm_slots": 20,
   "arena_version": 1,
 
   "success": "plre:instances/baihu/success",

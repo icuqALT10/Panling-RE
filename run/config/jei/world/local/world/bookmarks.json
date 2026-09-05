@@ -1,3 +1,4 @@
 [
-  {"version":2}
+  {"version":2},
+  {"ingredient":{"id":"panlingre:na_wu_ci_shi"},"type":"item_stack","bookmarkType":"INGREDIENT"}
 ]

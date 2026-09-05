@@ -166,6 +166,7 @@ public class ModTabs {
                         output.accept(ModItems.ye_ming_zhu.get());
                         output.accept(ModItems.shen_su_fu.get());
                         output.accept(ModItems.ling_shi.get());
+                        output.accept(ModItems.na_wu_ci_shi.get());
                         output.accept(ModItems.wu_qi_xia.get());
 
                         output.accept(ModItems.tao_mu_jian.get());

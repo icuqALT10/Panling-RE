@@ -1,6 +1,10 @@
 effect give @s instant_health 1 20
 effect give @s saturation 1 20
 
+plre zhiye archer off
+plre zhiye warlock off
+plre zhiye warrior off
+
 curios replace ldl 0 @s with air
 curios replace zhiye 0 @s with air
 curios set zhiye @s 0

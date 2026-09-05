@@ -95,7 +95,7 @@ class InputHandler {
         if (SkillWheelOverlay.INSTANCE.active) return;
 
         while (ModKeyBindings.SKILL_ACTIVATE.consumeClick()) {
-            activateSkill(ClientSkillState.getSelectedSkill());
+            activateSkill(ClientSkillState.getSkillForActivation());
         }
 
         for (int i = 0; i < ModKeyBindings.SKILL_SHORTCUTS.size(); i++) {

@@ -1,11 +1,11 @@
 package icu.icuqalt10.panlingre.item.common;
 
 import icu.icuqalt10.panlingre.attachment.LingQiData;
+import icu.icuqalt10.panlingre.attachment.ZhiyeData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.component.WeaponCaseContents;
 import icu.icuqalt10.panlingre.init.ModComponents;
 import icu.icuqalt10.panlingre.item.skill_trigger;
-import icu.icuqalt10.panlingre.player.check;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import icu.icuqalt10.panlingre.world.inventory.WeaponCaseMenu;
 import net.minecraft.ChatFormatting;
@@ -237,22 +237,22 @@ public class WeaponCaseItem extends Item implements ICurioItem, skill_trigger {
     }
 
     private enum Profession {
-        WARRIOR("panlingre:warrior", "item.PanlingRE.lore.limit0", "zhiye.cant_use.0"),
-        ARCHER("panlingre:archer", "item.PanlingRE.lore.limit1", "zhiye.cant_use.1"),
-        WARLOCK("panlingre:warlock", "item.PanlingRE.lore.limit2", "zhiye.cant_use.2");
+        WARRIOR(ZhiyeData.Profession.WARRIOR, "item.PanlingRE.lore.limit0", "zhiye.cant_use.0"),
+        ARCHER(ZhiyeData.Profession.ARCHER, "item.PanlingRE.lore.limit1", "zhiye.cant_use.1"),
+        WARLOCK(ZhiyeData.Profession.WARLOCK, "item.PanlingRE.lore.limit2", "zhiye.cant_use.2");
 
-        private final String itemId;
+        private final ZhiyeData.Profession profession;
         private final String limitLoreKey;
         private final String cantUseMessageKey;
 
-        Profession(String itemId, String limitLoreKey, String cantUseMessageKey) {
-            this.itemId = itemId;
+        Profession(ZhiyeData.Profession profession, String limitLoreKey, String cantUseMessageKey) {
+            this.profession = profession;
             this.limitLoreKey = limitLoreKey;
             this.cantUseMessageKey = cantUseMessageKey;
         }
 
         boolean matches(Player player) {
-            return check.zhiye_check(player, itemId);
+            return ZhiyeData.has(player, profession);
         }
     }
 

@@ -6,6 +6,7 @@ import icu.icuqalt10.panlingre.attachment.BaFangYiData;
 import icu.icuqalt10.panlingre.attachment.BlessData;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attachment.YuansuData;
+import icu.icuqalt10.panlingre.attachment.ZhiyeData;
 import icu.icuqalt10.panlingre.attachment.WarriorShieldData;
 import icu.icuqalt10.panlingre.attachment.ArcherQuiverData;
 import icu.icuqalt10.panlingre.task.TaskGuideState;
@@ -25,6 +26,15 @@ public class ModAttachments {
             () -> AttachmentType.builder(() -> new LingQiData(20.0f))
                     .serialize(Codec.FLOAT.xmap(LingQiData::new, LingQiData::getCurrent))
                     .copyOnDeath()
+                    .build()
+    );
+
+    public static final Supplier<AttachmentType<ZhiyeData>> ZHIYE = ATTACHMENT_TYPES.register(
+            "zhiye",
+            () -> AttachmentType.builder(ZhiyeData::new)
+                    .serialize(ZhiyeData.CODEC)
+                    .copyOnDeath()
+                    .sync((holder, player) -> holder == player, ZhiyeData.STREAM_CODEC)
                     .build()
     );
 

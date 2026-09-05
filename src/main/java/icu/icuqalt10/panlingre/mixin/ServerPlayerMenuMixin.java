@@ -27,7 +27,7 @@ public abstract class ServerPlayerMenuMixin {
             CallbackInfoReturnable<OptionalInt> cir
     ) {
         ServerPlayer player = (ServerPlayer) (Object) this;
-        if (!BeyondDimensionsAccess.shouldBlock(player.getServer(), provider)) return;
+        if (!BeyondDimensionsAccess.shouldBlock(player, provider)) return;
 
         player.displayClientMessage(Component.translatable("command.panlingre.byd.blocked"), true);
         cir.setReturnValue(OptionalInt.empty());

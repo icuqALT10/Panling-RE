@@ -2,7 +2,7 @@ package icu.icuqalt10.panlingre.block.ldl;
 
 import com.mojang.serialization.MapCodec;
 import icu.icuqalt10.panlingre.init.ModBlocks;
-import icu.icuqalt10.panlingre.player.check;
+import icu.icuqalt10.panlingre.attachment.ZhiyeData;
 import icu.icuqalt10.panlingre.world.inventory.ldlMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -110,7 +110,8 @@ public class ldl extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer && check.zhiye_check(player, "panlingre:warlock")) {
+        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer
+                && ZhiyeData.has(player, ZhiyeData.Profession.WARLOCK)) {
             serverPlayer.openMenu(new SimpleMenuProvider((id, inv, p) ->
                             new ldlMenu(id, inv, ContainerLevelAccess.create(level, pos)),
                             Component.translatable("block.panlingre.ldl")),

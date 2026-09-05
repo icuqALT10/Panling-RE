@@ -24,10 +24,6 @@ public class check {
         }).orElse(false);
     }
 
-    public static boolean zhiye_check(Player player, String targetId) {
-        return hasItemInCurioSlot(player, "zhiye", targetId);
-    }
-
     public static boolean race_check(Player player, String targetId) {
         return hasItemInCurioSlot(player, "race", targetId);
     }

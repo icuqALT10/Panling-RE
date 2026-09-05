@@ -2,8 +2,8 @@ package icu.icuqalt10.panlingre.init;
 
 import icu.icuqalt10.panlingre.item.archer.*;
 import icu.icuqalt10.panlingre.item.archer.armor.*;
+import icu.icuqalt10.panlingre.item.common.*;
 import icu.icuqalt10.panlingre.item.common.armor.*;
-import icu.icuqalt10.panlingre.item.common.WeaponCaseItem;
 import icu.icuqalt10.panlingre.item.fuzhi.*;
 import icu.icuqalt10.panlingre.item.other.LootKeyItem;
 import icu.icuqalt10.panlingre.item.other.*;
@@ -38,9 +38,10 @@ public class ModItems {
 
     public static final DeferredItem<Item> qing_ying_feather = ITEMS.register("qing_ying_feather", qing_ying_feather::new);
     public static final DeferredItem<Item> shen_su_feather = ITEMS.register("shen_su_feather", shen_su_feather::new);
-    public static final DeferredItem<Item> ye_ming_zhu = ITEMS.register("ye_ming_zhu", ye_ming_zhu::new);
-    public static final DeferredItem<Item> shen_su_fu = ITEMS.register("shen_su_fu", shen_su_fu::new);
-    public static final DeferredItem<Item> ling_shi = ITEMS.register("ling_shi", ling_shi::new);
+    public static final DeferredItem<Item> ye_ming_zhu = ITEMS.register("ye_ming_zhu", icu.icuqalt10.panlingre.item.common.ye_ming_zhu::new);
+    public static final DeferredItem<Item> shen_su_fu = ITEMS.register("shen_su_fu", icu.icuqalt10.panlingre.item.common.shen_su_fu::new);
+    public static final DeferredItem<Item> ling_shi = ITEMS.register("ling_shi", icu.icuqalt10.panlingre.item.common.ling_shi::new);
+    public static final DeferredItem<Item> na_wu_ci_shi = ITEMS.register("na_wu_ci_shi", NaWuCiItem::new);
 
     public static final DeferredItem<BlockItem> ldl = ITEMS.register("ldl",
             () -> new BlockItem(ModBlocks.ldl.get(), new Item.Properties()));

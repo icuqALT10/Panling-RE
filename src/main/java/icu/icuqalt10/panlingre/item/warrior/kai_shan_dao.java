@@ -108,7 +108,7 @@ public class kai_shan_dao extends Item implements skill_trigger {
 
     @Override
     public String getSkillNameKey(int skillIndex) {
-        return "item.PanlingRE.chi_tong_jian.skill1.2";
+        return "item.PanlingRE.kai_shan_dao.skill1.2";
     }
 
     @Override

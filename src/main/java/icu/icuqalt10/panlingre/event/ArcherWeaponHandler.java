@@ -1,8 +1,8 @@
 package icu.icuqalt10.panlingre.event;
 
 import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.attachment.ZhiyeData;
 import icu.icuqalt10.panlingre.init.ModAttributes;
-import icu.icuqalt10.panlingre.init.ModItems;
 import icu.icuqalt10.panlingre.item.archer.other.tian_xing_jian;
 import icu.icuqalt10.panlingre.network.TianXingTargetPayload;
 import net.minecraft.core.particles.ParticleTypes;
@@ -25,7 +25,6 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingGetProjectileEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -116,10 +115,9 @@ public class ArcherWeaponHandler {
     @SubscribeEvent
     public static void onGetProjectile(LivingGetProjectileEvent event) {
         if (event.getEntity() instanceof Player player) {
-            CuriosApi.getCuriosInventory(player)
-                    .flatMap(handler -> handler.findFirstCurio(stack -> stack.is(ModItems.archer.get()))).ifPresent(result -> {
+            if (ZhiyeData.has(player, ZhiyeData.Profession.ARCHER)) {
                 event.setProjectileItemStack(new ItemStack(Items.ARROW));
-            });
+            }
         }
     }
 

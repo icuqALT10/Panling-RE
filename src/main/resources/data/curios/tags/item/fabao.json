@@ -1,10 +1,7 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "beyonddimensions:net_magnet_item",
-      "required": false
-    },
+    "panlingre:na_wu_ci_shi",
     "panlingre:fu_zhi_bao",
     "panlingre:wu_qi_xia",
 

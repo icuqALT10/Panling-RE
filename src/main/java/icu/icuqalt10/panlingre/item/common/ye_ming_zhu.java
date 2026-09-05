@@ -1,14 +1,9 @@
-package icu.icuqalt10.panlingre.item.other;
+package icu.icuqalt10.panlingre.item.common;
 
-import icu.icuqalt10.panlingre.PanlingRE;
-import icu.icuqalt10.panlingre.init.ModAttributes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;

@@ -12,6 +12,10 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 public final class BeyondDimensionsAccess {
     public static final String MOD_ID = "beyonddimensions";
 
@@ -27,28 +31,25 @@ public final class BeyondDimensionsAccess {
         return ModList.get().isLoaded(MOD_ID);
     }
 
-    public static boolean isEnabled(MinecraftServer server) {
-        return !isInstalled() || data(server).enabled;
+    public static boolean isEnabled(ServerPlayer player) {
+        return !isInstalled() || !data(player.getServer()).disabledPlayers.contains(player.getUUID());
     }
 
-    public static void setEnabled(MinecraftServer server, boolean enabled) {
+    public static void setEnabled(ServerPlayer player, boolean enabled) {
         if (!isInstalled()) return;
-        data(server).setEnabled(enabled);
+        data(player.getServer()).setEnabled(player.getUUID(), enabled);
     }
 
-    public static boolean shouldBlock(MinecraftServer server, @Nullable MenuProvider provider) {
-        return isInstalled() && !data(server).enabled && isStorageMenuProvider(provider);
+    public static boolean shouldBlock(ServerPlayer player, @Nullable MenuProvider provider) {
+        return isInstalled()
+                && data(player.getServer()).disabledPlayers.contains(player.getUUID())
+                && isStorageMenuProvider(provider);
     }
 
-    public static int closeOpenStorageMenus(MinecraftServer server) {
-        int closed = 0;
-        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-            if (isStorageMenu(player.containerMenu)) {
-                player.closeContainer();
-                closed++;
-            }
-        }
-        return closed;
+    public static int closeOpenStorageMenu(ServerPlayer player) {
+        if (!isStorageMenu(player.containerMenu)) return 0;
+        player.closeContainer();
+        return 1;
     }
 
     private static boolean isStorageMenuProvider(@Nullable MenuProvider provider) {
@@ -72,27 +73,36 @@ public final class BeyondDimensionsAccess {
     }
 
     private static final class AccessData extends SavedData {
-        private static final String ENABLED_TAG = "Enabled";
+        private static final String DISABLED_PLAYERS_TAG = "DisabledPlayers";
         private static final Factory<AccessData> FACTORY = new Factory<>(AccessData::new, AccessData::load);
 
-        private boolean enabled = true;
+        private final Set<UUID> disabledPlayers = new HashSet<>();
 
-        private void setEnabled(boolean enabled) {
-            if (this.enabled == enabled) return;
-            this.enabled = enabled;
-            setDirty();
+        private void setEnabled(UUID playerId, boolean enabled) {
+            boolean changed = enabled ? disabledPlayers.remove(playerId) : disabledPlayers.add(playerId);
+            if (changed) setDirty();
         }
 
         @Override
         public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
-            tag.putBoolean(ENABLED_TAG, enabled);
+            CompoundTag disabledTag = new CompoundTag();
+            for (UUID playerId : disabledPlayers) {
+                disabledTag.putBoolean(playerId.toString(), true);
+            }
+            tag.put(DISABLED_PLAYERS_TAG, disabledTag);
             return tag;
         }
 
         private static AccessData load(CompoundTag tag, HolderLookup.Provider registries) {
             AccessData data = new AccessData();
-            if (tag.contains(ENABLED_TAG)) {
-                data.enabled = tag.getBoolean(ENABLED_TAG);
+            if (tag.contains(DISABLED_PLAYERS_TAG, CompoundTag.TAG_COMPOUND)) {
+                CompoundTag disabledTag = tag.getCompound(DISABLED_PLAYERS_TAG);
+                for (String key : disabledTag.getAllKeys()) {
+                    try {
+                        if (disabledTag.getBoolean(key)) data.disabledPlayers.add(UUID.fromString(key));
+                    } catch (IllegalArgumentException ignored) {
+                    }
+                }
             }
             return data;
         }

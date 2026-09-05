@@ -1,6 +1,6 @@
 package icu.icuqalt10.panlingre.block.ldl;
 
-import icu.icuqalt10.panlingre.player.check;
+import icu.icuqalt10.panlingre.attachment.ZhiyeData;
 import icu.icuqalt10.panlingre.world.inventory.ldlMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -22,7 +22,8 @@ public class ldlProxyBlock extends Block {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer && check.zhiye_check(player, "panlingre:warlock")) {
+        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer
+                && ZhiyeData.has(player, ZhiyeData.Profession.WARLOCK)) {
             BlockPos masterPos = null;
             for (BlockPos neighborPos : BlockPos.betweenClosed(pos.offset(-2, -2, -2), pos.offset(2, 2, 2))) {
                 if (level.getBlockState(neighborPos).getBlock() instanceof ldl) {

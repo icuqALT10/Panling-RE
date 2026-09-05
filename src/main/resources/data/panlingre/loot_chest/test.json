@@ -4,7 +4,7 @@
             "id":"panlingre:ding_hai_shen_zhen",
             "count":1
         },
-        "command":"plre curios @s zhiye panlingre:warrior",
+        "command":"plre zhiye warrior on",
         "weight":10,
         "special_item":true
     },
@@ -13,7 +13,7 @@
             "id":"panlingre:zhu_ri",
             "count":1
         },
-        "command":"plre curios @s zhiye panlingre:archer",
+        "command":"plre zhiye archer on",
         "weight":10,
         "special_item":true
     },
@@ -22,7 +22,7 @@
             "id":"panlingre:hun_yuan_shen_din",
             "count":1
         },
-        "command":"plre curios @s zhiye panlingre:warlock",
+        "command":"plre zhiye warlock on",
         "weight":10,
         "special_item":true
     },

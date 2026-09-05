@@ -308,7 +308,7 @@
 		"{image:ftbquests:textures/qusets/guide/material/bai_yu_ore.png width:150 height:100 align:center}"
 	]
 	quest.14F0E2064717E50C.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
-	quest.14F10C154FB1BAF5.quest_desc: ["[ \"于\", { \"text\": \"王员外\",\"color\":\"green\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"393280750D2786AC\" } }, \"处获取\" ]"]
+	quest.14F10C154FB1BAF5.quest_desc: ["[ \"于\", { \"text\": \"篆元上仙\",\"color\":\"green\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"0D3F450574E4C414\" } }, \"处获取\" ]"]
 	quest.14F98F81C8919DCC.quest_desc: ["与&a&l老战士&r交谈"]
 	quest.14F98F81C8919DCC.title: "老战士的过往"
 	quest.14FCCAA210EC8C32.quest_desc: ["[ {text:\"以下装备可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
@@ -705,6 +705,7 @@
 	quest.37E468A1CDA537DF.title: "钱庄"
 	quest.37EBC1428E5DC2BF.quest_desc: ["[ {text:\"以下装备可在\",color:white}, { \"text\": \"铁匠铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4584BA6F1C55F368\" } },{text:\"的锻造室使用内设的锻造台锻造\",color:white} ]"]
 	quest.37EBC1428E5DC2BF.title: "炼丹师-防具"
+	quest.37F8108949C9150F.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
 	quest.3858CB4075C27119.quest_desc: ["[ \"由\", { \"text\": \"朱砂(中级)\",\"color\":\"light_purple\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6B933D64C27B676F\" } }, \"与\",{ \"text\": \"五阶原核碎片\",\"color\":\"yellow\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"7867910D74A14D06\" } },\"合成\" ]"]
 	quest.38AADE8974BE910D.quest_desc: [
 		"&a往虎爪山脉西部的路的尽头&r"
@@ -1285,7 +1286,7 @@
 	quest.73E55DA276D7E39E.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
 	quest.7435BBB109DC923A.quest_subtitle: "向&a&l小飞&r询问接下来的动向"
 	quest.7435BBB109DC923A.title: "新手上路"
-	quest.7484CF60E2E2A655.quest_desc: ["[ \"于\", { \"text\": \"篆元上仙\",\"color\":\"green\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"0D3F450574E4C414\" } }, \"处获取\" ]"]
+	quest.7484CF60E2E2A655.quest_desc: ["[ \"于\", { \"text\": \"王员外\",\"color\":\"green\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"393280750D2786AC\" } }, \"处获取\" ]"]
 	quest.754BFC5279074F2A.quest_desc: [
 		"&a通往虎爪山脉的沿途&r"
 		""

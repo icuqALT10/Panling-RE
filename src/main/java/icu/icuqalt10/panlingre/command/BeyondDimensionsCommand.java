@@ -1,12 +1,13 @@
 package icu.icuqalt10.panlingre.command;
 
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.compat.beyonddimensions.BeyondDimensionsAccess;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -33,10 +34,11 @@ public final class BeyondDimensionsCommand {
         );
     }
 
-    private static int set(CommandContext<CommandSourceStack> context, boolean enabled) {
-        MinecraftServer server = context.getSource().getServer();
-        BeyondDimensionsAccess.setEnabled(server, enabled);
-        int closedMenus = enabled ? 0 : BeyondDimensionsAccess.closeOpenStorageMenus(server);
+    private static int set(CommandContext<CommandSourceStack> context, boolean enabled)
+            throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
+        BeyondDimensionsAccess.setEnabled(player, enabled);
+        int closedMenus = enabled ? 0 : BeyondDimensionsAccess.closeOpenStorageMenu(player);
 
         String key = enabled
                 ? "command.panlingre.byd.on"
@@ -50,8 +52,9 @@ public final class BeyondDimensionsCommand {
         return 1;
     }
 
-    private static int query(CommandContext<CommandSourceStack> context) {
-        boolean enabled = BeyondDimensionsAccess.isEnabled(context.getSource().getServer());
+    private static int query(CommandContext<CommandSourceStack> context)
+            throws CommandSyntaxException {
+        boolean enabled = BeyondDimensionsAccess.isEnabled(context.getSource().getPlayerOrException());
         context.getSource().sendSuccess(
                 () -> Component.translatable("command.panlingre.byd.query." + (enabled ? "on" : "off")),
                 false

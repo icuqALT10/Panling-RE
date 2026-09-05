@@ -18,6 +18,8 @@ public abstract class OffhandSlotMixin {
         if (!(slot.container instanceof Inventory inventory)
                 || slot.getContainerSlot() != Inventory.SLOT_OFFHAND) return;
 
+        if (ProfessionEquipmentGuard.isHandCarryExempt(stack)) return;
+
         if (ProfessionEquipmentGuard.isInvalidForProfession(inventory.player, stack)) {
             cir.setReturnValue(false);
         }
