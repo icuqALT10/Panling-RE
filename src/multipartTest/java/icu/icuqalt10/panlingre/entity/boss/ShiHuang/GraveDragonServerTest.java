@@ -751,8 +751,8 @@ public final class GraveDragonServerTest {
     }
 
     /**
-     * 形态切换必须走过渡动画：空中 →（land）→ 地面 →（takeoff）→ 空中，而且重力开关在过渡
-     * 播完的那一刻才切，视觉与行为同步。
+     * 形态切换必须走过渡动画，而且**过渡播放期间就做垂直位移**：起飞播完刚好升到 10 格，
+     * 落地播完刚好回到地面。召唤出来是地面形态，并立刻做一次起飞判断。
      */
     @GameTest(template = "empty", timeoutTicks = 400)
     public static void formSwitchesThroughTransitionAnimations(GameTestHelper helper) {
@@ -762,30 +762,53 @@ public final class GraveDragonServerTest {
         dragon.setPos(helper.absoluteVec(new Vec3(2, 40, 2)));
         helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
         try {
-            helper.assertTrue(dragon.flying(), "墓龙初始应该是空中形态");
-            helper.assertTrue("idle_air".equals(dragon.animation()), "初始动画: " + dragon.animation());
-            helper.assertTrue(dragon.isNoGravity(), "空中形态应该无重力");
+            helper.assertTrue(!dragon.flying(), "墓龙召唤出来应该是地面形态");
+            helper.assertTrue("idle_ground".equals(dragon.animation()), "初始动画: " + dragon.animation());
+            helper.assertTrue(!dragon.isNoGravity(), "地面形态应该有重力");
 
-            dragon.scheduleFormSwitchIn(0);
+            // 召唤后应立刻判断起飞（这里头顶空旷，于是马上进起飞过渡）。
             dragon.tick();
-            helper.assertTrue("land".equals(dragon.animation()), "落地没有过渡动画: " + dragon.animation());
-            helper.assertTrue(dragon.flying(), "过渡期间不该提前切形态");
+            helper.assertTrue("takeoff".equals(dragon.animation()), "没有立刻判断起飞: " + dragon.animation());
+            helper.assertTrue(!dragon.flying(), "过渡期间不该提前切形态");
+            helper.assertTrue(dragon.isNoGravity(), "起飞过渡期间要临时关掉重力");
 
-            // gametest 里连续 tick() 不推进 level 时钟，所以直接回拨动画时间模拟过渡播完。
-            dragon.backdateAnimation(GraveDragonPose.duration("land") + 0.5);
+            double groundY = dragon.getY();
+            // 过渡中途：应已抬升一部分。
+            dragon.backdateAnimation(GraveDragonPose.duration("takeoff") * 0.5);
             dragon.tick();
-            helper.assertTrue(!dragon.flying(), "落地过渡结束后没进地面形态");
-            helper.assertTrue("idle_ground".equals(dragon.animation()), "地面动画: " + dragon.animation());
-            helper.assertTrue(!dragon.isNoGravity(), "地面形态不该无重力");
+            double halfway = dragon.getY() - groundY;
+            helper.assertTrue(halfway > 2.0 && halfway < 8.0, "起飞中途抬升应在 2~8 格，实际 " + halfway);
 
-            dragon.scheduleFormSwitchIn(0);
-            dragon.tick();
-            helper.assertTrue("takeoff".equals(dragon.animation()), "起飞没有过渡动画: " + dragon.animation());
+            // 过渡播完：进空中形态，刚好升到 10 格。
             dragon.backdateAnimation(GraveDragonPose.duration("takeoff") + 0.5);
             dragon.tick();
             helper.assertTrue(dragon.flying(), "起飞过渡结束后没进空中形态");
             helper.assertTrue("idle_air".equals(dragon.animation()), "空中动画: " + dragon.animation());
             helper.assertTrue(dragon.isNoGravity(), "空中形态应该无重力");
+            double airborneY = dragon.getY();
+            helper.assertTrue(Math.abs(airborneY - groundY - 10.0) < 0.2,
+                    "起飞结束应刚好升到 10 格，实际 " + (airborneY - groundY));
+
+            // 落地：同样在过渡期间下降，播完刚好到地面。
+            // 降落的目标是**实际探测到的地面**，落差取决于当前离地高度，所以断言用相对关系。
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            helper.assertTrue("land".equals(dragon.animation()), "落地没有过渡动画: " + dragon.animation());
+            double landFrom = dragon.getY();
+            dragon.backdateAnimation(GraveDragonPose.duration("land") * 0.5);
+            dragon.tick();
+            double midLandY = dragon.getY();
+            helper.assertTrue(midLandY < landFrom - 1.0,
+                    "落地过渡中途应该已经开始下降：" + landFrom + " -> " + midLandY);
+
+            dragon.backdateAnimation(GraveDragonPose.duration("land") + 0.5);
+            dragon.tick();
+            double landedY = dragon.getY();
+            helper.assertTrue(landedY < midLandY - 1.0,
+                    "落地结束时应该比中途更低：" + midLandY + " -> " + landedY);
+            helper.assertTrue(!dragon.flying(), "落地过渡结束后没进地面形态");
+            helper.assertTrue("idle_ground".equals(dragon.animation()), "地面动画: " + dragon.animation());
+            helper.assertTrue(!dragon.isNoGravity(), "地面形态不该无重力");
             helper.succeed();
         } finally {
             dragon.discard();
@@ -796,30 +819,22 @@ public final class GraveDragonServerTest {
     @GameTest(template = "empty", timeoutTicks = 400)
     public static void takeoffNeedsVerticalClearance(GameTestHelper helper) {
         var level = helper.getLevel();
+        Vec3 base = helper.absoluteVec(new Vec3(4, 40, 4));
+        // 天花板必须在实体加入世界**之前**放好：加入后世界会立刻 tick 一次，龙马上就会做
+        // 第一次起飞判断，那时再放就晚了。
+        BlockPos ceiling = BlockPos.containing(base).above(4);
+        level.setBlockAndUpdate(ceiling, Blocks.STONE.defaultBlockState());
+        helper.assertTrue(level.getBlockState(ceiling).is(Blocks.STONE), "天花板没有放上");
+
         var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
         dragon.setNoAi(true);
         dragon.setNoGravity(true);
         dragon.noPhysics = true;
-        Vec3 base = helper.absoluteVec(new Vec3(4, 40, 4));
         dragon.setPos(base);
         helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
         try {
-            // 先落到地面形态。
-            dragon.scheduleFormSwitchIn(0);
-            dragon.tick();
-            dragon.backdateAnimation(GraveDragonPose.duration("land") + 0.5);
-            // 落到地面形态后会恢复重力，位置会被拽偏；每步复位，保证天花板的位置有意义。
-            dragon.setPos(base);
-            dragon.tick();
-            helper.assertTrue(!dragon.flying(), "没有先落到地面形态");
+            helper.assertTrue(!dragon.flying(), "墓龙召唤出来应该是地面形态");
 
-            // 在头顶 4 格处盖一块天花板，垂直空间远小于 10 格。
-            BlockPos ceiling = BlockPos.containing(base).above(4);
-            level.setBlockAndUpdate(ceiling, Blocks.STONE.defaultBlockState());
-            helper.assertTrue(level.getBlockState(ceiling).is(Blocks.STONE), "天花板没有放上");
-
-            dragon.setPos(base);
-            dragon.scheduleFormSwitchIn(0);
             dragon.tick();
             helper.assertTrue(!dragon.flying(), "垂直空间不足却起飞了");
             helper.assertTrue("idle_ground".equals(dragon.animation()),

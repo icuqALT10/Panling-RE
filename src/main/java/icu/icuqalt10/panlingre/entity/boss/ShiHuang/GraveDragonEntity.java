@@ -90,6 +90,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /** 空中形态要求的最小离地高度，也是起飞前要检查的垂直净空（格）。 */
     private static final double FLIGHT_CLEARANCE = 10.0;
+    /** 降落时向下探测地面的最大距离（格）。 */
+    private static final double LANDING_PROBE = 160.0;
     /** 形态切换区间：1~3 分钟。 */
     private static final int FORM_MIN_TICKS = 20 * 60;
     private static final int FORM_RANDOM_TICKS = 20 * 120;
@@ -104,6 +106,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private long nextFormSwitchAt;
     /** 服务端：正在过渡到哪个形态（null = 没在过渡）。过渡动画播完才真正切换。 */
     private Form pendingForm;
+    /** 过渡动画期间的起止高度；位置每 tick 按动画进度插值，播完刚好到位。 */
+    private double transitionFromY;
+    private double transitionToY;
 
     /** 当前正在播放的动画名。 */
     public String animation() {
@@ -214,10 +219,13 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         long now = level().getGameTime();
 
         if (pendingForm != null) {
-            // 过渡动画播完才真正切形态，这样视觉与物理是同一时刻变的。
+            // 过渡动画**播放期间**就做垂直位移：按动画进度插值高度，播完的那一刻刚好到位。
+            applyTransitionLift();
             if (animationSeconds(0) >= GraveDragonPose.duration(animation())) {
                 Form target = pendingForm;
                 pendingForm = null;
+                // 收尾到精确高度，消掉插值残差。
+                setPos(getX(), transitionToY, getZ());
                 entityData.set(FORM, target == Form.AIR ? FORM_AIR : FORM_GROUND);
                 applyFormPhysics(target == Form.AIR);
                 playAnimation(target == Form.AIR ? "idle_air" : "idle_ground", true);
@@ -226,22 +234,58 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
             return;
         }
 
-        if (nextFormSwitchAt == 0) {
-            scheduleNextFormSwitch(now);
-            return;
-        }
         if (now < nextFormSwitchAt) return;
 
         if (form() == Form.AIR) {
             pendingForm = Form.GROUND;
+            beginVerticalTransition(false);
             playAnimation("land", true);
         } else if (hasTakeoffClearance()) {
             pendingForm = Form.AIR;
+            beginVerticalTransition(true);
             playAnimation("takeoff", true);
         } else {
             // 头顶空间放不下起飞过程：保持地面形态，过几秒再试（龙走到开阔地就能起飞）。
             nextFormSwitchAt = now + TAKEOFF_RETRY_TICKS;
         }
+    }
+
+    /**
+     * 记下过渡的起止高度，并临时关掉重力——否则插值抬升会和下落叠加。
+     * 过渡结束后由 {@link #applyFormPhysics} 决定最终的重力状态。
+     */
+    private void beginVerticalTransition(boolean ascending) {
+        this.transitionFromY = getY();
+        this.transitionToY = ascending ? getY() + FLIGHT_CLEARANCE : groundLevelBelow();
+        this.setNoGravity(true);
+    }
+
+    /** 按过渡动画的播放进度插值高度。 */
+    private void applyTransitionLift() {
+        double duration = GraveDragonPose.duration(animation());
+        double progress = duration <= 0 ? 1 : Mth.clamp(animationSeconds(0) / duration, 0, 1);
+        double y = Mth.lerp(progress, transitionFromY, transitionToY);
+        if (Math.abs(y - getY()) > 1.0E-6) setPos(getX(), y, getZ());
+    }
+
+    /**
+     * 从当前位置向下探测可落地的地面高度；探不到（虚空）就保持原位。
+     *
+     * <p>这里用 {@code setPos} 直接落位而不是走 {@code move()}：{@code move()} 的逐部件判定会在
+     * 身体刚碰到地面的那一刻取消整步，降落会永远卡在半空。起飞前已经检查过上方净空，
+     * 降落用的是实际探测到的地面，所以直接落位是安全的。
+     */
+    private double groundLevelBelow() {
+        Vec3 from = position();
+        Vec3 to = from.subtract(0, LANDING_PROBE, 0);
+        HitResult hit = level().clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        return hit.getType() == HitResult.Type.MISS ? getY() : hit.getLocation().y;
+    }
+
+    /** 墓龙是飞行生物：落地、以及过渡期间的程序化位移都不该造成摔落伤害。 */
+    @Override
+    public boolean causeFallDamage(float fallDistance, float multiplier, DamageSource source) {
+        return false;
     }
 
     private void scheduleNextFormSwitch(long now) {
@@ -546,10 +590,12 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         super(type, level);
         if (!partConfigLoaded) reloadPartConfig();
         if (!level.isClientSide) {
-            // 初始为空中形态：墓龙先在天空盘旋，1~3 分钟后才落地。
+            // 初始为地面形态（走地、idle_ground），并立刻安排一次起飞判断——也就是说召唤出来
+            // 只要头顶有空间就会马上起飞，而不是先傻站着。
             entityData.set(ANIMATION_START, level.getGameTime());
-            entityData.set(ANIMATION, "idle_air");
-            entityData.set(FORM, FORM_AIR);
+            entityData.set(ANIMATION, "idle_ground");
+            entityData.set(FORM, FORM_GROUND);
+            this.nextFormSwitchAt = level.getGameTime();
         }
         // The tiny root is only a locomotion anchor; OBB parts handle interaction.
         for (int i = 0; i < worldParts.length; i++) {
@@ -565,8 +611,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         this.refreshDimensions();
         this.noPhysics = false;
         this.setNoAi(false);
-        // 初始为空中形态，所以一开始就不受重力（飞行移动逻辑随后接管）。
-        this.setNoGravity(true);
+        // 初始是地面形态，先吃重力；起飞过渡开始时才会临时关掉。
+        this.setNoGravity(false);
     }
 
     @Override public boolean isMultipartEntity() { return true; }
