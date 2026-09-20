@@ -1076,24 +1076,20 @@ public final class GraveDragonServerTest {
      * 地面移动中转弯要播 turn_ground_left / turn_ground_right。
      * 空中暂时不接转向动画——turn_air_* 是留给后续攻击的（待机 → 转向目标 → 攻击）。
      */
+    /**
+     * 地面移动中转弯要播 turn_ground_left / turn_ground_right。
+     *
+     * <p>这条测试只验证**转向判定 → 动作选择**这一段，所以刻意把形态切换推到很远的未来：
+     * 之前靠"搭一个四面堵死的场地让净空判定失败"来保证它留在地面形态，那让测试与净空判定的
+     * 实现细节耦合在一起（净空一改，这里就跟着坏）。形态切换本身由
+     * {@code formSwitchesThroughTransitionAnimations} 与 {@code takeoffNeedsVerticalClearance} 覆盖。
+     */
     @GameTest(template = "empty", timeoutTicks = 400)
     public static void groundTurningPlaysTurnAnimations(GameTestHelper helper) {
         var level = helper.getLevel();
-        // 先拿真实的世界表面，再在它上面铺一块大平台：净空检查会沿身体轴在 ±18 格处采样，
-        // 只堵脚下那几格是堵不住的（龙有 40 多格长），平台必须把采样柱一起盖住。
         BlockPos probe = BlockPos.containing(helper.absoluteVec(new Vec3(4, 40, 4)));
         int surface = level.getHeight(
                 net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, probe.getX(), probe.getZ());
-        for (int dx = -40; dx <= 40; dx++) {
-            for (int dz = -40; dz <= 40; dz++) {
-                level.setBlockAndUpdate(new BlockPos(probe.getX() + dx, surface - 1, probe.getZ() + dz),
-                        Blocks.STONE.defaultBlockState());
-                for (int dy = 1; dy <= 6; dy++) {
-                    level.setBlockAndUpdate(new BlockPos(probe.getX() + dx, surface + dy, probe.getZ() + dz),
-                            Blocks.STONE.defaultBlockState());
-                }
-            }
-        }
         Vec3 base = new Vec3(probe.getX() + 0.5, surface, probe.getZ() + 0.5);
 
         var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
@@ -1103,8 +1099,9 @@ public final class GraveDragonServerTest {
         dragon.setPos(base);
         helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
         try {
+            dragon.scheduleFormSwitchIn(20 * 600); // 本测试期间不切形态
             dragon.tick();
-            helper.assertTrue(!dragon.flying(), "被天花板挡着却起飞了");
+            helper.assertTrue(!dragon.flying(), "本测试要留在地面形态");
 
             // 转向判定看的是"目标点方向与当前朝向的偏角"，约定与飞行一致：yaw = atan2(dx, dz)，
             // yaw 增大 = 实体向右转。面朝 +Z 时右方是 -X，所以目标放在 -X 是**实体右转**。
@@ -1284,13 +1281,18 @@ public final class GraveDragonServerTest {
                                     + WANDER_TERRITORY_RADIUS_TEST + "）");
                 }
                 // 每 100 tick 检查一次"这一段有没有动过"（待机与过渡期间允许不动）。
+                // 用连续 5 tick 的累计位移，而不是单 tick：转向瞬间的净位移本来就可能接近 0，
+                // 单 tick 判定会把正常转弯误报成"卡住"。
                 if (i % 100 == 99) {
                     if (dragon.isWanderIdle() || dragon.isTransitioningForm()) {
                         idleWindows++;
                     } else {
                         Vec3 here = dragon.position();
-                        dragon.tick();
-                        if (here.distanceTo(dragon.position()) < 0.05) stalled++;
+                        for (int k = 0; k < 5; k++) dragon.tick();
+                        // 5 tick 内位移小于 0.2 格才算"冻结"。飞行速度约 0.2 格/tick，
+                        // 所以正常飞行 5 tick 应该走 1 格左右；这条门槛只抓真正的停摆，
+                        // 不会把"转弯中净位移小"误判成卡住。
+                        if (here.distanceTo(dragon.position()) < 0.2) stalled++;
                     }
                 }
             }

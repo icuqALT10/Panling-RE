@@ -623,8 +623,11 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
             if (progress < 0.0025) { // 0.05 格/tick 以下算没动
                 flightStuckTicks++;
                 if (flightStuckTicks > FLIGHT_STUCK_TICKS * 2) {
-                    wanderTarget = null;
-                    stallTicks = STALL_RETRY_TICKS;
+                    // 抬高也过不去：换成**侧向绕行**，而不是清空目标点停下。
+                    // 清空目标会让接下来 STALL_RETRY_TICKS 完全静止——自救动作本身变成"卡住"，
+                    // 这正是之前测到的那几个"完全不动的时间窗"（实测确认）。
+                    double yaw = Math.toRadians(getYRot() + (random.nextBoolean() ? 90 : -90));
+                    wanderTarget = position().add(Math.sin(yaw) * 24.0, 6.0, Math.cos(yaw) * 24.0);
                     flightStuckTicks = 0;
                     return;
                 }
@@ -721,9 +724,15 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
             // 太近就换一个：贴着当前位置的目标会让"到达判定"立刻成立，看起来像没动。
             if (candidate.subtract(position()).horizontalDistance() < WANDER_MIN_STEP) continue;
             if (flying()) {
+                // 高度一律以**当前位置**为基准，并夹在 ±WANDER_AIR_VERTICAL_SPREAD/2 以内。
+                // 不夹的话，地面探测的任何异常（实测出现过目标 Y = 203，龙在 5.4）都会变成
+                // "永远爬不到的目标点"，表现就是卡在空中不动。
                 double dy = (random.nextDouble() - 0.5) * WANDER_AIR_VERTICAL_SPREAD;
                 double lowest = groundLevelBelow() + FLIGHT_CLEARANCE;
-                candidate = new Vec3(candidate.x, Math.max(lowest, position().y + dy), candidate.z);
+                double y = Mth.clamp(position().y + dy,
+                        position().y - WANDER_AIR_VERTICAL_SPREAD / 2,
+                        position().y + WANDER_AIR_VERTICAL_SPREAD / 2);
+                candidate = new Vec3(candidate.x, Math.max(y, lowest), candidate.z);
                 return candidate;
             }
             // 地面形态：与自身等高，并且必须真的走得到（地面寻路还是用原版 A*）。
@@ -832,6 +841,12 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /** 供测试：直接注入漫游目标点（跳过随机搜索）。 */
     public void setWanderTarget(Vec3 target) {
         this.wanderTarget = target;
+        // 注入目标点意味着"从现在开始按这个点走"，所以把计时状态一并清掉：
+        // 否则上一次"挑不出目标点"留下的 stallTicks、或待机计时会继续压着 moving=false，
+        // 测试就会看到"设了目标却不动"（实测被这里误导过一轮）。
+        this.stallTicks = 0;
+        this.wanderIdleTicks = 0;
+        this.wanderTicks = 0;
     }
 
     /** 是否已经"到了"目标点：水平 4 格、垂直 3 格以内（空中形态的锚点是个点，不能用球面距离）。 */
@@ -1073,25 +1088,12 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         int bx = Mth.floor(from.x), bz = Mth.floor(from.z);
         int start = Mth.floor(from.y);
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
-        double scanned = Double.NaN;
         for (int y = start; y >= start - (int) LANDING_PROBE; y--) {
             if (!level().getBlockState(cursor.set(bx, y, bz)).getCollisionShape(level(), cursor).isEmpty()) {
-                scanned = y + 1.0;
-                break;
+                return y + 1.0;
             }
         }
-        // 再取一次高度图上的地面，两者取**较低**的那个。
-        //
-        // 只用向下扫：龙如果已经在山体/平台内部，扫到的"地面"会是它脚底那块，于是
-        // "落地"变成原地不动或往上飞（实测踩到过）。只用高度图：在平台下方或洞穴里会给出
-        // 头顶的地面，同样偏。取较低值 = 以更深的那个为准，两个方向的误判都被压掉。
-        int height = level().getHeight(Heightmap.Types.MOTION_BLOCKING, bx, bz);
-        double mapped = height <= level().getMinBuildHeight() ? Double.NaN : (double) height;
-        if (Double.isNaN(scanned)) return mapped;
-        if (Double.isNaN(mapped)) return scanned;
-        // 向下扫到的方块就在脚底（差 2 格以内）时视为噪声，以高度图为准；
-        // 否则两者取较低值（真正的地面应该在更低处）。
-        return scanned <= start + 2 ? Math.min(scanned, mapped) : scanned;
+        return Double.NaN;
     }
 
     /** 供测试：当前水平位置的地面高度（虚空返回 NaN）。 */
