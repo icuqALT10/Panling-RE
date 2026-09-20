@@ -12,7 +12,8 @@ public class GraveDragonModel extends GeoModel<GraveDragonEntity> {
     public void setCustomAnimations(GraveDragonEntity dragon, long instanceId, AnimationState<GraveDragonEntity> state) {
         // Apply the very same spline sample and world time as server OBBs. A controller's
         // first-render time is client-local and cannot serve as the collision clock.
-        var frame = GraveDragonPose.sample(dragon.idleAirSeconds(state.getPartialTick()));
+        var frame = GraveDragonPose.sample(dragon.animation(),
+                dragon.animationSeconds(state.getPartialTick()), dragon.loopingAnimation());
         for (var entry : frame.bones().entrySet()) {
             getBone(entry.getKey()).ifPresent(bone -> {
                 var pose = entry.getValue();

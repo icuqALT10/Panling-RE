@@ -24,6 +24,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -352,12 +354,12 @@ public final class GraveDragonServerTest {
                     }
                     helper.assertTrue(clips == (i == 1 ? 2 : 1), "Missing current clip for newly tracked entity");
                 }
-                helper.assertTrue(dragon.idleAirSeconds(0.5f) > 0.2, "Test did not advance animation time");
-                helper.assertTrue(dragon.idleAirSeconds(0.5f) == dragonObserver.idleAirSeconds(0.5f), "Dragon observer phase differs");
+                helper.assertTrue(dragon.animationSeconds(0.5f) > 0.2, "Test did not advance animation time");
+                helper.assertTrue(dragon.animationSeconds(0.5f) == dragonObserver.animationSeconds(0.5f), "Dragon observer phase differs");
                 CompoundTag saved = new CompoundTag();
                 dragon.addAdditionalSaveData(saved);
                 dragonObserver.readAdditionalSaveData(saved);
-                helper.assertTrue(dragon.idleAirSeconds(0.5f) == dragonObserver.idleAirSeconds(0.5f), "Reload restarts dragon animation");
+                helper.assertTrue(dragon.animationSeconds(0.5f) == dragonObserver.animationSeconds(0.5f), "Reload restarts dragon animation");
                 helper.succeed();
             } finally {
                 originals.forEach(Entity::discard);
@@ -742,6 +744,94 @@ public final class GraveDragonServerTest {
             int samples = GraveDragonPathNavigation.BodyAwareWalkNodeEvaluator.sampleCount();
             helper.assertTrue(samples > 8 && samples < 200,
                     "Path node sampling must stay sparse and cover the body, got " + samples);
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
+    }
+
+    /**
+     * 形态切换必须走过渡动画：空中 →（land）→ 地面 →（takeoff）→ 空中，而且重力开关在过渡
+     * 播完的那一刻才切，视觉与行为同步。
+     */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void formSwitchesThroughTransitionAnimations(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setPos(helper.absoluteVec(new Vec3(2, 40, 2)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            helper.assertTrue(dragon.flying(), "墓龙初始应该是空中形态");
+            helper.assertTrue("idle_air".equals(dragon.animation()), "初始动画: " + dragon.animation());
+            helper.assertTrue(dragon.isNoGravity(), "空中形态应该无重力");
+
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            helper.assertTrue("land".equals(dragon.animation()), "落地没有过渡动画: " + dragon.animation());
+            helper.assertTrue(dragon.flying(), "过渡期间不该提前切形态");
+
+            // gametest 里连续 tick() 不推进 level 时钟，所以直接回拨动画时间模拟过渡播完。
+            dragon.backdateAnimation(GraveDragonPose.duration("land") + 0.5);
+            dragon.tick();
+            helper.assertTrue(!dragon.flying(), "落地过渡结束后没进地面形态");
+            helper.assertTrue("idle_ground".equals(dragon.animation()), "地面动画: " + dragon.animation());
+            helper.assertTrue(!dragon.isNoGravity(), "地面形态不该无重力");
+
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            helper.assertTrue("takeoff".equals(dragon.animation()), "起飞没有过渡动画: " + dragon.animation());
+            dragon.backdateAnimation(GraveDragonPose.duration("takeoff") + 0.5);
+            dragon.tick();
+            helper.assertTrue(dragon.flying(), "起飞过渡结束后没进空中形态");
+            helper.assertTrue("idle_air".equals(dragon.animation()), "空中动画: " + dragon.animation());
+            helper.assertTrue(dragon.isNoGravity(), "空中形态应该无重力");
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
+    }
+
+    /** 头顶垂直空间不足时不允许起飞，保持地面形态（空间 &lt; 10 格就一直待在地上）。 */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void takeoffNeedsVerticalClearance(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        Vec3 base = helper.absoluteVec(new Vec3(4, 40, 4));
+        dragon.setPos(base);
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            // 先落到地面形态。
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            dragon.backdateAnimation(GraveDragonPose.duration("land") + 0.5);
+            // 落到地面形态后会恢复重力，位置会被拽偏；每步复位，保证天花板的位置有意义。
+            dragon.setPos(base);
+            dragon.tick();
+            helper.assertTrue(!dragon.flying(), "没有先落到地面形态");
+
+            // 在头顶 4 格处盖一块天花板，垂直空间远小于 10 格。
+            BlockPos ceiling = BlockPos.containing(base).above(4);
+            level.setBlockAndUpdate(ceiling, Blocks.STONE.defaultBlockState());
+            helper.assertTrue(level.getBlockState(ceiling).is(Blocks.STONE), "天花板没有放上");
+
+            dragon.setPos(base);
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            helper.assertTrue(!dragon.flying(), "垂直空间不足却起飞了");
+            helper.assertTrue("idle_ground".equals(dragon.animation()),
+                    "空间不足时不该播起飞过渡: " + dragon.animation());
+
+            // 拆掉天花板后应该能正常起飞（说明只是推迟、不是永久禁止）。
+            level.setBlockAndUpdate(ceiling, Blocks.AIR.defaultBlockState());
+            dragon.setPos(base);
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            helper.assertTrue("takeoff".equals(dragon.animation()),
+                    "拆掉天花板后仍不起飞: " + dragon.animation());
             helper.succeed();
         } finally {
             dragon.discard();

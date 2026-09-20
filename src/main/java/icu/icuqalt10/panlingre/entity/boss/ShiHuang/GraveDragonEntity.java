@@ -33,7 +33,9 @@ import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.entity.PartEntity;
@@ -43,10 +45,16 @@ import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Objects;
+import java.util.Set;
 import net.neoforged.fml.loading.FMLPaths;
 
 public class GraveDragonEntity extends MultipartEntity implements GeoEntity, PanLingEntities {
-    private static final EntityDataAccessor<Long> IDLE_START = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.LONG);
+    /** 当前动画的起始时刻（世界时钟）。两侧共用它推算动画相位，掉线重连也不会重启动画。 */
+    private static final EntityDataAccessor<Long> ANIMATION_START = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.LONG);
+    /** 当前动画名。用字符串而不是下标，因为 animationNames() 的遍历顺序不保证稳定。 */
+    private static final EntityDataAccessor<String> ANIMATION = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.STRING);
+    /** 形态：0 = 地面，1 = 空中。 */
+    private static final EntityDataAccessor<Integer> FORM = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> BODY_PITCH = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.FLOAT);
 
     /** 龙首俯仰的限幅（度）。身体水平长 46 格，再大就会大面积戳进地形。 */
@@ -57,11 +65,81 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /** 上一 tick 的俯仰，渲染插值用。 */
     private float bodyPitchO;
 
+    /**
+     * {@link #ANIMATION_START} 的未初始化哨兵。
+     *
+     * <p>判断"未初始化"只能用这个精确值，不能用"任意负数"：回拨动画时间（测试里模拟过渡播完）
+     * 会让起点落到 0 以下，游戏刚开局的低 gameTime 也一样，那时必须照常计时。
+     */
+    private static final long UNINITIALISED_ANIMATION_START = -1L;
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(IDLE_START, -1L);
+        builder.define(ANIMATION_START, UNINITIALISED_ANIMATION_START);
+        builder.define(ANIMATION, "idle_air");
+        builder.define(FORM, FORM_AIR);
         builder.define(BODY_PITCH, 0.0F);
+    }
+
+    /** 地面 / 空中两种形态。 */
+    public enum Form { GROUND, AIR }
+
+    private static final int FORM_GROUND = 0;
+    private static final int FORM_AIR = 1;
+
+    /** 空中形态要求的最小离地高度，也是起飞前要检查的垂直净空（格）。 */
+    private static final double FLIGHT_CLEARANCE = 10.0;
+    /** 形态切换区间：1~3 分钟。 */
+    private static final int FORM_MIN_TICKS = 20 * 60;
+    private static final int FORM_RANDOM_TICKS = 20 * 120;
+    /** 净空不足时推迟多久再试一次。 */
+    private static final int TAKEOFF_RETRY_TICKS = 20 * 5;
+
+    /** 循环播放的动画；其余按一次性处理（播完停在末帧，由 takeoff/land 这类过渡用）。 */
+    private static final Set<String> LOOPING_ANIMATIONS = Set.of(
+            "idle_air", "idle_ground", "fly", "run", "turn_fly_left_loop", "turn_fly_right_loop");
+
+    /** 服务端：下一次形态切换的时刻。 */
+    private long nextFormSwitchAt;
+    /** 服务端：正在过渡到哪个形态（null = 没在过渡）。过渡动画播完才真正切换。 */
+    private Form pendingForm;
+
+    /** 当前正在播放的动画名。 */
+    public String animation() {
+        return entityData.get(ANIMATION);
+    }
+
+    /** 当前动画已播放的秒数；{@code partialTick} 用于渲染插值。 */
+    public double animationSeconds(float partialTick) {
+        long start = entityData.get(ANIMATION_START);
+        if (start == UNINITIALISED_ANIMATION_START) return 0;
+        return Math.max(0, level().getGameTime() - start + partialTick) / 20.0;
+    }
+
+    /** 供测试与调试：当前动画的起始世界时刻。 */
+    public long animationStart() {
+        return entityData.get(ANIMATION_START);
+    }
+
+    /** 该动画是否循环播放；一次性动画的时间会被采样器钳在末帧。 */
+    public boolean loopingAnimation() {
+        return LOOPING_ANIMATIONS.contains(animation());
+    }
+
+    public Form form() {
+        return entityData.get(FORM) == FORM_AIR ? Form.AIR : Form.GROUND;
+    }
+
+    public boolean flying() {
+        return form() == Form.AIR;
+    }
+
+    /** 服务端：切换到某个动画。{@code restart} 为真时即使同名也从头播。 */
+    private void playAnimation(String name, boolean restart) {
+        if (!restart && name.equals(animation())) return;
+        entityData.set(ANIMATION, name);
+        entityData.set(ANIMATION_START, level().getGameTime());
     }
 
     /**
@@ -105,12 +183,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         entityData.set(BODY_PITCH, Mth.lerp(BODY_PITCH_SMOOTHING, bodyPitch(), target));
     }
 
-    /** Shared world clock survives client tracking/retracking without restarting the animation. */
-    public double idleAirSeconds(float partialTick) {
-        long start = entityData.get(IDLE_START);
-        return start < 0 ? 0 : Math.max(0, level().getGameTime() - start + partialTick) / 20.0;
-    }
-
     /**
      * Animation phase used for the collision boxes, quantised so both sides agree exactly.
      *
@@ -121,7 +193,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * next one" and "the far end of a chain cannot be hit at all".
      *
      * <p>Rounding the phase down to a fixed step makes the value a pure function of integers
-     * that both sides share ({@code gameTime} and the synced {@link #IDLE_START}), so the boxes
+     * that both sides share ({@code gameTime} and the synced {@link #ANIMATION_START}), so the boxes
      * come out bit-for-bit identical. The animation still plays; boxes only advance once per
      * {@link #POSE_QUANTUM_TICKS}, which is invisible over a 3.2 second cycle (13 steps).
      *
@@ -129,11 +201,84 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * quantised the same way, so the ray is measured against exactly the boxes the client saw.
      */
     public double collisionPoseSeconds() {
-        long start = entityData.get(IDLE_START);
-        if (start < 0) return 0;
-        long quantum = POSE_QUANTUM_TICKS;
-        long stepped = Math.floorDiv(level().getGameTime() - start, quantum) * quantum;
+        long start = entityData.get(ANIMATION_START);
+        if (start == UNINITIALISED_ANIMATION_START) return 0;
+        long stepped = Math.floorDiv(level().getGameTime() - start, POSE_QUANTUM_TICKS) * POSE_QUANTUM_TICKS;
         return Math.max(0, stepped) / 20.0;
+    }
+
+    // ===== 形态状态机 =====
+
+    /** 服务端每 tick 驱动形态切换，客户端只读同步结果。 */
+    private void tickForm() {
+        long now = level().getGameTime();
+
+        if (pendingForm != null) {
+            // 过渡动画播完才真正切形态，这样视觉与物理是同一时刻变的。
+            if (animationSeconds(0) >= GraveDragonPose.duration(animation())) {
+                Form target = pendingForm;
+                pendingForm = null;
+                entityData.set(FORM, target == Form.AIR ? FORM_AIR : FORM_GROUND);
+                applyFormPhysics(target == Form.AIR);
+                playAnimation(target == Form.AIR ? "idle_air" : "idle_ground", true);
+                scheduleNextFormSwitch(now);
+            }
+            return;
+        }
+
+        if (nextFormSwitchAt == 0) {
+            scheduleNextFormSwitch(now);
+            return;
+        }
+        if (now < nextFormSwitchAt) return;
+
+        if (form() == Form.AIR) {
+            pendingForm = Form.GROUND;
+            playAnimation("land", true);
+        } else if (hasTakeoffClearance()) {
+            pendingForm = Form.AIR;
+            playAnimation("takeoff", true);
+        } else {
+            // 头顶空间放不下起飞过程：保持地面形态，过几秒再试（龙走到开阔地就能起飞）。
+            nextFormSwitchAt = now + TAKEOFF_RETRY_TICKS;
+        }
+    }
+
+    private void scheduleNextFormSwitch(long now) {
+        this.nextFormSwitchAt = now + FORM_MIN_TICKS + random.nextInt(FORM_RANDOM_TICKS);
+    }
+
+    /** 供测试与调试：把下一次形态切换提前到 {@code delayTicks} tick 之后。 */
+    public void scheduleFormSwitchIn(int delayTicks) {
+        this.nextFormSwitchAt = level().getGameTime() + delayTicks;
+    }
+
+    /**
+     * 供测试与调试：把当前动画的起点往前挪，模拟"已经播了 {@code seconds} 秒"。
+     *
+     * <p>集成测试里连续调用 {@code tick()} 并不会推进 {@code level().getGameTime()}（那由服务端
+     * 主循环负责），所以光靠连续 tick 无法让过渡动画播完，需要这个钩子。
+     */
+    public void backdateAnimation(double seconds) {
+        entityData.set(ANIMATION_START, level().getGameTime() - (long) (seconds * 20.0));
+    }
+
+    private void applyFormPhysics(boolean air) {
+        this.setNoGravity(air);
+        if (air) this.getNavigation().stop();
+    }
+
+    /**
+     * 起飞前的垂直净空检查：从锚点向上 {@link #FLIGHT_CLEARANCE} 格内不能有实心方块。
+     *
+     * <p>这里的"垂直空间"是**向上**要的（身体要从地面升起来）；飞行之后向下离地的距离由
+     * 飞行逻辑维持同样的 10 格。空间不足时保持地面形态。
+     */
+    private boolean hasTakeoffClearance() {
+        Vec3 from = position();
+        Vec3 to = from.add(0, FLIGHT_CLEARANCE, 0);
+        HitResult hit = level().clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        return hit.getType() == HitResult.Type.MISS;
     }
 
     /**
@@ -142,7 +287,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * <p>One tick is the vanilla tick granularity, so the boxes advance every tick with no
      * extra lag and no visible stutter. The guarantee only needs both sides to round to the
      * same value, and the phase is a pure function of two integers they share — the world clock
-     * and the synced {@link #IDLE_START} — which holds at any step size. What actually broke
+     * and the synced {@link #ANIMATION_START} — which holds at any step size. What actually broke
      * earlier was the renderer overwriting the boxes with an interpolated frame, not the step.
      *
      * <p>Kept as a named constant rather than inlined so the value can be raised again if a
@@ -400,7 +545,12 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     public GraveDragonEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
         if (!partConfigLoaded) reloadPartConfig();
-        if (!level.isClientSide) entityData.set(IDLE_START, level.getGameTime());
+        if (!level.isClientSide) {
+            // 初始为空中形态：墓龙先在天空盘旋，1~3 分钟后才落地。
+            entityData.set(ANIMATION_START, level.getGameTime());
+            entityData.set(ANIMATION, "idle_air");
+            entityData.set(FORM, FORM_AIR);
+        }
         // The tiny root is only a locomotion anchor; OBB parts handle interaction.
         for (int i = 0; i < worldParts.length; i++) {
             worldParts[i] = new GraveDragonPartEntity(this, i);
@@ -415,6 +565,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         this.refreshDimensions();
         this.noPhysics = false;
         this.setNoAi(false);
+        // 初始为空中形态，所以一开始就不受重力（飞行移动逻辑随后接管）。
+        this.setNoGravity(true);
     }
 
     @Override public boolean isMultipartEntity() { return true; }
@@ -741,7 +893,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         // crosshair and the server's validation measure the very same boxes. Rendering does
         // NOT touch them: an interpolated render frame used to overwrite them, which is what
         // made the two sides disagree.
-        updatePartPose(GraveDragonPose.sample(collisionPoseSeconds()), yBodyRot, position());
+        updatePartPose(GraveDragonPose.sample(animation(), collisionPoseSeconds(), loopingAnimation()),
+                yBodyRot, position());
         updateBodyFootprint();
     }
 
@@ -801,7 +954,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      */
     public void updateClientPartPose(float partialTick) {
         if (!level().isClientSide) return;
-        updatePartPose(GraveDragonPose.sample(collisionPoseSeconds()),
+        updatePartPose(GraveDragonPose.sample(animation(), collisionPoseSeconds(), loopingAnimation()),
                 Mth.rotLerp(partialTick, yBodyRotO, yBodyRot), position());
     }
 
@@ -835,7 +988,10 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         super.tick();
         // 先记下上一 tick 的俯仰供渲染插值，再由服务端按新的速度方向更新（客户端用同步值）。
         this.bodyPitchO = bodyPitch();
-        if (!this.level().isClientSide) updateBodyPitch();
+        if (!this.level().isClientSide) {
+            tickForm();
+            updateBodyPitch();
+        }
         updateDragonParts();
         if (this.level().isClientSide) return;
         flushHitReport();
@@ -853,13 +1009,17 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.putLong("IdleAirStartedAt", entityData.get(IDLE_START));
+        tag.putLong("AnimationStartedAt", entityData.get(ANIMATION_START));
+        tag.putString("Animation", animation());
+        tag.putInt("Form", entityData.get(FORM));
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        if (tag.contains("IdleAirStartedAt")) entityData.set(IDLE_START, tag.getLong("IdleAirStartedAt"));
+        if (tag.contains("AnimationStartedAt")) entityData.set(ANIMATION_START, tag.getLong("AnimationStartedAt"));
+        if (tag.contains("Animation")) entityData.set(ANIMATION, tag.getString("Animation"));
+        if (tag.contains("Form")) entityData.set(FORM, tag.getInt("Form"));
     }
 
     // ===== 方法 =====
@@ -867,8 +1027,11 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         if (GraveDragonPose.APPLY_ANIMATION) {
-            controllers.add(new WorldTimeAnimationController<>(this, "idle_air",
-                    () -> WorldTimeAnimationController.Playback.loop("idle_air", entityData.get(IDLE_START)),
+            // 这个 controller 只负责驱动 GeckoLib 每帧调用 setCustomAnimations；真正的骨骼姿态由
+            // GraveDragonModel.setCustomAnimations 按当前动画名自己采样，所以这里播哪个名字不影响
+            // 最终结果，跟着当前动画走只是让 GeckoLib 自己的兜底路径也正确。
+            controllers.add(new WorldTimeAnimationController<>(this, "dragon",
+                    () -> WorldTimeAnimationController.Playback.loop(animation(), entityData.get(ANIMATION_START)),
                     state -> level().getGameTime() + state.getPartialTick()));
         }
     }
