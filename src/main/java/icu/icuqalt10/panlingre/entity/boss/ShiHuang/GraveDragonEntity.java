@@ -403,18 +403,13 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private static final double MELEE_RAY_TOLERANCE = 0.06;
 
     /**
-     * Which part the attacking player's view ray actually reaches first, measured
-     * against the server's own current oriented boxes.
+     * Which part a view ray reaches first, measured against the current oriented boxes.
      *
-     * <p>This is the authoritative melee resolution. The server must not trust the
-     * part named by the client because the client picks through AABB envelopes whose
-     * empty corners select the wrong body part, and because the animated pose moves
-     * between the client's frame and the server's tick. Re-casting the ray against the
-     * real boxes removes both problems at once.
+     * <p>Kept for tests and diagnostics only. It is deliberately <em>not</em> used to resolve
+     * melee: the client's pick is authoritative, see {@link #resolveMeleeStrike}.
      *
-     * <p>Deliberately uses the un-interpolated eye position and look angle: the server
-     * player has not moved this tick, so interpolating would aim from a position the
-     * player never occupied.
+     * <p>Uses the un-interpolated eye position and look angle, because the server player has
+     * not moved this tick and interpolating would aim from a position it never occupied.
      *
      * @return the part index, or -1 when the ray reaches no part
      */
@@ -482,25 +477,21 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * @return the part index to damage, or -1 when the attack must be discarded
      */
     public int resolveMeleeStrike(Player player, int requested) {
-        // Anti-cheat clamp only. The part the client named is normally reach-validated by
-        // ServerGamePacketListenerImpl, which drops the whole attack packet when
-        // Player#canInteractWithEntity fails. That guard does not cover code paths which
-        // call hurt() directly, so an obviously distant part is still refused here. The
-        // margin is deliberately wide: re-validating at the real threshold with our own
-        // slightly different formula is what silently discarded valid clicks.
-        double vanillaLimit = player.entityInteractionRange() + 1.0;
-        double hardLimit = vanillaLimit + MELEE_OUT_OF_RANGE_MARGIN;
-        if (!canPlayerReachPartWithin(player, requested, hardLimit)) return -1;
-
-        int ray = pickPartAlongViewRay(player);
-        boolean rayWins = ray >= 0 && ray != requested && canPlayerReachPart(player, ray);
-        int struck = rayWins ? ray : requested;
-        if (GraveDragonDamageDebug.enabled()) {
-            GraveDragonDamageDebug.log("melee requested=" + requested + " ray=" + ray
-                    + " rayWins=" + rayWins + " -> struck=" + struck
-                    + " range=" + player.entityInteractionRange());
-        }
-        return struck;
+        // The client's pick is authoritative, exactly as it is for a vanilla mob.
+        //
+        // A server-side ray was tried here and had to be removed: measured over 76 attacks it
+        // overrode the client 26 times, and the "corrected" part was 6 to 67 indices away from
+        // the one aimed at. The two rays are simply not the same ray — the client samples the
+        // animation with a different partial tick and predicts its own position, while the
+        // server sees a position that lags a tick behind a moving player. Overriding the pick
+        // with that ray is what produced the "each swing hits a random part" behaviour.
+        //
+        // Reach is guarded twice: vanilla drops the attack packet entirely when the named part
+        // fails Player#canInteractWithEntity, and the wide clamp below covers code paths that
+        // call hurt() directly.
+        double limit = player.entityInteractionRange() + 1.0 + MELEE_OUT_OF_RANGE_MARGIN;
+        if (!canPlayerReachPartWithin(player, requested, limit)) return -1;
+        return requested;
     }
 
     /** Margin beyond the vanilla interaction limit that still counts as a legitimate hit. */
