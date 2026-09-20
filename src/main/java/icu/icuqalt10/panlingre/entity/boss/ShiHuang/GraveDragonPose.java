@@ -273,15 +273,21 @@ public final class GraveDragonPose {
      *
      * <p>俯仰是我们自己加的一步（GeckoLib 只给活着的实体应用偏航），所以这里必须与
      * {@code GraveDragonRenderer.applyRotations} 里的旋转**顺序和符号完全一致**，否则碰撞箱会
-     * 与模型错开——这正是"所见即所得"的前提。顺序因此固定为 {@code Ry · Rx}。
+     * 与模型错开——这正是"所见即所得"的前提。
      *
-     * <p>注意 {@code Rx} 作用在**模型空间**（少了一层 Ry），而模型空间里 −Z 是龙首、+Z 是尾巴，
-     * 所以 {@code bodyPitch} 为**正表示爬升（龙首抬起、尾巴压低）**。
+     * <p>顺序是 {@code Ry · Rx}，也就是 {@code Rx} 作用在**实体坐标系**里（偏航之后的那一层），
+     * 这正是"抬头/低头"该有的轴。反过来的 {@code Rx · Ry} 会让俯仰作用在模型坐标系里，
+     * 而模型空间的 −Z 是龙首，于是"抬尾"退化成"整条龙向右横滚"——爬升时看起来像侧躺。
+     *
+     * <p>符号：实体坐标系里龙首的局部方向是 +Z（前方），绕 +X 转 {@code +θ} 会把 +Z 压向
+     * <b>−Y</b>（低头），所以这里要取 {@code −bodyPitch}，让
+     * {@code bodyPitch > 0 = 爬升 = 抬头}，与 {@code updateBodyPitch} 的
+     * {@code atan2(vy, 水平速度)} 一致。
      */
     public static Matrix4f modelToEntity(float bodyYaw, float bodyPitch, float scale) {
         return new Matrix4f().scale(scale)
                 .rotate(new Quaternionf().rotationY((180 - bodyYaw) * (float)RAD))
-                .rotate(new Quaternionf().rotationX(bodyPitch * (float)RAD))
+                .rotate(new Quaternionf().rotationX(-bodyPitch * (float)RAD))
                 .translate(0, 0.01f, 0);
     }
 

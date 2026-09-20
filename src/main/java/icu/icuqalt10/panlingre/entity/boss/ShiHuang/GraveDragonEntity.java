@@ -118,6 +118,13 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /** 到达后原地待机的概率（%）与时长（tick）。 */
     private static final int WANDER_IDLE_CHANCE = 30;
     private static final int WANDER_IDLE_TICKS = 20 * 10;
+    /**
+     * 空中待机的冷却（tick）：刚从 idle_air 切回 fly 之后，这段时间内不再进 idle_air。
+     *
+     * <p>否则 fly 飞两格就掷一次骰子，30% 的概率会让它频繁地"飞一下歇一下"，
+     * 看不出在赶路。10 秒待机 + 30 秒冷却 = 空中最多每 40 秒歇一次。
+     */
+    private static final int AIR_IDLE_COOLDOWN_TICKS = 20 * 30;
     /** 飞行时每 tick 最多抬升多少格，用来维持离地高度。 */
     private static final double ALTITUDE_CLIMB_RATE = 0.5;
     /** 转向动画的判定阈值（度/tick）。 */
@@ -135,6 +142,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private int wanderTicks;
     /** 空中移动的过渡动画播完后要进入的循环动画（null = 没有正在过渡）。 */
     private String pendingLoopAnimation;
+    /** 空中待机冷却剩余 tick；&gt;0 时 tickWander 不会进入 idle_air。 */
+    private int airIdleCooldown;
 
     /** 服务端：下一次形态切换的时刻。 */
     private long nextFormSwitchAt;
@@ -205,6 +214,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * 让龙首跟随飞行方向：上升抬头、俯冲低头。速度接近零时回正。
      *
      * <p>{@code atan2(vy, 水平速度)} 在上升时为正，正好对应"爬升为正"的约定。
+     * 这个角度由渲染器的 {@code applyRotations} 和 {@code GraveDragonPose.modelToEntity}
+     * 绕**实体局部 X 轴**施加（顺序 {@code Ry · Rx}，符号取负），所以是竖直面内的俯仰。
      */
     private void updateBodyPitch() {
         // 地面形态不俯仰：走路本来就不该斜；而且下落时的俯冲会让几十格长的身体插进地面，
@@ -291,6 +302,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private void beginVerticalTransition(boolean ascending) {
         this.transitionFromY = getY();
         this.transitionToY = ascending ? getY() + FLIGHT_CLEARANCE : groundLevelBelow();
+        // 换形态之后重新开始计冷却，否则落地形态的 tick 会把空中的冷却偷偷耗掉。
+        this.airIdleCooldown = 0;
         this.setNoGravity(true);
     }
 
@@ -356,6 +369,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      */
     private void tickWander() {
         if (pendingForm != null || !wanderEnabled) return;
+        if (airIdleCooldown > 0) airIdleCooldown--;
 
         if (wanderIdleTicks > 0) {
             wanderIdleTicks--;
@@ -373,9 +387,12 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         }
 
         // 到点了：先掷一次骰子决定要不要歇，再决定下一个目标点。
-        if (wanderTarget != null && random.nextInt(100) < WANDER_IDLE_CHANCE) {
+        // 空中待机有冷却：刚从 idle_air 切回 fly 之后 30 秒内不再进 idle_air，
+        // 否则飞两下就歇一下，看不出"在赶路"。
+        if (wanderTarget != null && airIdleCooldown <= 0 && random.nextInt(100) < WANDER_IDLE_CHANCE) {
             wanderTarget = null;
             wanderIdleTicks = WANDER_IDLE_TICKS;
+            if (flying()) airIdleCooldown = AIR_IDLE_COOLDOWN_TICKS;
             getNavigation().stop();
             setMoving(false);
             return;
@@ -518,6 +535,16 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         this.wanderIdleTicks = 0;
     }
 
+    /** 供测试：空中待机冷却剩余 tick。 */
+    public int airIdleCooldownTicks() {
+        return airIdleCooldown;
+    }
+
+    /** 供测试：直接设置空中待机冷却，用来验证"冷却期内不再进 idle_air"。 */
+    public void setAirIdleCooldown(int ticks) {
+        this.airIdleCooldown = ticks;
+    }
+
     private void scheduleNextFormSwitch(long now) {
         this.nextFormSwitchAt = now + FORM_MIN_TICKS + random.nextInt(FORM_RANDOM_TICKS);
     }
@@ -535,6 +562,16 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      */
     public void backdateAnimation(double seconds) {
         entityData.set(ANIMATION_START, level().getGameTime() - (long) (seconds * 20.0));
+    }
+
+    /**
+     * 供测试与调试：把动画**冻结**在 {@code seconds} 秒处（每 tick 重新对齐，相位不再前进）。
+     *
+     * <p>用来做"同一动画相位下对比两种姿态"的测量：否则两次测量落在动画的不同相位上，
+     * idle_air 自带的头部摆动会混进差值里，分不清是姿态变化还是动画噪声。
+     */
+    public void freezeAnimationAt(double seconds) {
+        backdateAnimation(seconds);
     }
 
     private void applyFormPhysics(boolean air) {

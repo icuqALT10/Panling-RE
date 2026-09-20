@@ -576,12 +576,17 @@ public final class GraveDragonServerTest {
     }
 
     /**
-     * 俯仰必须同时作用于渲染和碰撞箱。渲染与 OBB 的逐点一致性由 {@code multipartPoseTest}
-     * 用真实 GeckoLib 参考实现验证；这里验证状态链路：服务端按实际速度方向算出的俯仰，
-     * 确实传到了 {@code modelToEntity} 并让碰撞箱跟着倾斜。
+     * 俯仰必须同时作用于渲染和碰撞箱，而且必须是**竖直面内的抬头/低头**。
      *
-     * <p>几何上要注意：龙首几乎在锚点正上方（局部 Z ≈ -2），而尾巴伸到 -40 格，所以"低头"
-     * 的主要表现是**尾巴抬起**，而不是龙首下沉。
+     * <p>几何判据：龙首骨骼在模型 −Z（pivot Z = −291 像素），OBB 表里 head 的中心 Z = −19.24、
+     * tail_tip 的中心 Z = +38.81，所以模型里就是"头在 −Z、尾在 +Z"，实体坐标系里则是
+     * "头在锚点前方（+Z）、尾在后方"。俯仰绕**实体局部 X 轴**，于是：
+     * 俯冲（pitch &lt; 0）时龙首往上、往回收，尾巴压低；爬升（pitch &gt; 0）反过来。
+     * 这两个方向的绝对值都远超姿态抖动（实测头 Y 差 ≈ 1.6、头 Z 差 ≈ 14.6 格）。
+     *
+     * <p>这条断言是回归用的：曾经把 {@code Rx} 乘在 {@code Ry} **前面**，俯仰就落到模型坐标系里，
+     * 抬尾变成了整条龙向右横滚——头几乎不动，头在 X 上被平移出去。现在除了比较头尾的高度，
+     * 还要断言头**没有**横移。
      */
     @GameTest(template = "empty", timeoutTicks = 150)
     public static void bodyPitchTiltsTheCollisionBoxes(GameTestHelper helper) {
@@ -594,31 +599,97 @@ public final class GraveDragonServerTest {
         helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
         Vec3 base = helper.absoluteVec(new Vec3(2, 40, 2));
         try {
-            int tail = 20; // tail_tip
-            for (int i = 0; i < 40; i++) {
+            int head = 11, tail = 20; // head / tail_tip
+            // 两边都用 20 tick、并且每 tick 把动画冻在同一相位（1.0s），
+            // 否则 idle_air 自带的头部摆动会混进差值里，分不清是姿态变化还是动画噪声。
+            for (int i = 0; i < 20; i++) {
                 // 位置每 tick 复位：速度只用来驱动俯仰，不让位移混进测量里。
                 dragon.setPos(base);
+                dragon.freezeAnimationAt(1.0);
                 dragon.setDeltaMovement(0, -1.0, 0);
                 dragon.tick();
             }
             float divePitch = dragon.bodyPitch();
-            double diveTailY = dragon.getWorldParts()[tail].getOrientedBox().center.y - dragon.getY();
+            Vec3 diveHead = dragon.getWorldParts()[head].getOrientedBox().center.subtract(base);
+            Vec3 diveTail = dragon.getWorldParts()[tail].getOrientedBox().center.subtract(base);
 
-            for (int i = 0; i < 40; i++) {
+            for (int i = 0; i < 20; i++) {
                 dragon.setPos(base);
+                dragon.freezeAnimationAt(1.0);
                 dragon.setDeltaMovement(0, 1.0, 0);
                 dragon.tick();
             }
             float climbPitch = dragon.bodyPitch();
-            double climbTailY = dragon.getWorldParts()[tail].getOrientedBox().center.y - dragon.getY();
+            Vec3 climbHead = dragon.getWorldParts()[head].getOrientedBox().center.subtract(base);
+            Vec3 climbTail = dragon.getWorldParts()[tail].getOrientedBox().center.subtract(base);
 
             helper.assertTrue(divePitch < -8.0F && climbPitch > 8.0F,
                     "Body pitch does not follow the velocity direction: dive=" + divePitch + " climb=" + climbPitch);
             helper.assertTrue(Math.abs(divePitch) <= 22.001F && Math.abs(climbPitch) <= 22.001F,
                     "Body pitch is not clamped: " + divePitch + " / " + climbPitch);
-            // 俯冲（负俯仰）时尾巴抬起、爬升时尾巴压低。22 度对应约 15 格，远超姿态抖动。
-            helper.assertTrue(diveTailY > climbTailY + 1.0,
-                    "Pitch never reached the collision boxes: dive tail Y=" + diveTailY + " climb tail Y=" + climbTailY);
+
+            // 竖直面内：俯仰绕的是实体局部 X 轴，龙首（OBB 中心 Z = −19.24，在锚点前方）会因此
+            // 沿身体轴前后移动——爬升时头往前送、俯冲时头往回收。这条断言能区分"绕 X 轴俯仰"
+            // 和"绕模型横轴横滚"：横滚只会把头甩到 X 方向上。
+            helper.assertTrue(climbHead.z > diveHead.z + 1.0,
+                    "Pitch did not move the head along the body axis: dive=" + diveHead.z + " climb=" + climbHead.z);
+            helper.assertTrue(climbTail.y > diveTail.y + 1.0,
+                    "Pitch never reached the collision boxes: dive tail Y=" + diveTail.y + " climb tail Y=" + climbTail.y);
+            helper.assertTrue(diveHead.y > climbHead.y + 1.0,
+                    "Dive did not raise the head (dive 时头应该往上绕): dive=" + diveHead.y + " climb=" + climbHead.y);
+
+            // 横滚回归：俯仰是绕实体局部 X 轴，头不该被甩到侧面去。
+            // 两边动画相位相同，所以 X 上的残差只可能来自"俯仰用错了轴"。
+            double drift = Math.abs(diveHead.x - climbHead.x);
+            helper.assertTrue(drift < 0.5,
+                    "俯仰把龙首甩到侧面去了（横滚而非抬头/低头），X 偏移 " + drift);
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
+    }
+
+    /**
+     * 空中待机冷却：刚从 idle_air 切回 fly 之后 30 秒内不许再进 idle_air，
+     * 否则 30% 的骰子会让它"飞两格歇一下"，看不出在赶路。
+     */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void airIdleCooldownBlocksAnotherIdle(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.setPos(helper.absoluteVec(new Vec3(4, 60, 4)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            dragon.backdateAnimation(GraveDragonPose.duration("takeoff") + 0.5);
+            dragon.tick();
+            helper.assertTrue(dragon.flying(), "没有进空中形态");
+
+            // 冷却拉满：这段时间里怎么掷骰子都不该进待机。
+            dragon.setAirIdleCooldown(20 * 30);
+            for (int i = 0; i < 200; i++) {
+                dragon.setWanderTarget(dragon.position()); // "已到达"
+                dragon.tick();
+                helper.assertTrue(!dragon.isWanderIdle(),
+                        "冷却期内还是进了 idle_air（第 " + i + " 次）");
+            }
+            helper.assertTrue(dragon.airIdleCooldownTicks() > 0, "冷却没有按 tick 递减");
+
+            // 清掉冷却之后，30% 的概率应该很快就能掷中。
+            dragon.setAirIdleCooldown(0);
+            boolean idled = false;
+            for (int i = 0; i < 200 && !idled; i++) {
+                dragon.setWanderTarget(dragon.position());
+                dragon.setAirIdleCooldown(0);
+                dragon.tick();
+                idled = dragon.isWanderIdle();
+            }
+            helper.assertTrue(idled, "冷却清掉之后也从来没进过 idle_air");
+            helper.assertTrue(dragon.airIdleCooldownTicks() > 0, "进 idle_air 时没有上冷却");
             helper.succeed();
         } finally {
             dragon.discard();
@@ -935,9 +1006,12 @@ public final class GraveDragonServerTest {
             helper.assertTrue(dragon.isMoving(), "漫游没有自己启动");
 
             int idleSeen = 0, retargetSeen = 0;
+            // 空中待机有 30 秒冷却（避免"飞两下歇一下"）。这里每次都把冷却清掉，
+            // 只验证 30% 骰子这个分支本身；冷却单独由 airIdleCooldownBlocksAnotherIdle 覆盖。
             for (int i = 0; i < 400 && (idleSeen == 0 || retargetSeen == 0); i++) {
                 // 把目标点放到脚下就等于"已到达"（到达判定看的是距离）。
                 dragon.setWanderTarget(dragon.position());
+                dragon.setAirIdleCooldown(0);
                 dragon.tick();
                 if (dragon.isWanderIdle()) {
                     idleSeen++;

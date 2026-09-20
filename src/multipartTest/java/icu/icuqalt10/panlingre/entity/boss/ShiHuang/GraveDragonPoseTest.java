@@ -94,8 +94,9 @@ public final class GraveDragonPoseTest {
         PoseStack stack = new PoseStack();
         stack.scale(scale, scale, scale);
         stack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(180 - yaw));
-        // GraveDragonRenderer.applyRotations 补的那一步；漏掉它碰撞箱就会和模型错开。
-        stack.mulPose(com.mojang.math.Axis.XP.rotationDegrees(pitch));
+        // GraveDragonRenderer.applyRotations 在 super 之后补的那一步：作用在实体坐标系里，
+        // 所以必须 mul 在偏航**之后**；符号为负（实体空间里 +X 正转是低头，而 pitch>0 是爬升）。
+        stack.mulPose(com.mojang.math.Axis.XP.rotationDegrees(-pitch));
         stack.translate(0, 0.01f, 0);
         GeoBone parent = null;
         for (String n : chain) {
