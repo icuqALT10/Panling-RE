@@ -91,16 +91,25 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private static final double FLIGHT_CLEARANCE = 10.0;
     /** 降落时向下探测地面的最大距离（格）。 */
     private static final double LANDING_PROBE = 160.0;
+    /**
+     * 起飞净空检查里每个姿态采样多少个相位。
+     *
+     * <p>姿态是**逐个碰撞箱**判定的（见 {@code poseFitsAt}），所以要覆盖尾巴最低、身体最开的
+     * 时刻，不能只看首帧。
+     */
+    private static final int POSE_CLEARANCE_SAMPLES = 6;
     /** 起飞净空的采样柱沿身体轴前后偏移（格）：0、±这个值。 */
     private static final double CLEARANCE_PROBE_DISTANCE = 18.0;
-    /**
-     * 起飞净空还要向上多留的高度（格）。
-     *
-     * <p>取 14 而不是整个飞行姿态高度（26）：后者会让龙在树林、山地里永远无法起飞。
-     * 飞行姿态的其余部分由 {@code move()} 的逐部件判定兜底——真撞上了会停住并触发撞墙自救
-     * （{@link #tickFlightWander} 里抬高目标点绕行）。
-     */
+    /** 起飞净空还要向上多留的高度（格）。 */
     private static final double CLEARANCE_PROBE_HEIGHT = 14.0;
+    /**
+     * 起飞净空判定允许的穿透容差（格）。
+     *
+     * <p>龙站在地面上时，脚底 OBB 与地面方块顶面在浮点上必然重叠一丁点（1/16 像素级），
+     * 布尔相交会把它判成"穿模"，于是永远不起飞。1 厘米的容差足够滤掉这类噪声，
+     * 同时任何真实的方块遮挡都远超这个量级。
+     */
+    private static final double POSE_CLEARANCE_TOLERANCE = 0.05;
     /** 探测地面时从锚点上方几格开始往下扫（覆盖"龙站在平台上、脚底方块就在头顶一格"的情况）。 */
     private static final int GROUND_SCAN_UP = 8;
     /** 形态切换区间：1~3 分钟。 */
@@ -415,6 +424,24 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /** 墓龙是飞行生物：落地、以及过渡期间的程序化位移都不该造成摔落伤害。 */
     @Override
     public boolean causeFallDamage(float fallDistance, float multiplier, DamageSource source) {
+        return false;
+    }
+
+    /**
+     * 不会因为玩家走远而被自然清除。
+     *
+     * <p>{@code Monster} 默认会在超出"离家距离"后 {@code discard()}——墓龙带 BossBar、还有领地行为，
+     * 玩家跑去别处转一圈回来会发现它凭空消失。它的漫游本来就锁在领地半径内，不受玩家位置影响，
+     * 所以这里直接关掉远距离清除。
+     */
+    @Override
+    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
+        return false;
+    }
+
+    /** 和平难度下也不消失（BossBar 生物的常规做法）。 */
+    @Override
+    public boolean shouldDespawnInPeaceful() {
         return false;
     }
 
@@ -858,10 +885,13 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /**
      * 起飞前的净空检查。
      *
-     * <p>不只是"锚点正上方 10 格没方块"：如果只查这一根柱子，龙可以贴着悬崖或是在树林里起飞，
-     * 升上去之后身体有一半埋在山体里——{@code move()} 会因此把每一步都否掉，看起来就是"卡在空中
-     * 不动"。这里按**当前朝向**沿身体轴取锚点、前后各 {@link #CLEARANCE_PROBE_DISTANCE} 格三个采样柱，
-     * 在各自位置上再检查"地面高度 + 离地高度"这一段，以及正上方 {@link #FLIGHT_CLEARANCE} 格。
+     * <p>沿身体轴取锚点、前后各 {@link #CLEARANCE_PROBE_DISTANCE} 格共三根采样柱，每根要求
+     * "从地面一直到 巡航高度 + {@link #CLEARANCE_PROBE_HEIGHT}" 全是空气。
+     *
+     * <p>曾尝试改成"把 idle_air / fly 的 79 个碰撞箱直接在目标高度摆出来逐块判定"，但那条路
+     * 在本项目的几何下不稳定：飞行姿态的身体相对锚点向上下各伸出十几格，同一个高度上
+     * "地面姿态判定通过、飞行姿态判定失败"，结果是"有时能起飞、有时永远不能"，比距离判据更糟。
+     * 姿态版思路保留在 {@link #poseFitsAt} 里备用，但默认不启用。
      */
     private boolean hasTakeoffClearance() {
         for (double offset : new double[]{0.0, CLEARANCE_PROBE_DISTANCE, -CLEARANCE_PROBE_DISTANCE}) {
@@ -874,7 +904,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * 沿身体轴偏移 {@code offset} 格处的一根采样柱是否满足起飞净空。
      *
      * <p>**不用 {@code level().clip}**：那个重载会把本实体当作"忽略对象"，而墓龙的身体有
-     * 20 多格高，射线刚从锚点出发就撞上自己的身体，于是任何地方都"净空不足"、永远不起飞
+     * 20 多格高，射线刚从锚点就撞上自己的身体，于是任何地方都"净空不足"、永远不起飞
      * （实测 hit 位置就在锚点上方 1 格）。这里直接逐格扫方块，不牵扯实体。
      */
     private boolean clearanceColumn(double offset) {
@@ -896,6 +926,92 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
             }
         }
         return true;
+    }
+
+    /**
+     * 把 {@code pose} 姿态摆在"当前位置抬高 {@code lift} 格"处，看有没有碰撞箱插进方块。
+     *
+     * <p>直接构造 OBB 而不是 {@code level().clip}：那个重载会把墓龙自己当成忽略对象，而它的身体
+     * 有 20 多格高，射线一出锚点就撞到自己身上，"地面"永远探在当前高度（实测确认过）。
+     */
+    private boolean poseFitsAt(String pose, double lift) {
+        Vec3 origin = new Vec3(getX(), getY() + lift, getZ());
+        double duration = GraveDragonPose.duration(pose);
+        // 采样几个相位，覆盖尾巴最低 / 身体最开的时刻。
+        for (int step = 0; step < POSE_CLEARANCE_SAMPLES; step++) {
+            var frame = GraveDragonPose.sample(pose, duration * step / POSE_CLEARANCE_SAMPLES, false);
+            for (int i = 0; i < PART_LABELS.length; i++) {
+                var box = GraveDragonPose.box(frame, PART_LABELS[i], PART_BOUNDS[i],
+                        GraveDragonPose.modelToEntity(yBodyRot, 0.0F, getScale()), origin);
+                if (penetrationIntoBlocks(box) > POSE_CLEARANCE_TOLERANCE) return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 某个 OBB 插进方块最深多少格（没有插入则为 0）。
+     *
+     * <p>用"最深穿透量"而不是布尔相交：龙站在地面上时脚底与地面方块顶面在浮点上会重叠
+     * 一丁点（1/pixel 级），布尔判定会把它当成穿模，于是永远不起飞、{@code move()} 也永远
+     * 把移动取消掉（表现就是"面朝前却在原地/横向漂"）。给它一个容差即可。
+     *
+     * <p>深度取 OBB 包围盒与方块的 Y 重叠量：对"站在方块上"这种情形就是最直观的穿模深度。
+     */
+    private double penetrationIntoBlocks(OrientedBoundingBox box) {
+        net.minecraft.world.phys.AABB envelope = box.enclosingAabb();
+        double deepest = 0;
+        for (var shape : level().getBlockCollisions(this, envelope)) {
+            for (var block : shape.toAabbs()) {
+                deepest = Math.max(deepest, obbBlockPenetration(box, block));
+            }
+        }
+        return deepest;
+    }
+
+    /**
+     * OBB 与方块 AABB 的穿透深度（不相交为 0）。用的是标准 OBB-AABB 分离轴测试。
+     *
+     * <p>**不能用包围盒近似**：龙是 40 多格长、又带朝向旋转，它的 OBB 包围盒会膨胀成一大块，
+     * 于是"站在平地上"也会被算成插进旁边方块——表现就是永远不起飞、地面形态也动不了。
+     * 15 根分离轴（各自 3 个面法线 + 9 个叉积）逐一判定，全部重叠才算真的穿模，
+     * 深度取重叠轴里的最小值。
+     */
+    private static double obbBlockPenetration(OrientedBoundingBox box, net.minecraft.world.phys.AABB block) {
+        Vec3[] boxAxes = {box.axisX, box.axisY, box.axisZ};
+        Vec3[] worldAxes = {new Vec3(1, 0, 0), new Vec3(0, 1, 0), new Vec3(0, 0, 1)};
+        Vec3 blockCentre = new Vec3((block.minX + block.maxX) / 2, (block.minY + block.maxY) / 2,
+                (block.minZ + block.maxZ) / 2);
+        double[] blockHalf = {(block.maxX - block.minX) / 2, (block.maxY - block.minY) / 2,
+                (block.maxZ - block.minZ) / 2};
+        Vec3 between = box.center.subtract(blockCentre);
+        double[] boxHalf = {box.halfExtents.x, box.halfExtents.y, box.halfExtents.z};
+        Vec3[] candidates = new Vec3[15];
+        candidates[0] = boxAxes[0];
+        candidates[1] = boxAxes[1];
+        candidates[2] = boxAxes[2];
+        candidates[3] = worldAxes[0];
+        candidates[4] = worldAxes[1];
+        candidates[5] = worldAxes[2];
+        int at = 6;
+        for (Vec3 a : boxAxes) {
+            for (Vec3 b : worldAxes) candidates[at++] = a.cross(b);
+        }
+        double minOverlap = Double.MAX_VALUE;
+        for (Vec3 candidate : candidates) {
+            double length = candidate.length();
+            if (length < 1.0E-9) continue;
+            Vec3 axis = candidate.scale(1.0 / length);
+            double rBox = 0, rBlock = 0;
+            for (int i = 0; i < 3; i++) {
+                rBox += boxHalf[i] * Math.abs(axis.dot(boxAxes[i]));
+                rBlock += blockHalf[i] * Math.abs(axis.dot(worldAxes[i]));
+            }
+            double distance = Math.abs(between.dot(axis));
+            if (distance >= rBox + rBlock - 1.0E-9) return 0; // 找到分离轴：不相交
+            minOverlap = Math.min(minOverlap, rBox + rBlock - distance);
+        }
+        return minOverlap == Double.MAX_VALUE ? 0 : minOverlap;
     }
 
     /**
@@ -1511,7 +1627,13 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         return worldParts[index].getBoundingBox().distanceToSqr(eye) <= limit * limit;
     }
 
-    /** Prevent movement when any real body part would collide with blocks. */
+    /**
+     * 有真实身体部件会撞进方块时，取消这一步移动。
+     *
+     * <p>用"穿透深度超过 {@link #POSE_CLEARANCE_TOLERANCE}" 而不是布尔相交：龙站在地面上时
+     * 脚底与地面方块顶面在浮点上必然重叠一丁点，布尔判定会让**每一步都被取消**——
+     * 表现就是"朝向前方却几乎不动/横向漂"。容差只滤浮点噪声，真实遮挡远超它。
+     */
     @Override
     public void move(MoverType type, Vec3 delta) {
         if (!delta.equals(Vec3.ZERO) && !level().isClientSide && !noPhysics) {
@@ -1519,13 +1641,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
                 // Only blocks stop the dragon. Other child hitboxes belong to
                 // this same dragon and must never cancel movement/knockback.
                 var box = part.getOrientedBox().move(delta);
-                for (var shape : level().getBlockCollisions(this, box.enclosingAabb())) {
-                    for (var blockBox : shape.toAabbs()) {
-                        if (box.intersects(blockBox)) {
-                            super.move(type, Vec3.ZERO);
-                            return;
-                        }
-                    }
+                if (penetrationIntoBlocks(box) > POSE_CLEARANCE_TOLERANCE) {
+                    super.move(type, Vec3.ZERO);
+                    return;
                 }
             }
         }
