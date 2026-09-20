@@ -84,7 +84,7 @@ public final class GraveDragonPoseTest {
     }
 
     // Independent renderer reference: actual GeoBone and RenderUtil, not evaluator matrices.
-    private static Matrix4f reference(String name, GraveDragonIdleAirPose.Frame frame, float yaw, float scale) {
+    private static Matrix4f reference(String name, GraveDragonPose.Frame frame, float yaw, float scale) {
         Deque<String> chain = new ArrayDeque<>();
         for (String n = name; n != null; ) {
             chain.addFirst(n);
@@ -195,7 +195,7 @@ public final class GraveDragonPoseTest {
             }
         }
         check(covered.size() == 6, "Expected head, paired mouth and four antler boxes");
-        check(GraveDragonIdleAirPose.boneForPart("upper_jaw").equals("head"), "Upper jaw follows animated lower jaw");
+        check(GraveDragonPose.boneForPart("upper_jaw").equals("head"), "Upper jaw follows animated lower jaw");
         for (String side : new String[]{"l", "r"}) {
             float[] a = bounds.get(labels.indexOf("horn_" + side + "_1")), b = bounds.get(labels.indexOf("horn_" + side + "_2"));
             check(Math.abs(a[4] - b[4]) > 1, "Horn segments still share a center");
@@ -216,7 +216,7 @@ public final class GraveDragonPoseTest {
                 if (track == null) continue;
                 for (var key : track.entrySet()) {
                     double time = Double.parseDouble(key.getKey());
-                    var pose = GraveDragonIdleAirPose.sample(time).bones().get(bone.getKey());
+                    var pose = GraveDragonPose.sample(time).bones().get(bone.getKey());
                     Vec3 actual = channel.equals("position") ? pose.position() : pose.rotation();
                     JsonArray values = key.getValue().getAsJsonObject().getAsJsonObject("post").getAsJsonArray("vector");
                     for (int axis = 0; axis < 3; axis++) {
@@ -249,22 +249,22 @@ public final class GraveDragonPoseTest {
         check(labels.size() == bounds.size(), "Hardcoded bounds/label count mismatch");
         verifyHitDetection();
         verifyModelFits(read("杂项/美术资源/models/boss/ShiHuang/dragon_v4.bbmodel"), labels, bounds);
-        var first = GraveDragonIdleAirPose.sample(0);
+        var first = GraveDragonPose.sample(0);
         near(first.bones().get("head").position().y, 248.96428, 1e-5, "Head translation must NOT subtract first frame");
         Vec3 origin = new Vec3(526, 24, -1845);
         double maxError = 0;
         for (float yaw : new float[]{0, 37, 90, -123, 180}) {
             float scale = yaw == 37 ? 1.4f : 1;
-            Matrix4f root = GraveDragonIdleAirPose.modelToEntity(yaw, scale);
+            Matrix4f root = GraveDragonPose.modelToEntity(yaw, scale);
             for (int step = 0; step <= 256; step++) {
                 double time = step / 80.0;
-                var frame = GraveDragonIdleAirPose.sample(time);
+                var frame = GraveDragonPose.sample(time);
                 Map<String, Matrix4f> references = new HashMap<>();
                 for (int i = 0; i < labels.size(); i++) {
-                    String label = labels.get(i), bone = GraveDragonIdleAirPose.boneForPart(label);
+                    String label = labels.get(i), bone = GraveDragonPose.boneForPart(label);
                     Matrix4f ref = references.computeIfAbsent(bone, n -> reference(n, frame, yaw, scale));
                     float[] b = bounds.get(i);
-                    OrientedBoundingBox box = GraveDragonIdleAirPose.box(frame, label, b, root, origin);
+                    OrientedBoundingBox box = GraveDragonPose.box(frame, label, b, root, origin);
                     Vec3[] corners = box.corners();
                     int corner = 0;
                     for (int x : new int[]{-1, 1}) for (int y : new int[]{-1, 1}) for (int z : new int[]{-1, 1}) {
@@ -287,15 +287,15 @@ public final class GraveDragonPoseTest {
                 }
             }
         }
-        Matrix4f root = GraveDragonIdleAirPose.modelToEntity(0, 1);
+        Matrix4f root = GraveDragonPose.modelToEntity(0, 1);
         for (int i = 0; i < labels.size(); i++) {
-            var zero = GraveDragonIdleAirPose.box(first, labels.get(i), bounds.get(i), root, origin);
+            var zero = GraveDragonPose.box(first, labels.get(i), bounds.get(i), root, origin);
             for (int cycle = 1; cycle <= 10; cycle++) {
-                var repeat = GraveDragonIdleAirPose.box(GraveDragonIdleAirPose.sample(cycle * 3.2), labels.get(i), bounds.get(i), root, origin);
+                var repeat = GraveDragonPose.box(GraveDragonPose.sample(cycle * 3.2), labels.get(i), bounds.get(i), root, origin);
                 check(zero.center.distanceTo(repeat.center) < 0.0001, "Loop mutated key data " + labels.get(i));
             }
-            var before = GraveDragonIdleAirPose.box(GraveDragonIdleAirPose.sample(3.2 - 1e-6), labels.get(i), bounds.get(i), root, origin);
-            var after = GraveDragonIdleAirPose.box(GraveDragonIdleAirPose.sample(3.2 + 1e-6), labels.get(i), bounds.get(i), root, origin);
+            var before = GraveDragonPose.box(GraveDragonPose.sample(3.2 - 1e-6), labels.get(i), bounds.get(i), root, origin);
+            var after = GraveDragonPose.box(GraveDragonPose.sample(3.2 + 1e-6), labels.get(i), bounds.get(i), root, origin);
             check(before.center.distanceTo(after.center) < 0.001, "Loop discontinuity " + labels.get(i));
         }
         System.out.println("PASS: " + checks + " checks; BB/GEO/animation exports agree; " + labels.size() + " parts, 257 times, 5 yaws.");

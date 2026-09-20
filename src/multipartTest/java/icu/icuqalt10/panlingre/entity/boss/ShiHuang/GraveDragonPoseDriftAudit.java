@@ -48,7 +48,7 @@ public final class GraveDragonPoseDriftAudit {
             throw new IllegalStateException("labels=" + labels.size() + " rows=" + bounds.size());
         }
 
-        var transform = GraveDragonIdleAirPose.modelToEntity(0.0F, 1.0F);
+        var transform = GraveDragonPose.modelToEntity(0.0F, 1.0F);
         System.out.printf("%-6s %-22s %9s %9s %10s %8s%n",
                 "part", "label", "travel", "boxSize", "1tickErr", "ratio");
         double worstRatio = 0;
@@ -83,7 +83,7 @@ public final class GraveDragonPoseDriftAudit {
 
     private static OrientedBoundingBox boxAt(org.joml.Matrix4f transform, String label,
                                              float[] bounds, double phase) {
-        return GraveDragonIdleAirPose.box(GraveDragonIdleAirPose.sample(phase), label, bounds,
+        return GraveDragonPose.box(GraveDragonPose.sample(phase), label, bounds,
                 transform, Vec3.ZERO);
     }
 

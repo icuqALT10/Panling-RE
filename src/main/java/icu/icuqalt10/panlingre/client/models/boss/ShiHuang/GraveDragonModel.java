@@ -5,14 +5,14 @@ import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.animation.AnimationState;
-import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonIdleAirPose;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonPose;
 
 public class GraveDragonModel extends GeoModel<GraveDragonEntity> {
     @Override
     public void setCustomAnimations(GraveDragonEntity dragon, long instanceId, AnimationState<GraveDragonEntity> state) {
         // Apply the very same spline sample and world time as server OBBs. A controller's
         // first-render time is client-local and cannot serve as the collision clock.
-        var frame = GraveDragonIdleAirPose.sample(dragon.idleAirSeconds(state.getPartialTick()));
+        var frame = GraveDragonPose.sample(dragon.idleAirSeconds(state.getPartialTick()));
         for (var entry : frame.bones().entrySet()) {
             getBone(entry.getKey()).ifPresent(bone -> {
                 var pose = entry.getValue();

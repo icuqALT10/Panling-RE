@@ -11,9 +11,24 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-/** The rendered GeoBones and server hitboxes share this idle_air sampler. */
-public final class GraveDragonIdleAirPose {
+/**
+ * 墓龙全部动画的姿态采样器：渲染用的骨骼姿态和碰撞箱共用同一份采样结果。
+ *
+ * <p>OBB 调整表（{@code GraveDragonEntity.HARD_CODED_PART_BOUNDS}）记的是**静止姿态**下的绝对
+ * 坐标，由骨骼矩阵带到当前动画的位置，所以同一张表对全部动画都成立，不需要按动画各标一份。
+ * 各个动画只在根骨 {@code head} 的位移基准上不同（例如 {@code idle_air} 约 249/330、
+ * {@code fly} 约 2/2），衔接由 takeoff / land / idle_air_to_fly / fly_to_idle_air 这些过渡
+ * 动画负责，采样器只需要按当前动画和时刻取值。
+ *
+ * <p>动画里没有轨道的骨骼会退回静止姿态（而不是沿用上一帧），因此姿态是确定性的、两份
+ * 采样结果可以逐位对齐——这正是碰撞箱与渲染能一致的前提。
+ */
+public final class GraveDragonPose {
     public static final boolean APPLY_ANIMATION = true;
+
+    /** 默认动画，也是整条龙的骨骼基准。 */
+    public static final String IDLE_AIR = "idle_air";
+
     private static final String GEO = "assets/panlingre/geo/entity/boss/shihuang/grave_dragon.geo.json";
     private static final String ANIM = "assets/panlingre/animations/entity/boss/shihuang/grave_dragon.animation.json";
     private static final Vec3 ONE = new Vec3(1, 1, 1);
@@ -23,16 +38,18 @@ public final class GraveDragonIdleAirPose {
     private record Bone(String parent, Vec3 pivot, Vec3 rotation) {}
     private record Key(double time, Vec3 value, boolean spline) {}
     private record Track(List<Key> rotation, List<Key> position, List<Key> scale) {}
+    /** 单个动画：自己的轨道表与时长。 */
+    private record Animation(Map<String, Track> tracks, double duration) {}
     public record BonePose(Vec3 rotation, Vec3 position, Vec3 scale) {}
     public record Frame(Map<String, BonePose> bones, Map<String, Matrix4f> matrices) {}
-    private record Definition(Map<String, Bone> bones, Map<String, Track> tracks, double duration) {}
+    private record Definition(Map<String, Bone> bones, Map<String, Animation> animations) {}
 
     private static final class Resources {
         private static final Definition DEFINITION = readDefinition();
     }
 
     private static JsonObject readJson(String path) {
-        var stream = GraveDragonIdleAirPose.class.getClassLoader().getResourceAsStream(path);
+        var stream = GraveDragonPose.class.getClassLoader().getResourceAsStream(path);
         if (stream == null) throw new IllegalStateException("Missing dragon resource: " + path);
         try (var reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
             return JsonParser.parseReader(reader).getAsJsonObject();
@@ -51,16 +68,23 @@ public final class GraveDragonIdleAirPose {
             bones.put(o.get("name").getAsString(), new Bone(
                     o.has("parent") ? o.get("parent").getAsString() : null, pivot, rotation));
         }
-        JsonObject animation = readJson(ANIM).getAsJsonObject("animations").getAsJsonObject("idle_air");
-        Map<String, Track> tracks = new LinkedHashMap<>();
-        for (var entry : animation.getAsJsonObject("bones").entrySet()) {
-            JsonObject bone = entry.getValue().getAsJsonObject();
-            if (!bones.containsKey(entry.getKey())) throw new IllegalStateException("Unknown animated bone: " + entry.getKey());
-            tracks.put(entry.getKey(), new Track(keys(bone.get("rotation")), keys(bone.get("position")), keys(bone.get("scale"))));
+
+        Map<String, Animation> animations = new LinkedHashMap<>();
+        for (var animationEntry : readJson(ANIM).getAsJsonObject("animations").entrySet()) {
+            String name = animationEntry.getKey();
+            JsonObject animation = animationEntry.getValue().getAsJsonObject();
+            Map<String, Track> tracks = new LinkedHashMap<>();
+            for (var entry : animation.getAsJsonObject("bones").entrySet()) {
+                JsonObject bone = entry.getValue().getAsJsonObject();
+                if (!bones.containsKey(entry.getKey())) throw new IllegalStateException("Unknown animated bone: " + entry.getKey());
+                tracks.put(entry.getKey(), new Track(keys(bone.get("rotation")), keys(bone.get("position")), keys(bone.get("scale"))));
+            }
+            double duration = animation.get("animation_length").getAsDouble();
+            if (!(duration > 0)) throw new IllegalStateException("Invalid duration for animation: " + name);
+            animations.put(name, new Animation(Map.copyOf(tracks), duration));
         }
-        double duration = animation.get("animation_length").getAsDouble();
-        if (!(duration > 0)) throw new IllegalStateException("Invalid idle_air duration");
-        return new Definition(Map.copyOf(bones), Map.copyOf(tracks), duration);
+        if (!animations.containsKey(IDLE_AIR)) throw new IllegalStateException("Missing animation: " + IDLE_AIR);
+        return new Definition(Map.copyOf(bones), Map.copyOf(animations));
     }
 
     private static Vec3 vector(JsonElement element, Vec3 fallback) {
@@ -111,13 +135,36 @@ public final class GraveDragonIdleAirPose {
         return keys.getLast().value;
     }
 
-    public static Frame sample(double seconds) {
+    /** 全部动画名，供状态机与测试枚举。 */
+    public static Set<String> animationNames() {
+        return Resources.DEFINITION.animations.keySet();
+    }
+
+    /** 某个动画的时长（秒）。 */
+    public static double duration(String animation) {
+        Animation anim = Resources.DEFINITION.animations.get(animation);
+        if (anim == null) throw new IllegalArgumentException("Unknown dragon animation: " + animation);
+        return anim.duration;
+    }
+
+    /**
+     * 按动画名与秒数采样。
+     *
+     * @param loop true 用于循环动画，对时长取模；false 用于 takeoff/land/turn 这类一次性动画，
+     *             超出时长后钳制在末帧（也就是播完停住），所以调用方可以直接给一个不断增长的秒数。
+     */
+    public static Frame sample(String animation, double seconds, boolean loop) {
         Definition definition = Resources.DEFINITION;
-        double time = ((seconds % definition.duration) + definition.duration) % definition.duration;
+        Animation anim = definition.animations.get(animation);
+        if (anim == null) throw new IllegalArgumentException("Unknown dragon animation: " + animation);
+        double time = loop
+                ? ((seconds % anim.duration) + anim.duration) % anim.duration
+                : Math.max(0, Math.min(seconds, anim.duration));
+
         Map<String, BonePose> poses = new LinkedHashMap<>();
         for (var entry : definition.bones.entrySet()) {
             Bone bone = entry.getValue();
-            Track track = APPLY_ANIMATION ? definition.tracks.get(entry.getKey()) : null;
+            Track track = APPLY_ANIMATION ? anim.tracks.get(entry.getKey()) : null;
             Vec3 rotation = bone.rotation, position = Vec3.ZERO, scale = ONE;
             if (track != null) {
                 rotation = rotation.add(sample(track.rotation, time, Vec3.ZERO).multiply(-RAD, -RAD, RAD));
@@ -131,6 +178,16 @@ public final class GraveDragonIdleAirPose {
         Map<String, Matrix4f> matrices = new HashMap<>();
         for (String name : poses.keySet()) matrix(name, poses, matrices, new HashSet<>());
         return new Frame(Map.copyOf(poses), Map.copyOf(matrices));
+    }
+
+    /** 循环采样，等价于 {@code sample(animation, seconds, true)}。 */
+    public static Frame sample(String animation, double seconds) {
+        return sample(animation, seconds, true);
+    }
+
+    /** 旧调用方式，等价于采样 {@link #IDLE_AIR}。 */
+    public static Frame sample(double seconds) {
+        return sample(IDLE_AIR, seconds);
     }
 
     private static Matrix4f matrix(String name, Map<String, BonePose> poses, Map<String, Matrix4f> cache, Set<String> visiting) {

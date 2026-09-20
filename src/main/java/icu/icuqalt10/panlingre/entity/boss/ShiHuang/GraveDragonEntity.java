@@ -324,6 +324,28 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     ).setDarkenScreen(true)
             .setCreateWorldFog(true);
 
+    /**
+     * BossBar 必须显式把玩家加进来才会显示——{@link ServerBossEvent} 不会自己订阅。
+     * 原版凋灵/末影龙都是在 {@code startSeenByPlayer} / {@code stopSeenByPlayer} 里成对增删的，
+     * 这里之前漏了这两个覆盖，所以墓龙的 BossBar 从创建到移除都没有任何观众。
+     */
+    @Override
+    public void startSeenByPlayer(ServerPlayer player) {
+        super.startSeenByPlayer(player);
+        this.bossEvent.addPlayer(player);
+    }
+
+    @Override
+    public void stopSeenByPlayer(ServerPlayer player) {
+        super.stopSeenByPlayer(player);
+        this.bossEvent.removePlayer(player);
+    }
+
+    /** 当前正在看到这条 BossBar 的玩家，供测试与调试使用。 */
+    public java.util.Collection<ServerPlayer> bossBarViewers() {
+        return this.bossEvent.getPlayers();
+    }
+
     public GraveDragonEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
         if (!partConfigLoaded) reloadPartConfig();
@@ -335,7 +357,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         // Same id reservation as NeoForge's EnderDragon: clients derive part ids
         // from the root spawn packet, with no independently tracked child entities.
         setId(ENTITY_COUNTER.getAndAdd(worldParts.length + 1) + 1);
-        updatePartPose(GraveDragonIdleAirPose.sample(0), yBodyRot, position());
+        updatePartPose(GraveDragonPose.sample(0), yBodyRot, position());
         updateBodyFootprint();
         // Entity 的构造函数只把 dimensions 设成 EntityType 的默认值，refreshDimensions() 要等
         // pose 同步数据变化才会跑；所以这里显式刷一次，否则 NAME_TAG 挂点还是默认值。
@@ -668,7 +690,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         // crosshair and the server's validation measure the very same boxes. Rendering does
         // NOT touch them: an interpolated render frame used to overwrite them, which is what
         // made the two sides disagree.
-        updatePartPose(GraveDragonIdleAirPose.sample(collisionPoseSeconds()), yBodyRot, position());
+        updatePartPose(GraveDragonPose.sample(collisionPoseSeconds()), yBodyRot, position());
         updateBodyFootprint();
     }
 
@@ -712,10 +734,10 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         bodyFootprintValid = true;
     }
 
-    private void updatePartPose(GraveDragonIdleAirPose.Frame frame, float yaw, Vec3 origin) {
-        var transform = GraveDragonIdleAirPose.modelToEntity(yaw, getScale());
+    private void updatePartPose(GraveDragonPose.Frame frame, float yaw, Vec3 origin) {
+        var transform = GraveDragonPose.modelToEntity(yaw, getScale());
         for (int i = 0; i < worldParts.length; i++) {
-            worldParts[i].setOrientedBox(GraveDragonIdleAirPose.box(frame, PART_LABELS[i], PART_BOUNDS[i], transform, origin));
+            worldParts[i].setOrientedBox(GraveDragonPose.box(frame, PART_LABELS[i], PART_BOUNDS[i], transform, origin));
         }
     }
 
@@ -727,12 +749,12 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      */
     public void updateClientPartPose(float partialTick) {
         if (!level().isClientSide) return;
-        updatePartPose(GraveDragonIdleAirPose.sample(collisionPoseSeconds()),
+        updatePartPose(GraveDragonPose.sample(collisionPoseSeconds()),
                 Mth.rotLerp(partialTick, yBodyRotO, yBodyRot), position());
     }
 
     /** Kept for the pose regression test, which drives poses explicitly. */
-    public void updateClientPartPose(float partialTick, GraveDragonIdleAirPose.Frame frame) {
+    public void updateClientPartPose(float partialTick, GraveDragonPose.Frame frame) {
         if (!level().isClientSide) return;
         Vec3 origin = new Vec3(Mth.lerp(partialTick, xOld, getX()), Mth.lerp(partialTick, yOld, getY()), Mth.lerp(partialTick, zOld, getZ()));
         updatePartPose(frame, Mth.rotLerp(partialTick, yBodyRotO, yBodyRot), origin);
@@ -789,7 +811,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        if (GraveDragonIdleAirPose.APPLY_ANIMATION) {
+        if (GraveDragonPose.APPLY_ANIMATION) {
             controllers.add(new WorldTimeAnimationController<>(this, "idle_air",
                     () -> WorldTimeAnimationController.Playback.loop("idle_air", entityData.get(IDLE_START)),
                     state -> level().getGameTime() + state.getPartialTick()));
