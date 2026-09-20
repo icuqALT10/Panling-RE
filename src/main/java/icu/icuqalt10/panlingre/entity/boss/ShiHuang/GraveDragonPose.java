@@ -140,6 +140,50 @@ public final class GraveDragonPose {
         return Resources.DEFINITION.animations.keySet();
     }
 
+    /**
+     * 脊柱主链：{@code head → tail_tip}，21 节。
+     *
+     * <p>{@code neck_10..neck_01} 与 {@code tail_01..tail_tip} 的节距都是 3.00 格，
+     * 所以链式跟随退化成"沿龙头轨迹每 3 格取一点"，不必处理不均匀骨长。四肢分别挂在
+     * {@code neck_06} 与 {@code tail_02} 上，脊柱一动它们自动跟着走。
+     */
+    private static final List<String> SPINE = List.of(
+            "head", "neck_joint", "neck_11", "neck_10", "neck_09", "neck_08", "neck_07", "neck_06",
+            "neck_05", "neck_04", "neck_03", "neck_02", "neck_01",
+            "tail_01", "tail_02", "tail_03", "tail_04", "tail_05", "tail_06", "tail_07", "tail_tip");
+
+    public static List<String> spineBones() {
+        return SPINE;
+    }
+
+    /** 骨骼在静止姿态下的 pivot（模型空间，单位格）。链式反解要用它算节距。 */
+    public static Vec3 bonePivot(String bone) {
+        Bone b = Resources.DEFINITION.bones.get(bone);
+        if (b == null) throw new IllegalArgumentException("Unknown dragon bone: " + bone);
+        return b.pivot;
+    }
+
+    /** 骨骼的静止旋转，弧度。 */
+    public static Vec3 boneRestRotation(String bone) {
+        Bone b = Resources.DEFINITION.bones.get(bone);
+        if (b == null) throw new IllegalArgumentException("Unknown dragon bone: " + bone);
+        return b.rotation;
+    }
+
+    /**
+     * 用链式求解出的脊柱位姿覆盖基础姿态，产出新的帧（并重算全部骨骼矩阵）。
+     *
+     * <p>没被覆盖的骨骼保持基础姿态，所以动画的扭动、四肢与鬃毛都还在，只是脊柱的整体位置
+     * 与朝向改由链式求解决定。
+     */
+    public static Frame withSpine(Frame base, String[] bones, BonePose[] poses) {
+        Map<String, BonePose> merged = new LinkedHashMap<>(base.bones());
+        for (int i = 0; i < bones.length; i++) merged.put(bones[i], poses[i]);
+        Map<String, Matrix4f> matrices = new HashMap<>();
+        for (String name : merged.keySet()) matrix(name, merged, matrices, new HashSet<>());
+        return new Frame(Map.copyOf(merged), Map.copyOf(matrices));
+    }
+
     /** 某个动画的时长（秒）。 */
     public static double duration(String animation) {
         Animation anim = Resources.DEFINITION.animations.get(animation);
