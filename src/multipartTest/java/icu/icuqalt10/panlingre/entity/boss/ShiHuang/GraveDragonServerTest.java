@@ -18,6 +18,7 @@ import icu.icuqalt10.panlingre.init.ModEntities;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityAttachment;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Arrow;
@@ -566,6 +567,37 @@ public final class GraveDragonServerTest {
                         "Part " + part.getPartIndex() + " has no sample at its centre");
             }
             helper.assertTrue(boxes == parts.length, "A part is missing its oriented box");
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
+    }
+
+    /**
+     * 世界内血条和原版名牌都挂在 {@link EntityAttachment#NAME_TAG} 上，而挂点由
+     * {@code EntityDimensions} 的 attachments 决定。主体只有 1cm，挂点默认就贴在锚点上，
+     * 于是名牌/血条出现在龙的身体根部而不是头上。
+     *
+     * <p>这里要求挂点被抬到头顶，同时宽高仍是锚点大小（否则会连带改变挤压、粒子散布等行为）。
+     */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void nameTagHangsAboveTheHead(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setPos(helper.absoluteVec(new Vec3(2, 30, 2)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            Vec3 attachment = dragon.getAttachments()
+                    .getNullable(EntityAttachment.NAME_TAG, 0, dragon.getViewYRot(1.0F));
+            helper.assertTrue(attachment != null, "Dragon has no name tag attachment");
+            helper.assertTrue(attachment.y > 20.0,
+                    "Name tag attachment is still at the anchor: " + attachment);
+            helper.assertTrue(Math.abs(attachment.x) < 4.0 && Math.abs(attachment.z) < 8.0,
+                    "Name tag attachment drifted off the head: " + attachment);
+            // 换掉挂点不能顺手把尺寸也改了。
+            helper.assertTrue(dragon.getBbWidth() < 0.1F && dragon.getBbHeight() < 0.1F,
+                    "Root dimensions must stay the anchor, got "
+                            + dragon.getBbWidth() + "x" + dragon.getBbHeight());
             helper.succeed();
         } finally {
             dragon.discard();

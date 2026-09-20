@@ -18,8 +18,12 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityAttachment;
+import net.minecraft.world.entity.EntityAttachments;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -333,6 +337,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         setId(ENTITY_COUNTER.getAndAdd(worldParts.length + 1) + 1);
         updatePartPose(GraveDragonIdleAirPose.sample(0), yBodyRot, position());
         updateBodyFootprint();
+        // Entity 的构造函数只把 dimensions 设成 EntityType 的默认值，refreshDimensions() 要等
+        // pose 同步数据变化才会跑；所以这里显式刷一次，否则 NAME_TAG 挂点还是默认值。
+        this.refreshDimensions();
         this.noPhysics = false;
         this.setNoAi(false);
     }
@@ -384,6 +391,36 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     @Override
     protected PathNavigation createNavigation(Level level) {
         return new GraveDragonPathNavigation(this, level);
+    }
+
+    // ===== 名牌 / 世界内血条的挂点 =====
+    // 世界内血条（TES 的 in-world HUD）和原版名牌都挂在 EntityAttachment.NAME_TAG 上，而挂点
+    // 由 EntityDimensions 的 attachments 决定。主体只有 1cm，挂点自然就贴在锚点上，血条于是
+    // 显示在龙的身体根部而不是头上。
+    //
+    // 这里只把 NAME_TAG 挂点抬到头顶，**宽高原样不动**：碰撞盒、getBbWidth/getBbHeight、
+    // 粒子散布、MoveControl 全都不受影响，未指定的挂点由 EntityAttachments.Builder.build()
+    // 自动补默认值。
+    //
+    // 数值实测自当前 idle_air 姿态在实体局部坐标下的头部范围：Z -5.4..+1.2、Y 20.9..26.2
+    // （头就在锚点正上方，尾巴才在后方 40 格）。+0.5 是渲染时的固定抬升。
+    private static final float NAME_TAG_HEIGHT = 26.0F;
+    private static final float NAME_TAG_FORWARD = -2.0F;
+
+    private static final EntityAttachments.Builder NAME_TAG_ATTACHMENT = EntityAttachments.builder()
+            .attach(EntityAttachment.NAME_TAG, 0.0F, NAME_TAG_HEIGHT, NAME_TAG_FORWARD);
+
+    /** 宽高仍是 1cm 锚点，只是挂点变了。 */
+    private static final EntityDimensions ANCHOR_DIMENSIONS =
+            EntityDimensions.scalable(0.01F, 0.01F).withAttachments(NAME_TAG_ATTACHMENT);
+
+    /**
+     * {@code LivingEntity.getDimensions(Pose)} 是 final，这是唯一的尺寸钩子（它会再乘 getScale()）。
+     * 这里只为了换掉 attachments，宽高保持锚点大小。
+     */
+    @Override
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
+        return ANCHOR_DIMENSIONS;
     }
 
     /** Part damage is routed here; head is vulnerable, tail is more resistant. */
