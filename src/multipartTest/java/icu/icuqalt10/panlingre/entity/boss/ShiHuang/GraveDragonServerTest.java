@@ -170,18 +170,50 @@ public final class GraveDragonServerTest {
             helper.assertTrue(rayPart >= 0, "Test needs the view ray to reach the body");
             helper.assertTrue(dragon.canPlayerReachPart(player, rayPart),
                     "Test needs the ray hit to be reachable, got part" + rayPart);
-            // The requested part is the one the client named and it is in reach.
-            helper.assertTrue(dragon.canPlayerReachPart(player, 22),
-                    "Requested part should be in reach for this test");
 
+            // The ray corrects a wrong pick: aiming through the body at the far end resolves
+            // to a part the ray actually reaches, and the attack still lands.
             int resolved = dragon.resolveMeleeStrike(player, 22);
-            helper.assertTrue(resolved == 22,
-                    "A reachable requested part must win over the ray, got part" + resolved);
+            helper.assertTrue(resolved >= 0, "A reachable aim must not be discarded");
+            helper.assertTrue(dragon.canPlayerReachPart(player, resolved),
+                    "Resolved part " + resolved + " is out of reach");
 
-            // And the attack must actually land.
             float before = dragon.getHealth();
             parts[22].hurt(level.damageSources().playerAttack(player), 100.0F);
             helper.assertTrue(dragon.getHealth() < before, "Resolved melee produced no damage");
+            helper.succeed();
+        } finally {
+            dragon.discard();
+            player.discard();
+        }
+    }
+
+    /**
+     * A direct hurt() call from far outside the interaction range must still be refused, so
+     * the part resolver cannot be abused by code paths that bypass the attack packet's own
+     * reach guard.
+     */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void distantDirectMeleeIsRefused(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.setPos(helper.absoluteVec(new Vec3(2, 30, 2)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        dragon.tick();
+        var player = new FakePlayer(level, new GameProfile(UUID.randomUUID(), "DistantMeleeTest"));
+        try {
+            var parts = dragon.getWorldParts();
+            var box = parts[22].getOrientedBox();
+            // Stand well beyond any attack range.
+            Vec3 away = box.center.add(box.axisX.scale(box.halfExtents.x + 20.0));
+            player.setPos(away.x, away.y - player.getEyeHeight(), away.z);
+            float before = dragon.getHealth();
+            helper.assertTrue(!parts[22].hurt(level.damageSources().playerAttack(player), 100.0F),
+                    "A part 20 blocks away accepted a melee hit");
+            helper.assertTrue(dragon.getHealth() == before, "Distant melee still dealt damage");
             helper.succeed();
         } finally {
             dragon.discard();

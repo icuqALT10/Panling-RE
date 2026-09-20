@@ -327,32 +327,36 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /**
      * Every damage path (melee, projectiles, area skills) funnels through here, so this is
-     * the one place to learn which part actually took the hit. The attacking player is told
-     * about it and gets a chat line naming the part, its multiplier and the damage.
+     * the one place to learn which part actually took the hit and how much health left with
+     * it. The attacking player is told about it and gets a chat line naming the part, its
+     * multiplier and the damage.
      *
-     * <p>Health is sampled around the call and the line is sent one tick later, because the
-     * amount that actually leaves the health bar is only known once mitigation has run.
+     * <p>The health delta is captured right here rather than reconstructed later: the same
+     * tick can carry several damage events, so a deferred snapshot compared against the
+     * current health reports zero for every hit but the last.
      */
     @Override
     protected boolean hurtSelectedPart(int partIndex, DamageSource source, float amount) {
         float healthBefore = getHealth();
         boolean applied = super.hurtSelectedPart(partIndex, source, amount);
+        float dealt = healthBefore - getHealth();
         if (GraveDragonDamageDebug.enabled()) {
             GraveDragonDamageDebug.log("funnel part=" + partIndex
                     + " src=" + source.getMsgId()
                     + " direct=" + (source.getDirectEntity() == null ? "null"
                             : source.getDirectEntity().getClass().getSimpleName())
                     + " applied=" + applied
-                    + " hp=" + healthBefore + "->" + getHealth());
+                    + " hp=" + healthBefore + "->" + getHealth() + " dealt=" + dealt);
         }
-        if (applied) {
+        if (applied && dealt > 0) {
             // getEntity() is the attacker for every damage type (melee, thrown items, skills,
             // explosions), whereas getDirectEntity() is the projectile or null for skills, so
             // using the latter silently dropped every non-melee report.
             if (source.getEntity() instanceof net.minecraft.server.level.ServerPlayer attacker) {
                 pendingReportPart = partIndex;
                 pendingReportPlayer = attacker;
-                pendingReportHealthBefore = healthBefore;
+                pendingReportDealt = dealt;
+                pendingReportRemaining = getHealth();
             }
         }
         return applied;
@@ -360,7 +364,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     private int pendingReportPart = -1;
     private net.minecraft.server.level.ServerPlayer pendingReportPlayer;
-    private float pendingReportHealthBefore;
+    private float pendingReportDealt;
+    private float pendingReportRemaining;
 
     /**
      * Sends the deferred hit report once the health change is final. Runs on the server
@@ -370,14 +375,14 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         if (pendingReportPart < 0 || pendingReportPlayer == null) return;
         int part = pendingReportPart;
         net.minecraft.server.level.ServerPlayer player = pendingReportPlayer;
-        float dealt = pendingReportHealthBefore - getHealth();
+        float dealt = pendingReportDealt;
+        float remaining = pendingReportRemaining;
         pendingReportPart = -1;
         pendingReportPlayer = null;
         if (dealt <= 0) {
             GraveDragonDamageDebug.log("report skipped, dealt=" + dealt);
             return;
         }
-        float remaining = getHealth();
         GraveDragonDamageDebug.log("report part=" + part + " dealt=" + dealt
                 + " remaining=" + remaining + " to=" + player.getGameProfile().getName());
         net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player,
@@ -449,59 +454,60 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /**
      * The single place that decides what a player's melee attack hits.
      *
-     * <p>Resolution mirrors how projectiles behave, because projectiles never had this
-     * problem: they damage the part they touch and nothing re-validates afterwards.
-     * A melee attack is therefore accepted whenever the attack packet's own reach check
-     * and the part the client named agree, and the server's ray is only used to
-     * <em>correct</em> that choice, never to veto it:
+     * <p>Vanilla has already validated reach for the part the client named: the server drops
+     * the entire attack packet when {@code Player#canInteractWithEntity} fails for it, so a
+     * hurt call can only happen for an in-range part. This method therefore trusts that
+     * choice and uses its own ray only to <em>correct</em> it, never to veto it:
      * <ol>
-     *   <li>If the part the client named is within reach, use it. This is the visible
-     *       crosshair target, so accepting it keeps the game honest with what the player
-     *       sees. Reach was already validated when the attack packet arrived.</li>
-     *   <li>Otherwise use whatever part the server's own ray reaches first, if that part
-     *       is in reach. This is what fixes the wrong-part selections the client makes
-     *       through AABB envelopes, where a large part's empty corner steals the pick
-     *       from the small part under the crosshair.</li>
-     *   <li>If neither is in reach, discard the attack.</li>
+     *   <li>Cast the server's view ray. When it reaches a different part that is itself in
+     *       reach, use it. This fixes the wrong-part selections the client makes through
+     *       AABB envelopes, where a large part's empty corner steals the pick from the
+     *       small part under the crosshair.</li>
+     *   <li>Otherwise damage the part the client named.</li>
      * </ol>
      *
-     * <p>Order matters and used to be inverted: resolving the ray first meant a long body
-     * part further along the view line (the torso can be several blocks deep) could win
-     * the ray and then be rejected as out of reach, silently turning a legitimate click
-     * on a nearby limb into no damage at all.
+     * <p>Both earlier orderings were wrong in opposite ways. Resolving the ray first let a
+     * long body part further along the view line (the torso runs several blocks deep) win
+     * the ray and then be rejected as out of reach, discarding a valid click on a nearby
+     * limb. Re-validating the client's part with a second, differently computed reach check
+     * (this one uses {@code interactionRange + 1 + tolerance} against an oriented box, where
+     * vanilla uses {@code interactionRange + 1} against the part's bounding box) threw away
+     * every click that landed between the two thresholds.
      *
      * @param requested part index named by the client's attack packet
      * @return the part index to damage, or -1 when the attack must be discarded
      */
     public int resolveMeleeStrike(Player player, int requested) {
-        boolean requestedInReach = canPlayerReachPart(player, requested);
+        // Anti-cheat clamp only. The part the client named is normally reach-validated by
+        // ServerGamePacketListenerImpl, which drops the whole attack packet when
+        // Player#canInteractWithEntity fails. That guard does not cover code paths which
+        // call hurt() directly, so an obviously distant part is still refused here. The
+        // margin is deliberately wide: re-validating at the real threshold with our own
+        // slightly different formula is what silently discarded valid clicks.
+        double vanillaLimit = player.entityInteractionRange() + 1.0;
+        double hardLimit = vanillaLimit + MELEE_OUT_OF_RANGE_MARGIN;
+        if (!canPlayerReachPartWithin(player, requested, hardLimit)) return -1;
+
         int ray = pickPartAlongViewRay(player);
-        boolean rayInReach = canPlayerReachPart(player, ray);
-        int struck;
-        if (requestedInReach) {
-            struck = requested;
-        } else {
-            struck = rayInReach ? ray : -1;
-        }
-        if (GraveDragonDamageDebug.enabled() && player instanceof net.minecraft.server.level.ServerPlayer debugPlayer) {
-            String verdict = struck < 0
-                    ? "拒绝：请求部位与射线部位都超出攻击距离"
-                    : "采用 " + PART_LABELS[struck];
-            debugPlayer.displayClientMessage(net.minecraft.network.chat.Component.literal(
-                    "[近战] 请求=" + PART_LABELS[requested] + " 够得着=" + yn(requestedInReach)
-                            + " | 射线=" + (ray < 0 ? "无" : PART_LABELS[ray]) + " 够得着=" + yn(rayInReach)
-                            + " | " + verdict), false);
-        }
+        boolean rayWins = ray >= 0 && ray != requested && canPlayerReachPart(player, ray);
+        int struck = rayWins ? ray : requested;
         if (GraveDragonDamageDebug.enabled()) {
-            GraveDragonDamageDebug.log("melee requested=" + requested + " inReach=" + requestedInReach
-                    + " ray=" + ray + " rayInReach=" + rayInReach + " -> struck=" + struck
+            GraveDragonDamageDebug.log("melee requested=" + requested + " ray=" + ray
+                    + " rayWins=" + rayWins + " -> struck=" + struck
                     + " range=" + player.entityInteractionRange());
         }
         return struck;
     }
 
-    private static String yn(boolean value) {
-        return value ? "是" : "否";
+    /** Margin beyond the vanilla interaction limit that still counts as a legitimate hit. */
+    private static final double MELEE_OUT_OF_RANGE_MARGIN = 8.0;
+
+    /** Reach test against an explicit limit, so callers can choose their own threshold. */
+    public boolean canPlayerReachPartWithin(Player player, int index, double limit) {
+        if (index < 0 || index >= worldParts.length) return false;
+        if (worldParts[index].getOrientedBox() == null) return false;
+        Vec3 eye = player.getEyePosition();
+        return worldParts[index].getBoundingBox().distanceToSqr(eye) <= limit * limit;
     }
 
     /** Prevent movement when any real body part would collide with blocks. */
