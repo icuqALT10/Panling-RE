@@ -45,6 +45,11 @@ public abstract class OrientedEntityPickMixin {
 
         EntityHitResult selected = cir.getReturnValue();
         Entity selectedEntity = selected == null ? null : selected.getEntity();
+        if (icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonDamageDebug.enabled()) {
+            icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonDamageDebug.log(
+                    "pick vanilla=" + describe(selectedEntity) + " viewer=" + describe(viewer)
+                            + " from=" + from + " to=" + to);
+        }
         // The camera already sits inside a real oriented box: that is a zero-distance
         // hit, and nothing can legitimately be nearer than zero.
         if (selectedEntity instanceof MultipartEntity.OrientedPart picked) {
@@ -85,6 +90,7 @@ public abstract class OrientedEntityPickMixin {
 
         if (partEntity == null) return;
         if (selected == null) {
+            report(selectedEntity, partEntity, from);
             cir.setReturnValue(new EntityHitResult(partEntity, partLocation));
             return;
         }
@@ -92,6 +98,22 @@ public abstract class OrientedEntityPickMixin {
         // Another entity was picked through its envelope. Replace it only when the real
         // oriented box is genuinely nearer, so ordinary entities keep vanilla ordering.
         if (partEntity != selectedEntity && !partLocation.closerThan(from, selected.getLocation().distanceToSqr(from))) return;
+        report(selectedEntity, partEntity, from);
         cir.setReturnValue(new EntityHitResult(partEntity, partLocation));
+    }
+
+    private static void report(Entity before, Entity after, Vec3 from) {
+        if (!icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonDamageDebug.enabled()) return;
+        if (before == after) return;
+        icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonDamageDebug.log(
+                "pick corrected " + describe(before) + " -> " + describe(after) + " from=" + from);
+    }
+
+    private static String describe(Entity entity) {
+        if (entity == null) return "null";
+        if (entity instanceof icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonPartEntity part) {
+            return "part" + part.getPartIndex();
+        }
+        return entity.getClass().getSimpleName();
     }
 }

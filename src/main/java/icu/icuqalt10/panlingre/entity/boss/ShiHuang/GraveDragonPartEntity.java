@@ -38,6 +38,21 @@ public final class GraveDragonPartEntity extends PartEntity<GraveDragonEntity>
     @Override public int getPartIndex() { return partIndex; }
     @Override public OrientedBoundingBox getOrientedBox() { return orientedBox; }
 
+    /**
+     * Extra interaction range granted to boss parts, in blocks.
+     *
+     * <p>Melee reach is validated against the server's copy of the player's position, and a
+     * moving player is always a little stale there, so clicks land just past the vanilla
+     * limit. Measured rejections were 0.17 to 1.6 blocks over, so a small, part-only margin
+     * removes the silent discards without changing how anything else in the world behaves.
+     */
+    public static final double REACH_MARGIN = 2.0;
+
+    /** Whether an interaction box belongs to one of our parts, for the reach mixin. */
+    public static boolean isPartHitbox(AABB box) {
+        return box instanceof OrientedHitbox;
+    }
+
     public void setOrientedBox(OrientedBoundingBox box) {
         xo = xOld = getX(); yo = yOld = getY(); zo = zOld = getZ();
         orientedBox = box;
@@ -62,6 +77,12 @@ public final class GraveDragonPartEntity extends PartEntity<GraveDragonEntity>
             // Melee: one call into the dragon's resolver, one reach gate, one verdict. This
             // method contributes no policy of its own. Damage reporting happens centrally in
             // the dragon's hurtSelectedPart, so every attack type is covered by one path.
+            if (GraveDragonDamageDebug.enabled()) {
+                GraveDragonDamageDebug.log("part.hurt named=" + partIndex
+                        + " (" + GraveDragonEntity.PART_LABELS[partIndex] + ")"
+                        + " local=" + (player.level().isClientSide ? "client" : "server")
+                        + " side=" + (level().isClientSide ? "client" : "server"));
+            }
             int struck = getParent().resolveMeleeStrike(player, partIndex);
             if (struck < 0) return false;
             return getParent().hurtPart(struck, source, amount);
