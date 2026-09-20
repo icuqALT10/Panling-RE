@@ -10,18 +10,24 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Gives multipart boss parts a little extra interaction range, and only those parts.
+ * Gives multipart boss parts extra interaction range on the <b>server</b>, and only those parts.
  *
- * <p>Vanilla validates reach twice for a left click: the client filters its pick through
- * {@code entityInteractionRange}, and the server drops the whole attack packet when
- * ServerGamePacketListenerImpl disagrees. Both call this method. The threshold sits exactly
- * where a player fighting a large animated boss operates, so the latency between the
- * client's click and the server handling it is enough to push a legitimate click just past
- * the limit and discard it silently — measurements showed rejected attacks landing between
- * 0.17 and 1.6 blocks beyond the limit.
+ * <p>Two independent reach gates exist in vanilla and they do not share an implementation:
+ * <ul>
+ *   <li>Server: {@code ServerGamePacketListenerImpl.handleInteract} calls
+ *       {@code Player#canInteractWithEntity} and silently drops the whole attack packet when it
+ *       fails. That method is the one hooked here.</li>
+ *   <li>Client: {@code GameRenderer.pick} does <b>not</b> use it. It filters through
+ *       {@code filterHitResult(hit, eye, entityInteractionRange)} against a hard 3 blocks, and
+ *       {@code Minecraft.startAttack} turns a miss into an empty swing without sending a packet.
+ *       The client side is widened separately by
+ *       {@code client.PartPickReachMixin}.</li>
+ * </ul>
+ * Both are needed: without the client half a part beyond 3 blocks is never even reported, and
+ * without the server half the packet is dropped once a moving player's position lags.
  *
- * <p>Scoping the margin to part entities keeps ordinary interactions (villagers, chests,
- * other mobs) exactly as vanilla defines them.
+ * <p>Scoping the margin to part entities keeps ordinary interactions (villagers, chests, other
+ * mobs) exactly as vanilla defines them.
  */
 @Mixin(Player.class)
 public abstract class PartInteractionReachMixin {

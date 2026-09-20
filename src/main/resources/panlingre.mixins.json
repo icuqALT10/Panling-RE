@@ -24,6 +24,7 @@
     "client": [
     "client.MinecraftTaskGlowMixin",
     "client.GraveDragonHitboxRenderMixin",
+    "client.PartPickReachMixin",
     "client.EntityTaskGlowColorMixin",
     "client.GameRendererActivationMixin",
     "client.ItemInHandRendererMixin",

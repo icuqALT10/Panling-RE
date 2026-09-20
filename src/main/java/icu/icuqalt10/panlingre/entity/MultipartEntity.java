@@ -83,6 +83,26 @@ public abstract class MultipartEntity extends Monster {
         OrientedBoundingBox getOrientedBox();
     }
 
+    /**
+     * Every oriented part on the client within {@code radius} of {@code origin}.
+     *
+     * <p>Client code has no {@code getEntityOrPart}: that helper exists on {@code ServerLevel}
+     * only, and {@code ClientLevel#getEntity(int)} has no part fallback. Parts are reached
+     * through the world's part-entity collection, which is what this walks.
+     */
+    public static List<OrientedPart> orientedPartsNear(Level level, Vec3 origin, double radius) {
+        List<OrientedPart> found = new ArrayList<>();
+        if (level == null) return found;
+        double limit = radius * radius;
+        for (var part : level.getPartEntities()) {
+            if (!(part instanceof OrientedPart oriented)) continue;
+            var box = oriented.getOrientedBox();
+            if (box == null) continue;
+            if (box.distanceToSqr(origin) <= limit) found.add(oriented);
+        }
+        return found;
+    }
+
     public static List<LivingEntity> collectTargets(Level level, AABB area, LivingEntity source) {
         Map<UUID, LivingEntity> result = new LinkedHashMap<>();
         // The logical root deliberately has a tiny box. Query a generous
