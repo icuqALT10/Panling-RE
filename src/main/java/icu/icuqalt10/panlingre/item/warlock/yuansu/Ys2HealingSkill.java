@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.item.warlock.yuansu;
 
+import icu.icuqalt10.panlingre.entity.MultipartEntity;
 import icu.icuqalt10.panlingre.entity.YsMuHealingEntity;
 import icu.icuqalt10.panlingre.network.ItemActivationPayload;
 import icu.icuqalt10.panlingre.util.SkillHelper;
@@ -58,12 +59,14 @@ public final class Ys2HealingSkill {
         }
 
         AABB searchArea = owner.getBoundingBox().inflate(TARGET_RADIUS);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, searchArea,
-                        SkillHelper.friendlyTargetFilter(owner)
-                                .and(target -> !target.is(owner)
-                                        && owner.distanceToSqr(target)
-                                        <= TARGET_RADIUS * TARGET_RADIUS))
+        // Multipart children are plain Entity instances, so a LivingEntity query never
+        // sees them; collectTargets resolves part hitboxes back to their living root.
+        List<LivingEntity> targets = MultipartEntity.collectTargets(level, searchArea, owner)
                 .stream()
+                .filter(SkillHelper.friendlyTargetFilter(owner)
+                        .and(target -> !target.is(owner)
+                                && owner.distanceToSqr(target)
+                                <= TARGET_RADIUS * TARGET_RADIUS))
                 .sorted(SkillHelper.friendlyTargetComparator(owner))
                 .limit(MAX_TEAMMATES)
                 .toList();

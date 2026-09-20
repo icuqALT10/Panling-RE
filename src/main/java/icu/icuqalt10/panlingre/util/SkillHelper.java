@@ -54,23 +54,35 @@ public class SkillHelper {
                 center.x + maxRadius, center.y + maxRadius, center.z + maxRadius
         );
 
-        List<LivingEntity> candidates = new java.util.ArrayList<>(
-                MultipartEntity.collectTargets(world, bounds, source));
-        for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, bounds)) {
-            if (!candidates.contains(entity)) candidates.add(entity);
-        }
+        List<LivingEntity> candidates = MultipartEntity.collectTargets(world, bounds, source);
         return candidates.stream()
                 .filter(entity -> entity != source)
-                .filter(entity -> {
-                    Vec3 relativePos = entity.position().subtract(center);
-                    double projForward = relativePos.dot(forward);
-                    double projRight = relativePos.dot(right);
-                    double projUp = relativePos.dot(up);
-                    return Math.abs(projForward) <= halfLength
-                            && Math.abs(projRight) <= halfWidth
-                            && Math.abs(projUp) <= halfHeight;
-                })
+                .filter(entity -> insideForwardBox(entity, center, forward, right, up,
+                        halfLength, halfWidth, halfHeight))
                 .toList();
+    }
+
+    /**
+     * 判断实体是否落在以 {@code center} 为中心、沿 {@code forward} 方向延伸的前方长方体区域内。
+     *
+     * <p>普通实体只有一个采样点（其 {@code position()}）。多节实体的逻辑坐标只是一个记账用的
+     * 锚点，躯体可能整体都在该点之外，因此必须改采样各子碰撞箱，否则“只有翅膀或尾巴伸进区域”
+     * 的 Boss 会被整个漏掉。
+     */
+    private static boolean insideForwardBox(LivingEntity entity, Vec3 center, Vec3 forward, Vec3 right, Vec3 up,
+                                            double halfLength, double halfWidth, double halfHeight) {
+        List<Vec3> samples = entity instanceof MultipartEntity multipart
+                ? multipart.multipartBodySamples()
+                : List.of(entity.position());
+        for (Vec3 sample : samples) {
+            Vec3 relativePos = sample.subtract(center);
+            if (Math.abs(relativePos.dot(forward)) <= halfLength
+                    && Math.abs(relativePos.dot(right)) <= halfWidth
+                    && Math.abs(relativePos.dot(up)) <= halfHeight) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

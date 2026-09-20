@@ -381,8 +381,8 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
         List<LivingEntity> targetEntities = SkillHelper.getLivingEntitiesInFront(player, width, width, length);
         for (LivingEntity entity : targetEntities) {
             if (SkillHelper.combatTargetFilter(player).test(entity)) {
-                // The selector may hit a dragon child entity. Always resolve
-                // that child to its living multipart root before adding the effect.
+                // getLivingEntitiesInFront 已经把子碰撞箱还原成活体主体，这里是二重保险：
+                // 万一将来有别的选择器交回子部件，addEffectToTarget 仍会归并到主体。
                 SkillHelper.addEffectToTarget(entity, new MobEffectInstance(ModEffects.freeze, duration, 0));
             }
         }

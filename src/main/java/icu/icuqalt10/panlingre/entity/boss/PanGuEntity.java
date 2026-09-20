@@ -7,6 +7,7 @@ import icu.icuqalt10.panlingre.network.GroundSmashPayload;
 import icu.icuqalt10.panlingre.network.ShakePayload;
 import icu.icuqalt10.panlingre.entity.FireTornadoEntity;
 import icu.icuqalt10.panlingre.entity.FireTrailTracker;
+import icu.icuqalt10.panlingre.entity.MultipartEntity;
 import icu.icuqalt10.panlingre.entity.boss.PanGu.*;
 import icu.icuqalt10.panlingre.event.GameBusEvents;
 import icu.icuqalt10.panlingre.init.ModEffects;
@@ -1300,7 +1301,9 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
 
         // 1. 获取周围半径 80 格内的所有玩家
         AABB searchBox = this.getBoundingBox().inflate(80.0);
-        List<LivingEntity> entities = serverLevel.getEntitiesOfClass(LivingEntity.class, searchBox);
+        // 多节实体的子碰撞箱只是普通 Entity，用 LivingEntity 查询会整个漏掉，
+        // 因此交给 collectTargets 把子碰撞箱还原成其活体主体（并以 this 排除自身）。
+        List<LivingEntity> entities = MultipartEntity.collectTargets(serverLevel, searchBox, this);
 
         for (LivingEntity entity : entities) {
             if (this.getTeam() != null && this.getTeam() != entity.getTeam()) {

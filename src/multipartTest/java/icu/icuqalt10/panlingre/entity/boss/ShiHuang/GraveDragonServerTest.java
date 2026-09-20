@@ -3,7 +3,9 @@ package icu.icuqalt10.panlingre.entity.boss.ShiHuang;
 import icu.icuqalt10.panlingre.entity.MultipartEntity;
 import icu.icuqalt10.panlingre.entity.boss.PanGuEntity;
 import icu.icuqalt10.panlingre.entity.FeiXianJianZhenEntity;
+import icu.icuqalt10.panlingre.entity.FireTornadoEntity;
 import icu.icuqalt10.panlingre.entity.XingHaiEntity;
+import icu.icuqalt10.panlingre.util.SkillHelper;
 import net.minecraft.nbt.CompoundTag;
 import com.mojang.authlib.GameProfile;
 import java.util.UUID;
@@ -412,6 +414,161 @@ public final class GraveDragonServerTest {
             helper.succeed();
         } finally {
             if (!dragon.isRemoved()) dragon.discard();
+        }
+    }
+
+    /**
+     * 玩家报告的原始问题：混元神鼎 Skill4 的火龙卷打不到墓龙。
+     *
+     * <p>龙卷风只查询自己那一格碰撞箱内的活体，而子碰撞箱是普通 Entity（不继承
+     * LivingEntity），主体的逻辑盒又远小于躯体，于是龙卷风扫过脖颈或翅膀时什么都找不到。
+     * 这里刻意选离逻辑锚点最远的部件落点，先断言原版查询确实漏掉墓龙（即复现了 bug），
+     * 再断言龙卷风真的扣了血。
+     */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void fireTornadoHitsPartAwayFromAnchor(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1_000_000);
+        dragon.setHealth(1_000_000);
+        dragon.setPos(helper.absoluteVec(new Vec3(2, 30, 2)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        dragon.tick();
+
+        var parts = dragon.getWorldParts();
+        int farIndex = -1;
+        double farDist = -1;
+        for (int i = 0; i < parts.length; i++) {
+            var box = parts[i].getOrientedBox();
+            if (box == null) continue;
+            double d = box.center.distanceTo(dragon.position());
+            if (d > farDist) { farDist = d; farIndex = i; }
+        }
+        helper.assertTrue(farIndex >= 0, "No part owns an oriented box");
+        helper.assertTrue(farDist > 8.0,
+                "Test needs a part well away from the logical anchor, got " + farDist);
+
+        FireTornadoEntity tornado = null;
+        try {
+            Vec3 impact = parts[farIndex].getOrientedBox().center;
+            tornado = new FireTornadoEntity(ModEntities.FIRE_TORNADO.get(), level,
+                    impact, impact, 40, 50.0F);
+            helper.assertTrue(level.addFreshEntity(tornado), "Tornado failed to spawn");
+
+            // The regression condition: the query the skill used to run cannot see the
+            // dragon at all, so any damage has to come from the part-resolving lookup.
+            helper.assertTrue(level.getEntitiesOfClass(LivingEntity.class, tornado.getBoundingBox())
+                            .stream().noneMatch(e -> e == dragon),
+                    "Vanilla LivingEntity query already finds the dragon; test proves nothing");
+            helper.assertTrue(MultipartEntity.collectTargets(level, tornado.getBoundingBox(), tornado)
+                            .contains(dragon),
+                    "Part-resolving lookup cannot reach the dragon through part " + farIndex);
+
+            float before = dragon.getHealth();
+            tornado.tick();
+            helper.assertTrue(dragon.getHealth() < before,
+                    "Fire tornado overlapping part " + farIndex + " dealt no damage to the dragon");
+            helper.succeed();
+        } finally {
+            if (tornado != null) tornado.discard();
+            dragon.discard();
+        }
+    }
+
+    /**
+     * 混元神鼎 Skill3 与盘古的冰冻锥形区域都走 {@code SkillHelper.getLivingEntitiesInFront}。
+     * 多节实体的逻辑坐标只是记账锚点，躯体可以整体落在该点之外，所以只采样
+     * {@code position()} 会让“只有翅膀/尾巴伸进锥形区域”的 Boss 被整个漏掉。
+     */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void forwardConeFindsDistantPart(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.setPos(helper.absoluteVec(new Vec3(2, 30, 2)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        dragon.tick();
+        var player = new FakePlayer(level, new GameProfile(UUID.randomUUID(), "ConeTest"));
+        try {
+            var parts = dragon.getWorldParts();
+            int farIndex = -1;
+            double farDist = -1;
+            for (int i = 0; i < parts.length; i++) {
+                var box = parts[i].getOrientedBox();
+                if (box == null) continue;
+                double d = box.center.distanceTo(dragon.position());
+                if (d > farDist) { farDist = d; farIndex = i; }
+            }
+            helper.assertTrue(farIndex >= 0 && farDist > 8.0,
+                    "Test needs a part well away from the logical anchor, got " + farDist);
+            Vec3 partCenter = parts[farIndex].getOrientedBox().center;
+
+            // Stand 6 blocks behind the part facing +Z (yRot 0) with a 6-long, 2-wide,
+            // 2-tall cone: the part sits at its far end, so it is the only thing inside.
+            player.setPos(partCenter.x, partCenter.y, partCenter.z - 6.0);
+            player.setYRot(0);
+            player.setXRot(0);
+            Vec3 center = new Vec3(partCenter.x, partCenter.y, partCenter.z - 3.0);
+            Vec3 anchorOffset = dragon.position().subtract(center);
+            helper.assertTrue(Math.abs(anchorOffset.z) > 3.0
+                            || Math.abs(anchorOffset.x) > 1.0
+                            || Math.abs(anchorOffset.y) > 1.0,
+                    "Test must exercise an anchor outside the cone, offset=" + anchorOffset);
+
+            List<LivingEntity> found = SkillHelper.getLivingEntitiesInFront(player, 2.0, 2.0, 6.0);
+            helper.assertTrue(found.contains(dragon),
+                    "Cone missed a boss whose part " + farIndex + " lies inside it");
+            helper.assertTrue(!found.contains(player), "Cone returned its own caster");
+            helper.succeed();
+        } finally {
+            dragon.discard();
+            player.discard();
+        }
+    }
+
+    /** 多节实体的采样点必须覆盖每一个子碰撞箱，否则区域判定会漏掉部分躯体。 */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void bodySamplesCoverEveryPart(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.setPos(helper.absoluteVec(new Vec3(2, 30, 2)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        dragon.tick();
+        try {
+            List<Vec3> samples = dragon.multipartBodySamples();
+            var parts = dragon.getWorldParts();
+            helper.assertTrue(samples.get(0).equals(dragon.position()), "Anchor sample is not the logical position");
+
+            AABB cover = null;
+            for (Vec3 sample : samples) {
+                cover = cover == null ? new AABB(sample, sample) : cover.minmax(new AABB(sample, sample));
+            }
+            helper.assertTrue(cover != null, "A multipart root produced no samples");
+            int boxes = 0;
+            for (var part : parts) {
+                var box = part.getOrientedBox();
+                if (box == null) continue;
+                boxes++;
+                AABB partBox = part.getBoundingBox();
+                helper.assertTrue(cover.minX <= partBox.minX && cover.minY <= partBox.minY
+                                && cover.minZ <= partBox.minZ && cover.maxX >= partBox.maxX
+                                && cover.maxY >= partBox.maxY && cover.maxZ >= partBox.maxZ,
+                        "Sample envelope does not cover part " + part.getPartIndex());
+                helper.assertTrue(samples.stream().anyMatch(s -> s.distanceToSqr(box.center) < 1.0E-9D),
+                        "Part " + part.getPartIndex() + " has no sample at its centre");
+            }
+            helper.assertTrue(boxes == parts.length, "A part is missing its oriented box");
+            helper.succeed();
+        } finally {
+            dragon.discard();
         }
     }
 }

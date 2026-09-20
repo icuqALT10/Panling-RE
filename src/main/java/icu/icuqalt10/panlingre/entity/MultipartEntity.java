@@ -142,4 +142,43 @@ public abstract class MultipartEntity extends Monster {
         }
         return multipartParts().length == 0 && getBoundingBox().intersects(area);
     }
+
+    /**
+     * World-space points that represent where this root's body actually sits.
+     *
+     * <p>A multipart root's logical {@link #position()} is a bookkeeping anchor;
+     * the body can extend tens of blocks away from it (and need not contain it at
+     * all). Region tests that sample a single point therefore have to sample the
+     * part hitboxes instead, or a boss whose only wing or tail segment is inside
+     * the region is silently dropped.
+     *
+     * <p>Returns just the logical position for a root exposing no parts, so
+     * callers can use this unconditionally.
+     */
+    public List<Vec3> multipartBodySamples() {
+        Entity[] parts = multipartParts();
+        if (parts.length == 0) return List.of(position());
+
+        List<Vec3> samples = new ArrayList<>(parts.length * 9 + 1);
+        samples.add(position());
+        for (Entity part : parts) {
+            if (part == null || part.isRemoved()) continue;
+            AABB box = part.getBoundingBox();
+            if (box == null) continue;
+            // A single centre is a poor proxy for a long thin part such as a wing
+            // or a tail segment, so every corner is sampled as well. For an
+            // oriented part these are its envelope corners, which errs towards
+            // "reachable" — the right direction for a hit test.
+            samples.add(box.getCenter());
+            samples.add(new Vec3(box.minX, box.minY, box.minZ));
+            samples.add(new Vec3(box.maxX, box.minY, box.minZ));
+            samples.add(new Vec3(box.minX, box.maxY, box.minZ));
+            samples.add(new Vec3(box.minX, box.minY, box.maxZ));
+            samples.add(new Vec3(box.maxX, box.maxY, box.minZ));
+            samples.add(new Vec3(box.maxX, box.minY, box.maxZ));
+            samples.add(new Vec3(box.minX, box.maxY, box.maxZ));
+            samples.add(new Vec3(box.maxX, box.maxY, box.maxZ));
+        }
+        return samples;
+    }
 }

@@ -4,6 +4,7 @@ import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attachment.YuansuData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.entity.JinLiRenEntity;
+import icu.icuqalt10.panlingre.entity.MultipartEntity;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModSounds;
@@ -62,9 +63,11 @@ public class ys2_jin extends Item {
 
             // 与弩的多重射击相同：中间一发，两侧各偏转 10 度。
             Vec3 origin = player.getEyePosition().add(view.scale(0.8D)).add(0.0D, -0.5D, 0.0D);
-            List<LivingEntity> targets = new ArrayList<>(level.getEntitiesOfClass(LivingEntity.class,
-                    player.getBoundingBox().inflate(32.0D),
-                    target -> JinLiRenEntity.isValidAttackTarget(player, target)));
+            // Multipart children are plain Entity instances, so a LivingEntity query
+            // never sees them and the boss would silently drop out of auto-targeting.
+            List<LivingEntity> targets = new ArrayList<>(MultipartEntity.collectTargets(level,
+                    player.getBoundingBox().inflate(32.0D), player));
+            targets.removeIf(target -> !JinLiRenEntity.isValidAttackTarget(player, target));
             targets.removeIf(target -> angleTo(view, target.getEyePosition().subtract(origin)) > 30.0D);
             targets.sort(Comparator.<LivingEntity>comparingDouble(target -> angleTo(view,
                     target.getEyePosition().subtract(origin)))
