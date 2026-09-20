@@ -66,7 +66,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     // 上下嘴（12/78）保持同宽/同高/同长、同中心 X/Z，嘴缝 Y = 119.80492 / 16。
     // 调整嘴高 H 时：下嘴中心 Y = 嘴缝 Y - H/2，上嘴中心 Y = 嘴缝 Y + H/2。
     // 当前 USE_EXTERNAL_PART_CONFIG=false，本表直接生效；修改 Java 后须重新启动游戏。
-    static final float[][] HARD_CODED_PART_BOUNDS = {
+    private static final float[][] HARD_CODED_PART_BOUNDS = {
             // [00] neck_01：躯干/颈部第 01 节；宽, 高, 长, 中心X, 中心Y, 中心Z
             {2.16125f, 1.959375f, 3.25f, 0f, 7.7351811438f, 14.875f},
             // [01] neck_02：躯干/颈部第 02 节；宽, 高, 长, 中心X, 中心Y, 中心Z
@@ -339,13 +339,17 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * between the client's frame and the server's tick. Re-casting the ray against the
      * real boxes removes both problems at once.
      *
+     * <p>Deliberately uses the un-interpolated eye position and look angle: the server
+     * player has not moved this tick, so interpolating would aim from a position the
+     * player never occupied.
+     *
      * @return the part index, or -1 when the ray reaches no part
      */
-    public int pickPartAlongViewRay(Player player, float partialTick) {
-        Vec3 eye = player.getEyePosition(partialTick);
+    public int pickPartAlongViewRay(Player player) {
+        Vec3 eye = player.getEyePosition();
         // Ask for slightly more than the attack range, then validate properly below, so
         // a part just past the raw range can still be measured and rejected on distance.
-        Vec3 end = eye.add(player.getViewVector(partialTick)
+        Vec3 end = eye.add(player.getLookAngle()
                 .scale(player.entityInteractionRange() + 1.0 + MELEE_RAY_TOLERANCE));
         int exact = nearestPartAlongRay(eye, end, 0.0);
         return exact >= 0 ? exact : nearestPartAlongRay(eye, end, MELEE_RAY_TOLERANCE);
@@ -370,20 +374,12 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         return best;
     }
 
-    /**
-     * Whether the attacking player is close enough to any part of this dragon. Used as
-     * the reach guard for melee: a player standing away from the body matches nothing,
-     * so this cannot be used to attack from a distance.
-     */
-    public boolean canPlayerReachAnyPart(Player player) {
-        double reach = player.entityInteractionRange() + 1.0 + MELEE_RAY_TOLERANCE;
-        double limit = reach * reach;
-        Vec3 eye = player.getEyePosition();
-        for (GraveDragonPartEntity part : worldParts) {
-            if (part.getOrientedBox() == null) continue;
-            if (part.getBoundingBox().distanceToSqr(eye) < limit) return true;
-        }
-        return false;
+    /** Whether a single part is within the player's attack range. */
+    public boolean canPlayerReachPart(Player player, int index) {
+        if (index < 0 || index >= worldParts.length) return false;
+        if (worldParts[index].getOrientedBox() == null) return false;
+        return player.canInteractWithEntity(worldParts[index].getBoundingBox(),
+                MELEE_RAY_TOLERANCE);
     }
 
     /** Prevent movement when any real body part would collide with blocks. */

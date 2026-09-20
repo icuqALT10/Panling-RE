@@ -59,14 +59,17 @@ public final class GraveDragonPartEntity extends PartEntity<GraveDragonEntity>
         if (!isPickable() || isInvulnerableTo(source)) return false;
 
         if (source.getDirectEntity() instanceof Player player) {
-            // Melee: the client tells us which dragon it aimed at, but the server decides
-            // which part was actually struck. The client's choice cannot be trusted here:
-            // it selects through AABB envelopes (whose empty corners pick the wrong body
-            // part, which is why limbs and digits were unreliable) and its pose is one
-            // frame behind the server's tick.
-            if (!getParent().canPlayerReachAnyPart(player)) return false;
-            int struck = getParent().pickPartAlongViewRay(player, 1.0F);
-            if (struck < 0) return false;
+            // Melee: the client tells us which dragon it aimed at; the server decides which
+            // part was actually struck. Re-casting the view ray against the real oriented
+            // boxes fixes the wrong-part selections the client makes through AABB envelopes
+            // (large parts steal small ones at their empty corners). The client's named part
+            // stays as a fallback: reach was already validated by the attack packet, and
+            // rejecting a legitimate click because the ray grazed a gap would be worse than
+            // accepting the part the player was visibly aiming at. Either way the struck
+            // part must itself be within range, so this cannot extend melee reach.
+            int struck = getParent().pickPartAlongViewRay(player);
+            if (struck < 0 || !getParent().canPlayerReachPart(player, struck)) struck = partIndex;
+            if (!getParent().canPlayerReachPart(player, struck)) return false;
             return getParent().hurtPart(struck, source, amount);
         }
 

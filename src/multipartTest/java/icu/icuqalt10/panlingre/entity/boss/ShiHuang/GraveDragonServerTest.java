@@ -69,6 +69,122 @@ public final class GraveDragonServerTest {
         } finally { dragon.discard(); player.discard(); }
     }
 
+    /**
+     * The real acceptance criterion for melee: standing beside the dragon and aiming at
+     * ANY part must damage the dragon. This drives the exact server path the attack
+     * packet uses (part.hurt -> serializable ray re-cast), so it does not depend on
+     * client input timing.
+     */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void everyAimedPartTakesDamage(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1_000_000);
+        dragon.setHealth(1_000_000);
+        // Stand a few blocks to the dragon's side so several parts are in reach.
+        dragon.setPos(helper.absoluteVec(new Vec3(2, 30, 2)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        dragon.tick();
+        var parts = dragon.getWorldParts();
+        int aimed = 0, damaged = 0;
+        var failed = new java.util.ArrayList<String>();
+        // A fresh attacker per aim: the mod keeps damage cooldowns per attacker, so
+        // reusing one player would let an earlier i-frame mask a later hit.
+        FakePlayer player = null;
+        try {
+            for (int i = 0; i < parts.length; i++) {
+                var box = parts[i].getOrientedBox();
+                if (box == null) continue;
+                Vec3 centre = box.center;
+                player = new FakePlayer(level, new GameProfile(UUID.randomUUID(), "MeleeAccept" + i));
+                player.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(50);
+                // Put the eye a step back along the box normal so the part is in front.
+                Vec3 eye = centre.add(box.axisX.scale(box.halfExtents.x + 0.6));
+                player.setPos(eye.x, eye.y - player.getEyeHeight(), eye.z);
+                Vec3 delta = centre.subtract(player.getEyePosition());
+                player.setYRot((float) Math.toDegrees(Math.atan2(-delta.x, delta.z)));
+                player.setXRot((float) -Math.toDegrees(Math.atan2(delta.y, delta.horizontalDistance())));
+                player.yRotO = player.getYRot();
+                player.xRotO = player.getXRot();
+                // The server must resolve this aim to some part of the body.
+                int struck = dragon.pickPartAlongViewRay(player);
+                aimed++;
+                if (struck < 0) {
+                    failed.add("part" + i + " not resolved");
+                    continue;
+                }
+                float before = dragon.getHealth();
+                parts[i].hurt(level.damageSources().playerAttack(player), 1000.0F);
+                if (dragon.getHealth() < before) damaged++;
+                else failed.add("part" + i + " resolved to " + struck + " but no damage");
+                player.discard();
+                player = null;
+            }
+            helper.assertTrue(aimed > 70, "Expected the full part list, got " + aimed);
+            helper.assertTrue(failed.isEmpty(),
+                    "Melee missed " + failed.size() + "/" + aimed + " aimed parts: " + failed);
+            helper.assertTrue(damaged == aimed, "Only " + damaged + "/" + aimed + " aims damaged the dragon");
+            helper.succeed();
+        } finally {
+            if (player != null) player.discard();
+            dragon.discard();
+        }
+    }
+
+    /**
+     * One player attacking several parts inside the same tick must damage the dragon
+     * once. Every part forwards to the same parent, so the parent's per-attacker damage
+     * cooldown has to collapse the burst into a single hit.
+     */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void burstOnManyPartsDamagesOnce(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1_000_000);
+        dragon.setHealth(1_000_000);
+        dragon.setPos(helper.absoluteVec(new Vec3(2, 30, 2)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        dragon.tick();
+        var player = new FakePlayer(level, new GameProfile(UUID.randomUUID(), "BurstTest"));
+        player.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(50);
+        try {
+            // Aim so that several parts are genuinely in range, then hit all of them in
+            // one tick with the very same attacker.
+            var parts = dragon.getWorldParts();
+            var box = parts[0].getOrientedBox();
+            Vec3 eye = box.center.add(box.axisX.scale(box.halfExtents.x + 0.6));
+            player.setPos(eye.x, eye.y - player.getEyeHeight(), eye.z);
+            int reachable = 0;
+            for (int i = 0; i < parts.length; i++) {
+                if (dragon.canPlayerReachPart(player, i)) reachable++;
+            }
+            helper.assertTrue(reachable >= 2, "Test needs several parts in range, got " + reachable);
+
+            float before = dragon.getHealth();
+            int accepted = 0;
+            for (int i = 0; i < parts.length; i++) {
+                if (!dragon.canPlayerReachPart(player, i)) continue;
+                if (parts[i].hurt(level.damageSources().playerAttack(player), 1000.0F)) accepted++;
+            }
+            float total = before - dragon.getHealth();
+            helper.assertTrue(accepted == 1,
+                    "Burst of " + reachable + " reachable parts returned " + accepted + " hits, expected 1");
+            // Damage multiplier is at most 2.0, so a single hit cannot exceed 2000.
+            helper.assertTrue(total > 0 && total <= 2000.0F,
+                    "Burst dealt " + total + " damage; expected exactly one hit's worth");
+            helper.succeed();
+        } finally {
+            dragon.discard();
+            player.discard();
+        }
+    }
+
     @GameTest(template = "empty", timeoutTicks = 100)
     public static void meleeAgainstMovingObb(GameTestHelper helper) {
         var level = helper.getLevel();
