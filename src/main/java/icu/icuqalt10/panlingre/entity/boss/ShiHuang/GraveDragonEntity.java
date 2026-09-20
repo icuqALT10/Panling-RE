@@ -78,7 +78,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         super.defineSynchedData(builder);
         builder.define(ANIMATION_START, UNINITIALISED_ANIMATION_START);
         builder.define(ANIMATION, "idle_air");
-        builder.define(FORM, FORM_AIR);
+        builder.define(FORM, FORM_GROUND);
         builder.define(BODY_PITCH, 0.0F);
     }
 
@@ -309,7 +309,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     private void applyFormPhysics(boolean air) {
         this.setNoGravity(air);
-        if (air) this.getNavigation().stop();
+        // 换形态就换寻路器。旧导航连同它的路径一起丢弃，新导航是干净的，不会残留上一种形态的路线。
+        this.navigation = createNavigation(this.level());
     }
 
     /**
@@ -661,7 +662,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     @Override
     protected PathNavigation createNavigation(Level level) {
-        return new GraveDragonPathNavigation(this, level);
+        // 两种形态的寻路器不同：走地用地面 A*，空中用原版的 3D 飞行 A*（路径天生会绕开障碍，
+        // 这就是"直线被挡时把路线改成曲线"）。形态切换时会重建，见 applyFormPhysics。
+        return flying() ? new GraveDragonFlightNavigation(this, level) : new GraveDragonPathNavigation(this, level);
     }
 
     // ===== 名牌 / 世界内血条的挂点 =====

@@ -704,7 +704,7 @@ public final class GraveDragonServerTest {
             helper.assertTrue(dragon.getNavigation() instanceof GraveDragonPathNavigation,
                     "Dragon is using the stock navigation again: " + dragon.getNavigation().getClass());
             helper.assertTrue(dragon.getNavigation().getNodeEvaluator()
-                            instanceof GraveDragonPathNavigation.BodyAwareWalkNodeEvaluator,
+                            instanceof GraveDragonBodyPathing.Ground,
                     "Dragon is using the stock node evaluator again");
 
             // 身体范围必须是"这一刻的 OBB 包络"：每个子碰撞箱的角点换算进自身坐标系后都要落在里面，
@@ -741,7 +741,7 @@ public final class GraveDragonServerTest {
             helper.assertTrue(dragon.bodyMaxX() - dragon.bodyMinX() < 20.0,
                     "Body width is implausibly wide: " + (dragon.bodyMaxX() - dragon.bodyMinX()));
             // WalkNodeEvaluator 的密集扫描对这条龙是 47*31*47 次查询/节点，必须保持稀疏采样。
-            int samples = GraveDragonPathNavigation.BodyAwareWalkNodeEvaluator.sampleCount();
+            int samples = GraveDragonBodyPathing.sampleCount();
             helper.assertTrue(samples > 8 && samples < 200,
                     "Path node sampling must stay sparse and cover the body, got " + samples);
             helper.succeed();
@@ -847,6 +847,62 @@ public final class GraveDragonServerTest {
             dragon.tick();
             helper.assertTrue("takeoff".equals(dragon.animation()),
                     "拆掉天花板后仍不起飞: " + dragon.animation());
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
+    }
+
+    /**
+     * 空中形态要换成原版的 3D 飞行寻路，而且**直线被挡时能绕出一条曲线**。
+     *
+     * <p>这正是避让的第 3 条：目标点本身可达，只是直线路径上有障碍，那就改路线、不动目标点。
+     * 复用原版 A* 的好处是这条天然成立，不需要自己写避障，也就不会退化成"每 tick 换目标点"。
+     */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void flightNavigationRoutesAroundObstacles(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        Vec3 base = helper.absoluteVec(new Vec3(4, 40, 4));
+        dragon.setPos(base);
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            helper.assertTrue(dragon.getNavigation() instanceof GraveDragonPathNavigation,
+                    "地面形态应该用地面寻路: " + dragon.getNavigation().getClass());
+
+            // 升空 —— 形态切换会重建寻路器。
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            dragon.backdateAnimation(GraveDragonPose.duration("takeoff") + 0.5);
+            dragon.tick();
+            helper.assertTrue(dragon.flying(), "没有进空中形态");
+            helper.assertTrue(dragon.getNavigation() instanceof GraveDragonFlightNavigation,
+                    "空中形态没有换成飞行寻路: " + dragon.getNavigation().getClass());
+
+            // 在直线路径正中间挡一堵墙（横向 ±2、纵向 ±1），两侧留出绕行空间。
+            BlockPos centre = BlockPos.containing(dragon.position());
+            BlockPos wall = centre.offset(0, 0, 10);
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dy = -1; dy <= 1; dy++) {
+                    level.setBlockAndUpdate(wall.offset(dx, dy, 0), Blocks.STONE.defaultBlockState());
+                }
+            }
+
+            BlockPos target = centre.offset(0, 0, 20);
+            var path = dragon.getNavigation().createPath(target, 1);
+            helper.assertTrue(path != null && path.canReach(),
+                    "直线被挡时飞行寻路没有绕出路径（这正是第 3 条要保证的行为）");
+            helper.assertTrue(path.getNodeCount() > 1, "路径节点太少，看起来没有真正规划");
+
+            // 路径的每一个节点都不该落在障碍里——这才是"绕开"的直接证据。
+            for (int i = 0; i < path.getNodeCount(); i++) {
+                var node = path.getNode(i);
+                helper.assertTrue(!level.getBlockState(new BlockPos(node.x, node.y, node.z)).is(Blocks.STONE),
+                        "路径穿过了障碍物 @" + node.x + "," + node.y + "," + node.z);
+            }
             helper.succeed();
         } finally {
             dragon.discard();
