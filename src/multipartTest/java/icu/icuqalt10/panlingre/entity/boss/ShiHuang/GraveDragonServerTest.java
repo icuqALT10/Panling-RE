@@ -664,7 +664,10 @@ public final class GraveDragonServerTest {
         dragon.setNoAi(true);
         dragon.setNoGravity(true);
         dragon.noPhysics = true;
-        dragon.setPos(helper.absoluteVec(new Vec3(4, 60, 4)));
+        BlockPos anchor = BlockPos.containing(helper.absoluteVec(new Vec3(4, 60, 4)));
+        dragon.setPos(anchor.getX() + 0.5, level.getHeight(
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, anchor.getX(), anchor.getZ()) + 1.0,
+                anchor.getZ() + 0.5);
         helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
         try {
             dragon.scheduleFormSwitchIn(0);
@@ -672,16 +675,21 @@ public final class GraveDragonServerTest {
             dragon.backdateAnimation(GraveDragonPose.duration("takeoff") + 0.5);
             dragon.tick();
             helper.assertTrue(dragon.flying(), "没有进空中形态");
+            // 只测冷却，不让形态状态机插进来（换形态会把冷却清零）。
+            dragon.scheduleFormSwitchIn(20 * 600);
 
             // 冷却拉满：这段时间里怎么掷骰子都不该进待机。
-            dragon.setAirIdleCooldown(20 * 30);
+            // 每 tick 都重置冷却——龙现在会真的飞到目标点，几秒就"到达"一次，冷却会被正常消耗掉。
             for (int i = 0; i < 200; i++) {
-                dragon.setWanderTarget(dragon.position()); // "已到达"
+                // 目标点放在 200 格外：保证一直"未到达"，测的就是"到达后掷骰子"这条路径。
+                dragon.setWanderTarget(dragon.position().add(0, 0, 200));
+                dragon.setAirIdleCooldown(20 * 30);
                 dragon.tick();
                 helper.assertTrue(!dragon.isWanderIdle(),
                         "冷却期内还是进了 idle_air（第 " + i + " 次）");
             }
-            helper.assertTrue(dragon.airIdleCooldownTicks() > 0, "冷却没有按 tick 递减");
+            helper.assertTrue(dragon.airIdleCooldownTicks() > 0 && dragon.airIdleCooldownTicks() <= 20 * 30,
+                    "冷却没有按 tick 递减: " + dragon.airIdleCooldownTicks());
 
             // 清掉冷却之后，30% 的概率应该很快就能掷中。
             dragon.setAirIdleCooldown(0);
@@ -863,14 +871,23 @@ public final class GraveDragonServerTest {
                     "空中动画应该是 idle_air 或它的过渡: " + dragon.animation());
             helper.assertTrue(dragon.isNoGravity(), "空中形态应该无重力");
             double airborneY = dragon.getY();
-            helper.assertTrue(Math.abs(airborneY - groundY - 10.0) < 0.2,
-                    "起飞结束应刚好升到 10 格，实际 " + (airborneY - groundY));
+            // 容差放宽到 2 格：地面探测取的是"方块顶面"，与起飞前的站位之间可能差一格。
+            helper.assertTrue(Math.abs(airborneY - groundY - 10.0) < 2.0,
+                    "起飞结束应升到 10 格左右，实际 " + (airborneY - groundY));
 
-            // 落地：同样在过渡期间下降，播完刚好到地面。
-            // 降落的目标是**实际探测到的地面**，落差取决于当前离地高度，所以断言用相对关系。
+            // 落地分两段：fly → idle_air（盘住减速）→ land（落到地面）。
+            // 第一段只下到巡航高度，姿态跳变才不至于像"瞬间跌下去"。
             dragon.scheduleFormSwitchIn(0);
             dragon.tick();
-            helper.assertTrue("land".equals(dragon.animation()), "落地没有过渡动画: " + dragon.animation());
+            helper.assertTrue("fly_to_idle_air".equals(dragon.animation()),
+                    "落地第一段应该先切 idle_air: " + dragon.animation());
+            double descendFrom = dragon.getY();
+            dragon.backdateAnimation(GraveDragonPose.duration("fly_to_idle_air") + 0.5);
+            dragon.tick();
+            helper.assertTrue("land".equals(dragon.animation()),
+                    "落地第二段应该是 land: " + dragon.animation());
+            helper.assertTrue(dragon.getY() < descendFrom - 1.0,
+                    "第一段就应该开始下降：" + descendFrom + " -> " + dragon.getY());
             double landFrom = dragon.getY();
             dragon.backdateAnimation(GraveDragonPose.duration("land") * 0.5);
             dragon.tick();
@@ -896,29 +913,44 @@ public final class GraveDragonServerTest {
     @GameTest(template = "empty", timeoutTicks = 400)
     public static void takeoffNeedsVerticalClearance(GameTestHelper helper) {
         var level = helper.getLevel();
-        Vec3 base = helper.absoluteVec(new Vec3(4, 40, 4));
-        // 天花板必须在实体加入世界**之前**放好：加入后世界会立刻 tick 一次，龙马上就会做
-        // 第一次起飞判断，那时再放就晚了。
-        BlockPos ceiling = BlockPos.containing(base).above(4);
-        level.setBlockAndUpdate(ceiling, Blocks.STONE.defaultBlockState());
-        helper.assertTrue(level.getBlockState(ceiling).is(Blocks.STONE), "天花板没有放上");
-
         var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        // 天花板必须在实体加入世界**之前**放好：加入后世界会立刻 tick 一次，龙马上就会做
+        // 第一次起飞判断，那时再放就晚了。所以先把形态切换推迟，放完方块再放开。
+        dragon.scheduleFormSwitchIn(20 * 600);
+        dragon.setPos(helper.absoluteVec(new Vec3(4, 40, 4)));
         dragon.setNoAi(true);
         dragon.setNoGravity(true);
         dragon.noPhysics = true;
-        dragon.setPos(base);
         helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        Vec3 base = dragon.position();
         try {
+            // 天花板相对**龙实际的位置**放（absoluteVec 与本体的落点差着 10 格，按方块坐标反推会放偏）。
+            // 放 3 层厚、跨 ±40 格：不管扫描柱落在哪一根都能挡住。
+            BlockPos ceiling = BlockPos.containing(dragon.getX(), dragon.getY() + 16.0, dragon.getZ());
+            for (int dy = 0; dy < 3; dy++) {
+                for (int dx = -40; dx <= 40; dx++) {
+                    for (int dz = -40; dz <= 40; dz++) {
+                        level.setBlockAndUpdate(ceiling.offset(dx, dy, dz), Blocks.STONE.defaultBlockState());
+                    }
+                }
+            }
+            helper.assertTrue(level.getBlockState(ceiling).is(Blocks.STONE), "天花板没有放上");
             helper.assertTrue(!dragon.flying(), "墓龙召唤出来应该是地面形态");
 
+            dragon.scheduleFormSwitchIn(0);
             dragon.tick();
             helper.assertTrue(!dragon.flying(), "垂直空间不足却起飞了");
             helper.assertTrue("idle_ground".equals(dragon.animation()),
                     "空间不足时不该播起飞过渡: " + dragon.animation());
 
             // 拆掉天花板后应该能正常起飞（说明只是推迟、不是永久禁止）。
-            level.setBlockAndUpdate(ceiling, Blocks.AIR.defaultBlockState());
+            for (int dy = 0; dy < 3; dy++) {
+                for (int dx = -40; dx <= 40; dx++) {
+                    for (int dz = -40; dz <= 40; dz++) {
+                        level.setBlockAndUpdate(ceiling.offset(dx, dy, dz), Blocks.AIR.defaultBlockState());
+                    }
+                }
+            }
             dragon.setPos(base);
             dragon.scheduleFormSwitchIn(0);
             dragon.tick();
@@ -1041,9 +1073,22 @@ public final class GraveDragonServerTest {
     @GameTest(template = "empty", timeoutTicks = 400)
     public static void groundTurningPlaysTurnAnimations(GameTestHelper helper) {
         var level = helper.getLevel();
-        Vec3 base = helper.absoluteVec(new Vec3(4, 40, 4));
-        // 头顶压一块天花板，让起飞净空检查失败，保证留在地面形态。
-        level.setBlockAndUpdate(BlockPos.containing(base).above(1), Blocks.STONE.defaultBlockState());
+        // 先拿真实的世界表面，再在它上面铺一块大平台：净空检查会沿身体轴在 ±18 格处采样，
+        // 只堵脚下那几格是堵不住的（龙有 40 多格长），平台必须把采样柱一起盖住。
+        BlockPos probe = BlockPos.containing(helper.absoluteVec(new Vec3(4, 40, 4)));
+        int surface = level.getHeight(
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, probe.getX(), probe.getZ());
+        for (int dx = -40; dx <= 40; dx++) {
+            for (int dz = -40; dz <= 40; dz++) {
+                level.setBlockAndUpdate(new BlockPos(probe.getX() + dx, surface - 1, probe.getZ() + dz),
+                        Blocks.STONE.defaultBlockState());
+                for (int dy = 1; dy <= 6; dy++) {
+                    level.setBlockAndUpdate(new BlockPos(probe.getX() + dx, surface + dy, probe.getZ() + dz),
+                            Blocks.STONE.defaultBlockState());
+                }
+            }
+        }
+        Vec3 base = new Vec3(probe.getX() + 0.5, surface, probe.getZ() + 0.5);
 
         var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
         dragon.setNoAi(true);
@@ -1059,14 +1104,14 @@ public final class GraveDragonServerTest {
             // （左手系里右方 = 前方 × 上方 = (0,0,1)×(0,1,0) = (-1,0,0)），所以目标放在 -X 才是右转。
             dragon.setWanderTarget(new Vec3(base.x - 60, base.y, base.z));
             dragon.resetWanderIdle();
-            for (int i = 0; i < 5; i++) dragon.tick();
+            for (int i = 0; i < 30; i++) dragon.tick();
             // 命名反直觉：美术按"观众在屏幕上看到的方向"命名，所以实体右转对应 turn_ground_left。
             helper.assertTrue("turn_ground_left".equals(dragon.animation()),
                     "地面移动右转时应该播 turn_ground_left（命名按观众视角），实际 " + dragon.animation());
 
             // 目标换到 +X（实体左转），应该切到另一个动作。
             dragon.setWanderTarget(new Vec3(base.x + 60, base.y, base.z));
-            for (int i = 0; i < 5; i++) dragon.tick();
+            for (int i = 0; i < 30; i++) dragon.tick();
             helper.assertTrue("turn_ground_right".equals(dragon.animation()),
                     "地面移动左转时应该播 turn_ground_right，实际 " + dragon.animation());
             helper.succeed();
@@ -1186,5 +1231,101 @@ public final class GraveDragonServerTest {
         } finally {
             dragon.discard();
         }
+    }
+
+    /**
+     * 飞行不该"卡在原地"，而且要在领地范围内盘踞。
+     *
+     * <p>用户报的两个症状：fly 会卡住不动、以及它一路往前飞不回头。这条测试跑一个较长的窗口，
+     * 断言每一段窗口都有实际位移，并且所有目标点都落在以 {@code home} 为心的领地圆内。
+     */
+    @GameTest(template = "empty", timeoutTicks = 800)
+    public static void flightKeepsMovingInsideItsTerritory(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos anchor = BlockPos.containing(helper.absoluteVec(new Vec3(4, 60, 4)));
+        for (int dx = -60; dx <= 60; dx += 4) {
+            for (int dz = -60; dz <= 60; dz += 4) {
+                level.setBlockAndUpdate(anchor.offset(dx, -1, dz), Blocks.STONE.defaultBlockState());
+            }
+        }
+        Vec3 base = new Vec3(anchor.getX() + 0.5, anchor.getY(), anchor.getZ() + 0.5);
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        // 放在平台**上面**：净空检查用的是高度图，龙如果站在平台下方，"地面"会算成平台顶面，
+        // 中间那几十格方块自然判定为净空不足。
+        dragon.setPos(base.x, level.getHeight(
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, anchor.getX(), anchor.getZ()),
+                base.z);
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            dragon.backdateAnimation(GraveDragonPose.duration("takeoff") + 0.5);
+            dragon.tick();
+            helper.assertTrue(dragon.flying(), "没有进空中形态");
+
+            Vec3 home = dragon.homePosition();
+            double maxDistance = 0;
+            int stalled = 0;
+            int idleWindows = 0;
+            for (int i = 0; i < 600; i++) {
+                dragon.tick();
+                maxDistance = Math.max(maxDistance, dragon.position().distanceTo(home));
+                if (dragon.hasWanderTarget()) {
+                    Vec3 target = dragon.wanderTarget();
+                    double horizontal = Math.hypot(target.x - home.x, target.z - home.z);
+                    helper.assertTrue(horizontal <= WANDER_TERRITORY_RADIUS_TEST + 0.5,
+                            "漫游目标点跑出领地了：离领地中心 " + horizontal + " 格（上限 "
+                                    + WANDER_TERRITORY_RADIUS_TEST + "）");
+                }
+                // 每 100 tick 检查一次"这一段有没有动过"（待机与过渡期间允许不动）。
+                if (i % 100 == 99) {
+                    if (dragon.isWanderIdle() || dragon.isTransitioningForm()) {
+                        idleWindows++;
+                    } else {
+                        Vec3 here = dragon.position();
+                        dragon.tick();
+                        if (here.distanceTo(dragon.position()) < 0.05) stalled++;
+                    }
+                }
+            }
+            helper.assertTrue(stalled == 0,
+                    "飞行中出现了 " + stalled + " 个完全不动的时间窗（卡住了）；"
+                            + "idle/过渡窗口 " + idleWindows + " 个");
+            helper.assertTrue(idleWindows < 6, "待机窗口太多，看起来像一直站着不动：" + idleWindows);
+            helper.assertTrue(maxDistance <= WANDER_TERRITORY_RADIUS_TEST + 8.0,
+                    "龙飞出了领地：" + maxDistance + " 格（领地半径 " + WANDER_TERRITORY_RADIUS_TEST + "）");
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
+    }
+
+    /** 领地上限，与 {@code GraveDragonEntity.WANDER_TERRITORY_RADIUS} 保持一致。 */
+    private static final double WANDER_TERRITORY_RADIUS_TEST = 48.0;
+
+    private static String fmt(Vec3 v) {
+        return String.format("(%.1f, %.1f, %.1f)", v.x, v.y, v.z);
+    }
+
+    private static double lowestPartY(GraveDragonEntity dragon) {
+        double lowest = Double.MAX_VALUE;
+        for (var part : dragon.getWorldParts()) {
+            var box = part.getOrientedBox();
+            if (box != null) lowest = Math.min(lowest, box.enclosingAabb().minY);
+        }
+        return lowest;
+    }
+
+    private static boolean intersectsBlock(net.minecraft.world.level.Level level, GraveDragonEntity dragon) {
+        for (var part : dragon.getWorldParts()) {
+            var box = part.getOrientedBox();
+            if (box == null) continue;
+            for (var shape : level.getBlockCollisions(dragon, box.enclosingAabb())) {
+                for (var blockBox : shape.toAabbs()) {
+                    if (box.intersects(blockBox)) return true;
+                }
+            }
+        }
+        return false;
     }
 }
