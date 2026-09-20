@@ -332,6 +332,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         // from the root spawn packet, with no independently tracked child entities.
         setId(ENTITY_COUNTER.getAndAdd(worldParts.length + 1) + 1);
         updatePartPose(GraveDragonIdleAirPose.sample(0), yBodyRot, position());
+        updateBodyFootprint();
         this.noPhysics = false;
         this.setNoAi(false);
     }
@@ -361,35 +362,24 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     // 这里不改实体尺寸（那会连带改变挤压、粒子散布、MoveControl 跳跃等一大堆行为），而是给龙
     // 换一个按真实身体判定的 NodeEvaluator，见 GraveDragonPathNavigation。
     //
-    // 下面这几个数由本地 heightAudit 任务量出，GraveDragonPoseTest 会重新计算校验：改了 OBB 表
-    // 或动画而忘了同步这里，测试会直接失败。
-    //
-    // 身体在自身坐标系里是个长条（锚点靠近尾部）：向前伸出 40 格、向后 6 格多、横向只有 ±6 格。
-    // 所以寻路不能用一个"半径"圆去套，否则等于要求 83×83 的空地；必须按当前朝向旋转这个长条。
-    /** 横向半宽（局部 X 的最大绝对值）。 */
-    static final float MEASURED_BODY_HALF_WIDTH = 5.8852254F;
-    /** 沿朝向向前（局部 -Z，头那一侧）伸出锚点的距离。 */
-    static final float MEASURED_BODY_NOSE = 40.2910325F;
-    /** 在锚点后方（局部 +Z，尾巴那一侧）伸出的距离。 */
-    static final float MEASURED_BODY_TAIL = 5.9054787F;
-    /** 身体最高点相对锚点的高度。 */
-    static final float MEASURED_BODY_HEIGHT = 30.1471F;
+    // 身体范围**每个 tick 从当前 OBB 现算**（见 updateBodyFootprint），不是固定常量：颈部摆动、
+    // 抬头、张嘴都会改变真实轮廓，寻路应该跟着当前姿态走。
 
-    /**
-     * 告诉寻路器多大比例的真实身体。1.0 = 完全按真实身体（默认）。
-     *
-     * <p>调小可以让龙在更拥挤的地形里也愿意走路，代价是它会往身体其实过不去的地方规划路线；
-     * 真正的碰撞判定始终是 {@link #move(MoverType, Vec3)} 里的 OBB 检查，不会被这里放松。
-     */
-    private static final float PATHING_BODY_FIT = 1.0F;
+    /** 上一 tick 量出的身体范围，坐标系是"相对锚点、已去掉 yBodyRot"的自身坐标系。 */
+    private double bodyMinX, bodyMaxX, bodyMinZ, bodyMaxZ, bodyMaxY;
+    private boolean bodyFootprintValid;
 
-    public static float pathingHalfWidth() { return MEASURED_BODY_HALF_WIDTH * PATHING_BODY_FIT; }
+    public boolean bodyFootprintValid() { return bodyFootprintValid; }
 
-    public static float pathingNose() { return MEASURED_BODY_NOSE * PATHING_BODY_FIT; }
+    public double bodyMinX() { return bodyMinX; }
 
-    public static float pathingTail() { return MEASURED_BODY_TAIL * PATHING_BODY_FIT; }
+    public double bodyMaxX() { return bodyMaxX; }
 
-    public static float pathingHeight() { return MEASURED_BODY_HEIGHT * PATHING_BODY_FIT; }
+    public double bodyMinZ() { return bodyMinZ; }
+
+    public double bodyMaxZ() { return bodyMaxZ; }
+
+    public double bodyMaxY() { return bodyMaxY; }
 
     @Override
     protected PathNavigation createNavigation(Level level) {
@@ -642,6 +632,47 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         // NOT touch them: an interpolated render frame used to overwrite them, which is what
         // made the two sides disagree.
         updatePartPose(GraveDragonIdleAirPose.sample(collisionPoseSeconds()), yBodyRot, position());
+        updateBodyFootprint();
+    }
+
+    /**
+     * 把这一刻的 79 个碰撞箱换算进"相对锚点、已去掉 yBodyRot"的自身坐标系，记下真实占地范围，
+     * 供 {@link GraveDragonPathNavigation} 判定路径节点。
+     *
+     * <p>刻意**不用固定常量**：颈部摆动、抬头、张嘴都会改变身体的真实轮廓，寻路应该跟着当前
+     * 姿态走，而不是跟一张量好的表走。
+     *
+     * <p>OBB 是按 {@code modelToEntity(yaw)} 摆的，也就是 {@code worldOffset = R_y(-yaw) · local}，
+     * 所以这里用 {@code R_y(+yaw)} 反解回自身坐标系。缩放已经含在 OBB 里，不必再乘。
+     */
+    private void updateBodyFootprint() {
+        double angle = yBodyRot * Math.PI / 180.0;
+        double cos = Math.cos(angle), sin = Math.sin(angle);
+        double originX = getX(), originY = getY(), originZ = getZ();
+        double minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE;
+        double minZ = Double.MAX_VALUE, maxZ = -Double.MAX_VALUE;
+        double maxY = -Double.MAX_VALUE;
+        for (GraveDragonPartEntity part : worldParts) {
+            OrientedBoundingBox box = part.getOrientedBox();
+            if (box == null) continue;
+            for (Vec3 corner : box.corners()) {
+                double worldX = corner.x - originX, worldZ = corner.z - originZ;
+                double localX = worldX * cos + worldZ * sin;
+                double localZ = -worldX * sin + worldZ * cos;
+                minX = Math.min(minX, localX);
+                maxX = Math.max(maxX, localX);
+                minZ = Math.min(minZ, localZ);
+                maxZ = Math.max(maxZ, localZ);
+                maxY = Math.max(maxY, corner.y - originY);
+            }
+        }
+        if (minX > maxX) return;
+        bodyMinX = minX;
+        bodyMaxX = maxX;
+        bodyMinZ = minZ;
+        bodyMaxZ = maxZ;
+        bodyMaxY = maxY;
+        bodyFootprintValid = true;
     }
 
     private void updatePartPose(GraveDragonIdleAirPose.Frame frame, float yaw, Vec3 origin) {

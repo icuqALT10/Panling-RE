@@ -573,16 +573,13 @@ public final class GraveDragonServerTest {
     }
 
     /**
-     * 寻路必须按**真实身体**判定，而不是主体那个 1cm 锚点盒子。
+     * 寻路必须按**当前这一刻的真实身体**判定，而不是主体那个 1cm 锚点盒子，也不是某张量好的表。
      *
      * <p>否则 AI 会给一个 1cm 的生物规划路线（往 1 格缝隙、往墙里走），每一步再被
      * {@code move()} 的 OBB 判定否掉，表现就是贴着墙反复磨、不会绕路。
-     *
-     * <p>身体的具体尺寸由 {@code GraveDragonPoseTest} 对着 OBB 表逐帧重算校验；这里验证接线：
-     * 龙真的换了自己的导航与节点评估器，而且每个节点的采样开销是有界的。
      */
     @GameTest(template = "empty", timeoutTicks = 100)
-    public static void pathfindingUsesTheRealBody(GameTestHelper helper) {
+    public static void pathfindingUsesTheLiveBodyFootprint(GameTestHelper helper) {
         var level = helper.getLevel();
         var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
         dragon.setNoAi(true);
@@ -591,19 +588,48 @@ public final class GraveDragonServerTest {
         dragon.setPos(helper.absoluteVec(new Vec3(2, 30, 2)));
         helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
         try {
-            helper.assertTrue(GraveDragonEntity.pathingNose() > 30.0F,
-                    "Pathing footprint collapsed to the anchor: nose=" + GraveDragonEntity.pathingNose());
-            helper.assertTrue(GraveDragonEntity.pathingHalfWidth() > 4.0F,
-                    "Pathing footprint collapsed to the anchor: halfWidth=" + GraveDragonEntity.pathingHalfWidth());
             // 尺寸查询本身必须留在锚点上：改了它会连带影响挤压、粒子散布、跳跃等行为。
             helper.assertTrue(dragon.getBbWidth() < 0.1F,
                     "Root size query must stay the anchor, got " + dragon.getBbWidth());
-
             helper.assertTrue(dragon.getNavigation() instanceof GraveDragonPathNavigation,
                     "Dragon is using the stock navigation again: " + dragon.getNavigation().getClass());
             helper.assertTrue(dragon.getNavigation().getNodeEvaluator()
                             instanceof GraveDragonPathNavigation.BodyAwareWalkNodeEvaluator,
                     "Dragon is using the stock node evaluator again");
+
+            // 身体范围必须是"这一刻的 OBB 包络"：每个子碰撞箱的角点换算进自身坐标系后都要落在里面，
+            // 而且不能退化成锚点大小。
+            double minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE;
+            double minZ = Double.MAX_VALUE, maxZ = -Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
+            for (int frame = 0; frame < 40; frame++) {
+                dragon.tick();
+                helper.assertTrue(dragon.bodyFootprintValid(), "Body footprint was never measured");
+                double a = dragon.yBodyRot * Math.PI / 180.0;
+                double cos = Math.cos(a), sin = Math.sin(a);
+                for (GraveDragonPartEntity part : dragon.getWorldParts()) {
+                    var box = part.getOrientedBox();
+                    if (box == null) continue;
+                    for (Vec3 c : box.corners()) {
+                        double wx = c.x - dragon.getX(), wz = c.z - dragon.getZ();
+                        minX = Math.min(minX, wx * cos + wz * sin);
+                        maxX = Math.max(maxX, wx * cos + wz * sin);
+                        minZ = Math.min(minZ, -wx * sin + wz * cos);
+                        maxZ = Math.max(maxZ, -wx * sin + wz * cos);
+                        maxY = Math.max(maxY, c.y - dragon.getY());
+                    }
+                }
+            }
+            helper.assertTrue(dragon.bodyMinX() <= minX + 1e-6 && dragon.bodyMaxX() >= maxX - 1e-6
+                            && dragon.bodyMinZ() <= minZ + 1e-6 && dragon.bodyMaxZ() >= maxZ - 1e-6
+                            && dragon.bodyMaxY() >= maxY - 1e-6,
+                    "Reported footprint " + dragon.bodyMinX() + ".." + dragon.bodyMaxX() + " / "
+                            + dragon.bodyMinZ() + ".." + dragon.bodyMaxZ() + " does not cover the body "
+                            + minX + ".." + maxX + " / " + minZ + ".." + maxZ);
+            // 这条龙是长条：向前伸出几十格，横向只有十几格。退化成锚点或变成正方形都是错的。
+            helper.assertTrue(dragon.bodyMinZ() < -20.0, "Body no longer reaches forward: " + dragon.bodyMinZ());
+            helper.assertTrue(dragon.bodyMaxY() > 20.0, "Body height collapsed: " + dragon.bodyMaxY());
+            helper.assertTrue(dragon.bodyMaxX() - dragon.bodyMinX() < 20.0,
+                    "Body width is implausibly wide: " + (dragon.bodyMaxX() - dragon.bodyMinX()));
             // WalkNodeEvaluator 的密集扫描对这条龙是 47*31*47 次查询/节点，必须保持稀疏采样。
             int samples = GraveDragonPathNavigation.BodyAwareWalkNodeEvaluator.sampleCount();
             helper.assertTrue(samples > 8 && samples < 200,
