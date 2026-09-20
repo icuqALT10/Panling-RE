@@ -163,6 +163,13 @@ public class ModNetworks {
                 ClientPayloadHandlers::handleShake
         );
 
+        // 近战判定结果回报（仅用于 F3+B 调试显示服务端实际选中的部位）
+        registrar.playToClient(
+                MeleeHitReportPayload.TYPE,
+                MeleeHitReportPayload.STREAM_CODEC,
+                MeleeHitReportPayload::handle
+        );
+
         // Look Tip 网络包
         registrar.playToServer(
                 LookTipRequestPayload.TYPE,

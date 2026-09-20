@@ -59,18 +59,18 @@ public final class GraveDragonPartEntity extends PartEntity<GraveDragonEntity>
         if (!isPickable() || isInvulnerableTo(source)) return false;
 
         if (source.getDirectEntity() instanceof Player player) {
-            // Melee: the client tells us which dragon it aimed at; the server decides which
-            // part was actually struck. Re-casting the view ray against the real oriented
-            // boxes fixes the wrong-part selections the client makes through AABB envelopes
-            // (large parts steal small ones at their empty corners). The client's named part
-            // stays as a fallback: reach was already validated by the attack packet, and
-            // rejecting a legitimate click because the ray grazed a gap would be worse than
-            // accepting the part the player was visibly aiming at. Either way the struck
-            // part must itself be within range, so this cannot extend melee reach.
-            int struck = getParent().pickPartAlongViewRay(player);
-            if (struck < 0 || !getParent().canPlayerReachPart(player, struck)) struck = partIndex;
-            if (!getParent().canPlayerReachPart(player, struck)) return false;
-            return getParent().hurtPart(struck, source, amount);
+            // Melee: one call into the dragon's resolver, one reach gate, one verdict. This
+            // method contributes no policy of its own; it only reports the outcome back to
+            // the attacking client so the debug overlay can show what the server chose.
+            int struck = getParent().resolveMeleeStrike(player, partIndex);
+            if (struck < 0) return false;
+            boolean applied = getParent().hurtPart(struck, source, amount);
+            if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(serverPlayer,
+                        new icu.icuqalt10.panlingre.network.MeleeHitReportPayload(
+                                partIndex, struck, getParent().pickPartAlongViewRay(player) >= 0));
+            }
+            return applied;
         }
 
         if (source.getDirectEntity() instanceof Projectile projectile) {

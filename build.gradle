@@ -204,6 +204,14 @@ tasks.register('multipartPoseTest', JavaExec) {
     mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonPoseTest'
 }
 
+// Diagnostic: how far part boxes drift over the idle animation, and how much a one-tick
+// phase difference between client and server moves them relative to their own size.
+tasks.register('poseDriftAudit', JavaExec) {
+    dependsOn multipartTestClasses
+    classpath = sourceSets.multipartTest.runtimeClasspath
+    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonPoseDriftAudit'
+}
+
 // Opt-in integration checks; keep test classes and test worlds out of release jars/run saves.
 if (providers.gradleProperty('multipartGameTest').isPresent()) {
     neoForge.mods.named(project.mod_id) { sourceSet(sourceSets.multipartTest) }

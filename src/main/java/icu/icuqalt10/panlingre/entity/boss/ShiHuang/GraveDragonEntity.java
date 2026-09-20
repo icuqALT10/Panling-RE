@@ -230,7 +230,11 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private static final boolean USE_EXTERNAL_PART_CONFIG = false;
     private static final java.nio.file.Path PART_CONFIG_FILE =
             FMLPaths.CONFIGDIR.get().resolve("panlingre/grave_dragon_parts.json");
-    private static float[][] PART_BOUNDS = HARD_CODED_PART_BOUNDS;
+    /**
+     * Active bounds table. Package-private rather than private so the pose/drift
+     * diagnostics in the same package can read the live values.
+     */
+    static float[][] PART_BOUNDS = HARD_CODED_PART_BOUNDS;
     private static boolean partConfigLoaded;
     private static long partConfigTimestamp = Long.MIN_VALUE;
 
@@ -380,6 +384,31 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         if (worldParts[index].getOrientedBox() == null) return false;
         return player.canInteractWithEntity(worldParts[index].getBoundingBox(),
                 MELEE_RAY_TOLERANCE);
+    }
+
+    /**
+     * The single place that decides what a player's melee attack hits.
+     *
+     * <p>Resolution order is deliberate and short, so there is exactly one gate:
+     * <ol>
+     *   <li>Cast the server's own view ray against the current oriented boxes. That is
+     *       the authoritative answer and it fixes the wrong-part selections the client
+     *       makes through AABB envelopes, where a large part's empty corner steals the
+     *       selection from the small part under the crosshair.</li>
+     *   <li>If the ray reaches nothing, fall back to the part the client named. Reach was
+     *       already checked by the attack packet, and rejecting a legitimate click because
+     *       the ray grazed a gap between boxes is worse than trusting the visible aim.</li>
+     *   <li>Whichever part wins must itself be within attack range. That is the only reach
+     *       gate, so this can never extend melee range.</li>
+     * </ol>
+     *
+     * @param requested part index named by the client
+     * @return the part index to damage, or -1 when the attack must be discarded
+     */
+    public int resolveMeleeStrike(Player player, int requested) {
+        int struck = pickPartAlongViewRay(player);
+        if (struck < 0) struck = requested;
+        return canPlayerReachPart(player, struck) ? struck : -1;
     }
 
     /** Prevent movement when any real body part would collide with blocks. */

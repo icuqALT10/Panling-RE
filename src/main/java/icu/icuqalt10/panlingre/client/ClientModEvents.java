@@ -75,6 +75,18 @@ public class ClientModEvents {
                 float[] color = colorForPart(part.getPartIndex());
                 drawObb(pose, lines, part.getOrientedBox(), color[0], color[1], color[2]);
             }
+            // Highlight what the server resolved for the most recent melee attack, so a
+            // disagreement between the client's crosshair and the server's verdict becomes
+            // visible instead of silent: magenta = the server's own ray chose this part,
+            // white = the server fell back to the part the client named.
+            if (MeleeHitDebugState.isFresh()) {
+                int struck = MeleeHitDebugState.struck();
+                if (struck >= 0 && struck < dragon.getWorldParts().length) {
+                    boolean byRay = MeleeHitDebugState.fromRay();
+                    drawObb(pose, lines, dragon.getWorldParts()[struck].getOrientedBox(),
+                            1.0F, byRay ? 0.1F : 1.0F, byRay ? 1.0F : 1.0F);
+                }
+            }
         }
         mc.renderBuffers().bufferSource().endBatch(RenderType.lines());
         pose.popPose();
