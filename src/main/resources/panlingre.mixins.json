@@ -5,6 +5,7 @@
   "mixins": [
     "LivingEntityMixin",
     "OrientedEntityPickMixin",
+    "ServerInteractDebugMixin",
     "PlayerAttackMixin",
     "RangedAttributeMixin",
     "AbstractArrowMixin",

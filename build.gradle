@@ -220,6 +220,14 @@ if (providers.gradleProperty('multipartGameTest').isPresent()) {
     }
 }
 
+// Opt-in melee tracing: `gradlew runClient -PdamageDebug` prints the melee verdict to chat
+// and a per-event line to the log, for diagnosing hits that produce no damage.
+if (providers.gradleProperty('damageDebug').isPresent()) {
+    neoForge.runs.named('client') {
+        systemProperty 'panlingre.damageDebug', 'true'
+    }
+}
+
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {
     module {

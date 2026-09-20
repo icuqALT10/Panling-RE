@@ -17,12 +17,15 @@ import java.util.List;
  * in game. Either no line appears at all, meaning the server rejected the attack, or the
  * line and the highlight name a different part than the one under the crosshair, meaning
  * the two sides disagree about what was hit.
+ *
+ * <p>The line is rendered purely from packet data. Nothing here resolves the entity, so a
+ * report still shows up even when the client has not tracked the boss yet.
  */
 public final class GraveDragonDamageLog {
     /** How long a hit stays highlighted in the F3+B overlay, in ticks. */
     private static final int HIGHLIGHT_TICKS = 100;
 
-    private record Pending(int entityId, String partLabel, float healthBefore) {
+    private record Pending(int entityId, String partLabel, float healthAfter) {
     }
 
     private static final List<Pending> PENDING = new ArrayList<>();
@@ -39,7 +42,6 @@ public final class GraveDragonDamageLog {
         var mc = Minecraft.getInstance();
         var level = mc.level;
         if (level == null || mc.player == null) return;
-        if (!(level.getEntity(payload.entityId()) instanceof GraveDragonEntity dragon)) return;
 
         lastEntityId = payload.entityId();
         lastPart = payload.partIndex();
@@ -53,15 +55,15 @@ public final class GraveDragonDamageLog {
                         .withStyle(ChatFormatting.YELLOW))
                 .append(Component.literal("  扣血 " + trim(payload.amount()))
                         .withStyle(ChatFormatting.RED))
-                .append(Component.literal("  剩余 " + trim(dragon.getHealth()))
+                .append(Component.literal("  剩余 " + trim(payload.remaining()))
                         .withStyle(ChatFormatting.GRAY)), false);
 
-        // Health can keep moving for a tick after the event, so the settled line is
-        // measured on the next client tick.
-        PENDING.add(new Pending(payload.entityId(), payload.partLabel(), dragon.getHealth()));
+        // Health can keep moving for a tick after the event, so a settled total is
+        // reported once things stop changing.
+        PENDING.add(new Pending(payload.entityId(), payload.partLabel(), payload.remaining()));
     }
 
-    /** Called once per client tick; flushes deferred actual-damage lines. */
+    /** Called once per client tick; flushes deferred settled-damage lines. */
     public static void tick() {
         if (PENDING.isEmpty()) return;
         var mc = Minecraft.getInstance();
@@ -71,14 +73,14 @@ public final class GraveDragonDamageLog {
             return;
         }
         for (Pending pending : PENDING) {
-            if (!(level.getEntity(pending.entityId()) instanceof GraveDragonEntity dragon)) continue;
-            float actual = pending.healthBefore() - dragon.getHealth();
+            float settled = pending.healthAfter();
+            if (level.getEntity(pending.entityId()) instanceof GraveDragonEntity dragon) {
+                settled = dragon.getHealth();
+            }
             mc.player.displayClientMessage(Component.empty()
-                    .append(Component.literal("   └ " + pending.partLabel() + " 结算 ")
+                    .append(Component.literal("   └ " + pending.partLabel() + " 结算后剩余 ")
                             .withStyle(ChatFormatting.DARK_GRAY))
-                    .append(Component.literal(trim(actual)).withStyle(ChatFormatting.RED))
-                    .append(Component.literal("  剩 " + trim(dragon.getHealth()))
-                            .withStyle(ChatFormatting.GRAY)), false);
+                    .append(Component.literal(trim(settled)).withStyle(ChatFormatting.GRAY)), false);
         }
         PENDING.clear();
     }

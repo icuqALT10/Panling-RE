@@ -337,10 +337,23 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     protected boolean hurtSelectedPart(int partIndex, DamageSource source, float amount) {
         float healthBefore = getHealth();
         boolean applied = super.hurtSelectedPart(partIndex, source, amount);
-        if (applied && source.getDirectEntity() instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
-            pendingReportPart = partIndex;
-            pendingReportPlayer = serverPlayer;
-            pendingReportHealthBefore = healthBefore;
+        if (GraveDragonDamageDebug.enabled()) {
+            GraveDragonDamageDebug.log("funnel part=" + partIndex
+                    + " src=" + source.getMsgId()
+                    + " direct=" + (source.getDirectEntity() == null ? "null"
+                            : source.getDirectEntity().getClass().getSimpleName())
+                    + " applied=" + applied
+                    + " hp=" + healthBefore + "->" + getHealth());
+        }
+        if (applied) {
+            // getEntity() is the attacker for every damage type (melee, thrown items, skills,
+            // explosions), whereas getDirectEntity() is the projectile or null for skills, so
+            // using the latter silently dropped every non-melee report.
+            if (source.getEntity() instanceof net.minecraft.server.level.ServerPlayer attacker) {
+                pendingReportPart = partIndex;
+                pendingReportPlayer = attacker;
+                pendingReportHealthBefore = healthBefore;
+            }
         }
         return applied;
     }
@@ -360,10 +373,16 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         float dealt = pendingReportHealthBefore - getHealth();
         pendingReportPart = -1;
         pendingReportPlayer = null;
-        if (dealt <= 0) return;
+        if (dealt <= 0) {
+            GraveDragonDamageDebug.log("report skipped, dealt=" + dealt);
+            return;
+        }
+        float remaining = getHealth();
+        GraveDragonDamageDebug.log("report part=" + part + " dealt=" + dealt
+                + " remaining=" + remaining + " to=" + player.getGameProfile().getName());
         net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player,
                 new icu.icuqalt10.panlingre.network.GraveDragonHitPayload(
-                        getId(), part, PART_LABELS[part], damageMultiplierForPart(part), dealt));
+                        getId(), part, PART_LABELS[part], damageMultiplierForPart(part), dealt, remaining));
     }
 
     /**
@@ -455,9 +474,34 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * @return the part index to damage, or -1 when the attack must be discarded
      */
     public int resolveMeleeStrike(Player player, int requested) {
-        if (canPlayerReachPart(player, requested)) return requested;
-        int struck = pickPartAlongViewRay(player);
-        return canPlayerReachPart(player, struck) ? struck : -1;
+        boolean requestedInReach = canPlayerReachPart(player, requested);
+        int ray = pickPartAlongViewRay(player);
+        boolean rayInReach = canPlayerReachPart(player, ray);
+        int struck;
+        if (requestedInReach) {
+            struck = requested;
+        } else {
+            struck = rayInReach ? ray : -1;
+        }
+        if (GraveDragonDamageDebug.enabled() && player instanceof net.minecraft.server.level.ServerPlayer debugPlayer) {
+            String verdict = struck < 0
+                    ? "拒绝：请求部位与射线部位都超出攻击距离"
+                    : "采用 " + PART_LABELS[struck];
+            debugPlayer.displayClientMessage(net.minecraft.network.chat.Component.literal(
+                    "[近战] 请求=" + PART_LABELS[requested] + " 够得着=" + yn(requestedInReach)
+                            + " | 射线=" + (ray < 0 ? "无" : PART_LABELS[ray]) + " 够得着=" + yn(rayInReach)
+                            + " | " + verdict), false);
+        }
+        if (GraveDragonDamageDebug.enabled()) {
+            GraveDragonDamageDebug.log("melee requested=" + requested + " inReach=" + requestedInReach
+                    + " ray=" + ray + " rayInReach=" + rayInReach + " -> struck=" + struck
+                    + " range=" + player.entityInteractionRange());
+        }
+        return struck;
+    }
+
+    private static String yn(boolean value) {
+        return value ? "是" : "否";
     }
 
     /** Prevent movement when any real body part would collide with blocks. */

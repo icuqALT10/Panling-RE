@@ -15,14 +15,19 @@ import net.minecraft.resources.ResourceLocation;
  * nothing happened" into something readable: either no line appears (the attack was
  * rejected) or the line names a different part than the one under the crosshair.
  *
+ * <p>Every value is carried in the packet, including the remaining health, so the client
+ * can render the line without having to resolve the entity again — the entity may not be
+ * client-side yet, which silently swallowed earlier reports.
+ *
  * @param entityId   the damaged root entity
  * @param partIndex  part index the server resolved
  * @param partLabel  human readable part name
  * @param multiplier damage multiplier of that part
  * @param amount     damage applied after mitigation
+ * @param remaining  entity health after the hit
  */
 public record GraveDragonHitPayload(int entityId, int partIndex, String partLabel,
-                                    float multiplier, float amount)
+                                    float multiplier, float amount, float remaining)
         implements CustomPacketPayload {
 
     public static final Type<GraveDragonHitPayload> TYPE =
@@ -35,6 +40,7 @@ public record GraveDragonHitPayload(int entityId, int partIndex, String partLabe
                     ByteBufCodecs.STRING_UTF8, GraveDragonHitPayload::partLabel,
                     ByteBufCodecs.FLOAT, GraveDragonHitPayload::multiplier,
                     ByteBufCodecs.FLOAT, GraveDragonHitPayload::amount,
+                    ByteBufCodecs.FLOAT, GraveDragonHitPayload::remaining,
                     GraveDragonHitPayload::new
             );
 
