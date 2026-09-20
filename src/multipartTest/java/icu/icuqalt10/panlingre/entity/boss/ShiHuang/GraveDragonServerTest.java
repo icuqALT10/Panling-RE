@@ -571,4 +571,46 @@ public final class GraveDragonServerTest {
             dragon.discard();
         }
     }
+
+    /**
+     * 寻路必须按**真实身体**判定，而不是主体那个 1cm 锚点盒子。
+     *
+     * <p>否则 AI 会给一个 1cm 的生物规划路线（往 1 格缝隙、往墙里走），每一步再被
+     * {@code move()} 的 OBB 判定否掉，表现就是贴着墙反复磨、不会绕路。
+     *
+     * <p>身体的具体尺寸由 {@code GraveDragonPoseTest} 对着 OBB 表逐帧重算校验；这里验证接线：
+     * 龙真的换了自己的导航与节点评估器，而且每个节点的采样开销是有界的。
+     */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void pathfindingUsesTheRealBody(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.setPos(helper.absoluteVec(new Vec3(2, 30, 2)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            helper.assertTrue(GraveDragonEntity.pathingNose() > 30.0F,
+                    "Pathing footprint collapsed to the anchor: nose=" + GraveDragonEntity.pathingNose());
+            helper.assertTrue(GraveDragonEntity.pathingHalfWidth() > 4.0F,
+                    "Pathing footprint collapsed to the anchor: halfWidth=" + GraveDragonEntity.pathingHalfWidth());
+            // 尺寸查询本身必须留在锚点上：改了它会连带影响挤压、粒子散布、跳跃等行为。
+            helper.assertTrue(dragon.getBbWidth() < 0.1F,
+                    "Root size query must stay the anchor, got " + dragon.getBbWidth());
+
+            helper.assertTrue(dragon.getNavigation() instanceof GraveDragonPathNavigation,
+                    "Dragon is using the stock navigation again: " + dragon.getNavigation().getClass());
+            helper.assertTrue(dragon.getNavigation().getNodeEvaluator()
+                            instanceof GraveDragonPathNavigation.BodyAwareWalkNodeEvaluator,
+                    "Dragon is using the stock node evaluator again");
+            // WalkNodeEvaluator 的密集扫描对这条龙是 47*31*47 次查询/节点，必须保持稀疏采样。
+            int samples = GraveDragonPathNavigation.BodyAwareWalkNodeEvaluator.sampleCount();
+            helper.assertTrue(samples > 8 && samples < 200,
+                    "Path node sampling must stay sparse and cover the body, got " + samples);
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
+    }
 }

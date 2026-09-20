@@ -202,6 +202,50 @@ public final class GraveDragonPoseTest {
         }
     }
 
+    /**
+     * The navigation rejects a path node when the dragon's real body would not fit there, using
+     * the constants below. They have to stay the true bound of the collision body: too small
+     * lets the AI plan routes the body cannot walk, too large needlessly locks the boss out of
+     * terrain. Recompute the envelope over every yaw and the whole animation and compare.
+     */
+    private static void verifyPathingBodyBound(String java, List<String> labels, List<float[]> bounds) {
+        double minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE;
+        double minZ = Double.MAX_VALUE, maxZ = -Double.MAX_VALUE, top = 0;
+        Matrix4f yaw0 = GraveDragonIdleAirPose.modelToEntity(0, 1);
+        for (int step = 0; step <= 64; step++) {
+            var frame = GraveDragonIdleAirPose.sample(step * 0.05);
+            for (int i = 0; i < labels.size(); i++) {
+                OrientedBoundingBox box = GraveDragonIdleAirPose.box(frame, labels.get(i), bounds.get(i), yaw0, Vec3.ZERO);
+                for (Vec3 c : box.corners()) {
+                    minX = Math.min(minX, c.x); maxX = Math.max(maxX, c.x);
+                    minZ = Math.min(minZ, c.z); maxZ = Math.max(maxZ, c.z);
+                    top = Math.max(top, c.y);
+                }
+            }
+        }
+
+        // The navigation samples the body in its own frame and rotates it by the body yaw, so the
+        // constants are the yaw-0 extents: local -Z is the head, local +Z the tail.
+        compare(constant(java, "MEASURED_BODY_HALF_WIDTH"), Math.max(Math.abs(minX), Math.abs(maxX)), "half width");
+        compare(constant(java, "MEASURED_BODY_NOSE"), -minZ, "nose reach");
+        compare(constant(java, "MEASURED_BODY_TAIL"), maxZ, "tail reach");
+        compare(constant(java, "MEASURED_BODY_HEIGHT"), top, "height");
+        check(constant(java, "MEASURED_BODY_NOSE") > 4.0F, "Pathing body is still anchor sized");
+        System.out.println("Pathing body footprint: local X " + minX + ".." + maxX + ", local Z " + minZ
+                + ".." + maxZ + ", top Y " + top);
+    }
+
+    /** The constant must equal the measured value: too small plans impossible routes, too big locks the boss out. */
+    private static void compare(double constant, double measured, String what) {
+        near(constant, measured, 0.001, "Pathing " + what);
+    }
+    /** Reads a {@code static final float NAME = <value>F;} constant straight out of the source. */
+    private static double constant(String java, String name) {
+        var m = Pattern.compile(name + "\\s*=\\s*(-?[0-9.]+)F").matcher(java);
+        check(m.find(), "Missing constant " + name);
+        return Double.parseDouble(m.group(1));
+    }
+
     public static void main(String[] args) throws Exception {
         icu.icuqalt10.panlingre.animation.WorldTimeAnimationControllerTest.run();
         String assets = "src/main/resources/assets/panlingre/";
@@ -248,6 +292,7 @@ public final class GraveDragonPoseTest {
         }
         check(labels.size() == bounds.size(), "Hardcoded bounds/label count mismatch");
         verifyHitDetection();
+        verifyPathingBodyBound(java, labels, bounds);
         verifyModelFits(read("杂项/美术资源/models/boss/ShiHuang/dragon_v4.bbmodel"), labels, bounds);
         var first = GraveDragonIdleAirPose.sample(0);
         near(first.bones().get("head").position().y, 248.96428, 1e-5, "Head translation must NOT subtract first frame");

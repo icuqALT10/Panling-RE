@@ -22,6 +22,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -351,6 +352,49 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /** The locomotion anchor is never an extra damage target. */
     @Override public boolean isPickable() { return false; }
+
+    // ===== 寻路体型 =====
+    // WalkNodeEvaluator 只用 getBbWidth()/getBbHeight() 给路径节点定尺寸，而主体自己的盒子
+    // 只有 1cm，于是 AI 一直在给一个 1cm 的生物规划路线，最后每一步又被 move() 的真实 OBB
+    // 判定否掉——龙只会贴着墙反复尝试，不会绕路。
+    //
+    // 这里不改实体尺寸（那会连带改变挤压、粒子散布、MoveControl 跳跃等一大堆行为），而是给龙
+    // 换一个按真实身体判定的 NodeEvaluator，见 GraveDragonPathNavigation。
+    //
+    // 下面这几个数由本地 heightAudit 任务量出，GraveDragonPoseTest 会重新计算校验：改了 OBB 表
+    // 或动画而忘了同步这里，测试会直接失败。
+    //
+    // 身体在自身坐标系里是个长条（锚点靠近尾部）：向前伸出 40 格、向后 6 格多、横向只有 ±6 格。
+    // 所以寻路不能用一个"半径"圆去套，否则等于要求 83×83 的空地；必须按当前朝向旋转这个长条。
+    /** 横向半宽（局部 X 的最大绝对值）。 */
+    static final float MEASURED_BODY_HALF_WIDTH = 5.8852254F;
+    /** 沿朝向向前（局部 -Z，头那一侧）伸出锚点的距离。 */
+    static final float MEASURED_BODY_NOSE = 40.2910325F;
+    /** 在锚点后方（局部 +Z，尾巴那一侧）伸出的距离。 */
+    static final float MEASURED_BODY_TAIL = 5.9054787F;
+    /** 身体最高点相对锚点的高度。 */
+    static final float MEASURED_BODY_HEIGHT = 30.1471F;
+
+    /**
+     * 告诉寻路器多大比例的真实身体。1.0 = 完全按真实身体（默认）。
+     *
+     * <p>调小可以让龙在更拥挤的地形里也愿意走路，代价是它会往身体其实过不去的地方规划路线；
+     * 真正的碰撞判定始终是 {@link #move(MoverType, Vec3)} 里的 OBB 检查，不会被这里放松。
+     */
+    private static final float PATHING_BODY_FIT = 1.0F;
+
+    public static float pathingHalfWidth() { return MEASURED_BODY_HALF_WIDTH * PATHING_BODY_FIT; }
+
+    public static float pathingNose() { return MEASURED_BODY_NOSE * PATHING_BODY_FIT; }
+
+    public static float pathingTail() { return MEASURED_BODY_TAIL * PATHING_BODY_FIT; }
+
+    public static float pathingHeight() { return MEASURED_BODY_HEIGHT * PATHING_BODY_FIT; }
+
+    @Override
+    protected PathNavigation createNavigation(Level level) {
+        return new GraveDragonPathNavigation(this, level);
+    }
 
     /** Part damage is routed here; head is vulnerable, tail is more resistant. */
     protected float damageMultiplierForPart(int index) {
