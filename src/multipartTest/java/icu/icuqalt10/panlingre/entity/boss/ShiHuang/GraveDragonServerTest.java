@@ -783,7 +783,9 @@ public final class GraveDragonServerTest {
             dragon.backdateAnimation(GraveDragonPose.duration("takeoff") + 0.5);
             dragon.tick();
             helper.assertTrue(dragon.flying(), "起飞过渡结束后没进空中形态");
-            helper.assertTrue("idle_air".equals(dragon.animation()), "空中动画: " + dragon.animation());
+            // 漫游可能立刻接手，于是动画会是 idle_air 或它的过渡；两者都算进空中形态。
+            helper.assertTrue("idle_air".equals(dragon.animation()) || "idle_air_to_fly".equals(dragon.animation()),
+                    "空中动画应该是 idle_air 或它的过渡: " + dragon.animation());
             helper.assertTrue(dragon.isNoGravity(), "空中形态应该无重力");
             double airborneY = dragon.getY();
             helper.assertTrue(Math.abs(airborneY - groundY - 10.0) < 0.2,
@@ -903,6 +905,92 @@ public final class GraveDragonServerTest {
                 helper.assertTrue(!level.getBlockState(new BlockPos(node.x, node.y, node.z)).is(Blocks.STONE),
                         "路径穿过了障碍物 @" + node.x + "," + node.y + "," + node.z);
             }
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
+    }
+
+    /**
+     * 无仇恨漫游：四周随机挑一个**可达**点过去；到达后 30% 概率原地待机 10 秒，其余找下一个点。
+     */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void wanderFindsReachableTargetAndIdles(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.setPos(helper.absoluteVec(new Vec3(4, 60, 4)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            // 升空，验证空中形态的漫游（空气里 A* 总能找到路）。
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            dragon.backdateAnimation(GraveDragonPose.duration("takeoff") + 0.5);
+            dragon.tick();
+            helper.assertTrue(dragon.flying(), "没有进空中形态");
+
+            dragon.tick();
+            helper.assertTrue(dragon.isMoving(), "漫游没有自己启动");
+
+            int idleSeen = 0, retargetSeen = 0;
+            for (int i = 0; i < 400 && (idleSeen == 0 || retargetSeen == 0); i++) {
+                // 把目标点放到脚下就等于"已到达"（到达判定看的是距离）。
+                dragon.setWanderTarget(dragon.position());
+                dragon.tick();
+                if (dragon.isWanderIdle()) {
+                    idleSeen++;
+                    helper.assertTrue(dragon.wanderIdleTicks() <= 200,
+                            "原地待机不该超过 10 秒，实际 " + dragon.wanderIdleTicks() + " tick");
+                    dragon.resetWanderIdle(); // 清掉计时，好继续验证另一个分支
+                } else if (dragon.isMoving()) {
+                    retargetSeen++;
+                }
+            }
+            helper.assertTrue(idleSeen > 0, "到达后从来没有出现过原地待机");
+            helper.assertTrue(retargetSeen > 0, "到达后从来没有换下一个目标点");
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
+    }
+
+    /**
+     * 地面移动中转弯要播 turn_ground_left / turn_ground_right。
+     * 空中暂时不接转向动画——turn_air_* 是留给后续攻击的（待机 → 转向目标 → 攻击）。
+     */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void groundTurningPlaysTurnAnimations(GameTestHelper helper) {
+        var level = helper.getLevel();
+        Vec3 base = helper.absoluteVec(new Vec3(4, 40, 4));
+        // 头顶压一块天花板，让起飞净空检查失败，保证留在地面形态。
+        level.setBlockAndUpdate(BlockPos.containing(base).above(1), Blocks.STONE.defaultBlockState());
+
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.setPos(base);
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            dragon.tick();
+            helper.assertTrue(!dragon.flying(), "被天花板挡着却起飞了");
+
+            // 转向判定看的是"目标点方向与当前朝向的偏角"。实体初始朝 +Z，而面朝 +Z 时**右方是 -X**
+            // （左手系里右方 = 前方 × 上方 = (0,0,1)×(0,1,0) = (-1,0,0)），所以目标放在 -X 才是右转。
+            dragon.setWanderTarget(new Vec3(base.x - 60, base.y, base.z));
+            dragon.resetWanderIdle();
+            for (int i = 0; i < 5; i++) dragon.tick();
+            // 命名反直觉：美术按"观众在屏幕上看到的方向"命名，所以实体右转对应 turn_ground_left。
+            helper.assertTrue("turn_ground_left".equals(dragon.animation()),
+                    "地面移动右转时应该播 turn_ground_left（命名按观众视角），实际 " + dragon.animation());
+
+            // 目标换到 +X（实体左转），应该切到另一个动作。
+            dragon.setWanderTarget(new Vec3(base.x + 60, base.y, base.z));
+            for (int i = 0; i < 5; i++) dragon.tick();
+            helper.assertTrue("turn_ground_right".equals(dragon.animation()),
+                    "地面移动左转时应该播 turn_ground_right，实际 " + dragon.animation());
             helper.succeed();
         } finally {
             dragon.discard();

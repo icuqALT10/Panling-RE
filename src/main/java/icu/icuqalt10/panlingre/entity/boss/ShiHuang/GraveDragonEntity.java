@@ -7,6 +7,7 @@ import icu.icuqalt10.panlingre.entity.MultipartPartConfig;
 import icu.icuqalt10.panlingre.entity.OrientedBoundingBox;
 import icu.icuqalt10.panlingre.init.ModEffects;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -27,9 +28,6 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.MoverType;
@@ -98,9 +96,45 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /** 净空不足时推迟多久再试一次。 */
     private static final int TAKEOFF_RETRY_TICKS = 20 * 5;
 
-    /** 循环播放的动画；其余按一次性处理（播完停在末帧，由 takeoff/land 这类过渡用）。 */
-    private static final Set<String> LOOPING_ANIMATIONS = Set.of(
-            "idle_air", "idle_ground", "fly", "run", "turn_fly_left_loop", "turn_fly_right_loop");
+    /** 循环播放的动画；其余按一次性处理（播完停在末帧，由 takeoff/land/turn_* 这类过渡用）。 */
+    private static final Set<String> LOOPING_ANIMATIONS = Set.of("idle_air", "idle_ground", "fly", "run");
+
+    // ===== 无仇恨漫游 =====
+    // 目前还不是敌对生物（没有攻击动画），所以不带仇恨目标：只在四周随机找个可达点过去，
+    // 到达后有概率原地歇一会儿。空中与地面共用这一套，只是扩散范围与动画不同。
+
+    /** 目标点的水平搜索距离区间（格）。 */
+    private static final double WANDER_MIN_DISTANCE = 12.0;
+    private static final double WANDER_MAX_DISTANCE = 36.0;
+    /** 空中形态额外的垂直扩散（格）。 */
+    private static final double WANDER_VERTICAL_SPREAD = 10.0;
+    /** 随机尝试次数：每次都用寻路验证可达性，全失败就歇一会儿。 */
+    private static final int WANDER_ATTEMPTS = 12;
+    /** 到达判定半径（格）。 */
+    private static final double WANDER_ARRIVE_DISTANCE = 3.0;
+    /** 单个目标点最多追多久（tick）；导航找不到路时不至于永远卡在原地。 */
+    private static final int WANDER_TIMEOUT_TICKS = 20 * 30;
+    private static final double WANDER_SPEED = 0.7;
+    /** 到达后原地待机的概率（%）与时长（tick）。 */
+    private static final int WANDER_IDLE_CHANCE = 30;
+    private static final int WANDER_IDLE_TICKS = 20 * 10;
+    /** 飞行时每 tick 最多抬升多少格，用来维持离地高度。 */
+    private static final double ALTITUDE_CLIMB_RATE = 0.5;
+    /** 转向动画的判定阈值（度/tick）。 */
+    private static final float TURN_ANIMATION_THRESHOLD = 1.2F;
+
+    /** 漫游的当前目标点（null = 没有）。 */
+    private Vec3 wanderTarget;
+    /** 还要原地待机多少 tick。 */
+    private int wanderIdleTicks;
+    /** 是否正在移动，决定播 fly/run 还是 idle_*。 */
+    private boolean moving;
+    /** 漫游总开关；关掉之后 moving 不再被 tickWander 改写。 */
+    private boolean wanderEnabled = true;
+    /** 当前目标点已经追了多少 tick，用来做超时（导航找不到路时不至于永远卡着）。 */
+    private int wanderTicks;
+    /** 空中移动的过渡动画播完后要进入的循环动画（null = 没有正在过渡）。 */
+    private String pendingLoopAnimation;
 
     /** 服务端：下一次形态切换的时刻。 */
     private long nextFormSwitchAt;
@@ -286,6 +320,202 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     @Override
     public boolean causeFallDamage(float fallDistance, float multiplier, DamageSource source) {
         return false;
+    }
+
+    // ===== 漫游与动画选择 =====
+
+    /** 是否正在形态过渡（takeoff/land 播放中）。 */
+    public boolean isTransitioningForm() {
+        return pendingForm != null;
+    }
+
+    /** 是否正在移动；服务端设置，决定播 fly/run 还是 idle_*。 */
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+    }
+
+    /**
+     * 暂停/恢复漫游。测试用来单独验证动画选择；后续接入攻击时也会用它让漫游让位。
+     */
+    public void setWanderEnabled(boolean enabled) {
+        this.wanderEnabled = enabled;
+        if (!enabled) {
+            this.wanderTarget = null;
+            this.wanderIdleTicks = 0;
+            getNavigation().stop();
+        }
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    /**
+     * 无仇恨漫游：随机挑一个**可达**的点过去，到达后有 {@link #WANDER_IDLE_CHANCE}% 概率
+     * 原地待机 {@link #WANDER_IDLE_TICKS} tick，其余情况继续找下一个点。
+     */
+    private void tickWander() {
+        if (pendingForm != null || !wanderEnabled) return;
+
+        if (wanderIdleTicks > 0) {
+            wanderIdleTicks--;
+            setMoving(false);
+            return;
+        }
+
+        boolean arrived = wanderTarget == null
+                || position().distanceToSqr(wanderTarget) < WANDER_ARRIVE_DISTANCE * WANDER_ARRIVE_DISTANCE
+                || wanderTicks > WANDER_TIMEOUT_TICKS;
+        wanderTicks++;
+        if (!arrived) {
+            setMoving(true);
+            return;
+        }
+
+        // 到点了：先掷一次骰子决定要不要歇，再决定下一个目标点。
+        if (wanderTarget != null && random.nextInt(100) < WANDER_IDLE_CHANCE) {
+            wanderTarget = null;
+            wanderIdleTicks = WANDER_IDLE_TICKS;
+            getNavigation().stop();
+            setMoving(false);
+            return;
+        }
+
+        Vec3 next = pickWanderTarget();
+        if (next == null) {
+            // 四周都找不到可达点（比如被围住）：歇一半时间再试。
+            wanderTarget = null;
+            wanderIdleTicks = WANDER_IDLE_TICKS / 2;
+            setMoving(false);
+            return;
+        }
+        wanderTarget = next;
+        wanderTicks = 0;
+        getNavigation().moveTo(next.x, next.y, next.z, WANDER_SPEED);
+        setMoving(true);
+    }
+
+    /**
+     * 向四周扩散一段距离，随机取一个点，并用**寻路**验证它真的可达。
+     *
+     * <p>可达性交给寻路器判断，所以不会选到身体过不去的位置；这一点对这条 55 格长的龙尤其重要。
+     */
+    private Vec3 pickWanderTarget() {
+        for (int attempt = 0; attempt < WANDER_ATTEMPTS; attempt++) {
+            double angle = random.nextDouble() * Math.PI * 2;
+            double distance = WANDER_MIN_DISTANCE + random.nextDouble() * (WANDER_MAX_DISTANCE - WANDER_MIN_DISTANCE);
+            double dy = flying() ? (random.nextDouble() - 0.5) * WANDER_VERTICAL_SPREAD : 0;
+            Vec3 candidate = position().add(Math.cos(angle) * distance, dy, Math.sin(angle) * distance);
+            if (flying()) {
+                // 空中形态不许低于飞行高度，否则会挑出贴地的目标点。
+                double lowest = groundLevelBelow() + FLIGHT_CLEARANCE;
+                if (candidate.y < lowest) candidate = new Vec3(candidate.x, lowest, candidate.z);
+            }
+            var path = getNavigation().createPath(BlockPos.containing(candidate), 1);
+            if (path != null && path.canReach()) return candidate;
+        }
+        return null;
+    }
+
+    /**
+     * 飞行时维持离地高度：地形升高时就抬起来，保证"自身离下方地面 ≥ 10 格"。
+     * 每 tick 最多抬 {@link #ALTITUDE_CLIMB_RATE} 格，免得猛地跳一下。
+     */
+    private void maintainFlightAltitude() {
+        if (!flying() || pendingForm != null) return;
+        double lowest = groundLevelBelow() + FLIGHT_CLEARANCE;
+        if (getY() < lowest - 0.05) {
+            setPos(getX(), Math.min(lowest, getY() + ALTITUDE_CLIMB_RATE), getZ());
+        }
+    }
+
+    /**
+     * 按"形态 + 是否移动 + 是否在转向"选动画。
+     *
+     * <p>地面：idle_ground / run / turn_ground_left / turn_ground_right（后两者是一次性动画）。
+     * 空中：idle_air / fly，两者之间要走 idle_air_to_fly / fly_to_idle_air 过渡。
+     * turn_air_* 是留给后续攻击的（待机 → 转向目标 → 攻击），这里刻意不用。
+     */
+    private void tickAnimation() {
+        if (pendingForm != null) return;
+
+        if (pendingLoopAnimation != null) {
+            if (animationSeconds(0) >= GraveDragonPose.duration(animation())) {
+                String next = pendingLoopAnimation;
+                pendingLoopAnimation = null;
+                playAnimation(next, true);
+            }
+            return;
+        }
+
+        // 转向判定用"目标点方向与当前朝向的偏角"：它不依赖 tick 内的赋值时序，比朝向变化率可靠。
+        float turn = desiredTurnDegrees();
+        boolean turning = !flying() && moving && Math.abs(turn) > TURN_ANIMATION_THRESHOLD;
+        String desired;
+        if (turning) {
+            // 注意命名反直觉：turn_ground_left 其实是**实体右转**的动作，turn_ground_right 才是
+            // 实体左转。依据有两条，互相印证：
+            //   1) 动画数据里 turn_ground_left 的 head Y 旋转是 -58°、right 是 +58°，而模型空间
+            //      绕 Y 正转经 modelToEntity 之后是实体左转；
+            //   2) 集成测试实测 yaw 增大（实体右转）时播的就是 turn_ground_left。
+            // 美术是按"观众在屏幕上看到的偏向"命名的：龙朝屏幕左边偏就叫 left。
+            desired = turn > 0 ? "turn_ground_left" : "turn_ground_right";
+        } else {
+            desired = moving ? (flying() ? "fly" : "run") : (flying() ? "idle_air" : "idle_ground");
+        }
+        if (desired.equals(animation())) return;
+
+        // 空中的待机 <-> 飞行之间必须走过渡动画；地面 run 与 idle_ground 是同一套形状，直接切。
+        if (flying()) {
+            if (animation().equals("idle_air") && desired.equals("fly")) {
+                startLoopTransition("fly");
+                return;
+            }
+            if (animation().equals("fly") && desired.equals("idle_air")) {
+                startLoopTransition("idle_air");
+                return;
+            }
+        }
+        playAnimation(desired, true);
+    }
+
+    /** 播放空中待机<->飞行的过渡动画，播完切到 {@code next}。 */
+    private void startLoopTransition(String next) {
+        pendingLoopAnimation = next;
+        playAnimation(next.equals("fly") ? "idle_air_to_fly" : "fly_to_idle_air", true);
+    }
+
+    /**
+     * 目标点方向与当前朝向的偏角（度）。正数表示需要向右转。
+     *
+     * <p>用它而不是朝向变化率：变化率依赖 tick 内 yBodyRot 的赋值时序（LivingEntity.tick 内部
+     * 会同步 yBodyRotO），很容易恒为 0 或者反号。
+     */
+    private float desiredTurnDegrees() {
+        Vec3 target = wanderTarget;
+        if (target == null) return 0;
+        Vec3 toTarget = target.subtract(position());
+        if (toTarget.x * toTarget.x + toTarget.z * toTarget.z < 1.0E-4) return 0;
+        float wantedYaw = (float) Math.toDegrees(Math.atan2(-toTarget.x, toTarget.z));
+        return Mth.wrapDegrees(wantedYaw - yBodyRot);
+    }
+
+    /** 供测试：直接注入漫游目标点（跳过随机搜索）。 */
+    public void setWanderTarget(Vec3 target) {
+        this.wanderTarget = target;
+    }
+
+    public boolean isWanderIdle() {
+        return wanderIdleTicks > 0;
+    }
+
+    public int wanderIdleTicks() {
+        return wanderIdleTicks;
+    }
+
+    /** 供测试：清掉待机计时，好继续验证"到达后换下一个点"的分支。 */
+    public void resetWanderIdle() {
+        this.wanderIdleTicks = 0;
     }
 
     private void scheduleNextFormSwitch(long now) {
@@ -1026,10 +1256,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     @Override
     protected void registerGoals() {
-        int priority = 0;
-        this.goalSelector.addGoal(priority++, new MeleeAttackGoal(this, 1.0D, true));
-        this.goalSelector.addGoal(priority, new RandomStrollGoal(this, 0.8D));
-        this.targetSelector.addGoal(priority, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        // 目前不是敌对生物（还没有攻击动画），所以没有仇恨目标，也不挂原版的随机漫步目标：
+        // 移动全部交给 tickWander，这样空中与地面共用同一套"随机可达点"逻辑。
+        // turn_air_* 也是留给后续攻击的（待机 → 视角转向目标 → 发动攻击）。
     }
 
     @Override
@@ -1039,6 +1268,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         this.bodyPitchO = bodyPitch();
         if (!this.level().isClientSide) {
             tickForm();
+            tickWander();
+            tickAnimation();
+            maintainFlightAltitude();
             updateBodyPitch();
         }
         updateDragonParts();
