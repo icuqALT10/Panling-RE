@@ -133,9 +133,9 @@ public class huang_tong_lu extends Item implements ICurioItem,skill_trigger {
         Level level = player.level();
         // 找出范围内所有的生物
         AABB searchBox = player.getBoundingBox().inflate(range);
-        List<Mob> entities = level.getEntitiesOfClass(Mob.class, searchBox, entity -> {
-            return entity.isAttackable() && entity.isAlive();
-        });
+        List<Mob> entities = skill_trigger.skillTargets(level, searchBox, player).stream()
+                .filter(Mob.class::isInstance).map(Mob.class::cast)
+                .filter(entity -> entity.isAttackable() && entity.isAlive()).toList();
 
         LivingEntity closest = null;
         double closestScore = Double.MAX_VALUE;

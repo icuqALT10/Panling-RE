@@ -241,7 +241,7 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
 
         // 1. 获取周围半径 10 格内的所有实体
         AABB searchBox = player.getBoundingBox().inflate(10.0);
-        List<LivingEntity> entities = serverLevel.getEntitiesOfClass(LivingEntity.class, searchBox);
+        List<LivingEntity> entities = skill_trigger.skillTargets(serverLevel, searchBox, player);
 
         for (LivingEntity entity : entities) {
             if (SkillHelper.combatTargetFilter(player).test(entity)) {
@@ -381,7 +381,9 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
         List<LivingEntity> targetEntities = SkillHelper.getLivingEntitiesInFront(player, width, width, length);
         for (LivingEntity entity : targetEntities) {
             if (SkillHelper.combatTargetFilter(player).test(entity)) {
-                entity.addEffect(new MobEffectInstance(ModEffects.freeze, duration, 0));
+                // The selector may hit a dragon child entity. Always resolve
+                // that child to its living multipart root before adding the effect.
+                SkillHelper.addEffectToTarget(entity, new MobEffectInstance(ModEffects.freeze, duration, 0));
             }
         }
 

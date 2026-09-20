@@ -6,7 +6,6 @@ import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.component.FuZhiBagContents;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModComponents;
-import icu.icuqalt10.panlingre.item.common.WeaponCaseItem;
 import icu.icuqalt10.panlingre.item.skill_trigger;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
 import icu.icuqalt10.panlingre.world.inventory.FuZhiBagMenu;

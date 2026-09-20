@@ -54,5 +54,26 @@
         "stream": true
       }
     ]
+  },
+  "bgm_ren": {
+    "sounds": [{"name": "panlingre:bgm/ren", "stream": true}]
+  },
+  "bgm_zhan": {
+    "sounds": [{"name": "panlingre:bgm/zhan", "stream": true}]
+  },
+  "bgm_xian": {
+    "sounds": [{"name": "panlingre:bgm/xian", "stream": true}]
+  },
+  "bgm_yao": {
+    "sounds": [{"name": "panlingre:bgm/yao", "stream": true}]
+  },
+  "bgm_shen": {
+    "sounds": [{"name": "panlingre:bgm/shen", "stream": true}]
+  },
+  "bgm_middle": {
+    "sounds": [{"name": "panlingre:bgm/middle", "stream": true}]
+  },
+  "bgm_penglai": {
+    "sounds": [{"name": "panlingre:bgm/penglai", "stream": true}]
   }
 }

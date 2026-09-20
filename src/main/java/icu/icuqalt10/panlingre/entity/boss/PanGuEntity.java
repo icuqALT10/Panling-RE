@@ -1,6 +1,8 @@
 package icu.icuqalt10.panlingre.entity.boss;
 
 import icu.icuqalt10.panlingre.entity.PanLingEntities;
+import icu.icuqalt10.panlingre.animation.SyncedEntityAnimation;
+import icu.icuqalt10.panlingre.animation.WorldTimeAnimationController;
 import icu.icuqalt10.panlingre.network.GroundSmashPayload;
 import icu.icuqalt10.panlingre.network.ShakePayload;
 import icu.icuqalt10.panlingre.entity.FireTornadoEntity;
@@ -115,10 +117,19 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
     private static final EntityDataAccessor<Integer> DATA_ACTION_STATE =
             SynchedEntityData.defineId(PanGuEntity.class, EntityDataSerializers.INT);
 
+    private static final EntityDataAccessor<CompoundTag> BODY_ANIMATION =
+            SynchedEntityData.defineId(PanGuEntity.class, EntityDataSerializers.COMPOUND_TAG);
+    private static final EntityDataAccessor<CompoundTag> ACTION_ANIMATION =
+            SynchedEntityData.defineId(PanGuEntity.class, EntityDataSerializers.COMPOUND_TAG);
+    private final SyncedEntityAnimation bodyAnimation = new SyncedEntityAnimation(this, BODY_ANIMATION);
+    private final SyncedEntityAnimation actionAnimation = new SyncedEntityAnimation(this, ACTION_ANIMATION);
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(DATA_ACTION_STATE, ActionState.IDLE_OR_WALK.ordinal());
+        builder.define(BODY_ANIMATION, new CompoundTag());
+        builder.define(ACTION_ANIMATION, new CompoundTag());
     }
 
     public ActionState getActionState() {
@@ -127,6 +138,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
 
     public void setActionState(ActionState state) {
         this.entityData.set(DATA_ACTION_STATE, state.ordinal());
+        if (!level().isClientSide) updateBodyAnimation();
     }
 
     public int attackCooldown = 0;       // 攻击后冷却,期间走"盯着+乱走"逻辑
@@ -168,6 +180,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         this.noPhysics = false;
         this.setNoAi(false);
         this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.WOODEN_AXE));
+        bodyAnimation.loop("idle", 1);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -287,6 +300,7 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
     public void tick() {
         super.tick();
         if (this.level().isClientSide) return;
+        updateBodyAnimation();
 
         if (DiedTick > 0) {
             DiedTick -= 1;
@@ -574,75 +588,39 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
     // ===== GeckoLib动画 =====
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "body_controller", 5, this::bodyPredicate));
-
-        controllers.add(new AnimationController<>(this, "action_controller", 0, this::attackPredicate)
-                .triggerableAnim("attack.heavy", RawAnimation.begin().thenPlay("attack.heavy"))
-                .triggerableAnim("attack.heavy2", RawAnimation.begin().thenPlay("attack.heavy2"))
-                .triggerableAnim("attack.skill1", RawAnimation.begin().thenPlay("attack.skill1"))
-                .triggerableAnim("attack.skill2", RawAnimation.begin().thenPlay("attack.skill2"))
-                .triggerableAnim("attack.skill3", RawAnimation.begin().thenPlay("attack.skill3"))
-                .triggerableAnim("attack.skill4", RawAnimation.begin().thenPlay("attack.skill4"))
-                .triggerableAnim("attack.combo", RawAnimation.begin().thenPlay("attack.combo"))
-                .triggerableAnim("attack.throw", RawAnimation.begin().thenPlay("attack.throw"))
-                .triggerableAnim("attack.throw.catch", RawAnimation.begin().thenPlay("attack.throw.catch"))
-                .triggerableAnim("attack.throw.end", RawAnimation.begin().thenPlay("attack.throw.end"))
-                .triggerableAnim("intro", RawAnimation.begin().thenPlay("intro"))
-                .triggerableAnim("died", RawAnimation.begin().thenPlay("died"))
-                .triggerableAnim("skill.phase1", RawAnimation.begin().thenPlay("skill.phase1"))
-                .triggerableAnim("skill.phase2", RawAnimation.begin().thenPlay("skill.phase2")));
+        controllers.add(new WorldTimeAnimationController<>(this, "body_controller", bodyAnimation::playback,
+                state -> level().getGameTime() + state.getPartialTick()));
+        controllers.add(new WorldTimeAnimationController<>(this, "action_controller", actionAnimation::playback,
+                state -> level().getGameTime() + state.getPartialTick()));
     }
 
-    private PlayState bodyPredicate(AnimationState<PanGuEntity> event) {
+    /** Choose locomotion on the server so every observer receives the same clip and clock. */
+    private void updateBodyAnimation() {
         switch (getActionState()) {
-            case INTRO, DYING, SKILL -> {
-                return PlayState.STOP;
-            }
-            case FROZEN -> {
-                event.getController().setAnimationSpeed(0.001D);
-                return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-            }
+            case INTRO, DYING, SKILL -> bodyAnimation.stop();
+            case FROZEN -> bodyAnimation.loop("idle", 0.001);
             default -> {
-                if (event.isMoving()) {
-                    Player nearest = event.getAnimatable().level().getNearestPlayer(
-                            event.getAnimatable().getX(), event.getAnimatable().getY(), event.getAnimatable().getZ(),
-                            80.0D, false
-                    );
-
-                    if (nearest == null) {
-                        event.getController().setAnimationSpeed(1.0D);
-                        return event.setAndContinue(RawAnimation.begin().thenLoop("walk"));
-                    }
-
-                    event.getController().setAnimationSpeed(0.75D);
-                    return event.setAndContinue(RawAnimation.begin().thenLoop("walk"));
+                double dx = getX() - xo, dz = getZ() - zo;
+                if (dx * dx + dz * dz > 1.0e-6) {
+                    Player nearest = level().getNearestPlayer(getX(), getY(), getZ(), 80, false);
+                    bodyAnimation.loop("walk", nearest == null ? 1 : 0.75);
+                } else {
+                    bodyAnimation.loop("idle", 1);
                 }
-
-                event.getController().setAnimationSpeed(1.0D);
-                return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
             }
         }
-    }
-
-    private PlayState attackPredicate(AnimationState<PanGuEntity> event) {
-        // 如果实体进入冻结，立刻终止攻击控制器的一切动画
-        if (this.getActionState() == ActionState.FROZEN) {
-            return PlayState.STOP;
-        }
-        event.getController().setAnimationSpeed(1.0D);
-        return PlayState.CONTINUE;
     }
 
     // 开始播放动画（服务端调用）
     public void startAnimation(String animName) {
         this.currentAnimation = animName;
         this.animationTick = 0;
-        this.triggerAnim("action_controller", animName);
+        this.actionAnimation.start(animName, false, 1);
     }
 
     // 停止动画
     private void stopAnimation() {
-        this.stopTriggeredAnim("action_controller",this.currentAnimation);
+        this.actionAnimation.stop();
         this.currentAnimation = "";
         this.animationTick = 0;
         this.dashMoving = false;

@@ -107,8 +107,7 @@ public class po_kong_fu extends Item implements skill_trigger {
             player.hurtMarked = true;
 
             AABB dashArea = player.getBoundingBox().expandTowards(lookVec.scale(4.0)).inflate(1.0);
-            List<LivingEntity> targets = level.getEntitiesOfClass(
-                    LivingEntity.class, dashArea, SkillHelper.combatTargetFilter(player));
+            List<LivingEntity> targets = SkillHelper.getMultipartTargets(player, dashArea);
 
             double baseDamage = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
             float finalDamage = (float) (baseDamage * 1.25);

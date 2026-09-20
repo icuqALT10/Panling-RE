@@ -1,4 +1,5 @@
 [
   {"version":2},
-  {"ingredient":{"id":"panlingre:na_wu_ci_shi"},"type":"item_stack","bookmarkType":"INGREDIENT"}
+  {"ingredient":{"id":"panlingre:na_wu_ci_shi"},"type":"item_stack","bookmarkType":"INGREDIENT"},
+  {"ingredient":{"id":"panlingre:feng_hou_3"},"type":"item_stack","bookmarkType":"INGREDIENT"}
 ]

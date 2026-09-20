@@ -50,11 +50,30 @@ public class ldlProxyBlock extends Block {
     }
 
     @Override
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if (!level.isClientSide) {
+            for (BlockPos masterPos : BlockPos.betweenClosed(pos.offset(-2, -2, -2), pos.offset(2, 2, 2))) {
+                if (level.getBlockState(masterPos).getBlock() instanceof ldl) {
+                    // Let the master perform the actual drop.  In creative
+                    // mode this must be false, otherwise the 3x3 structure
+                    // incorrectly drops an item.
+                    level.destroyBlock(masterPos, !player.isCreative());
+                    break;
+                }
+            }
+        }
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
+    @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
             for (BlockPos p : BlockPos.betweenClosed(pos.offset(-2, -2, -2), pos.offset(2, 2, 2))) {
                 if (level.getBlockState(p).getBlock() instanceof ldl) {
-                    level.destroyBlock(p, !isMoving);
+                    // A proxy has no loot of its own.  If the master is being
+                    // removed by a player, playerWillDestroy above already
+                    // performed the correctly gated drop.
+                    level.destroyBlock(p, false);
                     break;
                 }
             }

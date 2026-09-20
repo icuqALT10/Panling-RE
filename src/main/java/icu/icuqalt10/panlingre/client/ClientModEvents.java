@@ -20,6 +20,10 @@ import icu.icuqalt10.panlingre.looktip.LookTipOverlay;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.component.DataComponents;
@@ -31,6 +35,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.entity.Entity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonPartEntity;
+import icu.icuqalt10.panlingre.entity.OrientedBoundingBox;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -49,6 +57,51 @@ import java.util.regex.Pattern;
 
 @EventBusSubscriber(modid = PanlingRE.MODID, value = Dist.CLIENT)
 public class ClientModEvents {
+
+    @SubscribeEvent
+    public static void renderGraveDragonHitboxes(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) return;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null || !mc.getEntityRenderDispatcher().shouldRenderHitBoxes()) return;
+        Vec3 camera = mc.gameRenderer.getMainCamera().getPosition();
+        PoseStack pose = event.getPoseStack();
+        pose.pushPose();
+        pose.translate(-camera.x, -camera.y, -camera.z);
+        VertexConsumer lines = mc.renderBuffers().bufferSource().getBuffer(RenderType.lines());
+        for (GraveDragonEntity dragon : mc.level.getEntitiesOfClass(GraveDragonEntity.class,
+                mc.player.getBoundingBox().inflate(128.0D))) {
+            for (GraveDragonPartEntity part : dragon.getWorldParts()) {
+                if (!part.isPickable()) continue;
+                float[] color = colorForPart(part.getPartIndex());
+                drawObb(pose, lines, part.getOrientedBox(), color[0], color[1], color[2]);
+            }
+        }
+        mc.renderBuffers().bufferSource().endBatch(RenderType.lines());
+        pose.popPose();
+    }
+
+    private static void drawObb(PoseStack pose, VertexConsumer out, OrientedBoundingBox box, float r, float g, float b) {
+        Vec3[] c = box.corners();
+        int[][] edges = {{0,1},{0,2},{0,4},{1,3},{1,5},{2,3},{2,6},{3,7},{4,5},{4,6},{5,7},{6,7}};
+        PoseStack.Pose pp = pose.last();
+        for (int[] e : edges) {
+            Vec3 a=c[e[0]], z=c[e[1]];
+            Vec3 direction = z.subtract(a).normalize();
+            out.addVertex(pp, (float)a.x,(float)a.y,(float)a.z).setColor(r,g,b,1.0F)
+                    .setNormal(pp,(float)direction.x,(float)direction.y,(float)direction.z);
+            out.addVertex(pp, (float)z.x,(float)z.y,(float)z.z).setColor(r,g,b,1.0F)
+                    .setNormal(pp,(float)direction.x,(float)direction.y,(float)direction.z);
+        }
+    }
+
+    private static float[] colorForPart(int index) {
+        if (index == 11 || index == 12 || index == 78) return new float[]{1.0F, 0.1F, 0.1F}; // head/jaw: red
+        if (index <= 10 || index == 21) return new float[]{0.2F, 0.45F, 1.0F}; // neck/body/joint: blue
+        if (index <= 20) return new float[]{1.0F, 0.85F, 0.1F}; // tail: yellow
+        if (index >= 74) return new float[]{1.0F, 0.55F, 0.1F}; // horns: orange
+        if (index <= 73) return new float[]{0.2F, 1.0F, 0.2F}; // limbs/digits: green
+        return new float[]{0.8F, 0.2F, 1.0F};
+    }
 
     private static final Pattern ATTRIBUTE_NUMBER =
             Pattern.compile("([+-]?)(\\d+(?:\\.\\d+)?)");

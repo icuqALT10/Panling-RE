@@ -123,8 +123,7 @@ public class yu_ru_yi extends Item implements skill_trigger {
             Vec3 targetPos = hitResult.getLocation();
 
             AABB damageArea = AABB.ofSize(targetPos, 8.0, 8.0, 8.0);
-            List<LivingEntity> targets = level.getEntitiesOfClass(
-                    LivingEntity.class, damageArea, SkillHelper.combatTargetFilter(player));
+            List<LivingEntity> targets = SkillHelper.getMultipartTargets(player, damageArea);
 
             for (LivingEntity target : targets) {
                 target.addEffect(new MobEffectInstance(ModEffects.po_jia, 200, 3));

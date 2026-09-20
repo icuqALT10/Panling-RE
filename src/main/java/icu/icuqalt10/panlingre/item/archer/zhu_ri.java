@@ -149,8 +149,8 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
         AABB scanBox = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
 
         double bestDist = Double.MAX_VALUE;
-        for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, scanBox,
-                e -> canLockTarget(player, e))) {
+        for (LivingEntity e : skill_trigger.skillTargets(level, scanBox, player).stream()
+                .filter(e -> canLockTarget(player, e)).toList()) {
             Vec3 toE = e.position().subtract(eye);
             double proj = toE.dot(look);
             if (proj <= 0 || proj > 100) continue;

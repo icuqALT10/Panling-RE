@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "LivingEntityMixin",
+    "OrientedEntityPickMixin",
     "PlayerAttackMixin",
     "RangedAttributeMixin",
     "AbstractArrowMixin",
@@ -20,6 +21,7 @@
   ],
     "client": [
     "client.MinecraftTaskGlowMixin",
+    "client.GraveDragonHitboxRenderMixin",
     "client.EntityTaskGlowColorMixin",
     "client.GameRendererActivationMixin",
     "client.ItemInHandRendererMixin",

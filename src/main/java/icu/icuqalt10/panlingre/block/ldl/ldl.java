@@ -92,6 +92,23 @@ public class ldl extends BaseEntityBlock {
         }
     }
 
+    /**
+     * Breaking any visible (master) part removes the hidden proxy parts as
+     * well.  The normal block-breaking pipeline still handles the master
+     * block's drop, including the creative-mode no-drop rule.
+     */
+    @Override
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if (!level.isClientSide) {
+            for (BlockPos p : BlockPos.betweenClosed(pos.offset(-1, 0, -1), pos.offset(1, 2, 1))) {
+                if (!p.equals(pos) && level.getBlockState(p).getBlock() instanceof ldlProxyBlock) {
+                    level.removeBlock(p, false);
+                }
+            }
+        }
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);

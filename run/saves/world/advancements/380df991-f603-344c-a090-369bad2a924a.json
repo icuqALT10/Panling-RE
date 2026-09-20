@@ -71,9 +71,15 @@
     },
     "done": true
   },
-  "plre:biome/middle": {
+  "plre:task/south/te2_intel": {
     "criteria": {
-      "trigger": "2026-08-24 22:22:39 +0800"
+      "trigger": "2026-09-09 11:36:48 +0800"
+    },
+    "done": true
+  },
+  "plre:biome/null": {
+    "criteria": {
+      "trigger": "2026-09-13 12:56:40 +0800"
     },
     "done": true
   },

@@ -58,7 +58,7 @@
   "effect.panlingre.jia_yu": "甲御",
   "effect.panlingre.po_jia": "破甲",
   "effect.panlingre.ling_qi_recovery": "灵气恢复",
-  "effect.panlingre.freeze": "冻结",
+  "effect.panlingre.freeze": "无法行动",
 
   "item.PanlingRE.lore.rare1":"§f稀有度:★",
   "item.PanlingRE.lore.rare2":"§a稀有度:★★",
@@ -972,6 +972,9 @@
 
   "entity.panlingre.fire_tornado": "火龙卷",
   "entity.panlingre.jin_li_ren": "金元素利刃",
+
+  "entity.panlingre.grave_dragon": "§e墓龙",
+  "entity.panlingre.grave_dragon_part": "§e墓龙",
 
   "entity.panlingre.pan_gu": "§4盘古(?) §e「元神」",
   "entity.panlingre.pan_gu.creeper": "§b§l滚地雷",

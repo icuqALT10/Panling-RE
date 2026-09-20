@@ -2,6 +2,8 @@ package icu.icuqalt10.panlingre.util;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.Entity;
+import icu.icuqalt10.panlingre.entity.MultipartEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -9,8 +11,22 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
+import net.minecraft.world.effect.MobEffectInstance;
 
 public class SkillHelper {
+
+    /** Applies an effect to the living multipart root when a selector returns a child. */
+    public static boolean addEffectToTarget(Entity target, MobEffectInstance effect) {
+        MultipartEntity root = MultipartEntity.rootOf(target);
+        LivingEntity living = root != null ? root : target instanceof LivingEntity e ? e : null;
+        return living != null && living.addEffect(new MobEffectInstance(effect));
+    }
+
+    /** 范围技能专用：子部件归并到父实体，并按 UUID 去重。 */
+    public static List<LivingEntity> getMultipartTargets(LivingEntity source, AABB area) {
+        return MultipartEntity.collectTargets(source.level(), area, source).stream()
+                .filter(combatTargetFilter(source)).toList();
+    }
 
     /**
      * 选出 source前方 width格宽 height格高 length格长的范围内的实体
@@ -38,7 +54,12 @@ public class SkillHelper {
                 center.x + maxRadius, center.y + maxRadius, center.z + maxRadius
         );
 
-        return world.getEntitiesOfClass(LivingEntity.class, bounds).stream()
+        List<LivingEntity> candidates = new java.util.ArrayList<>(
+                MultipartEntity.collectTargets(world, bounds, source));
+        for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, bounds)) {
+            if (!candidates.contains(entity)) candidates.add(entity);
+        }
+        return candidates.stream()
                 .filter(entity -> entity != source)
                 .filter(entity -> {
                     Vec3 relativePos = entity.position().subtract(center);
@@ -60,8 +81,8 @@ public class SkillHelper {
         return target -> {
             if (target.is(source)) return false;
             if (!target.isAlive()) return false;
-            if (!target.isAttackable()) return false;
-            if (target.isInvulnerable()) return false;
+            if (!(target instanceof MultipartEntity) && !target.isAttackable()) return false;
+            if (!(target instanceof MultipartEntity) && target.isInvulnerable()) return false;
             if (target instanceof Player p && (p.isCreative() || p.isSpectator())) return false;
             if (source.getTeam() != null && target.getTeam() == source.getTeam()) return false;
             return true;

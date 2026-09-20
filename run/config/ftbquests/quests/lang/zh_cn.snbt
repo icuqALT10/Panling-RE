@@ -1007,7 +1007,7 @@
 		"每&61&r级降低&610&r点&a护甲值&r"
 		""
 		"{image:panlingre:textures/mob_effect/freeze.png width:15 height:15 align:center}"
-		"&a冻结&r："
+		"&a无法行动&r："
 		"无等级变化"
 		"期间不可攻击、无法使用技能、无法行动"
 		""

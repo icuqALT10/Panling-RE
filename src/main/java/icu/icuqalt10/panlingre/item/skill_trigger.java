@@ -6,6 +6,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
+import icu.icuqalt10.panlingre.entity.MultipartEntity;
+import icu.icuqalt10.panlingre.util.SkillHelper;
+
+import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 public interface skill_trigger {
@@ -73,4 +80,26 @@ public interface skill_trigger {
     /** Optional vanilla item cooldown applied after a successful wheel activation. */
     @Nullable
     default Item getSkillCooldownItem(ItemStack stack, int skillIndex) { return null; }
+
+    /**
+     * 统一的技能目标入口。技能实现不要再直接调用
+     * level.getEntitiesOfClass(LivingEntity.class, box)，否则多节实体的
+     * 子碰撞箱会被当成普通 Entity 丢失。MultipartEntity.collectTargets 会
+     * 把所有子节归并为主体，并由主体的 hurt() 继续选择实际受击部位。
+     */
+    static List<LivingEntity> skillTargets(Level level, AABB box, LivingEntity caster) {
+        return MultipartEntity.collectTargets(level, box, caster).stream()
+                .filter(SkillHelper.combatTargetFilter(caster))
+                .toList();
+    }
+
+    /** 技能伤害统一入口，兼容普通实体和多节实体。 */
+    static boolean hurtSkillTarget(Entity target, net.minecraft.world.damagesource.DamageSource source, float amount) {
+        if (target instanceof LivingEntity living) return living.hurt(source, amount);
+        if (target instanceof MultipartEntity.MultipartPart part
+                && part.getMultipartRoot() instanceof LivingEntity living) {
+            return living.hurt(source, amount);
+        }
+        return false;
+    }
 }

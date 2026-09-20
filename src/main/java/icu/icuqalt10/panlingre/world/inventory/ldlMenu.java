@@ -134,7 +134,10 @@ public class ldlMenu extends AbstractContainerMenu {
 
                     if (currentOutput.getCount() == toCopy.getCount()) break;
                 }
-            } else if (index < 7) {
+            // 输入槽位为 0-4，输出槽位为 5；玩家背包从 6 开始。
+            // 原来使用 < 7 会把玩家背包的第一个槽位（index=6）
+            // 当成机器槽位，导致 shift-click 在背包内部再次搬运物品。
+            } else if (index < 6) {
                 if (!this.moveItemStackTo(itemstack1, 6, 42, false)) return ItemStack.EMPTY;
             } else {
                 if (!this.moveItemStackTo(itemstack1, 0, 5, false)) return ItemStack.EMPTY;

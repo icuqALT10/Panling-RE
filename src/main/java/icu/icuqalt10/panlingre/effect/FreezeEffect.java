@@ -9,6 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import icu.icuqalt10.panlingre.entity.MultipartEntity;
 
 public class FreezeEffect extends MobEffect {
     public FreezeEffect() {
@@ -28,8 +29,10 @@ public class FreezeEffect extends MobEffect {
     }
 
     public static boolean canApplyTo(LivingEntity entity) {
-        return !entity.isInvulnerable()
-                && (!(entity instanceof Mob mob) || !mob.isNoAi());
+        return (entity instanceof MultipartEntity || !entity.isInvulnerable())
+                && (!(entity instanceof Mob mob)
+                || entity instanceof MultipartEntity
+                || !mob.isNoAi());
     }
 
     @Override

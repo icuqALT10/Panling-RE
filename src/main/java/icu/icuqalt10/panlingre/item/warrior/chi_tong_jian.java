@@ -101,8 +101,7 @@ public class chi_tong_jian extends SwordItem implements skill_trigger {
             //释放技能
         if (!level.isClientSide) {
                 AABB area = player.getBoundingBox().inflate(3.0);
-                List<LivingEntity> entities = level.getEntitiesOfClass(
-                        LivingEntity.class, area, SkillHelper.combatTargetFilter(player));
+                List<LivingEntity> entities = SkillHelper.getMultipartTargets(player, area);
 
                 float attack_damage = (float) (player.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5);
 

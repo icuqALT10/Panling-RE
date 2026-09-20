@@ -193,6 +193,66 @@ tasks.register('worldTemplateTest', JavaExec) {
     mainClass = 'icu.icuqalt10.panlingre.worldtemplate.WorldTemplateUpdaterTest'
 }
 
+sourceSets.register('multipartTest') {
+    compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+    runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+}
+
+tasks.register('multipartPoseTest', JavaExec) {
+    dependsOn multipartTestClasses
+    classpath = sourceSets.multipartTest.runtimeClasspath
+    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonPoseTest'
+}
+
+// Offline diagnostic: prints the fitted geometry box for every part beside the
+// configured OBB, so misconfigured hitboxes are visible without launching a game.
+tasks.register('obbFit', JavaExec) {
+    dependsOn multipartTestClasses
+    classpath = sourceSets.multipartTest.runtimeClasspath
+    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonObbFitter'
+}
+
+// Opt-in integration checks; keep test classes and test worlds out of release jars/run saves.
+if (providers.gradleProperty('multipartGameTest').isPresent()) {
+    neoForge.mods.named(project.mod_id) { sourceSet(sourceSets.multipartTest) }
+    neoForge.runs.named('gameTestServer') {
+        gameDirectory = project.file('run')
+    }
+}
+
+// Temporary read-only pose probe in the existing IDE instance.
+if (providers.gradleProperty('obbPoseProbe').isPresent()) {
+    neoForge.mods.named(project.mod_id) { sourceSet(sourceSets.multipartTest) }
+    neoForge.runs.named('client') {
+        gameDirectory = project.file('run')
+        systemProperty 'panlingre.obbPoseProbe', 'true'
+    }
+}
+
+// Temporary read-only pick audit in the existing IDE instance.
+if (providers.gradleProperty('pickAudit').isPresent()) {
+    neoForge.mods.named(project.mod_id) { sourceSet(sourceSets.multipartTest) }
+    neoForge.runs.named('client') {
+        gameDirectory = project.file('run')
+        systemProperty 'panlingre.pickAudit', 'true'
+        if (providers.gradleProperty('legacyPick').isPresent()) {
+            systemProperty 'panlingre.legacyEnvelopePick', 'true'
+        }
+    }
+}
+
+// Temporary end-to-end melee acceptance probe.
+if (providers.gradleProperty('meleeAccept').isPresent()) {
+    neoForge.mods.named(project.mod_id) { sourceSet(sourceSets.multipartTest) }
+    neoForge.runs.named('client') {
+        gameDirectory = project.file('run')
+        systemProperty 'panlingre.meleeAccept', 'true'
+        if (providers.gradleProperty('legacyPick').isPresent()) {
+            systemProperty 'panlingre.legacyEnvelopePick', 'true'
+        }
+    }
+}
+
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {
     module {

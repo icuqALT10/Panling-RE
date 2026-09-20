@@ -1,6 +1,7 @@
 package icu.icuqalt10.panlingre.entity;
 
 import icu.icuqalt10.panlingre.util.SkillHelper;
+import icu.icuqalt10.panlingre.entity.MultipartEntity;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModEntities;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -74,8 +75,17 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             ItemStack stack = this.getItem();
             String itemName = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
 
-            this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(2.0, 2.0, 2.0))
-                    .forEach(target -> invokeEffectMethod(itemName, target, stack));
+            LivingEntity shooter = this.getOwner() instanceof LivingEntity living ? living : null;
+            if (shooter != null) {
+                // Multipart children are regular Entity instances, so the
+                // vanilla LivingEntity query misses them. Resolve the child
+                // hitbox to its living root before applying the pellet effect.
+                MultipartEntity.collectTargets(level(), this.getBoundingBox().inflate(2.0, 2.0, 2.0), shooter)
+                        .forEach(target -> invokeEffectMethod(itemName, target, stack));
+            } else {
+                this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(2.0, 2.0, 2.0))
+                        .forEach(target -> invokeEffectMethod(itemName, target, stack));
+            }
 
             this.discard();
         }
@@ -109,7 +119,7 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             Entity owner = this.getOwner();
             if (owner != null && isFriendly(owner, target)) return;
 
-            target.hurt(this.damageSources().indirectMagic(owner,owner), 20);
+            target.hurt(this.damageSources().indirectMagic(this,owner), 20);
         }
     }
     private void feng_hou_2(LivingEntity target, ItemStack stack) {
@@ -117,7 +127,7 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             Entity owner = this.getOwner();
             if (owner != null && isFriendly(owner, target)) return;
 
-            target.hurt(this.damageSources().indirectMagic(owner,owner), 50);
+            target.hurt(this.damageSources().indirectMagic(this,owner), 50);
         }
     }
     private void feng_hou_3(LivingEntity target, ItemStack stack) {
@@ -125,7 +135,7 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             Entity owner = this.getOwner();
             if (owner != null && isFriendly(owner, target)) return;
 
-            target.hurt(this.damageSources().indirectMagic(owner,owner), 100);
+            target.hurt(this.damageSources().indirectMagic(this,owner), 100);
         }
     }
     private void jian_xue(LivingEntity target, ItemStack stack) {
@@ -133,7 +143,7 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             Entity owner = this.getOwner();
             if (owner != null && isFriendly(owner, target)) return;
 
-            target.hurt(this.damageSources().indirectMagic(owner,owner), 500);
+            target.hurt(this.damageSources().indirectMagic(this,owner), 500);
         }
     }
 

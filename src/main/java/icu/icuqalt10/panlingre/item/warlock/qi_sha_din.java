@@ -156,9 +156,10 @@ public class qi_sha_din extends Item implements ICurioItem,skill_trigger, lianda
         Level level = player.level();
         // 找出范围内所有的生物
         AABB searchBox = player.getBoundingBox().inflate(range);
-        List<Mob> entities = level.getEntitiesOfClass(Mob.class, searchBox, entity -> {
+        List<Mob> entities = skill_trigger.skillTargets(level, searchBox, player).stream()
+                .filter(Mob.class::isInstance).map(Mob.class::cast).filter(entity -> {
             return entity.isAttackable() && entity.isAlive();
-        });
+        }).toList();
 
         LivingEntity closest = null;
         double closestScore = Double.MAX_VALUE;

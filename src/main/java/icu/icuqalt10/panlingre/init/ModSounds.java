@@ -57,6 +57,19 @@ public final class ModSounds {
             )
     );
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> BGM_REN = registerBgm("bgm_ren");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BGM_ZHAN = registerBgm("bgm_zhan");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BGM_XIAN = registerBgm("bgm_xian");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BGM_YAO = registerBgm("bgm_yao");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BGM_SHEN = registerBgm("bgm_shen");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BGM_MIDDLE = registerBgm("bgm_middle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BGM_PENGLAI = registerBgm("bgm_penglai");
+
+    private static DeferredHolder<SoundEvent, SoundEvent> registerBgm(String name) {
+        return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, name)));
+    }
+
     private ModSounds() {
     }
 

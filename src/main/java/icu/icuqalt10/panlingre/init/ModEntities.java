@@ -66,10 +66,11 @@ public class ModEntities {
     //始皇 墓龙
     public static final DeferredHolder<EntityType<?>, EntityType<GraveDragonEntity>> GRAVE_DRAGON =
             ENTITIES.register("grave_dragon", () -> EntityType.Builder.of(GraveDragonEntity::new, MobCategory.MISC)
-                    .sized(1F, 1F)
+                    .sized(0.01F, 0.01F)
                     .clientTrackingRange(12)
                     .updateInterval(1)
                     .build("grave_dragon"));
+
 
     public static final DeferredHolder<EntityType<?>, EntityType<ZhuRiArrowEntity>> ZHU_RI_ARROW =
             ENTITIES.register("zhu_ri_arrow", () -> EntityType.Builder.<ZhuRiArrowEntity>of(ZhuRiArrowEntity::new, MobCategory.MISC)

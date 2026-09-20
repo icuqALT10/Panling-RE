@@ -3,6 +3,10 @@ package icu.icuqalt10.panlingre.entity;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import icu.icuqalt10.panlingre.animation.SyncedEntityAnimation;
+import icu.icuqalt10.panlingre.animation.WorldTimeAnimationController;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -13,13 +17,14 @@ import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 
 public class FeiXianJianZhenEntity extends Entity implements GeoEntity {
+    private static final EntityDataAccessor<CompoundTag> ANIMATION =
+            SynchedEntityData.defineId(FeiXianJianZhenEntity.class, EntityDataSerializers.COMPOUND_TAG);
+    private final SyncedEntityAnimation animation = new SyncedEntityAnimation(this, ANIMATION);
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private float summonerArmorValue = 0f;
     private int lifeTime = 0;
@@ -29,6 +34,7 @@ public class FeiXianJianZhenEntity extends Entity implements GeoEntity {
     public FeiXianJianZhenEntity(EntityType<?> type, Level level) {
         super(type, level);
         this.noPhysics = true;
+        animation.loop("animation", 1);
     }
 
     public void setSummonerArmor(float damage) {
@@ -86,9 +92,8 @@ public class FeiXianJianZhenEntity extends Entity implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "controller", 0, event -> {
-            return event.setAndContinue(RawAnimation.begin().thenLoop("animation"));
-        }));
+        controllers.add(new WorldTimeAnimationController<>(this, "controller", animation::playback,
+                state -> level().getGameTime() + state.getPartialTick()));
     }
 
     @Override
@@ -98,13 +103,15 @@ public class FeiXianJianZhenEntity extends Entity implements GeoEntity {
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
+        animation.save(tag, "AnimationPlayback");
         tag.putFloat("SummonerArmor", this.summonerArmorValue);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
+        animation.load(tag, "AnimationPlayback");
         this.summonerArmorValue = tag.getFloat("SummonerArmor");
     }
 
-    @Override protected void defineSynchedData(SynchedEntityData.Builder builder) {}
+    @Override protected void defineSynchedData(SynchedEntityData.Builder builder) { builder.define(ANIMATION, new CompoundTag()); }
 }
