@@ -47,11 +47,56 @@ import net.neoforged.fml.loading.FMLPaths;
 
 public class GraveDragonEntity extends MultipartEntity implements GeoEntity, PanLingEntities {
     private static final EntityDataAccessor<Long> IDLE_START = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.LONG);
+    private static final EntityDataAccessor<Float> BODY_PITCH = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.FLOAT);
+
+    /** 龙首俯仰的限幅（度）。身体水平长 46 格，再大就会大面积戳进地形。 */
+    private static final float MAX_BODY_PITCH = 22.0F;
+    /** 俯仰平滑系数，免得速度抖动直接传到龙首上。 */
+    private static final float BODY_PITCH_SMOOTHING = 0.25F;
+
+    /** 上一 tick 的俯仰，渲染插值用。 */
+    private float bodyPitchO;
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(IDLE_START, -1L);
+        builder.define(BODY_PITCH, 0.0F);
+    }
+
+    /**
+     * 龙首俯仰，**正值表示爬升（龙首抬起）**，负值表示俯冲。
+     *
+     * <p>符号来自旋转所在的坐标系：{@code GraveDragonPose.modelToEntity} 是 {@code Ry · Rx}
+     * （顺序必须和 GeckoLib 的 {@code applyRotations} 一致），所以这个 X 轴旋转作用在**模型空间**，
+     * 而模型空间里 −Z 才是龙首、+Z 是尾巴——因此正角把尾巴压低、龙首抬起。
+     *
+     * <p>由服务端根据**实际速度方向**算出并同步，所以两侧共用同一个角：渲染走
+     * {@code GraveDragonRenderer.applyRotations}，碰撞箱走 {@code GraveDragonPose.modelToEntity}，
+     * 两处都用这个值，龙首倾斜时碰撞箱才会跟着一起斜。
+     */
+    public float bodyPitch() {
+        return entityData.get(BODY_PITCH);
+    }
+
+    /** 渲染用：在上一 tick 与当前 tick 之间插值。 */
+    public float bodyPitch(float partialTick) {
+        return Mth.lerp(partialTick, bodyPitchO, bodyPitch());
+    }
+
+    /**
+     * 让龙首跟随飞行方向：上升抬头、俯冲低头。速度接近零时回正。
+     *
+     * <p>{@code atan2(vy, 水平速度)} 在上升时为正，正好对应"爬升为正"的约定。
+     */
+    private void updateBodyPitch() {
+        Vec3 velocity = getDeltaMovement();
+        double horizontal = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
+        float target = horizontal < 1.0E-4 && Math.abs(velocity.y) < 1.0E-4
+                ? 0.0F
+                : (float) Math.toDegrees(Math.atan2(velocity.y, horizontal));
+        target = Mth.clamp(target, -MAX_BODY_PITCH, MAX_BODY_PITCH);
+        entityData.set(BODY_PITCH, Mth.lerp(BODY_PITCH_SMOOTHING, bodyPitch(), target));
     }
 
     /** Shared world clock survives client tracking/retracking without restarting the animation. */
@@ -735,7 +780,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     }
 
     private void updatePartPose(GraveDragonPose.Frame frame, float yaw, Vec3 origin) {
-        var transform = GraveDragonPose.modelToEntity(yaw, getScale());
+        // 俯仰必须和渲染用同一个角，否则龙首一斜，碰撞箱就和模型错开。
+        var transform = GraveDragonPose.modelToEntity(yaw, bodyPitch(), getScale());
         for (int i = 0; i < worldParts.length; i++) {
             worldParts[i].setOrientedBox(GraveDragonPose.box(frame, PART_LABELS[i], PART_BOUNDS[i], transform, origin));
         }
@@ -781,6 +827,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     @Override
     public void tick() {
         super.tick();
+        // 先记下上一 tick 的俯仰供渲染插值，再由服务端按新的速度方向更新（客户端用同步值）。
+        this.bodyPitchO = bodyPitch();
+        if (!this.level().isClientSide) updateBodyPitch();
         updateDragonParts();
         if (this.level().isClientSide) return;
         flushHitReport();

@@ -218,9 +218,27 @@ public final class GraveDragonPose {
         return name;
     }
 
+    /** 无俯仰的版本，行为与加重载之前完全一致。 */
     public static Matrix4f modelToEntity(float bodyYaw, float scale) {
-        // Matches GeoEntityRenderer: native scale, 180 - yBodyRot, then +0.01 Y.
-        return new Matrix4f().scale(scale).rotate(new Quaternionf().rotationY((180 - bodyYaw) * (float)RAD)).translate(0, 0.01f, 0);
+        return modelToEntity(bodyYaw, 0.0F, scale);
+    }
+
+    /**
+     * 渲染变换的镜像：{@code GeoEntityRenderer.actuallyRender} 做的是
+     * {@code scale → applyRotations(rotateY(180 - yBodyRot)) → translate(0, 0.01, 0)}。
+     *
+     * <p>俯仰是我们自己加的一步（GeckoLib 只给活着的实体应用偏航），所以这里必须与
+     * {@code GraveDragonRenderer.applyRotations} 里的旋转**顺序和符号完全一致**，否则碰撞箱会
+     * 与模型错开——这正是"所见即所得"的前提。顺序因此固定为 {@code Ry · Rx}。
+     *
+     * <p>注意 {@code Rx} 作用在**模型空间**（少了一层 Ry），而模型空间里 −Z 是龙首、+Z 是尾巴，
+     * 所以 {@code bodyPitch} 为**正表示爬升（龙首抬起、尾巴压低）**。
+     */
+    public static Matrix4f modelToEntity(float bodyYaw, float bodyPitch, float scale) {
+        return new Matrix4f().scale(scale)
+                .rotate(new Quaternionf().rotationY((180 - bodyYaw) * (float)RAD))
+                .rotate(new Quaternionf().rotationX(bodyPitch * (float)RAD))
+                .translate(0, 0.01f, 0);
     }
 
     public static OrientedBoundingBox box(Frame frame, String label, float[] bounds, Matrix4f modelToEntity, Vec3 entityPosition) {

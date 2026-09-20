@@ -574,6 +574,82 @@ public final class GraveDragonServerTest {
     }
 
     /**
+     * 俯仰必须同时作用于渲染和碰撞箱。渲染与 OBB 的逐点一致性由 {@code multipartPoseTest}
+     * 用真实 GeckoLib 参考实现验证；这里验证状态链路：服务端按实际速度方向算出的俯仰，
+     * 确实传到了 {@code modelToEntity} 并让碰撞箱跟着倾斜。
+     *
+     * <p>几何上要注意：龙首几乎在锚点正上方（局部 Z ≈ -2），而尾巴伸到 -40 格，所以"低头"
+     * 的主要表现是**尾巴抬起**，而不是龙首下沉。
+     */
+    @GameTest(template = "empty", timeoutTicks = 150)
+    public static void bodyPitchTiltsTheCollisionBoxes(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.setPos(helper.absoluteVec(new Vec3(2, 40, 2)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        Vec3 base = helper.absoluteVec(new Vec3(2, 40, 2));
+        try {
+            int tail = 20; // tail_tip
+            for (int i = 0; i < 40; i++) {
+                // 位置每 tick 复位：速度只用来驱动俯仰，不让位移混进测量里。
+                dragon.setPos(base);
+                dragon.setDeltaMovement(0, -1.0, 0);
+                dragon.tick();
+            }
+            float divePitch = dragon.bodyPitch();
+            double diveTailY = dragon.getWorldParts()[tail].getOrientedBox().center.y - dragon.getY();
+
+            for (int i = 0; i < 40; i++) {
+                dragon.setPos(base);
+                dragon.setDeltaMovement(0, 1.0, 0);
+                dragon.tick();
+            }
+            float climbPitch = dragon.bodyPitch();
+            double climbTailY = dragon.getWorldParts()[tail].getOrientedBox().center.y - dragon.getY();
+
+            helper.assertTrue(divePitch < -8.0F && climbPitch > 8.0F,
+                    "Body pitch does not follow the velocity direction: dive=" + divePitch + " climb=" + climbPitch);
+            helper.assertTrue(Math.abs(divePitch) <= 22.001F && Math.abs(climbPitch) <= 22.001F,
+                    "Body pitch is not clamped: " + divePitch + " / " + climbPitch);
+            // 俯冲（负俯仰）时尾巴抬起、爬升时尾巴压低。22 度对应约 15 格，远超姿态抖动。
+            helper.assertTrue(diveTailY > climbTailY + 1.0,
+                    "Pitch never reached the collision boxes: dive tail Y=" + diveTailY + " climb tail Y=" + climbTailY);
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
+    }
+
+    /**
+     * BossBar 必须显式订阅玩家才会显示。之前漏掉了 {@code startSeenByPlayer} /
+     * {@code stopSeenByPlayer} 的覆盖，导致墓龙的 BossBar 从头到尾没有任何观众。
+     */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void bossBarTracksViewers(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setPos(helper.absoluteVec(new Vec3(2, 30, 2)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        var player = new FakePlayer(level, new GameProfile(UUID.randomUUID(), "BossBarTest"));
+        try {
+            helper.assertTrue(dragon.bossBarViewers().isEmpty(), "BossBar started with viewers already attached");
+            dragon.startSeenByPlayer(player);
+            helper.assertTrue(dragon.bossBarViewers().contains(player),
+                    "BossBar did not pick up the player that started tracking the dragon");
+            dragon.stopSeenByPlayer(player);
+            helper.assertTrue(!dragon.bossBarViewers().contains(player),
+                    "BossBar kept a player that stopped tracking the dragon");
+            helper.succeed();
+        } finally {
+            dragon.discard();
+            player.discard();
+        }
+    }
+
+    /**
      * 世界内血条和原版名牌都挂在 {@link EntityAttachment#NAME_TAG} 上，而挂点由
      * {@code EntityDimensions} 的 attachments 决定。主体只有 1cm，挂点默认就贴在锚点上，
      * 于是名牌/血条出现在龙的身体根部而不是头上。

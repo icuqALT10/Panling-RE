@@ -84,7 +84,7 @@ public final class GraveDragonPoseTest {
     }
 
     // Independent renderer reference: actual GeoBone and RenderUtil, not evaluator matrices.
-    private static Matrix4f reference(String name, GraveDragonPose.Frame frame, float yaw, float scale) {
+    private static Matrix4f reference(String name, GraveDragonPose.Frame frame, float yaw, float pitch, float scale) {
         Deque<String> chain = new ArrayDeque<>();
         for (String n = name; n != null; ) {
             chain.addFirst(n);
@@ -94,6 +94,8 @@ public final class GraveDragonPoseTest {
         PoseStack stack = new PoseStack();
         stack.scale(scale, scale, scale);
         stack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(180 - yaw));
+        // GraveDragonRenderer.applyRotations 补的那一步；漏掉它碰撞箱就会和模型错开。
+        stack.mulPose(com.mojang.math.Axis.XP.rotationDegrees(pitch));
         stack.translate(0, 0.01f, 0);
         GeoBone parent = null;
         for (String n : chain) {
@@ -255,14 +257,17 @@ public final class GraveDragonPoseTest {
         double maxError = 0;
         for (float yaw : new float[]{0, 37, 90, -123, 180}) {
             float scale = yaw == 37 ? 1.4f : 1;
-            Matrix4f root = GraveDragonPose.modelToEntity(yaw, scale);
+            // 俯仰现在是渲染与碰撞箱共用的一步，必须一起验证（含 ±限幅边界）。
+            for (float pitch : new float[]{0, 12, -12, 22, -22}) {
+            Matrix4f root = GraveDragonPose.modelToEntity(yaw, pitch, scale);
             for (int step = 0; step <= 256; step++) {
                 double time = step / 80.0;
                 var frame = GraveDragonPose.sample(time);
+                // 每个时间点都要重建：reference() 依赖这一帧的骨骼姿态。
                 Map<String, Matrix4f> references = new HashMap<>();
                 for (int i = 0; i < labels.size(); i++) {
                     String label = labels.get(i), bone = GraveDragonPose.boneForPart(label);
-                    Matrix4f ref = references.computeIfAbsent(bone, n -> reference(n, frame, yaw, scale));
+                    Matrix4f ref = references.computeIfAbsent(bone, n -> reference(n, frame, yaw, pitch, scale));
                     float[] b = bounds.get(i);
                     OrientedBoundingBox box = GraveDragonPose.box(frame, label, b, root, origin);
                     Vec3[] corners = box.corners();
@@ -285,6 +290,7 @@ public final class GraveDragonPoseTest {
                     }
                     near(box.distanceToSqr(box.center), 0, 1e-8, "Center outside OBB");
                 }
+            }
             }
         }
         Matrix4f root = GraveDragonPose.modelToEntity(0, 1);
