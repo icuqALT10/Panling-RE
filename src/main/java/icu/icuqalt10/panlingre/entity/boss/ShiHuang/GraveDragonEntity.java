@@ -407,7 +407,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      */
     private void beginVerticalTransition(boolean ascending, double targetY) {
         this.transitionFromY = getY();
-        this.transitionToY = targetY;
+        // 方向由状态机决定，不能被地面探测的边界情况反转：下降只允许往下、上升只允许往上。
+        // （曾经因为 groundLevelBelow() 在测试世界里探到了比龙更高的"地面"，落地过程变成上升。）
+        this.transitionToY = ascending ? Math.max(targetY, getY()) : Math.min(targetY, getY());
         // 换形态之后重新开始计冷却，否则落地形态的 tick 会把空中的冷却偷偷耗掉。
         this.airIdleCooldown = 0;
         this.setNoGravity(true);
@@ -1037,12 +1039,25 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         int bx = Mth.floor(from.x), bz = Mth.floor(from.z);
         int start = Mth.floor(from.y);
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        double scanned = Double.NaN;
         for (int y = start; y >= start - (int) LANDING_PROBE; y--) {
             if (!level().getBlockState(cursor.set(bx, y, bz)).getCollisionShape(level(), cursor).isEmpty()) {
-                return y + 1.0;
+                scanned = y + 1.0;
+                break;
             }
         }
-        return Double.NaN;
+        // 再取一次高度图上的地面，两者取**较低**的那个。
+        //
+        // 只用向下扫：龙如果已经在山体/平台内部，扫到的"地面"会是它脚底那块，于是
+        // "落地"变成原地不动或往上飞（实测踩到过）。只用高度图：在平台下方或洞穴里会给出
+        // 头顶的地面，同样偏。取较低值 = 以更深的那个为准，两个方向的误判都被压掉。
+        int height = level().getHeight(Heightmap.Types.MOTION_BLOCKING, bx, bz);
+        double mapped = height <= level().getMinBuildHeight() ? Double.NaN : (double) height;
+        if (Double.isNaN(scanned)) return mapped;
+        if (Double.isNaN(mapped)) return scanned;
+        // 向下扫到的方块就在脚底（差 2 格以内）时视为噪声，以高度图为准；
+        // 否则两者取较低值（真正的地面应该在更低处）。
+        return scanned <= start + 2 ? Math.min(scanned, mapped) : scanned;
     }
 
     /** 供测试：当前水平位置的地面高度（虚空返回 NaN）。 */

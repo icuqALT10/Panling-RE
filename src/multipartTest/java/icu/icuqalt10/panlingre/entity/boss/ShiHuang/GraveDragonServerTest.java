@@ -917,7 +917,12 @@ public final class GraveDragonServerTest {
         // 天花板必须在实体加入世界**之前**放好：加入后世界会立刻 tick 一次，龙马上就会做
         // 第一次起飞判断，那时再放就晚了。所以先把形态切换推迟，放完方块再放开。
         dragon.scheduleFormSwitchIn(20 * 600);
-        dragon.setPos(helper.absoluteVec(new Vec3(4, 40, 4)));
+        Vec3 base0 = helper.absoluteVec(new Vec3(4, 40, 4));
+        // 注意：absoluteVec(4,40,4) 的落点比该列高度图低十几格（结构原点与方块坐标不同），
+        // 直接把龙放在那儿会埋在地里，地面探测和净空检查全会失灵。所以按高度图落到地表。
+        dragon.setPos(base0.x, level.getHeight(
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING,
+                BlockPos.containing(base0).getX(), BlockPos.containing(base0).getZ()), base0.z);
         dragon.setNoAi(true);
         dragon.setNoGravity(true);
         dragon.noPhysics = true;
