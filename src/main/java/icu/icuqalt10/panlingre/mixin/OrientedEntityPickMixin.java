@@ -14,20 +14,28 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.function.Predicate;
 
 /**
- * Multipart hit selection by true oriented boxes.
+ * Picks multipart parts by their real oriented boxes instead of by their AABB envelopes.
  *
- * <p>Minecraft can only compare candidates through {@link AABB}, so every multipart
- * part has to expose a conservative enclosing box to the engine. Around a rotated
- * oriented box that envelope contains a lot of empty space, especially in its
- * corners. The vanilla loop reports a hit wherever the ray merely crossed such an
- * empty corner and keeps the nearest envelope distance, so a large part (torso,
- * limb, horn) steals the selection from the small part actually under the
- * crosshair. The swing then damages something else, or nothing visible at all.
+ * <p>Minecraft can only compare candidates through {@link AABB}, so every part exposes a
+ * conservative enclosing box. Around a rotated oriented box that envelope contains a lot of
+ * empty space, and vanilla happily reports a hit where the ray only crossed an empty corner.
+ * The player then damages a part that is not the one under the crosshair.
  *
- * <p>This hook re-runs the comparison with each candidate's real oriented box, so
- * the part the ray truly reaches first wins. The returned hit location always lies
- * on that oriented box and therefore inside the part's own envelope, which keeps
- * the caller's reach filter measuring the surface the player aimed at.
+ * <p>The comparison is therefore redone against the oriented boxes, and the result is always
+ * the part whose oriented box the ray truly reaches first. Three earlier versions were wrong:
+ * <ul>
+ *   <li>Comparing the oriented-box entry distance against vanilla's envelope-corner distance
+ *       never corrected anything, because an empty corner is always nearer to the eye than the
+ *       real surface. Measured in game: 11280 picks, zero corrections.</li>
+ *   <li>That same comparison used {@code Vec3#closerThan(pos, distance)}, which squares its
+ *       argument again; feeding it a squared distance inflated the threshold enormously
+ *       (at 3 blocks: 81 instead of 9) and let a distant part steal a nearer entity's pick.</li>
+ *   <li>Deciding on the entity alone ("the eye is inside this part's box") replaced good picks
+ *       with unrelated nearer parts.</li>
+ * </ul>
+ * Locations always come from the oriented box, or — for entities without one — from the
+ * point where the ray enters their bounding box, so the caller's reach filter measures the
+ * same surface the player aimed at.
  */
 @Mixin(ProjectileUtil.class)
 public abstract class OrientedEntityPickMixin {
@@ -43,70 +51,62 @@ public abstract class OrientedEntityPickMixin {
         var level = viewer.level();
         if (level == null) return;
 
-        EntityHitResult selected = cir.getReturnValue();
-        Entity selectedEntity = selected == null ? null : selected.getEntity();
-        if (icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonDamageDebug.enabled()) {
-            icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonDamageDebug.log(
-                    "pick vanilla=" + describe(selectedEntity) + " viewer=" + describe(viewer)
-                            + " from=" + from + " to=" + to);
-        }
-        // The camera already sits inside a real oriented box: that is a zero-distance
-        // hit, and nothing can legitimately be nearer than zero.
-        if (selectedEntity instanceof MultipartEntity.OrientedPart picked) {
-            var pickedBox = picked.getOrientedBox();
-            if (pickedBox != null && pickedBox.contains(from)) {
-                cir.setReturnValue(new EntityHitResult(selectedEntity, from));
-                return;
-            }
-        }
-
         // Broad phase only: a part's envelope merely has to be reachable by the ray.
-        // The precise comparison below always uses the oriented box.
         AABB broadPhase = search.inflate(2.0);
 
-        // Whichever part the ray truly reaches first, ignoring empty envelope corners.
-        Entity partEntity = null;
-        Vec3 partLocation = null;
-        double partDistance = Double.MAX_VALUE;
+        EntityHitResult best = resolveCandidate(cir.getReturnValue(), from, to);
+        double bestDistance = best == null ? Double.MAX_VALUE : best.getLocation().distanceToSqr(from);
+
         for (Entity candidate : level.getPartEntities()) {
             if (candidate == viewer || !(candidate instanceof MultipartEntity.OrientedPart part)) continue;
+            if (!filter.test(candidate)) continue;
             var box = part.getOrientedBox();
-            if (box == null || !filter.test(candidate)) continue;
+            if (box == null) continue;
             if (!candidate.getBoundingBox().intersects(broadPhase)) continue;
-            if (box.contains(from)) {
-                // The camera is inside this part's real box.
-                cir.setReturnValue(new EntityHitResult(candidate, from));
-                return;
-            }
+
             var clip = box.clip(from, to);
             if (clip.isEmpty()) continue;
             double distance = clip.get().distanceToSqr(from);
-            if (distance < partDistance) {
-                partDistance = distance;
-                partEntity = candidate;
-                partLocation = clip.get();
+            if (distance < bestDistance) {
+                bestDistance = distance;
+                best = new EntityHitResult(candidate, clip.get());
             }
         }
 
-        if (partEntity == null) return;
-        if (selected == null) {
-            report(selectedEntity, partEntity, from);
-            cir.setReturnValue(new EntityHitResult(partEntity, partLocation));
+        EntityHitResult vanilla = cir.getReturnValue();
+        Entity selected = vanilla == null ? null : vanilla.getEntity();
+        if (best == null) {
+            if (selected instanceof MultipartEntity.OrientedPart) cir.setReturnValue(null);
             return;
         }
-        if (partEntity == selectedEntity && partDistance >= selected.getLocation().distanceToSqr(from)) return;
-        // Another entity was picked through its envelope. Replace it only when the real
-        // oriented box is genuinely nearer, so ordinary entities keep vanilla ordering.
-        if (partEntity != selectedEntity && !partLocation.closerThan(from, selected.getLocation().distanceToSqr(from))) return;
-        report(selectedEntity, partEntity, from);
-        cir.setReturnValue(new EntityHitResult(partEntity, partLocation));
+        // Keep vanilla's own result when it already names the same entity and is not farther.
+        if (vanilla != null && best.getEntity() == selected
+                && best.getLocation().distanceToSqr(from) >= vanilla.getLocation().distanceToSqr(from)) {
+            return;
+        }
+        if (icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonDamageDebug.enabled()) {
+            icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonDamageDebug.log(
+                    "pick corrected " + describe(selected) + " -> " + describe(best.getEntity()));
+        }
+        cir.setReturnValue(best);
     }
 
-    private static void report(Entity before, Entity after, Vec3 from) {
-        if (!icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonDamageDebug.enabled()) return;
-        if (before == after) return;
-        icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonDamageDebug.log(
-                "pick corrected " + describe(before) + " -> " + describe(after) + " from=" + from);
+    /**
+     * The candidate a hit result stands for, measured honestly: an oriented-box entry point
+     * when the entity has one, otherwise where the ray enters its bounding box.
+     */
+    private static EntityHitResult resolveCandidate(EntityHitResult hit, Vec3 from, Vec3 to) {
+        if (hit == null) return null;
+        Entity entity = hit.getEntity();
+        if (entity.isRemoved()) return null;
+        if (entity instanceof MultipartEntity.OrientedPart part) {
+            var box = part.getOrientedBox();
+            if (box == null) return hit;
+            return box.clip(from, to).map(point -> new EntityHitResult(entity, point)).orElse(null);
+        }
+        return entity.getBoundingBox().clip(from, to)
+                .map(point -> new EntityHitResult(entity, point))
+                .orElse(hit);
     }
 
     private static String describe(Entity entity) {
