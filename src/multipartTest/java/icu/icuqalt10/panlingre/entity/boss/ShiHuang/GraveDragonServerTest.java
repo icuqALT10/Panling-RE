@@ -834,15 +834,27 @@ public final class GraveDragonServerTest {
     }
 
     /**
-     * 形态切换必须走过渡动画，而且**过渡播放期间就做垂直位移**：起飞播完刚好升到 10 格，
-     * 落地播完刚好回到地面。召唤出来是地面形态，并立刻做一次起飞判断。
+     * 形态切换必须走过渡动画，而且**过渡播放期间就做垂直位移**：起飞播完升到巡航高度，
+     * 落地播完回到地面。召唤出来是地面形态，并立刻做一次起飞判断。
+     *
+     * <p>场地是自建的一层开阔平台：净空判定现在按姿态逐碰撞箱检查，对原地形非常敏感
+     * （原地形上它会时过时不过，让这条测试变得不确定）。
      */
     @GameTest(template = "empty", timeoutTicks = 400)
     public static void formSwitchesThroughTransitionAnimations(GameTestHelper helper) {
         var level = helper.getLevel();
+        BlockPos probe = BlockPos.containing(helper.absoluteVec(new Vec3(2, 40, 2)));
+        int surface = level.getHeight(
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, probe.getX(), probe.getZ());
+        for (int dx = -20; dx <= 20; dx++) {
+            for (int dz = -20; dz <= 20; dz++) {
+                level.setBlockAndUpdate(new BlockPos(probe.getX() + dx, surface - 1, probe.getZ() + dz),
+                        Blocks.STONE.defaultBlockState());
+            }
+        }
         var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
         dragon.setNoAi(true);
-        dragon.setPos(helper.absoluteVec(new Vec3(2, 40, 2)));
+        dragon.setPos(probe.getX() + 0.5, surface, probe.getZ() + 0.5);
         helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
         try {
             helper.assertTrue(!dragon.flying(), "墓龙召唤出来应该是地面形态");
@@ -877,7 +889,9 @@ public final class GraveDragonServerTest {
                     "起飞结束应升到巡航高度附近，实际 " + (airborneY - groundY));
 
             // 落地分两段：fly → idle_air（盘住减速）→ land（落到地面）。
-            // 第一段只下到巡航高度，姿态跳变才不至于像"瞬间跌下去"。
+            // 先抬到巡航高度之上 20 格：第一段只下到"地面 + 巡航高度"，在平地平台上那正好等于
+            // 巡航高度本身，龙本来就在那儿、自然没有位移可测。
+            dragon.setPos(dragon.getX(), dragon.getY() + 20.0, dragon.getZ());
             dragon.scheduleFormSwitchIn(0);
             dragon.tick();
             helper.assertTrue("fly_to_idle_air".equals(dragon.animation()),
@@ -1313,6 +1327,56 @@ public final class GraveDragonServerTest {
 
     private static String fmt(Vec3 v) {
         return String.format("(%.1f, %.1f, %.1f)", v.x, v.y, v.z);
+    }
+
+    /**
+     * 飞行的位移方向必须与朝向一致——这一条直接对应"朝着前方但是水平向左移动"的报告。
+     *
+     * <p>两个曾经会破坏它、现在都已修掉的 bug：
+     * <ul>
+     *   <li>偏航公式写成 {@code atan2(-dx, dz)}：朝向与位移整体相反（倒着飞）；</li>
+     *   <li>{@code move()} 用布尔相交判定部件碰撞：龙站在地面上时脚底与地面方块浮点重叠，
+     *       于是**每一步**都被取消，只剩极小的残余漂移。</li>
+     * </ul>
+     * 这里量的是"实际位移方向"与"朝向向量"的点积，接近 1 才算朝向与位移一致。
+     */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void flightMovesAlongItsFacing(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        BlockPos probe = BlockPos.containing(helper.absoluteVec(new Vec3(4, 60, 4)));
+        dragon.setPos(probe.getX() + 0.5, level.getHeight(
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, probe.getX(), probe.getZ()) + 1.0,
+                probe.getZ() + 0.5);
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            dragon.backdateAnimation(GraveDragonPose.duration("takeoff") + 0.5);
+            dragon.tick();
+            helper.assertTrue(dragon.flying(), "没有进空中形态");
+
+            double worst = 1.0;
+            for (int i = 0; i < 120; i++) {
+                // 目标点固定在一个方向，让它稳定朝那边飞。
+                dragon.setWanderTarget(dragon.position().add(60, 0, 60));
+                Vec3 before = dragon.position();
+                dragon.tick();
+                Vec3 move = dragon.position().subtract(before);
+                Vec3 horizontal = new Vec3(move.x, 0, move.z);
+                if (horizontal.length() < 0.05) continue; // 转向启动阶段不计
+                Vec3 facing = new Vec3(Math.sin(Math.toRadians(dragon.getYRot())), 0,
+                        Math.cos(Math.toRadians(dragon.getYRot())));
+                worst = Math.min(worst, horizontal.normalize().dot(facing));
+            }
+            helper.assertTrue(worst > 0.8,
+                    "飞行位移方向与朝向不一致（水平漂移），最差点积 " + worst);
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
     }
 
     /**

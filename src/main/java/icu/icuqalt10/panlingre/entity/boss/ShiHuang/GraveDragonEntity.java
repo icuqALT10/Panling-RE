@@ -440,9 +440,23 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * 身体刚碰到地面的那一刻取消整步，降落会永远卡在半空。起飞前已经检查过上方净空，
      * 降落用的是实际探测到的地面，所以直接落位是安全的。
      */
+    /**
+     * 当前位置下方的地面高度。
+     *
+     * <p>用高度图（{@code MOTION_BLOCKING}），不用向下扫方块：向下扫有两个独立的坑——
+     * 龙若已经在山体内部，扫到的"地面"是它脚底那块，落地会变成原地不动甚至往上飞；
+     * 而在测试世界里结构方块与方块坐标差着原点偏移，扫出来的值完全对不上（实测踩到过）。
+     * 高度图给的是"这一列真正的表面"，与龙站在哪里无关。
+     *
+     * <p>只有高度图低于龙当前高度太多（说明它在洞穴/平台下方）时才退化成"保持原高"，
+     * 避免把落点算到头顶去。
+     */
     private double groundLevelBelow() {
-        double level = groundLevelAt(position());
-        return Double.isNaN(level) ? getY() : level;
+        int height = level().getHeight(Heightmap.Types.MOTION_BLOCKING, getBlockX(), getBlockZ());
+        if (height <= level().getMinBuildHeight()) return getY();
+        // 只要高度图低于龙当前位置，就照它落；只有在"高度图反而在头顶"（龙在平台/洞穴下方）
+        // 这种明显不可信的情况下才保持原高。
+        return height <= getY() + 2.0 ? height : getY();
     }
 
     /** 墓龙是飞行生物：落地、以及过渡期间的程序化位移都不该造成摔落伤害。 */
