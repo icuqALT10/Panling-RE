@@ -98,7 +98,15 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private static final int FORM_AIR = 1;
 
     /** 空中形态要求的最小离地高度，也是起飞前要检查的垂直净空（格）。 */
-    private static final double FLIGHT_CLEARANCE = 10.0;
+    private static final double FLIGHT_CLEARANCE = 12.0;
+    /**
+     * 飞行姿态相对锚点向下的最大深度（格，正数）。
+     *
+     * <p>实测（本地 {@code GraveDragonPoseExtentAudit} 量出）：{@code fly} 的 79 个碰撞箱相对锚点
+     * 覆盖 Y ∈ [−10.72, +24.84]，{@code idle_air} 是 [−11.32, +24.21]。也就是说**身体会伸到锚点
+     * 下方十几格**——所以"离地 10 格"是不足以让飞行姿态不插地的，判定必须按这个深度来。
+     */
+    private static final double FLIGHT_BODY_DEPTH = 11.5;
     /** 降落时向下探测地面的最大距离（格）。 */
     private static final double LANDING_PROBE = 160.0;
     /**
@@ -120,6 +128,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * 同时任何真实的方块遮挡都远超这个量级。
      */
     private static final double POSE_CLEARANCE_TOLERANCE = 0.05;
+    /** 姿态判定的整体抬升（格）：抵消"脚底与地面方块浮点贴合"造成的假穿透。 */
+    private static final double POSE_CLEARANCE_LIFT = 0.06;
     /** 探测地面时从锚点上方几格开始往下扫（覆盖"龙站在平台上、脚底方块就在头顶一格"的情况）。 */
     private static final int GROUND_SCAN_UP = 8;
     /** 形态切换区间：1~3 分钟。 */
@@ -593,6 +603,17 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private void tickFlightWander() {
         if (wanderTarget == null) return;
 
+        // 领地硬边界兜底：目标点本身是钳在领地圆内的，但飞行有惯性（转向率有限），
+        // 转弯时可能冲出去。真出界了就把水平位置拉回边界上——这条龙是"盘踞在某片区域"，
+        // 不该越飞越远。
+        Vec3 home = homePosition();
+        double dx = getX() - home.x, dz = getZ() - home.z;
+        double drift = Math.hypot(dx, dz);
+        if (drift > WANDER_TERRITORY_RADIUS) {
+            double scale = WANDER_TERRITORY_RADIUS / drift;
+            setPos(home.x + dx * scale, getY(), home.z + dz * scale);
+        }
+
         // 撞墙自救：贴着山体/树冠时 move() 会把整步否掉，表现就是"卡在原地不动"。
         // 连续 {@link #FLIGHT_STUCK_TICKS} tick 几乎没有位移就抬高目标点爬过去；
         // 再卡就干脆换一个目标点，别一直顶着墙。
@@ -802,7 +823,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         if (target == null) return 0;
         Vec3 toTarget = target.subtract(position());
         if (toTarget.x * toTarget.x + toTarget.z * toTarget.z < 1.0E-4) return 0;
-        float wantedYaw = (float) Math.toDegrees(Math.atan2(-toTarget.x, toTarget.z));
+        // 与飞行转向同一个约定：yaw = atan2(dx, dz)，yaw 增大 = 实体向右转。
+        // （原来写成 atan2(-dx, dz)，左右是反的：目标在 -X 时算出 +90，其实是右转 -90。）
+        float wantedYaw = (float) Math.toDegrees(Math.atan2(toTarget.x, toTarget.z));
         return Mth.wrapDegrees(wantedYaw - yBodyRot);
     }
 
@@ -908,10 +931,19 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * 姿态版思路保留在 {@link #poseFitsAt} 里备用，但默认不启用。
      */
     private boolean hasTakeoffClearance() {
-        for (double offset : new double[]{0.0, CLEARANCE_PROBE_DISTANCE, -CLEARANCE_PROBE_DISTANCE}) {
-            if (!clearanceColumn(offset)) return false;
-        }
-        return true;
+        // 起飞后锚点会停在"当前高度 + FLIGHT_CLEARANCE"上。飞行姿态的身体相对锚点向下伸出
+        // FLIGHT_BODY_DEPTH 格（实测 fly 的碰撞箱最低点是 −10.72），所以离地高度必须**大于**这个
+        // 深度，否则光是把姿态摆到巡航高度就已经插进地面了——这正是之前姿态版判定永远失败的原因。
+        if (FLIGHT_CLEARANCE <= FLIGHT_BODY_DEPTH) return false;
+        if (!poseFitsAt("fly", FLIGHT_CLEARANCE)) return false;
+        if (!poseFitsAt("idle_air", FLIGHT_CLEARANCE)) return false;
+        // 起点也要放得下：地面姿态此刻就在地面上。
+        return poseFitsAt("idle_ground", 0.0);
+    }
+
+    /** 供测试：飞行姿态相对锚点向下的最大深度（格，正数）。 */
+    public static double flightBodyDepth() {
+        return FLIGHT_BODY_DEPTH;
     }
 
     /**
@@ -949,7 +981,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * 有 20 多格高，射线一出锚点就撞到自己身上，"地面"永远探在当前高度（实测确认过）。
      */
     private boolean poseFitsAt(String pose, double lift) {
-        Vec3 origin = new Vec3(getX(), getY() + lift, getZ());
+        // 地面姿态的脚底在锚点**上方**约 0.05 格（OBB 表实测），龙站在地面上时脚底方块与
+        // 脚掌在浮点上贴在一起，不抬这一点就会把"站在地上"判成穿透。
+        Vec3 origin = new Vec3(getX(), getY() + lift + POSE_CLEARANCE_LIFT, getZ());
         double duration = GraveDragonPose.duration(pose);
         // 采样几个相位，覆盖尾巴最低 / 身体最开的时刻。
         for (int step = 0; step < POSE_CLEARANCE_SAMPLES; step++) {

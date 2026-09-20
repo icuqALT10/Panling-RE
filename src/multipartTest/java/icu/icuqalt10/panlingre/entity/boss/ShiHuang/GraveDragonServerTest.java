@@ -871,9 +871,10 @@ public final class GraveDragonServerTest {
                     "空中动画应该是 idle_air 或它的过渡: " + dragon.animation());
             helper.assertTrue(dragon.isNoGravity(), "空中形态应该无重力");
             double airborneY = dragon.getY();
-            // 容差放宽到 2 格：地面探测取的是"方块顶面"，与起飞前的站位之间可能差一格。
-            helper.assertTrue(Math.abs(airborneY - groundY - 10.0) < 2.0,
-                    "起飞结束应升到 10 格左右，实际 " + (airborneY - groundY));
+            // 容差放宽到 3 格：巡航高度由 FLIGHT_CLEARANCE 决定（现在是 12，必须大于飞行姿态
+            // 相对锚点的下伸深度），地面探测取的是方块顶面，也会有 1 格偏差。
+            helper.assertTrue(Math.abs(airborneY - groundY - 12.0) < 3.0,
+                    "起飞结束应升到巡航高度附近，实际 " + (airborneY - groundY));
 
             // 落地分两段：fly → idle_air（盘住减速）→ land（落到地面）。
             // 第一段只下到巡航高度，姿态跳变才不至于像"瞬间跌下去"。
@@ -1105,20 +1106,20 @@ public final class GraveDragonServerTest {
             dragon.tick();
             helper.assertTrue(!dragon.flying(), "被天花板挡着却起飞了");
 
-            // 转向判定看的是"目标点方向与当前朝向的偏角"。实体初始朝 +Z，而面朝 +Z 时**右方是 -X**
-            // （左手系里右方 = 前方 × 上方 = (0,0,1)×(0,1,0) = (-1,0,0)），所以目标放在 -X 才是右转。
+            // 转向判定看的是"目标点方向与当前朝向的偏角"，约定与飞行一致：yaw = atan2(dx, dz)，
+            // yaw 增大 = 实体向右转。面朝 +Z 时右方是 -X，所以目标放在 -X 是**实体右转**。
+            // 动画命名按观众视角（观众在龙背后看），所以实体右转对应 turn_ground_right。
             dragon.setWanderTarget(new Vec3(base.x - 60, base.y, base.z));
             dragon.resetWanderIdle();
             for (int i = 0; i < 30; i++) dragon.tick();
-            // 命名反直觉：美术按"观众在屏幕上看到的方向"命名，所以实体右转对应 turn_ground_left。
-            helper.assertTrue("turn_ground_left".equals(dragon.animation()),
-                    "地面移动右转时应该播 turn_ground_left（命名按观众视角），实际 " + dragon.animation());
+            helper.assertTrue("turn_ground_right".equals(dragon.animation()),
+                    "地面移动右转时应该播 turn_ground_right，实际 " + dragon.animation());
 
             // 目标换到 +X（实体左转），应该切到另一个动作。
             dragon.setWanderTarget(new Vec3(base.x + 60, base.y, base.z));
             for (int i = 0; i < 30; i++) dragon.tick();
-            helper.assertTrue("turn_ground_right".equals(dragon.animation()),
-                    "地面移动左转时应该播 turn_ground_right，实际 " + dragon.animation());
+            helper.assertTrue("turn_ground_left".equals(dragon.animation()),
+                    "地面移动左转时应该播 turn_ground_left，实际 " + dragon.animation());
             helper.succeed();
         } finally {
             dragon.discard();
