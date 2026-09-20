@@ -925,8 +925,8 @@ public final class GraveDragonServerTest {
         Vec3 base = dragon.position();
         try {
             // 天花板相对**龙实际的位置**放（absoluteVec 与本体的落点差着 10 格，按方块坐标反推会放偏）。
-            // 放 3 层厚、跨 ±40 格：不管扫描柱落在哪一根都能挡住。
-            BlockPos ceiling = BlockPos.containing(dragon.getX(), dragon.getY() + 16.0, dragon.getZ());
+            // 高度取"当前高度 + 6"：留在起飞过渡途中身体会扫过的高度区间里，飞行姿态必然穿模。
+            BlockPos ceiling = BlockPos.containing(dragon.getX(), dragon.getY() + 6.0, dragon.getZ());
             for (int dy = 0; dy < 3; dy++) {
                 for (int dx = -40; dx <= 40; dx++) {
                     for (int dz = -40; dz <= 40; dz++) {
@@ -1305,6 +1305,70 @@ public final class GraveDragonServerTest {
 
     private static String fmt(Vec3 v) {
         return String.format("(%.1f, %.1f, %.1f)", v.x, v.y, v.z);
+    }
+
+    /**
+     * 脊柱链式跟随：空中形态下链必须被推进并同步，反解出的每一节要落在**龙头轨迹之后**，
+     * 而且龙头保留动画自身的旋转（不能把"抬头/低头"这个动画表达抹掉）。
+     */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void spineChainFollowsTheHeadAndPreservesHeadRotation(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        BlockPos anchor = BlockPos.containing(helper.absoluteVec(new Vec3(4, 60, 4)));
+        dragon.setPos(anchor.getX() + 0.5, level.getHeight(
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, anchor.getX(), anchor.getZ()) + 1.0,
+                anchor.getZ() + 0.5);
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            dragon.backdateAnimation(GraveDragonPose.duration("takeoff") + 0.5);
+            dragon.tick();
+            helper.assertTrue(dragon.flying(), "没有进空中形态");
+
+            // 让它在领地内飞一段，链的形状才稳定下来。
+            for (int i = 0; i < 80; i++) {
+                dragon.setWanderTarget(dragon.position().add(40, 6, 40));
+                dragon.tick();
+            }
+            helper.assertTrue(dragon.hasSpineSync(), "空中形态没有同步脊柱链");
+            helper.assertTrue(dragon.spineInitialised(), "服务端的链没有被推进");
+
+            var base = GraveDragonPose.sample(dragon.animation(), dragon.collisionPoseSeconds(),
+                    dragon.loopingAnimation());
+            var chained = dragon.withSpine(base, dragon.yBodyRot, dragon.position());
+
+            // 1) 龙头：链不能改动它的旋转（动画的抬头/低头必须保留）。
+            String head = GraveDragonPose.spineBones().get(0);
+            helper.assertTrue(base.bones().get(head).rotation()
+                            .distanceTo(chained.bones().get(head).rotation()) < 1.0E-9,
+                    "脊柱链把龙头的旋转也改掉了：base=" + base.bones().get(head).rotation()
+                            + " chained=" + chained.bones().get(head).rotation());
+
+            // 2) 身体确实被链摆动了：至少有一节的位移和纯动画不同。
+            double maxShift = 0;
+            for (String bone : GraveDragonPose.spineBones()) {
+                maxShift = Math.max(maxShift, base.bones().get(bone).position()
+                        .distanceTo(chained.bones().get(bone).position()));
+            }
+            helper.assertTrue(maxShift > 0.5,
+                    "脊柱链几乎没有改变身体：最大位移只有 " + maxShift + " 像素");
+
+            // 3) 逐位可复现：同一组同步数据反解两次结果必须完全一致（客户端就是这样做）。
+            var again = dragon.withSpine(base, dragon.yBodyRot, dragon.position());
+            for (String bone : GraveDragonPose.spineBones()) {
+                helper.assertTrue(chained.bones().get(bone).position()
+                                .distanceTo(again.bones().get(bone).position()) < 1.0E-12,
+                        "脊柱链反解不可复现：" + bone);
+            }
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
     }
 
     private static double lowestPartY(GraveDragonEntity dragon) {

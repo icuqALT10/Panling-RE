@@ -34,6 +34,8 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.Mth;
@@ -55,6 +57,13 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /** 形态：0 = 地面，1 = 空中。 */
     private static final EntityDataAccessor<Integer> FORM = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> BODY_PITCH = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.FLOAT);
+    /**
+     * 脊柱链的节点（"相对锚点、去掉 yaw"的偏移），服务端算好同步给客户端。
+     *
+     * <p>链是有状态的 verlet 积分，两侧各自跑一定会分歧；而碰撞箱与渲染必须逐位一致，
+     * 所以统一由服务端推进、同步结果。没有它（地面形态/刚进世界）时退回纯动画姿态。
+     */
+    private static final EntityDataAccessor<CompoundTag> SPINE = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.COMPOUND_TAG);
 
     /** 龙首俯仰的限幅（度）。身体水平长 46 格，再大就会大面积戳进地形。 */
     private static final float MAX_BODY_PITCH = 22.0F;
@@ -79,6 +88,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         builder.define(ANIMATION, "idle_air");
         builder.define(FORM, FORM_GROUND);
         builder.define(BODY_PITCH, 0.0F);
+        builder.define(SPINE, new CompoundTag());
     }
 
     /** 地面 / 空中两种形态。 */
@@ -203,6 +213,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private String pendingLoopAnimation;
     /** 空中待机冷却剩余 tick；&gt;0 时 tickWander 不会进入 idle_air。 */
     private int airIdleCooldown;
+    /** 脊柱链（服务端推进、同步给客户端）。两侧共用同一个 apply 反解。 */
+    private final GraveDragonSpineChain spine = new GraveDragonSpineChain();
     /** 领地中心（水平）：召唤时定下，漫游目标点都钳在这个圆内。 */
     private Vec3 home;
     /** 正在走"下落第一段"（fly → idle_air），播完接着播 land。 */
@@ -1023,7 +1035,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      */
     private double groundLevelAt(Vec3 from) {
         int bx = Mth.floor(from.x), bz = Mth.floor(from.z);
-        int start = Mth.floor(from.y) + GROUND_SCAN_UP;
+        int start = Mth.floor(from.y);
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         for (int y = start; y >= start - (int) LANDING_PROBE; y--) {
             if (!level().getBlockState(cursor.set(bx, y, bz)).getCollisionShape(level(), cursor).isEmpty()) {
@@ -1656,9 +1668,90 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         // crosshair and the server's validation measure the very same boxes. Rendering does
         // NOT touch them: an interpolated render frame used to overwrite them, which is what
         // made the two sides disagree.
-        updatePartPose(GraveDragonPose.sample(animation(), collisionPoseSeconds(), loopingAnimation()),
-                yBodyRot, position());
+        updatePartPose(withSpine(GraveDragonPose.sample(animation(), collisionPoseSeconds(), loopingAnimation()),
+                yBodyRot, position()), yBodyRot, position());
         updateBodyFootprint();
+    }
+
+    // ===== 脊柱链式跟随 =====
+
+    /** 服务端：每 tick 推进链。只在空中形态生效，地面形态身体本来就该贴着地面走。 */
+    private void updateSpineChain() {
+        if (!flying() || pendingForm != null) return;
+        // 驱动点取**动画里龙首的实际世界位置**：链只负责把身体摆到龙头走过的轨迹后面，
+        // 姿态本身仍由动画提供（withSpine 只覆盖脊柱各节的位移与指向，动画的扭动被保留）。
+        Vec3 head = animatedHeadPosition(collisionPoseSeconds(), yBodyRot, position());
+        if (!spine.initialised()) {
+            spine.reset(head, Vec3.directionFromRotation(0, yBodyRot), new Vec3(0, 1, 0));
+        } else {
+            spine.update(head);
+        }
+        if (tickCount % GraveDragonSpineSync.SYNC_INTERVAL_TICKS == 0) {
+            entityData.set(SPINE, GraveDragonSpineSync.write(localSpineOffsets()));
+        }
+    }
+
+    /** 供测试/客户端：链的朝向基准（+Z 前方的 yaw 向量）。 */
+    private Vec3 animatedHeadPosition(double seconds, float yaw, Vec3 origin) {
+        var frame = GraveDragonPose.sample(animation(), seconds, loopingAnimation());
+        var matrix = new Matrix4f(GraveDragonPose.modelToEntity(yaw, 0.0F, getScale()))
+                .mul(frame.matrices().get("head"));
+        Vector3f head = matrix.transformPosition(new Vector3f());
+        return origin.add(head.x, head.y, head.z);
+    }
+
+    /** 把链节点换算成"相对锚点、去掉 yaw"的偏移，便于同步与插值。 */
+    private Vec3[] localSpineOffsets() {
+        Vec3[] nodes = new Vec3[GraveDragonPose.spineBones().size()];
+        double angle = Math.toRadians(-yBodyRot);
+        double cos = Math.cos(angle), sin = Math.sin(angle);
+        for (int i = 0; i < nodes.length; i++) {
+            Vec3 offset = spine.node(i).subtract(position());
+            nodes[i] = new Vec3(offset.x * cos + offset.z * sin, offset.y, -offset.x * sin + offset.z * cos);
+        }
+        return nodes;
+    }
+
+    /**
+     * 把同步来的链偏移套到姿态上，产出**渲染与碰撞箱共用**的那一帧。
+     *
+     * <p>两侧都对同一个基础姿态做同一件事，所以结果逐位一致；链没有数据（地面形态、
+     * 刚进世界、或同步还没到）时原样返回基础姿态。
+     */
+    public GraveDragonPose.Frame withSpine(GraveDragonPose.Frame base, float yaw, Vec3 origin) {
+        Vec3[] offsets = GraveDragonSpineSync.read(entityData.get(SPINE));
+        if (offsets == null || offsets.length != GraveDragonPose.spineBones().size()) return base;
+        double angle = Math.toRadians(yaw);
+        double cos = Math.cos(angle), sin = Math.sin(angle);
+        Vec3[] world = new Vec3[offsets.length];
+        for (int i = 0; i < offsets.length; i++) {
+            Vec3 local = offsets[i];
+            world[i] = origin.add(local.x * cos - local.z * sin, local.y, local.x * sin + local.z * cos);
+        }
+        // 客户端也走同一个 apply：链坐标来自同步，反解是纯函数，所以两侧结果逐位一致。
+        spine.setNodes(world);
+        GraveDragonPose.Frame chained = spine.apply(base, origin, GraveDragonPose.modelToEntity(yaw, 0.0F, getScale()));
+        // 龙头**保留动画自身的旋转**：链只负责把身体摆到龙头走过的轨迹后面，
+        // 而"抬头/低头"是动画的表达（用户明确要求头部要自我旋转，而不是被整体平移下去）。
+        // 链对 head 的反解旋转会把这个表达抹掉，所以这里用动画的姿态盖回去。
+        var headBase = base.bones().get(GraveDragonPose.spineBones().get(0));
+        if (headBase == null) return chained;
+        var headChained = chained.bones().get(GraveDragonPose.spineBones().get(0));
+        java.util.Map<String, GraveDragonPose.BonePose> merged = new java.util.LinkedHashMap<>(chained.bones());
+        merged.put(GraveDragonPose.spineBones().get(0),
+                new GraveDragonPose.BonePose(headBase.rotation(), headChained.position(), headChained.scale()));
+        return GraveDragonPose.rebuild(merged);
+    }
+
+    /** 供测试：当前同步的链节点是否可用。 */
+    public boolean hasSpineSync() {
+        Vec3[] offsets = GraveDragonSpineSync.read(entityData.get(SPINE));
+        return offsets != null && offsets.length == GraveDragonPose.spineBones().size();
+    }
+
+    /** 供测试：服务端的链是否已经被推进过。 */
+    public boolean spineInitialised() {
+        return spine.initialised();
     }
 
     /**
@@ -1758,6 +1851,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
             tickAnimation();
             maintainFlightAltitude();
             updateBodyPitch();
+            updateSpineChain();
         }
         updateDragonParts();
         if (this.level().isClientSide) return;

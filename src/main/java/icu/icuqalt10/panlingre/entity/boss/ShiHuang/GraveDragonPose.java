@@ -179,6 +179,11 @@ public final class GraveDragonPose {
     public static Frame withSpine(Frame base, String[] bones, BonePose[] poses) {
         Map<String, BonePose> merged = new LinkedHashMap<>(base.bones());
         for (int i = 0; i < bones.length; i++) merged.put(bones[i], poses[i]);
+        return rebuild(merged);
+    }
+
+    /** 用一组骨骼位姿重建整帧（含全部骨骼矩阵）。链式跟随覆盖龙头旋转后需要重算矩阵。 */
+    public static Frame rebuild(Map<String, BonePose> merged) {
         Map<String, Matrix4f> matrices = new HashMap<>();
         for (String name : merged.keySet()) matrix(name, merged, matrices, new HashSet<>());
         return new Frame(Map.copyOf(merged), Map.copyOf(matrices));

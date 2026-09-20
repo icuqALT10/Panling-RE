@@ -14,6 +14,9 @@ public class GraveDragonModel extends GeoModel<GraveDragonEntity> {
         // first-render time is client-local and cannot serve as the collision clock.
         var frame = GraveDragonPose.sample(dragon.animation(),
                 dragon.animationSeconds(state.getPartialTick()), dragon.loopingAnimation());
+        // 脊柱链式跟随：链由服务端推进并同步，这里用**同一个反解**套上去——渲染与碰撞箱
+        // 因此仍然逐位一致（没有同步数据时 withSpine 原样返回）。
+        frame = dragon.withSpine(frame, dragon.yBodyRot, dragon.position());
         for (var entry : frame.bones().entrySet()) {
             getBone(entry.getKey()).ifPresent(bone -> {
                 var pose = entry.getValue();

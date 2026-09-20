@@ -64,6 +64,21 @@ public final class GraveDragonSpineChain {
         return initialised;
     }
 
+    /**
+     * 直接设置整条链的节点位置（不跑物理）。
+     *
+     * <p>客户端用：链由服务端推进并同步，客户端只负责把同一组坐标反解成骨骼位姿。
+     * 两侧走的是同一个 {@link #apply}，所以渲染与碰撞箱仍然逐位一致。
+     */
+    public void setNodes(Vec3[] nodes) {
+        if (nodes.length != count) throw new IllegalArgumentException("Spine node count mismatch: " + nodes.length);
+        for (int i = 0; i < count; i++) {
+            positions[i] = nodes[i];
+            previous[i] = nodes[i];
+        }
+        initialised = true;
+    }
+
     public Vec3 node(int index) {
         return positions[index];
     }
