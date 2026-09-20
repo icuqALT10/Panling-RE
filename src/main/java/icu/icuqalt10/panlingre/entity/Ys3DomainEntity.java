@@ -107,10 +107,12 @@ public abstract class Ys3DomainEntity extends Entity {
         }
 
         float radius = getDomainRadius();
-        List<LivingEntity> targets = level().getEntitiesOfClass(LivingEntity.class,
-                        new AABB(position(), position()).inflate(radius, 4.0D, radius),
-                        SkillHelper.friendlyTargetFilter(owner))
+        // Friendly effects must also reach multipart allies; a LivingEntity query never returns
+        // their child hitboxes, and the root's own box is far smaller than the body.
+        List<LivingEntity> targets = MultipartEntity.collectTargets(level(),
+                        new AABB(position(), position()).inflate(radius, 4.0D, radius), owner)
                 .stream()
+                .filter(SkillHelper.friendlyTargetFilter(owner))
                 .filter(target -> horizontalDistanceSqr(target) <= radius * radius)
                 .sorted(SkillHelper.friendlyTargetComparator(owner))
                 .limit(MAX_TEAMMATES + 1L)

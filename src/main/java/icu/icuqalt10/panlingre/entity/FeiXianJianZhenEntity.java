@@ -63,9 +63,12 @@ public class FeiXianJianZhenEntity extends Entity implements GeoEntity {
         float damageValue = this.summonerArmorValue;
 
         AABB area = this.getBoundingBox().inflate(10.0D);
-        List<LivingEntity> targets = this.level().getEntitiesOfClass(LivingEntity.class, area);
-
         Entity owner = this.getOwner();
+        // Multipart children are plain Entity instances, so a LivingEntity query never returns
+        // them and a boss root's own box cannot stand in for a neck or a wing. Resolve child
+        // hitboxes to their living root before applying the damage.
+        List<LivingEntity> targets = MultipartEntity.collectTargets(
+                this.level(), area, owner instanceof LivingEntity living ? living : null);
 
         for (LivingEntity target : targets) {
             if (!target.isAttackable()) continue;

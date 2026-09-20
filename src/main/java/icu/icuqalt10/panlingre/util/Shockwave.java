@@ -1,6 +1,7 @@
 package icu.icuqalt10.panlingre.util;
 
 import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.entity.MultipartEntity;
 import icu.icuqalt10.panlingre.network.ShockwaveUpdatePayload;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -124,7 +125,9 @@ public class Shockwave {
                 this.center.x - outerR, this.center.y - 2.0, this.center.z - outerR,
                 this.center.x + outerR, this.center.y + 3.5, this.center.z + outerR
         );
-        for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, aabb)) {
+        // 多节实体的子碰撞箱是普通 Entity，LivingEntity 查询取不到它们，
+        // 且主体自身盒子远小于躯体，因此需把子节归并回主体再判定。
+        for (LivingEntity entity : MultipartEntity.collectTargets(level, aabb, attacker)) {
             if (this.hitEntities.contains(entity.getUUID())) continue;
             if (!SkillHelper.combatTargetFilter(attacker).test(entity)) continue;
             double yDiff = entity.getY() - this.center.y;

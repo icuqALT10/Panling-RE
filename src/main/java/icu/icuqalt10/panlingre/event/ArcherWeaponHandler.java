@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.event;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.ZhiyeData;
+import icu.icuqalt10.panlingre.entity.MultipartEntity;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.item.archer.other.tian_xing_jian;
 import icu.icuqalt10.panlingre.network.TianXingTargetPayload;
@@ -93,9 +94,11 @@ public class ArcherWeaponHandler {
 
         double radius = 2.0D;
         AABB area = arrow.getBoundingBox().inflate(radius);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area);
-
         Entity owner = arrow.getOwner();
+        // 多节实体的子碰撞箱是普通 Entity，LivingEntity 查询取不到它们；
+        // 先把子节归并回主体，再按原有敌我判断处理。
+        List<LivingEntity> targets = MultipartEntity.collectTargets(level, area,
+                owner instanceof LivingEntity living ? living : null);
 
         for (LivingEntity target : targets) {
 

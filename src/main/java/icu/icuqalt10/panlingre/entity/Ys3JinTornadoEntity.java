@@ -73,9 +73,11 @@ public class Ys3JinTornadoEntity extends Entity {
         if (activeAge % 10 != 0) return;
         Entity owner = level().getEntity(entityData.get(OWNER));
         if (!(owner instanceof LivingEntity livingOwner) || !owner.isAlive()) return;
-        for (LivingEntity target : level().getEntitiesOfClass(LivingEntity.class,
-                new AABB(position(), position()).inflate(32.0D),
-                target -> JinLiRenEntity.isValidAttackTarget(livingOwner, target))) {
+        // Multipart children are plain Entity instances, so a LivingEntity query never returns
+        // them and a boss root's own box cannot stand in for a neck or a wing.
+        for (LivingEntity target : MultipartEntity.collectTargets(level(),
+                new AABB(position(), position()).inflate(32.0D), livingOwner)) {
+            if (!JinLiRenEntity.isValidAttackTarget(livingOwner, target)) continue;
             Vec3 start = position().add(0.0D, 3.0D, 0.0D);
             JinLiRenEntity blade = JinLiRenEntity.createCurved(
                     level(), livingOwner, target, entityData.get(DAMAGE), start);

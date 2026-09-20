@@ -126,8 +126,11 @@ public class ZhuRiArrowEntity extends Entity {
                 cachedTarget.invulnerableTime = 10;
             } else {
                 AABB area = new AABB(p3(), p3()).inflate(2.5);
-                for (LivingEntity e : level().getEntitiesOfClass(LivingEntity.class, area,
-                        en -> en != owner && en.isAttackable())) {
+                // Multipart children are plain Entity instances, so a LivingEntity query never
+                // returns them; resolve child hitboxes to their living root instead.
+                for (LivingEntity e : MultipartEntity.collectTargets(level(), area,
+                        owner instanceof LivingEntity living ? living : null)) {
+                    if (e == owner || !e.isAttackable()) continue;
                     e.hurt(damageSources().thrown(this, owner), dmg);
                     e.invulnerableTime = 10;
                 }

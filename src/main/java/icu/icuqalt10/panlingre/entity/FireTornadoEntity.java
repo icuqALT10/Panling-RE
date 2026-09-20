@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.entity;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.client.FireTrailRenderer;
 import icu.icuqalt10.panlingre.util.SkillHelper;
+import icu.icuqalt10.panlingre.entity.MultipartEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -174,11 +175,16 @@ public class FireTornadoEntity extends Mob {
 
         // ---------- 攻击所有活体生物 ----------
         AABB tornadoBox = getBoundingBox().inflate(0.1); // 稍微膨胀避免边缘遗漏
-        List<LivingEntity> entities = level().getEntitiesOfClass(LivingEntity.class, tornadoBox);
         LivingEntity owner = ownerUuid != null
                 && level() instanceof ServerLevel serverLevel
                 && serverLevel.getEntity(ownerUuid) instanceof LivingEntity livingOwner
                 ? livingOwner : null;
+
+        // Multipart children are plain Entity instances, so a LivingEntity query never returns
+        // them and the boss root's own box is far too small to stand in for a neck or a wing.
+        // Resolve child hitboxes to their living root instead; the root's hurt() then picks the
+        // part that was actually struck.
+        List<LivingEntity> entities = MultipartEntity.collectTargets(level(), tornadoBox, owner);
 
         for (LivingEntity entity : entities) {
             // 排除自身
