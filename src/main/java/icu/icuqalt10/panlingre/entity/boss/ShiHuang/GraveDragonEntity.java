@@ -103,18 +103,39 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     // 目前还不是敌对生物（没有攻击动画），所以不带仇恨目标：只在四周随机找个可达点过去，
     // 到达后有概率原地歇一会儿。空中与地面共用这一套，只是扩散范围与动画不同。
 
-    /** 目标点的水平搜索距离区间（格）。 */
+    /** 目标点的水平搜索距离区间（格）：地面形态。 */
     private static final double WANDER_MIN_DISTANCE = 12.0;
     private static final double WANDER_MAX_DISTANCE = 36.0;
-    /** 空中形态额外的垂直扩散（格）。 */
-    private static final double WANDER_VERTICAL_SPREAD = 10.0;
-    /** 随机尝试次数：每次都用寻路验证可达性，全失败就歇一会儿。 */
-    private static final int WANDER_ATTEMPTS = 12;
+    /** 空中形态的水平搜索距离区间（格）：比地面远得多，才看得出"在赶路"。 */
+    private static final double WANDER_AIR_MIN_DISTANCE = 30.0;
+    private static final double WANDER_AIR_MAX_DISTANCE = 60.0;
+    /** 空中形态的垂直扩散（格，总幅度）：±20，让漫游真的是三维的。 */
+    private static final double WANDER_AIR_VERTICAL_SPREAD = 40.0;
+    /**
+     * 随机尝试次数：每次都用寻路验证可达性，全失败就歇一会儿。
+     *
+     * <p>别调大：每次尝试都是一整趟 A*，而这条龙的身体轮廓采样让每个节点要花 60 次方块查询
+     * （见 {@code GraveDragonBodyPathing}），目标点又取得很远，代价是"尝试次数 × 距离"一起涨。
+     */
+    private static final int WANDER_ATTEMPTS = 4;
     /** 到达判定半径（格）。 */
     private static final double WANDER_ARRIVE_DISTANCE = 3.0;
     /** 单个目标点最多追多久（tick）；导航找不到路时不至于永远卡在原地。 */
     private static final int WANDER_TIMEOUT_TICKS = 20 * 30;
+    /** 地面移动速度（传给 {@code moveTo}，见 {@link #wanderSpeed()} 的说明）。 */
     private static final double WANDER_SPEED = 0.7;
+    /**
+     * 空中形态传给 {@code moveTo} 的速度。
+     *
+     * <p>{@code moveTo} 的 speed **不是**"格/秒"，而是 {@code speedModifier}：
+     * {@code FlyingMoveControl} 先乘 {@code Attributes.FLYING_SPEED}（默认 0.4），
+     * 再经 {@code LivingEntity#travel} 乘 0.1，所以两者差着一个数量级。
+     *
+     * <p>实测（{@code flightMovesAtTheConfiguredSpeed}）：2.1 时只有 0.102 格/tick（约 2 格/秒），
+     * 12.0 时 0.212 格/tick（约 4.25 格/秒）——注意**不是线性**的：{@code travel} 的加速度会被
+     * 摩擦与转向吃掉一部分。翼展 40 格的龙用 2 格/秒根本看不出在移动，4 格/秒才算"在飞"。
+     */
+    private static final double WANDER_AIR_SPEED = 12.0;
     /** 到达后原地待机的概率（%）与时长（tick）。 */
     private static final int WANDER_IDLE_CHANCE = 30;
     private static final int WANDER_IDLE_TICKS = 20 * 10;
@@ -408,20 +429,37 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         }
         wanderTarget = next;
         wanderTicks = 0;
-        getNavigation().moveTo(next.x, next.y, next.z, WANDER_SPEED);
+        getNavigation().moveTo(next.x, next.y, next.z, wanderSpeed());
         setMoving(true);
+    }
+
+    /**
+     * 传给 {@code PathNavigation.moveTo} 的速度。
+     *
+     * <p>这是个 {@code speedModifier}，不是"格/秒"：飞行时还要乘 {@code FLYING_SPEED} 属性
+     * （默认 0.4）和 {@code travel} 里的 0.1，所以两者差一个数量级，
+     * 否则 55 格长的龙飞起来慢到看不出在移动。实测换算见 {@link #WANDER_AIR_SPEED}。
+     */
+    private double wanderSpeed() {
+        return flying() ? WANDER_AIR_SPEED : WANDER_SPEED;
     }
 
     /**
      * 向四周扩散一段距离，随机取一个点，并用**寻路**验证它真的可达。
      *
      * <p>可达性交给寻路器判断，所以不会选到身体过不去的位置；这一点对这条 55 格长的龙尤其重要。
+     *
+     * <p>空中是**真 3D** 的：水平四周扩散之外还有 {@link #WANDER_AIR_VERTICAL_SPREAD} 的高度变化，
+     * 只有"低于离地高度"时才被钳到 {@link #FLIGHT_CLEARANCE}。垂直扩散如果太小，
+     * 看起来就会像在同一个平面上绕圈。地面形态不爬坡，目标点与自身等高。
      */
-    private Vec3 pickWanderTarget() {
+    public Vec3 pickWanderTarget() {
         for (int attempt = 0; attempt < WANDER_ATTEMPTS; attempt++) {
             double angle = random.nextDouble() * Math.PI * 2;
-            double distance = WANDER_MIN_DISTANCE + random.nextDouble() * (WANDER_MAX_DISTANCE - WANDER_MIN_DISTANCE);
-            double dy = flying() ? (random.nextDouble() - 0.5) * WANDER_VERTICAL_SPREAD : 0;
+            double distance = (flying() ? WANDER_AIR_MIN_DISTANCE : WANDER_MIN_DISTANCE)
+                    + random.nextDouble() * ((flying() ? WANDER_AIR_MAX_DISTANCE : WANDER_MAX_DISTANCE)
+                    - (flying() ? WANDER_AIR_MIN_DISTANCE : WANDER_MIN_DISTANCE));
+            double dy = flying() ? (random.nextDouble() - 0.5) * WANDER_AIR_VERTICAL_SPREAD : 0;
             Vec3 candidate = position().add(Math.cos(angle) * distance, dy, Math.sin(angle) * distance);
             if (flying()) {
                 // 空中形态不许低于飞行高度，否则会挑出贴地的目标点。

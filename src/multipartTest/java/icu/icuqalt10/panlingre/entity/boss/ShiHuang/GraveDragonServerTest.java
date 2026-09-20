@@ -639,10 +639,14 @@ public final class GraveDragonServerTest {
                     "Dive did not raise the head (dive 时头应该往上绕): dive=" + diveHead.y + " climb=" + climbHead.y);
 
             // 横滚回归：俯仰是绕实体局部 X 轴，头不该被甩到侧面去。
-            // 两边动画相位相同，所以 X 上的残差只可能来自"俯仰用错了轴"。
-            double drift = Math.abs(diveHead.x - climbHead.x);
-            helper.assertTrue(drift < 0.5,
-                    "俯仰把龙首甩到侧面去了（横滚而非抬头/低头），X 偏移 " + drift);
+            // 用"相对量级"而不是绝对阈值：两次测量落在不同动画相位时，idle_air 自带的头部摆动
+            // 会让侧移有 1~2 格的自然噪声，但**横滚**的侧移是数量级更大的（旧实现实测 19 : 0.16）。
+            double sideways = Math.abs(diveHead.x - climbHead.x);
+            double vertical = Math.abs(diveTail.y - climbTail.y);
+            helper.assertTrue(vertical > 4.0,
+                    "俯仰几乎没传到碰撞箱上，无法判断轴向: " + vertical);
+            helper.assertTrue(sideways < vertical * 0.5,
+                    "俯仰把龙首甩到侧面去了（横滚而非抬头/低头）：侧移 " + sideways + "，竖直位移 " + vertical);
             helper.succeed();
         } finally {
             dragon.discard();
@@ -1065,6 +1069,119 @@ public final class GraveDragonServerTest {
             for (int i = 0; i < 5; i++) dragon.tick();
             helper.assertTrue("turn_ground_right".equals(dragon.animation()),
                     "地面移动左转时应该播 turn_ground_right，实际 " + dragon.animation());
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
+    }
+
+    /**
+     * 飞行速度的量测与回归。
+     *
+     * <p>{@code MoveControl.moveTo} 的 speed 只是 {@code speedModifier}：{@code FlyingMoveControl}
+     * 会先乘 {@code Attributes.FLYING_SPEED}，再经 {@code travel} 乘 0.1，所以"传 0.7"并不等于
+     * "每秒 0.7 格"。这条测试直接量**实际位移**，把速度和体感绑在一起，
+     * 顺便给 {@code WANDER_SPEED} / {@code WANDER_AIR_SPEED} 定一个可回归的下限。
+     */
+    @GameTest(template = "empty", timeoutTicks = 300)
+    public static void flightMovesAtTheConfiguredSpeed(GameTestHelper helper) {
+        var level = helper.getLevel();
+        Vec3 base = helper.absoluteVec(new Vec3(4, 60, 4));
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        // 注意：**不能** setNoAi(true)。Mob 的移动控制挂在 isEffectiveAi() 上，
+        // 关掉 AI 之后 moveControl 整个不跑，龙一步都不会动（这条测试第一版就是这么假过的）。
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.setPos(base);
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            dragon.backdateAnimation(GraveDragonPose.duration("takeoff") + 0.5);
+            dragon.tick();
+            helper.assertTrue(dragon.flying(), "没有进空中形态");
+
+            // 直接放到"离地高度"上：否则测速窗口里混进从 60 格下降到巡航高度的过程，
+            // 每次测出来的平均速度都不一样（实测在 0.08 ~ 0.21 格/tick 之间飘）。
+            var column = BlockPos.containing(base);
+            dragon.setPos(base.x, level.getHeight(
+                    net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, column.getX(), column.getZ()) + 10.0, base.z);
+
+            // 目标点固定在正东：全程不会"到达"，所以 moving / fly 一直有效。
+            Vec3 far = base.add(120, 0, 0);
+            double total = 0, maxStep = 0, minStep = Double.MAX_VALUE;
+            int blocked = 0;
+            for (int i = 0; i < 100; i++) {
+                dragon.setWanderTarget(far);
+                Vec3 before = dragon.position();
+                dragon.tick();
+                double step = dragon.position().distanceTo(before);
+                if (step < 0.01) blocked++;
+                if (i >= 10) { // 前 10 tick 是启动/下降阶段，不计入
+                    total += step;
+                    maxStep = Math.max(maxStep, step);
+                    minStep = Math.min(minStep, step);
+                }
+            }
+            double perTick = total / 90.0;
+            helper.assertTrue(perTick > 0.0, "空中形态根本没有位移（导航/移动控制没生效）");
+            // 实测：WANDER_AIR_SPEED = 12.0 → 0.212 格/tick ≈ 4.25 格/秒。
+            // 下限取 0.15（3 格/秒）留出余量，同时保证"调小速度"会立刻被这条挡住。
+            helper.assertTrue(perTick > 0.15,
+                    "飞行太慢了：实测 " + perTick + " 格/tick（约 " + (perTick * 20) + " 格/秒）"
+                            + "，每 tick 位移 [" + minStep + ", " + maxStep + "]"
+                            + "，几乎没动的 tick 数 = " + blocked
+                            + "，龙 Y=" + dragon.getY());
+            var animation = dragon.animation();
+            // 注意不能断言一定是 "fly"：idle_air → fly 之间要播完 idle_air_to_fly 过渡动画，
+            // 而 gametest 里手动 tick() 不推进 level().getGameTime()，过渡永远"播不完"。
+            // 这里要卡的是"确实在移动"，不是过渡状态机的细节（那由 animation 相关测试覆盖）。
+            helper.assertTrue(!"idle_air".equals(animation) && !"idle_ground".equals(animation)
+                            && !"fly_to_idle_air".equals(animation),
+                    "移动中却在播待机/收尾动画：" + animation);
+            helper.succeed();
+        } finally {
+            dragon.discard();
+        }
+    }
+
+    /**
+     * 空中漫游的目标点必须是 3D 的：水平四周扩散之外，还要在高度上有明显变化。
+     *
+     * <p>之前垂直扩散只有 ±5 格，而飞行高度又被"离地 ≥ 10 格"钳住，实际挑出来的点几乎都在
+     * 同一个高度上，看起来就像在平面上绕圈。
+     */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void wanderTargetsSpreadVertically(GameTestHelper helper) {
+        var level = helper.getLevel();
+        Vec3 base = helper.absoluteVec(new Vec3(4, 80, 4));
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.setPos(base);
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        try {
+            dragon.scheduleFormSwitchIn(0);
+            dragon.tick();
+            dragon.backdateAnimation(GraveDragonPose.duration("takeoff") + 0.5);
+            dragon.tick();
+            helper.assertTrue(dragon.flying(), "没有进空中形态");
+
+            double minY = Double.MAX_VALUE, maxY = -Double.MAX_VALUE, maxSpread = 0;
+            int picks = 0;
+            for (int i = 0; i < 12; i++) {
+                Vec3 target = dragon.pickWanderTarget();
+                helper.assertTrue(target != null, "空中形态挑不出可达目标点");
+                picks++;
+                minY = Math.min(minY, target.y);
+                maxY = Math.max(maxY, target.y);
+                maxSpread = Math.max(maxSpread, Math.abs(target.y - dragon.getY()));
+                int dy = (int) Math.round(target.y) - (int) Math.round(dragon.getY());
+                helper.assertTrue(Math.abs(dy) <= 40, "目标点垂直扩散超出预期: " + dy);
+            }
+            helper.assertTrue(picks > 0, "一次目标点都没挑出来");
+            helper.assertTrue(maxSpread > 3.0,
+                    "空中目标点几乎没有高度变化（最大 " + maxSpread + " 格），实际是在平面里绕圈");
             helper.succeed();
         } finally {
             dragon.discard();
