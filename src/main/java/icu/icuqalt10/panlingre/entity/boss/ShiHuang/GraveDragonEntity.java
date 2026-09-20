@@ -83,13 +83,16 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /**
      * How often collision boxes may advance, in ticks. See {@link #collisionPoseSeconds()}.
      *
-     * <p>Two ticks keeps the boxes close enough to the visible model that they read as
-     * continuous, while the value stays a small integer so both sides still compute exactly the
-     * same pose. The visible stutter that a larger step caused came from the boxes advancing in
-     * jumps; the lag came from the step itself. Both shrink with this number, and the
-     * correctness guarantee does not depend on the step being large.
+     * <p>One tick is the vanilla tick granularity, so the boxes advance every tick with no
+     * extra lag and no visible stutter. The guarantee only needs both sides to round to the
+     * same value, and the phase is a pure function of two integers they share — the world clock
+     * and the synced {@link #IDLE_START} — which holds at any step size. What actually broke
+     * earlier was the renderer overwriting the boxes with an interpolated frame, not the step.
+     *
+     * <p>Kept as a named constant rather than inlined so the value can be raised again if a
+     * future change ever lets the two clocks drift apart.
      */
-    private static final long POSE_QUANTUM_TICKS = 2;
+    private static final long POSE_QUANTUM_TICKS = 1;
 
     // ===== OBB 调整表：行号必须与下方 PART_LABELS 一一对应，不要单独增删/换序 =====
     // 每行前 6 项：[宽 X, 高 Y, 长 Z, 中心 X, 中心 Y, 中心 Z]。
