@@ -53,9 +53,11 @@ public abstract class OrientedEntityPickMixin {
 
         // Broad phase only: a part's envelope merely has to be reachable by the ray.
         AABB broadPhase = search.inflate(2.0);
+        Vec3 direction = to.subtract(from).normalize();
 
         EntityHitResult best = resolveCandidate(cir.getReturnValue(), from, to);
-        double bestDistance = best == null ? Double.MAX_VALUE : best.getLocation().distanceToSqr(from);
+        double bestMiss = best == null ? Double.MAX_VALUE : missDistance(best.getEntity(), from, direction);
+        double bestAlongRay = best == null ? Double.MAX_VALUE : best.getLocation().distanceToSqr(from);
 
         for (Entity candidate : level.getPartEntities()) {
             if (candidate == viewer || !(candidate instanceof MultipartEntity.OrientedPart part)) continue;
@@ -66,9 +68,18 @@ public abstract class OrientedEntityPickMixin {
 
             var clip = box.clip(from, to);
             if (clip.isEmpty()) continue;
-            double distance = clip.get().distanceToSqr(from);
-            if (distance < bestDistance) {
-                bestDistance = distance;
+
+            // Rank by how close the crosshair passes to the part's centre, not by entry
+            // distance: overlapping parts would otherwise steal the pick from the part the
+            // player is actually pointing at (aiming at one segment damaged the next one).
+            Vec3 offset = box.center.subtract(from);
+            Vec3 closestOnRay = from.add(direction.scale(offset.dot(direction)));
+            double miss = box.center.distanceToSqr(closestOnRay);
+            double alongRay = clip.get().distanceToSqr(from);
+            if (miss < bestMiss - 1.0e-6
+                    || (Math.abs(miss - bestMiss) <= 1.0e-6 && alongRay < bestAlongRay)) {
+                bestMiss = miss;
+                bestAlongRay = alongRay;
                 best = new EntityHitResult(candidate, clip.get());
             }
         }
@@ -89,6 +100,18 @@ public abstract class OrientedEntityPickMixin {
                     "pick corrected " + describe(selected) + " -> " + describe(best.getEntity()));
         }
         cir.setReturnValue(best);
+    }
+
+    /**
+     * How far the ray passes from an entity's centre; zero means the crosshair is on it.
+     * Entities without an oriented box measure to the centre of their bounding box.
+     */
+    private static double missDistance(Entity entity, Vec3 from, Vec3 direction) {
+        Vec3 centre = entity instanceof MultipartEntity.OrientedPart part && part.getOrientedBox() != null
+                ? part.getOrientedBox().center
+                : entity.getBoundingBox().getCenter();
+        double along = centre.subtract(from).dot(direction);
+        return centre.distanceToSqr(from.add(direction.scale(along)));
     }
 
     /**

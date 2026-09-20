@@ -403,7 +403,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private static final double MELEE_RAY_TOLERANCE = 0.06;
 
     /**
-     * Which part a view ray reaches first, measured against the current oriented boxes.
+     * Which part a view ray reaches, measured against the current oriented boxes.
      *
      * <p>Kept for tests and diagnostics only. It is deliberately <em>not</em> used to resolve
      * melee: the client's pick is authoritative, see {@link #resolveMeleeStrike}.
@@ -419,23 +419,49 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         // a part just past the raw range can still be measured and rejected on distance.
         Vec3 end = eye.add(player.getLookAngle()
                 .scale(player.entityInteractionRange() + 1.0 + MELEE_RAY_TOLERANCE));
-        int exact = nearestPartAlongRay(eye, end, 0.0);
-        return exact >= 0 ? exact : nearestPartAlongRay(eye, end, MELEE_RAY_TOLERANCE);
+        Vec3 direction = player.getLookAngle();
+        int exact = bestPartAlongRay(eye, end, direction, 0.0);
+        return exact >= 0 ? exact : bestPartAlongRay(eye, end, direction, MELEE_RAY_TOLERANCE);
     }
 
-    /** Nearest part whose oriented box the segment enters; padding expands local faces. */
-    private int nearestPartAlongRay(Vec3 from, Vec3 to, double padding) {
+    /**
+     * The part a ray should be credited with, when several boxes overlap.
+     *
+     * <p>Entry distance alone is the wrong criterion here. A boss this size has overlapping
+     * parts — the foreleg box reaches into the neck, the head box covers the neck joint, the
+     * finger boxes overlap each other — so "whoever's surface the ray crosses first" picks a
+     * neighbour instead of the part under the crosshair. Reported symptoms were exactly that:
+     * aiming at one segment damaged the next one, and the last links of a chain could not be
+     * hit at all because an earlier neighbour always won.
+     *
+     * <p>Candidates are therefore ranked by how close the crosshair passes to the part's own
+     * centre, with the distance along the ray breaking ties. Aiming at a part's middle then
+     * selects that part even when a neighbour's box leans into the line of sight.
+     *
+     * @param padding expands local faces, to absorb animation drift between frames
+     */
+    private int bestPartAlongRay(Vec3 from, Vec3 to, Vec3 direction, double padding) {
         int best = -1;
-        double bestDistance = Double.MAX_VALUE;
+        double bestMissDistance = Double.MAX_VALUE;
+        double bestAlongRay = Double.MAX_VALUE;
         for (int i = 0; i < worldParts.length; i++) {
             OrientedBoundingBox box = worldParts[i].getOrientedBox();
             if (box == null) continue;
             if (padding > 0) box = box.inflate(padding, padding, padding);
             var hit = box.clip(from, to);
             if (hit.isEmpty()) continue;
-            double distance = hit.get().distanceToSqr(from);
-            if (distance < bestDistance) {
-                bestDistance = distance;
+
+            // How far the ray passes from this part's centre: the part the crosshair is
+            // actually pointed at has the smallest value.
+            Vec3 offset = box.center.subtract(from);
+            Vec3 closestOnRay = from.add(direction.scale(offset.dot(direction)));
+            double missDistance = box.center.distanceToSqr(closestOnRay);
+            double alongRay = hit.get().distanceToSqr(from);
+
+            if (missDistance < bestMissDistance - 1.0e-6
+                    || (Math.abs(missDistance - bestMissDistance) <= 1.0e-6 && alongRay < bestAlongRay)) {
+                bestMissDistance = missDistance;
+                bestAlongRay = alongRay;
                 best = i;
             }
         }
