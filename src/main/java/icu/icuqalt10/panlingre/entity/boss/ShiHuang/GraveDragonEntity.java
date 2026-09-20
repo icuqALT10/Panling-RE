@@ -55,6 +55,34 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         return start < 0 ? 0 : Math.max(0, level().getGameTime() - start + partialTick) / 20.0;
     }
 
+    /**
+     * Animation phase used for the collision boxes, quantised so both sides agree exactly.
+     *
+     * <p>The two sides sample the pose independently and their {@code getGameTime()} values are
+     * not the same number at the moment each one works, so a fine-grained clock gives them
+     * slightly different poses. With 79 overlapping parts, a few centimetres is enough for a
+     * neighbouring box to win the pick: measured reports were "aiming at one segment damages the
+     * next one" and "the far end of a chain cannot be hit at all".
+     *
+     * <p>Rounding the phase down to a fixed step makes the value a pure function of integers
+     * that both sides share ({@code gameTime} and the synced {@link #IDLE_START}), so the boxes
+     * come out bit-for-bit identical. The animation still plays; boxes only advance once per
+     * {@link #POSE_QUANTUM_TICKS}, which is invisible over a 3.2 second cycle (13 steps).
+     *
+     * <p>Server-side hit resolution uses {@link #collisionPoseSeconds()} instead, which is
+     * quantised the same way, so the ray is measured against exactly the boxes the client saw.
+     */
+    public double collisionPoseSeconds() {
+        long start = entityData.get(IDLE_START);
+        if (start < 0) return 0;
+        long quantum = POSE_QUANTUM_TICKS;
+        long stepped = Math.floorDiv(level().getGameTime() - start, quantum) * quantum;
+        return Math.max(0, stepped) / 20.0;
+    }
+
+    /** How often collision boxes may advance, in ticks. See {@link #collisionPoseSeconds()}. */
+    private static final long POSE_QUANTUM_TICKS = 5;
+
     // ===== OBB 调整表：行号必须与下方 PART_LABELS 一一对应，不要单独增删/换序 =====
     // 每行前 6 项：[宽 X, 高 Y, 长 Z, 中心 X, 中心 Y, 中心 Z]。
     // 尺寸是完整边长，不是半长；单位为方块（Blockbench 的像素坐标/尺寸除以 16）。
@@ -554,12 +582,11 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /** Server collision poses are evaluated once per tick; clients use the same world clock. */
     private void updateDragonParts() {
-        if (level().isClientSide) {
-            updateClientPartPose(0);
-            return;
-        }
-        if (entityData.get(IDLE_START) < 0) entityData.set(IDLE_START, level().getGameTime());
-        updatePartPose(GraveDragonIdleAirPose.sample(idleAirSeconds(0)), yBodyRot, position());
+        // Collision boxes are driven from the quantised phase on both sides, so the client's
+        // crosshair and the server's validation measure the very same boxes. Rendering does
+        // NOT touch them: an interpolated render frame used to overwrite them, which is what
+        // made the two sides disagree.
+        updatePartPose(GraveDragonIdleAirPose.sample(collisionPoseSeconds()), yBodyRot, position());
     }
 
     private void updatePartPose(GraveDragonIdleAirPose.Frame frame, float yaw, Vec3 origin) {
@@ -569,11 +596,19 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         }
     }
 
+    /**
+     * Collision pose sampler shared by both sides. The renderer must not call the second
+     * overload: an interpolated render frame would move the boxes to a pose the server never
+     * computes, which is what previously made the two sides disagree about what the crosshair
+     * was on.
+     */
     public void updateClientPartPose(float partialTick) {
         if (!level().isClientSide) return;
-        updateClientPartPose(partialTick, GraveDragonIdleAirPose.sample(idleAirSeconds(partialTick)));
+        updatePartPose(GraveDragonIdleAirPose.sample(collisionPoseSeconds()),
+                Mth.rotLerp(partialTick, yBodyRotO, yBodyRot), position());
     }
 
+    /** Kept for the pose regression test, which drives poses explicitly. */
     public void updateClientPartPose(float partialTick, GraveDragonIdleAirPose.Frame frame) {
         if (!level().isClientSide) return;
         Vec3 origin = new Vec3(Mth.lerp(partialTick, xOld, getX()), Mth.lerp(partialTick, yOld, getY()), Mth.lerp(partialTick, zOld, getZ()));

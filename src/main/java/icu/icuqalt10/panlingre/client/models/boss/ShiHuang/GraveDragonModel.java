@@ -21,7 +21,10 @@ public class GraveDragonModel extends GeoModel<GraveDragonEntity> {
                 bone.updateScale((float)pose.scale().x, (float)pose.scale().y, (float)pose.scale().z);
             });
         }
-        dragon.updateClientPartPose(state.getPartialTick(), frame);
+        // The visible model interpolates smoothly. Collision boxes deliberately do NOT follow
+        // this frame: they come from the quantised pose both sides compute identically and are
+        // refreshed by the entity tick. Overwriting them here with an interpolated render frame
+        // made the client's crosshair disagree with the server's validation.
     }
 
     @Override
