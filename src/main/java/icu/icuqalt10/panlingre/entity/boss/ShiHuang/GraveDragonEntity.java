@@ -90,6 +90,12 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * <p>{@code atan2(vy, 水平速度)} 在上升时为正，正好对应"爬升为正"的约定。
      */
     private void updateBodyPitch() {
+        // 地面形态不俯仰：走路本来就不该斜；而且下落时的俯冲会让几十格长的身体插进地面，
+        // 被 move() 的逐部件判定挡住，表现成"悬在空中"。飞行形态会 noGravity=true，届时自动生效。
+        if (!this.isNoGravity()) {
+            entityData.set(BODY_PITCH, Mth.lerp(BODY_PITCH_SMOOTHING, bodyPitch(), 0.0F));
+            return;
+        }
         Vec3 velocity = getDeltaMovement();
         double horizontal = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
         float target = horizontal < 1.0E-4 && Math.abs(velocity.y) < 1.0E-4
