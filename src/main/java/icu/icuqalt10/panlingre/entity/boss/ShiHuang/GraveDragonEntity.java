@@ -326,6 +326,47 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     }
 
     /**
+     * Every damage path (melee, projectiles, area skills) funnels through here, so this is
+     * the one place to learn which part actually took the hit. The attacking player is told
+     * about it and gets a chat line naming the part, its multiplier and the damage.
+     *
+     * <p>Health is sampled around the call and the line is sent one tick later, because the
+     * amount that actually leaves the health bar is only known once mitigation has run.
+     */
+    @Override
+    protected boolean hurtSelectedPart(int partIndex, DamageSource source, float amount) {
+        float healthBefore = getHealth();
+        boolean applied = super.hurtSelectedPart(partIndex, source, amount);
+        if (applied && source.getDirectEntity() instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+            pendingReportPart = partIndex;
+            pendingReportPlayer = serverPlayer;
+            pendingReportHealthBefore = healthBefore;
+        }
+        return applied;
+    }
+
+    private int pendingReportPart = -1;
+    private net.minecraft.server.level.ServerPlayer pendingReportPlayer;
+    private float pendingReportHealthBefore;
+
+    /**
+     * Sends the deferred hit report once the health change is final. Runs on the server
+     * only, from {@link #tick()}.
+     */
+    private void flushHitReport() {
+        if (pendingReportPart < 0 || pendingReportPlayer == null) return;
+        int part = pendingReportPart;
+        net.minecraft.server.level.ServerPlayer player = pendingReportPlayer;
+        float dealt = pendingReportHealthBefore - getHealth();
+        pendingReportPart = -1;
+        pendingReportPlayer = null;
+        if (dealt <= 0) return;
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player,
+                new icu.icuqalt10.panlingre.network.GraveDragonHitPayload(
+                        getId(), part, PART_LABELS[part], damageMultiplierForPart(part), dealt));
+    }
+
+    /**
      * Melee tolerance applied to the oriented boxes when the player's view ray is
      * re-cast on the server, in blocks. It only ever widens a box by a few centimetres
      * to absorb animation drift between the client's frame and the server's tick; it
@@ -389,25 +430,33 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /**
      * The single place that decides what a player's melee attack hits.
      *
-     * <p>Resolution order is deliberate and short, so there is exactly one gate:
+     * <p>Resolution mirrors how projectiles behave, because projectiles never had this
+     * problem: they damage the part they touch and nothing re-validates afterwards.
+     * A melee attack is therefore accepted whenever the attack packet's own reach check
+     * and the part the client named agree, and the server's ray is only used to
+     * <em>correct</em> that choice, never to veto it:
      * <ol>
-     *   <li>Cast the server's own view ray against the current oriented boxes. That is
-     *       the authoritative answer and it fixes the wrong-part selections the client
-     *       makes through AABB envelopes, where a large part's empty corner steals the
-     *       selection from the small part under the crosshair.</li>
-     *   <li>If the ray reaches nothing, fall back to the part the client named. Reach was
-     *       already checked by the attack packet, and rejecting a legitimate click because
-     *       the ray grazed a gap between boxes is worse than trusting the visible aim.</li>
-     *   <li>Whichever part wins must itself be within attack range. That is the only reach
-     *       gate, so this can never extend melee range.</li>
+     *   <li>If the part the client named is within reach, use it. This is the visible
+     *       crosshair target, so accepting it keeps the game honest with what the player
+     *       sees. Reach was already validated when the attack packet arrived.</li>
+     *   <li>Otherwise use whatever part the server's own ray reaches first, if that part
+     *       is in reach. This is what fixes the wrong-part selections the client makes
+     *       through AABB envelopes, where a large part's empty corner steals the pick
+     *       from the small part under the crosshair.</li>
+     *   <li>If neither is in reach, discard the attack.</li>
      * </ol>
      *
-     * @param requested part index named by the client
+     * <p>Order matters and used to be inverted: resolving the ray first meant a long body
+     * part further along the view line (the torso can be several blocks deep) could win
+     * the ray and then be rejected as out of reach, silently turning a legitimate click
+     * on a nearby limb into no damage at all.
+     *
+     * @param requested part index named by the client's attack packet
      * @return the part index to damage, or -1 when the attack must be discarded
      */
     public int resolveMeleeStrike(Player player, int requested) {
+        if (canPlayerReachPart(player, requested)) return requested;
         int struck = pickPartAlongViewRay(player);
-        if (struck < 0) struck = requested;
         return canPlayerReachPart(player, struck) ? struck : -1;
     }
 
@@ -483,6 +532,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         super.tick();
         updateDragonParts();
         if (this.level().isClientSide) return;
+        flushHitReport();
         if (USE_EXTERNAL_PART_CONFIG && this.tickCount % 20 == 0) {
             try {
                 long timestamp = java.nio.file.Files.getLastModifiedTime(PART_CONFIG_FILE).toMillis();

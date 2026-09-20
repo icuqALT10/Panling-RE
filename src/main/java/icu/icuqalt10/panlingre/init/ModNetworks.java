@@ -163,11 +163,11 @@ public class ModNetworks {
                 ClientPayloadHandlers::handleShake
         );
 
-        // 近战判定结果回报（仅用于 F3+B 调试显示服务端实际选中的部位）
+        // 墓龙命中播报（聊天栏显示部位、倍率、实际扣血）
         registrar.playToClient(
-                MeleeHitReportPayload.TYPE,
-                MeleeHitReportPayload.STREAM_CODEC,
-                MeleeHitReportPayload::handle
+                GraveDragonHitPayload.TYPE,
+                GraveDragonHitPayload.STREAM_CODEC,
+                GraveDragonHitPayload::handle
         );
 
         // Look Tip 网络包

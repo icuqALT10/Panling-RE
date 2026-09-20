@@ -60,17 +60,11 @@ public final class GraveDragonPartEntity extends PartEntity<GraveDragonEntity>
 
         if (source.getDirectEntity() instanceof Player player) {
             // Melee: one call into the dragon's resolver, one reach gate, one verdict. This
-            // method contributes no policy of its own; it only reports the outcome back to
-            // the attacking client so the debug overlay can show what the server chose.
+            // method contributes no policy of its own. Damage reporting happens centrally in
+            // the dragon's hurtSelectedPart, so every attack type is covered by one path.
             int struck = getParent().resolveMeleeStrike(player, partIndex);
             if (struck < 0) return false;
-            boolean applied = getParent().hurtPart(struck, source, amount);
-            if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
-                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(serverPlayer,
-                        new icu.icuqalt10.panlingre.network.MeleeHitReportPayload(
-                                partIndex, struck, getParent().pickPartAlongViewRay(player) >= 0));
-            }
-            return applied;
+            return getParent().hurtPart(struck, source, amount);
         }
 
         if (source.getDirectEntity() instanceof Projectile projectile) {

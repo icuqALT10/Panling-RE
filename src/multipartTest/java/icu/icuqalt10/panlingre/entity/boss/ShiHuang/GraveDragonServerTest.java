@@ -135,6 +135,61 @@ public final class GraveDragonServerTest {
     }
 
     /**
+     * Regression for the bug that made melee feel dead over large parts of the body: the
+     * server used to resolve its own ray first and then reject the result when that part
+     * was out of reach. A long body part further along the view line (the torso runs
+     * several blocks deep) could therefore win the ray and veto an otherwise valid click
+     * on a nearby limb. The client's in-reach part must win instead.
+     */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void reachableRequestedPartBeatsDistantRayHit(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
+        dragon.setNoAi(true);
+        dragon.setNoGravity(true);
+        dragon.noPhysics = true;
+        dragon.setPos(helper.absoluteVec(new Vec3(2, 30, 2)));
+        helper.assertTrue(level.addFreshEntity(dragon), "Root failed to spawn");
+        dragon.tick();
+        var player = new FakePlayer(level, new GameProfile(UUID.randomUUID(), "ReachOrderTest"));
+        try {
+            var parts = dragon.getWorldParts();
+            // Stand beside part 22 (left foreleg) and aim through it at the far end of the
+            // body, so the server's ray legitimately reaches several deeper parts too.
+            var near = parts[22].getOrientedBox();
+            Vec3 eye = near.center.add(near.axisX.scale(near.halfExtents.x + 0.5));
+            player.setPos(eye.x, eye.y - player.getEyeHeight(), eye.z);
+            Vec3 far = parts[0].getOrientedBox().center;
+            Vec3 delta = far.subtract(player.getEyePosition());
+            player.setYRot((float) Math.toDegrees(Math.atan2(-delta.x, delta.z)));
+            player.setXRot((float) -Math.toDegrees(Math.atan2(delta.y, delta.horizontalDistance())));
+            player.yRotO = player.getYRot();
+            player.xRotO = player.getXRot();
+
+            int rayPart = dragon.pickPartAlongViewRay(player);
+            helper.assertTrue(rayPart >= 0, "Test needs the view ray to reach the body");
+            helper.assertTrue(dragon.canPlayerReachPart(player, rayPart),
+                    "Test needs the ray hit to be reachable, got part" + rayPart);
+            // The requested part is the one the client named and it is in reach.
+            helper.assertTrue(dragon.canPlayerReachPart(player, 22),
+                    "Requested part should be in reach for this test");
+
+            int resolved = dragon.resolveMeleeStrike(player, 22);
+            helper.assertTrue(resolved == 22,
+                    "A reachable requested part must win over the ray, got part" + resolved);
+
+            // And the attack must actually land.
+            float before = dragon.getHealth();
+            parts[22].hurt(level.damageSources().playerAttack(player), 100.0F);
+            helper.assertTrue(dragon.getHealth() < before, "Resolved melee produced no damage");
+            helper.succeed();
+        } finally {
+            dragon.discard();
+            player.discard();
+        }
+    }
+
+    /**
      * One player attacking several parts inside the same tick must damage the dragon
      * once. Every part forwards to the same parent, so the parent's per-attacker damage
      * cooldown has to collapse the burst into a single hit.
