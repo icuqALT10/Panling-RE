@@ -345,6 +345,10 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
                     + " src=" + source.getMsgId()
                     + " direct=" + (source.getDirectEntity() == null ? "null"
                             : source.getDirectEntity().getClass().getSimpleName())
+                    + " in=" + amount
+                    + " mult=" + damageMultiplierForPart(partIndex)
+                    + " invul=" + invulnerableTime
+                    + " lastHurt=" + lastHurt
                     + " applied=" + applied
                     + " hp=" + healthBefore + "->" + getHealth() + " dealt=" + dealt);
         }

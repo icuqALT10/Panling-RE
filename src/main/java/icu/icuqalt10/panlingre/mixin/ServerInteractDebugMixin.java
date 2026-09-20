@@ -49,6 +49,10 @@ public abstract class ServerInteractDebugMixin {
                 + " reach=" + String.format("%.3f", reach)
                 + " distance=" + String.format("%.3f", distance)
                 + " acceptedByVanilla=" + this.player.canInteractWithEntity(box, 1.0)
+                + " gameMode=" + this.player.gameMode.getGameModeForPlayer()
+                + " atkDamage=" + this.player.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE)
+                + " charge=" + String.format("%.3f", this.player.getAttackStrengthScale(0.5F))
+                + " mainHand=" + this.player.getMainHandItem().getItem()
                 + " serverEye=" + this.player.getEyePosition()
                 + " box=" + box);
         return entity;
