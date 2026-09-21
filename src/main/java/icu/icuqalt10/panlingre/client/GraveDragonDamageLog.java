@@ -1,6 +1,7 @@
 package icu.icuqalt10.panlingre.client;
 
-import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonDamageDebug;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonEntity;
 import icu.icuqalt10.panlingre.network.GraveDragonHitPayload;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -39,6 +40,9 @@ public final class GraveDragonDamageLog {
 
     /** Called from the payload handler when the server reports a landed hit. */
     public static void record(GraveDragonHitPayload payload) {
+        // 与 GraveDragonDamageDebug 同一个开关：默认关闭。
+        // 之前这里无条件往聊天栏刷"命中 xx 部件 倍率 xN 扣血 N"，战斗演出时很干扰。
+        if (!GraveDragonDamageDebug.enabled()) return;
         var mc = Minecraft.getInstance();
         var level = mc.level;
         if (level == null || mc.player == null) return;

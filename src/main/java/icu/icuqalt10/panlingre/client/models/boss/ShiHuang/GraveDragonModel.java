@@ -1,11 +1,11 @@
 package icu.icuqalt10.panlingre.client.models.boss.ShiHuang;
 
 import icu.icuqalt10.panlingre.PanlingRE;
-import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.animation.AnimationState;
-import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonPose;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonPose;
 
 public class GraveDragonModel extends GeoModel<GraveDragonEntity> {
     @Override
@@ -14,9 +14,9 @@ public class GraveDragonModel extends GeoModel<GraveDragonEntity> {
         // first-render time is client-local and cannot serve as the collision clock.
         var frame = GraveDragonPose.sample(dragon.animation(),
                 dragon.animationSeconds(state.getPartialTick()), dragon.loopingAnimation());
-        // 脊柱链式跟随：链由服务端推进并同步，这里用**同一个反解**套上去——渲染与碰撞箱
-        // 因此仍然逐位一致（没有同步数据时 withSpine 原样返回）。
-        frame = dragon.withSpine(frame, dragon.yBodyRot, dragon.position());
+        // 脊柱链式跟随：服务端与客户端各自推进同一条链（输入全是同步量），这里用**同一个反解**
+        // 套上去，并按 partialTick 在上一 tick 与这一 tick 之间插值——渲染与碰撞箱因此仍然一致
+        // （链没起来时 withSpine 原样返回）。
         for (var entry : frame.bones().entrySet()) {
             getBone(entry.getKey()).ifPresent(bone -> {
                 var pose = entry.getValue();

@@ -212,12 +212,6 @@ tasks.register('poseDriftAudit', JavaExec) {
     mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonPoseDriftAudit'
 }
 
-tasks.register('spineAudit', JavaExec) {
-    dependsOn multipartTestClasses
-    classpath = sourceSets.multipartTest.runtimeClasspath
-    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonSpineAudit'
-}
-
 tasks.register('animAudit', JavaExec) {
     dependsOn multipartTestClasses
     classpath = sourceSets.multipartTest.runtimeClasspath
@@ -228,12 +222,6 @@ tasks.register('heightAudit', JavaExec) {
     dependsOn multipartTestClasses
     classpath = sourceSets.multipartTest.runtimeClasspath
     mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonHeightAudit'
-}
-
-tasks.register('boxPlacementAudit', JavaExec) {
-    dependsOn multipartTestClasses
-    classpath = sourceSets.multipartTest.runtimeClasspath
-    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonBoxPlacementAudit'
 }
 
 tasks.register('orientationAudit', JavaExec) {

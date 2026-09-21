@@ -23,6 +23,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -50,13 +51,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /** 形态：0 = 地面，1 = 空中。 */
     private static final EntityDataAccessor<Integer> FORM = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> BODY_PITCH = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.FLOAT);
-    /**
-     * 脊柱链的节点（"相对锚点、去掉 yaw"的偏移），服务端算好同步给客户端。
-     *
-     * <p>链是有状态的 verlet 积分，两侧各自跑一定会分歧；而碰撞箱与渲染必须逐位一致，
-     * 所以统一由服务端推进、同步结果。没有它（地面形态/刚进世界）时退回纯动画姿态。
-     */
-    private static final EntityDataAccessor<CompoundTag> SPINE = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.COMPOUND_TAG);
 
     /** 龙首俯仰的限幅（度）。身体水平长 46 格，再大就会大面积戳进地形。 */
     private static final float MAX_BODY_PITCH = 22.0F;
@@ -81,7 +75,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         builder.define(ANIMATION, "idle_air");
         builder.define(FORM, FORM_GROUND);
         builder.define(BODY_PITCH, 0.0F);
-        builder.define(SPINE, new CompoundTag());
     }
 
     /** 地面 / 空中两种形态。 */
@@ -109,10 +102,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * 时刻，不能只看首帧。
      */
     private static final int POSE_CLEARANCE_SAMPLES = 6;
-    /** 起飞净空的采样柱沿身体轴前后偏移（格）：0、±这个值。 */
-    private static final double CLEARANCE_PROBE_DISTANCE = 18.0;
-    /** 起飞净空还要向上多留的高度（格）。 */
-    private static final double CLEARANCE_PROBE_HEIGHT = 14.0;
     /**
      * 起飞净空判定允许的穿透容差（格）。
      *
@@ -123,8 +112,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private static final double POSE_CLEARANCE_TOLERANCE = 0.05;
     /** 姿态判定的整体抬升（格）：抵消"脚底与地面方块浮点贴合"造成的假穿透。 */
     private static final double POSE_CLEARANCE_LIFT = 0.06;
-    /** 探测地面时从锚点上方几格开始往下扫（覆盖"龙站在平台上、脚底方块就在头顶一格"的情况）。 */
-    private static final int GROUND_SCAN_UP = 8;
     /** 形态切换区间：1~3 分钟。 */
     private static final int FORM_MIN_TICKS = 20 * 60;
     private static final int FORM_RANDOM_TICKS = 20 * 120;
@@ -134,23 +121,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /** 循环播放的动画；其余按一次性处理（播完停在末帧，由 takeoff/land/turn_* 这类过渡用）。 */
     private static final Set<String> LOOPING_ANIMATIONS = Set.of("idle_air", "idle_ground", "fly", "run");
 
-    // ===== 无仇恨漫游 =====
-    // 目前还不是敌对生物（没有攻击动画），所以不带仇恨目标：只在四周随机找个可达点过去，
-    // 到达后有概率原地歇一会儿。空中与地面共用这一套，只是扩散范围与动画不同。
-
-    /** 目标点的水平搜索距离区间（格）：地面形态。 */
-    private static final double WANDER_MIN_DISTANCE = 12.0;
-    /** 重新取点时至少要离开当前位置多少格（避免原地打转）。 */
-    private static final double WANDER_MIN_STEP = 8.0;
-    /** 空中形态的垂直扩散（格，总幅度）：±20，让漫游真的是三维的。 */
-    private static final double WANDER_AIR_VERTICAL_SPREAD = 40.0;
-    /**
-     * 随机尝试次数：每次都用寻路验证可达性，全失败就歇一会儿。
-     *
-     * <p>别调大：每次尝试都是一整趟 A*，而这条龙的身体轮廓采样让每个节点要花 60 次方块查询
-     * （见 {@code GraveDragonBodyPathing}），目标点又取得很远，代价是"尝试次数 × 距离"一起涨。
-     */
-    private static final int WANDER_ATTEMPTS = 4;
     /** 到达判定半径（格）。 */
     private static final double WANDER_ARRIVE_DISTANCE = 3.0;
     /** 单个目标点最多追多久（tick）；导航找不到路时不至于永远卡在原地。 */
@@ -214,12 +184,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private int wanderTicks;
     /** 空中移动的过渡动画播完后要进入的循环动画（null = 没有正在过渡）。 */
     private String pendingLoopAnimation;
-    /** 空中待机冷却剩余 tick；&gt;0 时 tickWander 不会进入 idle_air。 */
-    private int airIdleCooldown;
-    /** 脊柱链（服务端推进、同步给客户端）。两侧共用同一个 apply 反解。 */
-    private final GraveDragonSpineChain spine = new GraveDragonSpineChain();
-    /** 领地中心（水平）：召唤时定下，漫游目标点都钳在这个圆内。 */
-    private Vec3 home;
     /** 正在走"下落第一段"（fly → idle_air），播完接着播 land。 */
     private boolean descending;
     /** 撞墙自救用的记录：上一 tick 位置与连续"没动"的 tick 数。 */
@@ -413,8 +377,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         // 方向由状态机决定，不能被地面探测的边界情况反转：下降只允许往下、上升只允许往上。
         // （曾经因为 groundLevelBelow() 在测试世界里探到了比龙更高的"地面"，落地过程变成上升。）
         this.transitionToY = ascending ? Math.max(targetY, getY()) : Math.min(targetY, getY());
-        // 换形态之后重新开始计冷却，否则落地形态的 tick 会把空中的冷却偷偷耗掉。
-        this.airIdleCooldown = 0;
         this.setNoGravity(true);
     }
 
@@ -489,279 +451,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     }
 
     /**
-     * 暂停/恢复漫游。测试用来单独验证动画选择；后续接入攻击时也会用它让漫游让位。
-     */
-    public void setWanderEnabled(boolean enabled) {
-        this.wanderEnabled = enabled;
-        if (!enabled) {
-            this.wanderTarget = null;
-            this.wanderIdleTicks = 0;
-            getNavigation().stop();
-        }
-    }
-
-    public boolean isMoving() {
-        return moving;
-    }
-
-    /**
-     * 无仇恨漫游：在**领地范围内**随机挑一个可达点过去，到达后有 {@link #WANDER_IDLE_CHANCE}%
-     * 概率原地待机 {@link #WANDER_IDLE_TICKS} tick，其余情况立刻找下一个点。
-     *
-     * <p>三条硬性约束：
-     * <ul>
-     *   <li>待机（idle_air / idle_ground）期间**完全不动**：导航停掉、moving 清零；</li>
-     *   <li>过渡动画（takeoff / land / 空中待机过渡）播放期间不规划新移动；</li>
-     *   <li>连续多次挑不出可达点就停下来歇一小会儿再试，避免每 tick 都跑 A*。</li>
-     * </ul>
-     */
-    private void tickWander() {
-        if (!wanderEnabled) return;
-        if (airIdleCooldown > 0) airIdleCooldown--;
-
-        // 待机：彻底站住，不走导航也不规划新目标。
-        if (wanderIdleTicks > 0) {
-            wanderIdleTicks--;
-            getNavigation().stop();
-            setMoving(false);
-            if (flying()) hover();
-            return;
-        }
-
-        // "挑不出目标点"的短暂停顿：同样站住，但不算待机（不播 idle_air，也不上冷却）。
-        if (stallTicks > 0) {
-            stallTicks--;
-            getNavigation().stop();
-            setMoving(false);
-            if (flying()) hover();
-            return;
-        }
-
-        // 过渡动画播放期间不规划新移动：位置由 applyTransitionLift 直接控制。
-        if (pendingForm != null) {
-            getNavigation().stop();
-            setMoving(false);
-            if (flying()) hover();
-            return;
-        }
-
-        boolean arrived = wanderedTarget()
-                || position().distanceToSqr(wanderTarget) < WANDER_ARRIVE_DISTANCE * WANDER_ARRIVE_DISTANCE
-                || wanderTicks > WANDER_TIMEOUT_TICKS;
-        wanderTicks++;
-        if (!arrived) {
-            if (flying()) tickFlightWander();
-            else setMoving(true);
-            return;
-        }
-
-        // 到达：先掷一次骰子决定要不要歇。
-        // 空中待机还有冷却：刚从 idle_air 切回 fly 之后 30 秒内不再进 idle_air，
-        // 否则飞两下就歇一下，看不出在赶路。
-        if (wanderTarget != null && airIdleCooldown <= 0 && random.nextInt(100) < WANDER_IDLE_CHANCE) {
-            wanderTarget = null;
-            wanderIdleTicks = WANDER_IDLE_TICKS;
-            if (flying()) airIdleCooldown = AIR_IDLE_COOLDOWN_TICKS;
-            getNavigation().stop();
-            setMoving(false);
-            return;
-        }
-
-        Vec3 next = pickWanderTarget();
-        if (next == null) {
-            // 连续几次都挑不出可达点（被围住 / 空间不够）：停下来歇一小会儿再试，
-            // 而不是每 tick 重新跑 A*。
-            // **不占用 wanderIdleTicks**：那是"待机"状态，会被 isWanderIdle() 报出去，
-            // 跟"挑不出点"完全是两码事（混用会让人把停顿误读成进入 idle_air）。
-            wanderTarget = null;
-            stallTicks = STALL_RETRY_TICKS;
-            setMoving(false);
-            return;
-        }
-        wanderTarget = next;
-        wanderTicks = 0;
-        if (flying()) {
-            // 空中不走原版飞行导航：那条路会反复把路径算成 null/立刻做完，龙就僵在原地。
-            // 直接操纵速度更可控，转向也能平滑。
-            tickFlightWander();
-        } else {
-            getNavigation().moveTo(next.x, next.y, next.z, wanderSpeed());
-            setMoving(true);
-        }
-    }
-
-    // ===== 空中飞行转向 =====
-
-    /**
-     * 空中漫游的转向与速度，**不经过** {@code PathNavigation}。
-     *
-     * <p>为什么不用原版飞行导航：实测 {@code FlyingMoveControl} 会在路径被重算成 null 之后
-     * 停在原地（{@code hasWanted=false}、{@code path=null} 却还在天上），而且它的
-     * {@code rotlerp(..., 90f)} 会把朝向瞬间拧到目标方向——55 格长的身体看起来就是"猛地摆头"，
-     * 非常僵硬。这里改成自己算：
-     * <ul>
-     *   <li>朝向按 {@link #FLIGHT_TURN_RATE} 度/tick 平滑转过去（大身体才有惯性感）；</li>
-     *   <li>水平速度直接给 {@link #WANDER_AIR_SPEED} 对应的格/tick；</li>
-     *   <li>高度用 {@link #maintainFlightAltitude()} 兜底"离地 ≥ {@link #FLIGHT_CLEARANCE}"，
-     *       目标点更高就爬升、更低就缓降，升降率都受限。</li>
-     * </ul>
-     * 避障交给 {@code move()} 的逐部件判定：真的撞上就停住，而不是穿模。
-     */
-    private void tickFlightWander() {
-        if (wanderTarget == null) return;
-
-        // 领地硬边界兜底：目标点本身是钳在领地圆内的，但飞行有惯性（转向率有限），
-        // 转弯时可能冲出去。真出界了就把水平位置拉回边界上——这条龙是"盘踞在某片区域"，
-        // 不该越飞越远。
-        Vec3 home = homePosition();
-        double dx = getX() - home.x, dz = getZ() - home.z;
-        double drift = Math.hypot(dx, dz);
-        if (drift > WANDER_TERRITORY_RADIUS) {
-            double scale = WANDER_TERRITORY_RADIUS / drift;
-            setPos(home.x + dx * scale, getY(), home.z + dz * scale);
-        }
-
-        // 撞墙自救：贴着山体/树冠时 move() 会把整步否掉，表现就是"卡在原地不动"。
-        // 连续 {@link #FLIGHT_STUCK_TICKS} tick 几乎没有位移就抬高目标点爬过去；
-        // 再卡就干脆换一个目标点，别一直顶着墙。
-        if (wanderTarget.distanceToSqr(position()) > 1.0E-4) {
-            double progress = position().distanceToSqr(lastFlightPosition);
-            lastFlightPosition = position();
-            if (progress < 0.0025) { // 0.05 格/tick 以下算没动
-                flightStuckTicks++;
-                if (flightStuckTicks > FLIGHT_STUCK_TICKS * 2) {
-                    // 抬高也过不去：换成**侧向绕行**，而不是清空目标点停下。
-                    // 清空目标会让接下来 STALL_RETRY_TICKS 完全静止——自救动作本身变成"卡住"，
-                    // 这正是之前测到的那几个"完全不动的时间窗"（实测确认）。
-                    double yaw = Math.toRadians(getYRot() + (random.nextBoolean() ? 90 : -90));
-                    wanderTarget = position().add(Math.sin(yaw) * 24.0, 6.0, Math.cos(yaw) * 24.0);
-                    flightStuckTicks = 0;
-                    return;
-                }
-                if (flightStuckTicks > FLIGHT_STUCK_TICKS) {
-                    // 抬高 12 格从上面绕过去。
-                    wanderTarget = new Vec3(wanderTarget.x, wanderTarget.y + 12.0, wanderTarget.z);
-                    return;
-                }
-            } else {
-                flightStuckTicks = 0;
-            }
-        }
-
-        Vec3 to = wanderTarget.subtract(position());
-        double horizontal = Math.hypot(to.x, to.z);
-        if (horizontal > 1.0E-3) {
-            // MC 的 yaw：0 面向 +Z、90 面向 -X、yaw 增大是向右转，
-            // 所以朝向 (dx, dz) 的 yaw = atan2(dx, dz)。
-            // 写成 atan2(-dx, dz) 会让龙**倒着飞**（朝向与位移相反），这一点实测确认过。
-            float wanted = (float) Math.toDegrees(Math.atan2(to.x, to.z));
-            float diff = Mth.wrapDegrees(wanted - getYRot());
-            float step = Mth.clamp(diff, -FLIGHT_TURN_RATE, FLIGHT_TURN_RATE);
-            setYRot(getYRot() + step);
-            setYHeadRot(getYRot());
-            yBodyRot = getYRot();
-            yBodyRotO = yBodyRot;
-        }
-
-        double yaw = Math.toRadians(getYRot());
-        double speed = FLIGHT_SPEED_PER_TICK;
-        double dy = 0;
-        double wantedY = wanderTarget.y;
-        double lowest = groundLevelBelow() + FLIGHT_CLEARANCE;
-        if (wantedY < lowest) wantedY = lowest;
-        double climb = wantedY - getY();
-        if (Math.abs(climb) > 0.35) dy = Mth.clamp(climb, -FLIGHT_DESCEND_RATE, FLIGHT_CLIMB_RATE);
-
-        setDeltaMovement(Math.sin(yaw) * speed, dy, Math.cos(yaw) * speed);
-        setMoving(true);
-    }
-
-    /** 空中"站着"（待机）：位置不动，速度清零，只靠重力逻辑维持悬浮。 */
-    private void hover() {
-        setDeltaMovement(Vec3.ZERO);
-    }
-
-    /**
-     * 空中速度换算成格/tick。
-     *
-     * <p>实测 {@code WANDER_AIR_SPEED = 12.0} 经 {@code FlyingMoveControl} 只有
-     * 0.212 格/tick；这里直接给速度，所以按同一个体感取 {@link #FLIGHT_SPEED_PER_TICK}。
-     */
-    private double flightBlocksPerTick() {
-        return FLIGHT_SPEED_PER_TICK;
-    }
-
-    /**
-     * 传给 {@code PathNavigation.moveTo} 的速度。
-     *
-     * <p>这是个 {@code speedModifier}，不是"格/秒"：飞行时还要乘 {@code FLYING_SPEED} 属性
-     * （默认 0.4）和 {@code travel} 里的 0.1，所以两者差一个数量级，
-     * 否则 55 格长的龙飞起来慢到看不出在移动。实测换算见 {@link #WANDER_AIR_SPEED}。
-     */
-    private double wanderSpeed() {
-        return flying() ? WANDER_AIR_SPEED : WANDER_SPEED;
-    }
-
-    /**
-     * 在**领地范围内**向四周扩散一段距离，随机取一个点，并用**寻路**验证它真的可达。
-     *
-     * <p>可达性交给寻路器判断，所以不会选到身体过不去的位置；这一点对这条 55 格长的龙尤其重要。
-     *
-     * <p>空中是**真 3D** 的：水平四周扩散之外还有 {@link #WANDER_AIR_VERTICAL_SPREAD} 的高度变化，
-     * 只有"低于离地高度"时才被钳到 {@link #FLIGHT_CLEARANCE}。垂直扩散如果太小，
-     * 看起来就会像在同一个平面上绕圈。地面形态不爬坡，目标点与自身等高。
-     *
-     * <p>所有候选点先水平钳进以 {@link #homePosition()} 为心、半径
-     * {@link #WANDER_TERRITORY_RADIUS} 的领地内，所以龙是"在某片区域里盘踞与盘旋"，
-     * 而不是一路往一个方向飞走。
-     */
-    public Vec3 pickWanderTarget() {
-        Vec3 home = homePosition();
-        for (int attempt = 0; attempt < WANDER_ATTEMPTS; attempt++) {
-            // 目标点直接在以**领地中心**为心的圆盘里取，而不是相对当前位置扩散。
-            // 相对当前位置扩散的话，龙每到一个点都会再挑一个更远的点，最后一路飞出领地。
-            double angle = random.nextDouble() * Math.PI * 2;
-            double radius = flying()
-                    ? Math.sqrt(random.nextDouble()) * WANDER_TERRITORY_RADIUS
-                    : WANDER_MIN_DISTANCE + random.nextDouble() * (WANDER_TERRITORY_RADIUS - WANDER_MIN_DISTANCE);
-            Vec3 candidate = new Vec3(
-                    home.x + Math.cos(angle) * radius,
-                    home.y,
-                    home.z + Math.sin(angle) * radius);
-            // 太近就换一个：贴着当前位置的目标会让"到达判定"立刻成立，看起来像没动。
-            if (candidate.subtract(position()).horizontalDistance() < WANDER_MIN_STEP) continue;
-            if (flying()) {
-                // 高度一律以**当前位置**为基准，并夹在 ±WANDER_AIR_VERTICAL_SPREAD/2 以内。
-                // 不夹的话，地面探测的任何异常（实测出现过目标 Y = 203，龙在 5.4）都会变成
-                // "永远爬不到的目标点"，表现就是卡在空中不动。
-                double dy = (random.nextDouble() - 0.5) * WANDER_AIR_VERTICAL_SPREAD;
-                double lowest = groundLevelBelow() + FLIGHT_CLEARANCE;
-                double y = Mth.clamp(position().y + dy,
-                        position().y - WANDER_AIR_VERTICAL_SPREAD / 2,
-                        position().y + WANDER_AIR_VERTICAL_SPREAD / 2);
-                candidate = new Vec3(candidate.x, Math.max(y, lowest), candidate.z);
-                return candidate;
-            }
-            // 地面形态：与自身等高，并且必须真的走得到（地面寻路还是用原版 A*）。
-            candidate = new Vec3(candidate.x, position().y, candidate.z);
-            var path = getNavigation().createPath(BlockPos.containing(candidate), 1);
-            if (path != null && path.canReach()) return candidate;
-        }
-        return null;
-    }
-
-    /** 领地中心：召唤时定下，之后固定不变。 */
-    public Vec3 homePosition() {
-        return home == null ? position() : home;
-    }
-
-    /** 供测试：直接指定领地中心。 */
-    public void setHomePosition(Vec3 home) {
-        this.home = home;
-    }
-
-    /**
-     * 飞行时维持离地高度：地形升高时就抬起来，保证"自身离下方地面 ≥ 10 格"。
+     * 飞行时维持离地高度：地形升高就抬起来，保证"自身离下方地面 ≥ {@link #FLIGHT_CLEARANCE}"。
      * 每 tick 最多抬 {@link #ALTITUDE_CLIMB_RATE} 格，免得猛地跳一下。
      */
     private void maintainFlightAltitude() {
@@ -876,11 +566,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         this.wanderIdleTicks = 0;
     }
 
-    /** 供测试：空中待机冷却剩余 tick。 */
-    public int airIdleCooldownTicks() {
-        return airIdleCooldown;
-    }
-
     /** 供测试诊断：当前漫游目标（null = 没有）。 */
     public Vec3 wanderTarget() {
         return wanderTarget;
@@ -899,11 +584,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /** 供测试诊断：单个目标点已经追了多少 tick。 */
     public int wanderTicksElapsed() {
         return wanderTicks;
-    }
-
-    /** 供测试：直接设置空中待机冷却，用来验证"冷却期内不再进 idle_air"。 */
-    public void setAirIdleCooldown(int ticks) {
-        this.airIdleCooldown = ticks;
     }
 
     private void scheduleNextFormSwitch(long now) {
@@ -942,20 +622,24 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     }
 
     /**
-     * 起飞前的净空检查。
+     * 起飞前的净空检查：**把整个飞行姿态逐碰撞箱摆到巡航高度**，任何一个碰撞箱插进方块都不许起飞。
      *
-     * <p>沿身体轴取锚点、前后各 {@link #CLEARANCE_PROBE_DISTANCE} 格共三根采样柱，每根要求
-     * "从地面一直到 巡航高度 + {@link #CLEARANCE_PROBE_HEIGHT}" 全是空气。
+     * <p>为什么不按固定高度/距离判据：这条龙的身体相对锚点向上下各伸出十几格
+     * （{@code fly} 实测 Y ∈ [−10.72, +24.84]，见 {@link #FLIGHT_BODY_DEPTH}），
+     * "头顶有 10 格空气"完全不代表飞行姿态放得下。所以这里直接采样 {@code fly} / {@code idle_air}
+     * 的几个相位、把 79 个 OBB 摆上去逐块判定（{@link #poseFitsAt}），起点再补一次 {@code idle_ground}。
      *
-     * <p>曾尝试改成"把 idle_air / fly 的 79 个碰撞箱直接在目标高度摆出来逐块判定"，但那条路
-     * 在本项目的几何下不稳定：飞行姿态的身体相对锚点向上下各伸出十几格，同一个高度上
-     * "地面姿态判定通过、飞行姿态判定失败"，结果是"有时能起飞、有时永远不能"，比距离判据更糟。
-     * 姿态版思路保留在 {@link #poseFitsAt} 里备用，但默认不启用。
+     * <p>这条判定对**身体跨度内的任何方块**都敏感：跨度是水平 ±30 格、垂直 −11..+25 格。
+     * 2026-09 排查"集成测试里时过时不过"时确认过：原因不在判定本身，而在测试场地——
+     * gametest 同一批次的测试**共用同一个世界并发运行**，而结构区只隔 10 格，
+     * 于是别的测试留下的平台/天花板会正好落在这条龙的跨度里，起飞就时成时不成
+     * （实测日志：悬在空中的龙 {@code flyFits=false}，而 19 格外就是另一条测试的稀疏石台）。
+     * 现在测试侧统一"独立批次 + 结束还原方块"，判定本身保持不变。
      */
     private boolean hasTakeoffClearance() {
         // 起飞后锚点会停在"当前高度 + FLIGHT_CLEARANCE"上。飞行姿态的身体相对锚点向下伸出
         // FLIGHT_BODY_DEPTH 格（实测 fly 的碰撞箱最低点是 −10.72），所以离地高度必须**大于**这个
-        // 深度，否则光是把姿态摆到巡航高度就已经插进地面了——这正是之前姿态版判定永远失败的原因。
+        // 深度，否则光是把姿态摆到巡航高度就已经插进地面了。
         if (FLIGHT_CLEARANCE <= FLIGHT_BODY_DEPTH) return false;
         if (!poseFitsAt("fly", FLIGHT_CLEARANCE)) return false;
         if (!poseFitsAt("idle_air", FLIGHT_CLEARANCE)) return false;
@@ -966,34 +650,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /** 供测试：飞行姿态相对锚点向下的最大深度（格，正数）。 */
     public static double flightBodyDepth() {
         return FLIGHT_BODY_DEPTH;
-    }
-
-    /**
-     * 沿身体轴偏移 {@code offset} 格处的一根采样柱是否满足起飞净空。
-     *
-     * <p>**不用 {@code level().clip}**：那个重载会把本实体当作"忽略对象"，而墓龙的身体有
-     * 20 多格高，射线刚从锚点就撞上自己的身体，于是任何地方都"净空不足"、永远不起飞
-     * （实测 hit 位置就在锚点上方 1 格）。这里直接逐格扫方块，不牵扯实体。
-     */
-    private boolean clearanceColumn(double offset) {
-        double yaw = Math.toRadians(yBodyRot);
-        // yaw 0 面向 +Z，此时身体轴也是 ±Z。
-        double x = getX() + Math.sin(yaw) * offset;
-        double z = getZ() + Math.cos(yaw) * offset;
-        int bx = Mth.floor(x), bz = Mth.floor(z);
-        // 采样点下方的地面必须先探到；探不到（虚空）不能起飞。
-        double ground = groundLevelAt(new Vec3(x, getY(), z));
-        if (Double.isNaN(ground)) return false;
-        // 从地面一直扫到"巡航高度 + 身体高度"：这一段必须全是空气。
-        int from = Mth.floor(ground);
-        int to = Mth.floor(ground + FLIGHT_CLEARANCE + CLEARANCE_PROBE_HEIGHT);
-        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
-        for (int y = from; y <= to; y++) {
-            if (!level().getBlockState(cursor.set(bx, y, bz)).getCollisionShape(level(), cursor).isEmpty()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -1444,9 +1100,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     @Override
     protected PathNavigation createNavigation(Level level) {
-        // 两种形态的寻路器不同：走地用地面 A*，空中用原版的 3D 飞行 A*（路径天生会绕开障碍，
-        // 这就是"直线被挡时把路线改成曲线"）。形态切换时会重建，见 applyFormPhysics。
-        return flying() ? new GraveDragonFlightNavigation(this, level) : new GraveDragonPathNavigation(this, level);
+        // 始皇陵副本是个固定竞技场：出招全部由脚本化的攻击状态机驱动（见设计规格），
+        // 不做 A* 寻路，所以这里用原版地面导航即可（只为满足 Mob 的导航非空）。
+        return new GroundPathNavigation(this, level);
     }
 
     // ===== 名牌 / 世界内血条的挂点 =====
@@ -1726,103 +1382,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         // crosshair and the server's validation measure the very same boxes. Rendering does
         // NOT touch them: an interpolated render frame used to overwrite them, which is what
         // made the two sides disagree.
-        updatePartPose(withSpine(GraveDragonPose.sample(animation(), collisionPoseSeconds(), loopingAnimation()),
-                yBodyRot, position()), yBodyRot, position());
+        updatePartPose(GraveDragonPose.sample(animation(), collisionPoseSeconds(), loopingAnimation()),
+                yBodyRot, position());
         updateBodyFootprint();
-    }
-
-    // ===== 脊柱链式跟随 =====
-
-    /**
-     * 脊柱链式跟随的**总开关**。
-     *
-     * <p>目前刻意关闭：链的坐标每 {@code GraveDragonSpineSync.SYNC_INTERVAL_TICKS} tick 才同步一次，
-     * 而渲染每帧都读同一份快照，于是骨骼每 4 tick 跳一格——表现就是"头部瞬移闪现"，链的惯性又把
-     * 这个跳变放大成全身抽搐。要真正可用，必须让两侧各自推进同一条链（而不是同步链坐标），
-     * 或者对同步数据做 partialTick 插值。修好之前保持关闭，龙的行为与未接入链时完全一致。
-     */
-    public static final boolean SPINE_CHAIN_ENABLED = false;
-
-    /** 服务端：每 tick 推进链。只在空中形态生效，地面形态身体本来就该贴着地面走。 */
-    private void updateSpineChain() {
-        if (!SPINE_CHAIN_ENABLED || !flying() || pendingForm != null) return;
-        // 驱动点取**动画里龙首的实际世界位置**：链只负责把身体摆到龙头走过的轨迹后面，
-        // 姿态本身仍由动画提供（withSpine 只覆盖脊柱各节的位移与指向，动画的扭动被保留）。
-        Vec3 head = animatedHeadPosition(collisionPoseSeconds(), yBodyRot, position());
-        if (!spine.initialised()) {
-            spine.reset(head, Vec3.directionFromRotation(0, yBodyRot), new Vec3(0, 1, 0));
-        } else {
-            spine.update(head);
-        }
-        if (tickCount % GraveDragonSpineSync.SYNC_INTERVAL_TICKS == 0) {
-            entityData.set(SPINE, GraveDragonSpineSync.write(localSpineOffsets()));
-        }
-    }
-
-    /** 供测试/客户端：链的朝向基准（+Z 前方的 yaw 向量）。 */
-    private Vec3 animatedHeadPosition(double seconds, float yaw, Vec3 origin) {
-        var frame = GraveDragonPose.sample(animation(), seconds, loopingAnimation());
-        var matrix = new Matrix4f(GraveDragonPose.modelToEntity(yaw, 0.0F, getScale()))
-                .mul(frame.matrices().get("head"));
-        Vector3f head = matrix.transformPosition(new Vector3f());
-        return origin.add(head.x, head.y, head.z);
-    }
-
-    /** 把链节点换算成"相对锚点、去掉 yaw"的偏移，便于同步与插值。 */
-    private Vec3[] localSpineOffsets() {
-        Vec3[] nodes = new Vec3[GraveDragonPose.spineBones().size()];
-        double angle = Math.toRadians(-yBodyRot);
-        double cos = Math.cos(angle), sin = Math.sin(angle);
-        for (int i = 0; i < nodes.length; i++) {
-            Vec3 offset = spine.node(i).subtract(position());
-            nodes[i] = new Vec3(offset.x * cos + offset.z * sin, offset.y, -offset.x * sin + offset.z * cos);
-        }
-        return nodes;
-    }
-
-    /**
-     * 把同步来的链偏移套到姿态上，产出**渲染与碰撞箱共用**的那一帧。
-     *
-     * <p>两侧都对同一个基础姿态做同一件事，所以结果逐位一致；链没有数据（地面形态、
-     * 刚进世界、或同步还没到）时原样返回基础姿态。
-     */
-    public GraveDragonPose.Frame withSpine(GraveDragonPose.Frame base, float yaw, Vec3 origin) {
-        // 关掉时直接返回纯动画姿态，渲染与碰撞箱都走这一条，
-        // 所以"所见即所得"的镜像关系不受影响。
-        if (!SPINE_CHAIN_ENABLED) return base;
-        Vec3[] offsets = GraveDragonSpineSync.read(entityData.get(SPINE));
-        if (offsets == null || offsets.length != GraveDragonPose.spineBones().size()) return base;
-        double angle = Math.toRadians(yaw);
-        double cos = Math.cos(angle), sin = Math.sin(angle);
-        Vec3[] world = new Vec3[offsets.length];
-        for (int i = 0; i < offsets.length; i++) {
-            Vec3 local = offsets[i];
-            world[i] = origin.add(local.x * cos - local.z * sin, local.y, local.x * sin + local.z * cos);
-        }
-        // 客户端也走同一个 apply：链坐标来自同步，反解是纯函数，所以两侧结果逐位一致。
-        spine.setNodes(world);
-        GraveDragonPose.Frame chained = spine.apply(base, origin, GraveDragonPose.modelToEntity(yaw, 0.0F, getScale()));
-        // 龙头**保留动画自身的旋转**：链只负责把身体摆到龙头走过的轨迹后面，
-        // 而"抬头/低头"是动画的表达（用户明确要求头部要自我旋转，而不是被整体平移下去）。
-        // 链对 head 的反解旋转会把这个表达抹掉，所以这里用动画的姿态盖回去。
-        var headBase = base.bones().get(GraveDragonPose.spineBones().get(0));
-        if (headBase == null) return chained;
-        var headChained = chained.bones().get(GraveDragonPose.spineBones().get(0));
-        java.util.Map<String, GraveDragonPose.BonePose> merged = new java.util.LinkedHashMap<>(chained.bones());
-        merged.put(GraveDragonPose.spineBones().get(0),
-                new GraveDragonPose.BonePose(headBase.rotation(), headChained.position(), headChained.scale()));
-        return GraveDragonPose.rebuild(merged);
-    }
-
-    /** 供测试：当前同步的链节点是否可用。 */
-    public boolean hasSpineSync() {
-        Vec3[] offsets = GraveDragonSpineSync.read(entityData.get(SPINE));
-        return offsets != null && offsets.length == GraveDragonPose.spineBones().size();
-    }
-
-    /** 供测试：服务端的链是否已经被推进过。 */
-    public boolean spineInitialised() {
-        return spine.initialised();
     }
 
     /**
@@ -1915,14 +1477,10 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         // 先记下上一 tick 的俯仰供渲染插值，再由服务端按新的速度方向更新（客户端用同步值）。
         this.bodyPitchO = bodyPitch();
         if (!this.level().isClientSide) {
-            // 领地中心在第一次服务端 tick 定下：之后所有漫游目标点都钳在这个圆内。
-            if (home == null) home = position();
             tickForm();
-            tickWander();
             tickAnimation();
             maintainFlightAltitude();
             updateBodyPitch();
-            updateSpineChain();
         }
         updateDragonParts();
         if (this.level().isClientSide) return;
