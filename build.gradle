@@ -201,7 +201,7 @@ sourceSets.register('multipartTest') {
 tasks.register('multipartPoseTest', JavaExec) {
     dependsOn multipartTestClasses
     classpath = sourceSets.multipartTest.runtimeClasspath
-    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonPoseTest'
+    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonPoseTest'
 }
 
 // Diagnostic: how far part boxes drift over the idle animation, and how much a one-tick
@@ -209,7 +209,37 @@ tasks.register('multipartPoseTest', JavaExec) {
 tasks.register('poseDriftAudit', JavaExec) {
     dependsOn multipartTestClasses
     classpath = sourceSets.multipartTest.runtimeClasspath
-    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonPoseDriftAudit'
+    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonPoseDriftAudit'
+}
+
+tasks.register('spineAudit', JavaExec) {
+    dependsOn multipartTestClasses
+    classpath = sourceSets.multipartTest.runtimeClasspath
+    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonSpineAudit'
+}
+
+tasks.register('animAudit', JavaExec) {
+    dependsOn multipartTestClasses
+    classpath = sourceSets.multipartTest.runtimeClasspath
+    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonAnimationAudit'
+}
+
+tasks.register('heightAudit', JavaExec) {
+    dependsOn multipartTestClasses
+    classpath = sourceSets.multipartTest.runtimeClasspath
+    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonHeightAudit'
+}
+
+tasks.register('boxPlacementAudit', JavaExec) {
+    dependsOn multipartTestClasses
+    classpath = sourceSets.multipartTest.runtimeClasspath
+    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonBoxPlacementAudit'
+}
+
+tasks.register('orientationAudit', JavaExec) {
+    dependsOn multipartTestClasses
+    classpath = sourceSets.multipartTest.runtimeClasspath
+    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonOrientationAudit'
 }
 
 // Opt-in integration checks; keep test classes and test worlds out of release jars/run saves.

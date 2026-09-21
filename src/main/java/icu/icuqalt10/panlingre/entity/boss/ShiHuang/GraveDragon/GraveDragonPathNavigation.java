@@ -1,4 +1,4 @@
-package icu.icuqalt10.panlingre.entity.boss.ShiHuang;
+package icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon;
 
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;

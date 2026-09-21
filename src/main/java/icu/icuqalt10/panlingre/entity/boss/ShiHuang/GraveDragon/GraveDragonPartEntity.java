@@ -1,4 +1,4 @@
-package icu.icuqalt10.panlingre.entity.boss.ShiHuang;
+package icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon;
 
 import icu.icuqalt10.panlingre.entity.MultipartEntity;
 import icu.icuqalt10.panlingre.entity.OrientedBoundingBox;

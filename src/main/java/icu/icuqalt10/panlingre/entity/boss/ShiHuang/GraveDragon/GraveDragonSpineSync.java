@@ -1,4 +1,4 @@
-package icu.icuqalt10.panlingre.entity.boss.ShiHuang;
+package icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;

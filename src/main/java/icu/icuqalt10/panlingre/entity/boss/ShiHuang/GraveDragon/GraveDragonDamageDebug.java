@@ -1,4 +1,4 @@
-package icu.icuqalt10.panlingre.entity.boss.ShiHuang;
+package icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon;
 
 /**
  * Opt-in server-side tracing for the multipart melee chain.

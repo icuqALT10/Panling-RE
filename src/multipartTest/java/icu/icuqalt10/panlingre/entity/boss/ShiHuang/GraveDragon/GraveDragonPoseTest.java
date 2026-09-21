@@ -1,9 +1,10 @@
-package icu.icuqalt10.panlingre.entity.boss.ShiHuang;
+package icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon;
 
 import com.google.gson.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import icu.icuqalt10.panlingre.entity.OrientedBoundingBox;
 import icu.icuqalt10.panlingre.entity.OrientedHitbox;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonPose;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -233,7 +234,8 @@ public final class GraveDragonPoseTest {
         }
 
         // Read real labels without initializing Entity/registries in this standalone test.
-        String java = Files.readString(Path.of("src/main/java/icu/icuqalt10/panlingre/entity/boss/ShiHuang/GraveDragonEntity.java"));
+        String java = Files.readString(Path.of(
+                "src/main/java/icu/icuqalt10/panlingre/entity/boss/ShiHuang/GraveDragon/GraveDragonEntity.java"));
         String labelBlock = java.substring(java.indexOf("String[] PART_LABELS"));
         labelBlock = labelBlock.substring(0, labelBlock.indexOf("};"));
         List<String> labels = new ArrayList<>();

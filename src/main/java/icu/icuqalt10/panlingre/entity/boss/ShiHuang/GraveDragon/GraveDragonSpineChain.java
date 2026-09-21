@@ -1,4 +1,4 @@
-package icu.icuqalt10.panlingre.entity.boss.ShiHuang;
+package icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon;
 
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;

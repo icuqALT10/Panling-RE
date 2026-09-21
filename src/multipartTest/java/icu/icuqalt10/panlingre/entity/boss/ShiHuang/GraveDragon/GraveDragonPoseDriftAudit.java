@@ -1,6 +1,7 @@
-package icu.icuqalt10.panlingre.entity.boss.ShiHuang;
+package icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon;
 
 import icu.icuqalt10.panlingre.entity.OrientedBoundingBox;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonPose;
 import net.minecraft.world.phys.Vec3;
 
 import java.nio.charset.StandardCharsets;
