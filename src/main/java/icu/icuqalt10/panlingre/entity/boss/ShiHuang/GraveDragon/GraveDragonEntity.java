@@ -1733,9 +1733,19 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     // ===== 脊柱链式跟随 =====
 
+    /**
+     * 脊柱链式跟随的**总开关**。
+     *
+     * <p>目前刻意关闭：链的坐标每 {@code GraveDragonSpineSync.SYNC_INTERVAL_TICKS} tick 才同步一次，
+     * 而渲染每帧都读同一份快照，于是骨骼每 4 tick 跳一格——表现就是"头部瞬移闪现"，链的惯性又把
+     * 这个跳变放大成全身抽搐。要真正可用，必须让两侧各自推进同一条链（而不是同步链坐标），
+     * 或者对同步数据做 partialTick 插值。修好之前保持关闭，龙的行为与未接入链时完全一致。
+     */
+    public static final boolean SPINE_CHAIN_ENABLED = false;
+
     /** 服务端：每 tick 推进链。只在空中形态生效，地面形态身体本来就该贴着地面走。 */
     private void updateSpineChain() {
-        if (!flying() || pendingForm != null) return;
+        if (!SPINE_CHAIN_ENABLED || !flying() || pendingForm != null) return;
         // 驱动点取**动画里龙首的实际世界位置**：链只负责把身体摆到龙头走过的轨迹后面，
         // 姿态本身仍由动画提供（withSpine 只覆盖脊柱各节的位移与指向，动画的扭动被保留）。
         Vec3 head = animatedHeadPosition(collisionPoseSeconds(), yBodyRot, position());
@@ -1777,6 +1787,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * 刚进世界、或同步还没到）时原样返回基础姿态。
      */
     public GraveDragonPose.Frame withSpine(GraveDragonPose.Frame base, float yaw, Vec3 origin) {
+        // 关掉时直接返回纯动画姿态，渲染与碰撞箱都走这一条，
+        // 所以"所见即所得"的镜像关系不受影响。
+        if (!SPINE_CHAIN_ENABLED) return base;
         Vec3[] offsets = GraveDragonSpineSync.read(entityData.get(SPINE));
         if (offsets == null || offsets.length != GraveDragonPose.spineBones().size()) return base;
         double angle = Math.toRadians(yaw);

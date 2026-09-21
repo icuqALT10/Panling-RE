@@ -1385,6 +1385,16 @@ public final class GraveDragonServerTest {
      */
     @GameTest(template = "empty", timeoutTicks = 400)
     public static void spineChainFollowsTheHeadAndPreservesHeadRotation(GameTestHelper helper) {
+        // 链暂时是关闭的（每 4 tick 同步一次会让头部瞬移闪现，见 SPINE_CHAIN_ENABLED 的说明），
+        // 所以这条测试现在只验证"关掉时行为与未接入链完全一致"。
+        if (!GraveDragonEntity.SPINE_CHAIN_ENABLED) {
+            var probe = helper.getLevel();
+            var plain = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), probe);
+            helper.assertTrue(plain.animation() != null, "实体无法构造");
+            helper.assertTrue(!plain.hasSpineSync(), "链关闭时不该有同步数据");
+            helper.succeed();
+            return;
+        }
         var level = helper.getLevel();
         var dragon = new GraveDragonEntity(ModEntities.GRAVE_DRAGON.get(), level);
         dragon.setNoAi(true);
