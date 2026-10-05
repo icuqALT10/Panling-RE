@@ -54,3 +54,6 @@ run/
 **/src/generated/**/.cache/
 repo/
 !**/src/**/repo/
+
+### Temporary files ###
+/tmp/

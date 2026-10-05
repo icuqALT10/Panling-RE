@@ -1,0 +1,16 @@
+{
+  "controller": "panlingre:shihuang",
+  
+  "template": "panlingre:instance/shihuang",
+
+  "center_pos": [0.0, 112.5, 3600.0],
+  "player_spawn_pos": [0.5, 72.0, 3224.5],
+
+  "spacing": 1024,
+
+  "prewarm_slots": 10,
+  "arena_version": 1,
+
+  "success": "panlingre:instances/shihuang/success",
+  "failure": "plre:instances/shihuang/failure"
+}
