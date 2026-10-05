@@ -233,21 +233,7 @@ public final class ClientPayloadHandlers {
         }
 
         private static void handleHuoQiuExplosion(HuoQiuExplosionParticles payload, IPayloadContext context) {
-            context.enqueueWork(() -> {
-                if (!(context.player().level() instanceof ClientLevel level)) return;
-                Vec3 center = payload.pos();
-                level.addParticle(ParticleTypes.EXPLOSION, true,
-                        center.x, center.y, center.z, 0, 0, 0);
-                for (int i = 0; i < 72; i++) {
-                    double angle = Math.PI * 2.0 * i / 72;
-                    double directionX = Math.cos(angle);
-                    double directionZ = Math.sin(angle);
-                    level.addParticle(ParticleTypes.FLAME, true,
-                            center.x + directionX * 0.75, center.y + 0.1,
-                            center.z + directionZ * 0.75,
-                            directionX * 0.36, 0.015, directionZ * 0.36);
-                }
-            });
+            HuoQiuExplosionParticles.handle(payload, context);
         }
 
         private static void handleFakeSnow(FakeSnowPayload payload, IPayloadContext context) {

@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.entity;
 import icu.icuqalt10.panlingre.init.ModEntities;
 import icu.icuqalt10.panlingre.network.particle.HuoQiuExplosionParticles;
 import icu.icuqalt10.panlingre.util.SkillHelper;
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -105,6 +106,7 @@ public class HuoQiuFuEntity extends ThrowableItemProjectile {
 
     @Override
     protected void onHit(HitResult result) {
+        this.setPos(result.getLocation());
         super.onHit(result);
         if (this.level() instanceof ServerLevel serverLevel) {
             this.explode(serverLevel);
@@ -114,7 +116,8 @@ public class HuoQiuFuEntity extends ThrowableItemProjectile {
 
     @Override
     protected boolean canHitEntity(Entity target) {
-        if (!super.canHitEntity(target) || !(target instanceof LivingEntity livingTarget)) {
+        LivingEntity livingTarget = MultipartEntity.livingRoot(target);
+        if (!super.canHitEntity(target) || livingTarget == null) {
             return false;
         }
         Entity owner = this.getOwner();
@@ -127,18 +130,14 @@ public class HuoQiuFuEntity extends ThrowableItemProjectile {
         Entity owner = this.getOwner();
         double radiusSqr = EXPLOSION_RADIUS * EXPLOSION_RADIUS;
 
-        level.getEntitiesOfClass(
-                        LivingEntity.class,
-                        this.getBoundingBox().inflate(EXPLOSION_RADIUS),
-                        target -> target.distanceToSqr(this) <= radiusSqr
-                                && (owner instanceof LivingEntity livingOwner
-                                ? SkillHelper.combatTargetFilter(livingOwner).test(target)
-                                : !this.isAlliedTo(target))
-                )
-                .forEach(target -> target.hurt(
-                        this.damageSources().explosion(this, owner),
-                        this.getDamage()
-                ));
+        for (LivingEntity target : MultipartEntity.collectTargets(level, getBoundingBox().inflate(EXPLOSION_RADIUS),
+                owner instanceof LivingEntity livingOwner ? livingOwner : null)) {
+            if (!(owner instanceof LivingEntity livingOwner
+                    ? SkillHelper.combatTargetFilter(livingOwner).test(target) : !isAlliedTo(target))) continue;
+            var contact = SkillTargeting.nearest(target, position());
+            if (contact != null && contact.point().distanceToSqr(position()) <= radiusSqr)
+                contact.hurt(damageSources().explosion(this, owner), getDamage());
+        }
 
         HuoQiuExplosionParticles particles = new HuoQiuExplosionParticles(this.position());
         level.players().stream()

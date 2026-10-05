@@ -1,5 +1,7 @@
 package icu.icuqalt10.panlingre.entity;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
+
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -75,11 +77,13 @@ public class FeiXianJianZhenEntity extends Entity implements GeoEntity {
 
             if (owner == null || target.is(owner)) continue;
 
-            target.hurt(this.damageSources().playerAttack((Player) owner), damageValue);
+            var contact = SkillTargeting.inArea(target, position(), area);
+            if (contact == null) continue;
+            contact.hurt(this.damageSources().playerAttack((Player) owner), damageValue);
 
             if (this.level() instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(ParticleTypes.ENCHANTED_HIT,
-                        target.getX(), target.getY(0.5D), target.getZ(),
+                        contact.point().x, contact.point().y, contact.point().z,
                         5, 0.2D, 0.2D, 0.2D, 0.1D);
             }
         }

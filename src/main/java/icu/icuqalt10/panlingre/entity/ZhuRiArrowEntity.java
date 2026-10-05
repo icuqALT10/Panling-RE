@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.entity;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import icu.icuqalt10.panlingre.init.ModEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -10,7 +11,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
@@ -38,14 +42,14 @@ public class ZhuRiArrowEntity extends Entity {
 
     private int flightTicks;
     private int decayTicks;
-    private LivingEntity cachedTarget;
+    private Entity cachedTarget;
     private float previousProgress;
     private float previousDecay;
 
     public ZhuRiArrowEntity(EntityType<? extends ZhuRiArrowEntity> t, Level l) { super(t, l); }
 
     public ZhuRiArrowEntity(Level level, Player owner, Vec3 p0, Vec3 p1, Vec3 p2, Vec3 p3,
-                            double damage, LivingEntity targetEntity) {
+                            double damage, Entity targetEntity) {
         super(ModEntities.ZHU_RI_ARROW.get(), level);
         entityData.set(OWN, Optional.of(owner.getUUID()));
         s(X0,Y0,Z0,p0); s(X1,Y1,Z1,p1); s(X2,Y2,Z2,p2); s(X3,Y3,Z3,p3);
@@ -91,21 +95,36 @@ public class ZhuRiArrowEntity extends Entity {
         previousDecay = decay();
         this.xOld = getX(); this.yOld = getY(); this.zOld = getZ();
         if (!decaying()) {
+            Entity owner = owner();
+            if (!level().isClientSide && JinLiRenEntity.isValidAttackTarget(owner, cachedTarget)) {
+                Vec3 next = SkillTargeting.closestPoint(cachedTarget, position());
+                s(X2,Y2,Z2,p2().add(next.subtract(p3())));
+                s(X3,Y3,Z3,next);
+            }
             float t = Math.min(1f, ++flightTicks / (float)entityData.get(FLIGHT_DURATION));
+            if (!level().isClientSide) {
+                Vec3 from = position();
+                for (int step = 1; step <= 4; step++) {
+                    float end = previousProgress + (t - previousProgress) * step / 4;
+                    Vec3 to = cubicBezier(end, p0(), p1(), p2(), p3());
+                    HitResult contact = SkillTargeting.projectileHit(this, from, to,
+                            target -> JinLiRenEntity.isValidAttackTarget(owner, target));
+                    if (contact.getType() != HitResult.Type.MISS) {
+                        double length = from.distanceTo(to);
+                        float fraction = length < 1E-8 ? 0 : (float)(from.distanceTo(contact.getLocation()) / length);
+                        entityData.set(PROG, previousProgress + (t - previousProgress) * (step - 1 + fraction) / 4);
+                        setPos(contact.getLocation());
+                        hit(contact instanceof EntityHitResult entityHit ? entityHit : null);
+                        return;
+                    }
+                    from = to;
+                }
+            }
             entityData.set(PROG, t);
             Vec3 p = cubicBezier(t, p0(), p1(), p2(), p3());
             setPos(p.x, p.y, p.z);
 
-            if (!level().isClientSide) {
-                if (!level().getBlockState(blockPosition()).getCollisionShape(level(), blockPosition()).isEmpty()) {
-                    hit(); return;
-                }
-                if (cachedTarget != null && cachedTarget.isAlive() && t > 0.3f
-                        && position().distanceTo(cachedTarget.getEyePosition()) < 2.5) {
-                    hit(); return;
-                }
-                if (t >= 1f) hit();
-            }
+            if (!level().isClientSide && t >= 1f) hit(null);
         } else if (!level().isClientSide) {
             float d = Math.min(1f, ++decayTicks / (float)entityData.get(DECAY_DURATION));
             entityData.set(DEC, d);
@@ -113,26 +132,31 @@ public class ZhuRiArrowEntity extends Entity {
         }
     }
 
-    private void hit() {
+    private Entity owner() {
+        return entityData.get(OWN).map(uuid -> level().getPlayerByUUID(uuid)).orElse(null);
+    }
+
+    private void hit(EntityHitResult result) {
         if (decaying()) return;
         if (!level().isClientSide) {
             float dmg = entityData.get(DMG);
-            Entity owner = entityData.get(OWN)
-                    .flatMap(uuid -> java.util.Optional.ofNullable(level().getPlayerByUUID(uuid)))
-                    .orElse(null);
-            if (cachedTarget != null && cachedTarget.isAlive()
-                    && position().distanceTo(cachedTarget.getEyePosition()) < 3.5) {
-                cachedTarget.hurt(damageSources().thrown(this, owner), dmg);
-                cachedTarget.invulnerableTime = 10;
+            Entity owner = owner();
+            if (result != null) {
+                var contact = new SkillTargeting.Target(MultipartEntity.livingRoot(result.getEntity()),
+                        result.getEntity(), result.getLocation());
+                if (contact.hurt(damageSources().thrown(this, owner), dmg)) contact.root().invulnerableTime = 10;
             } else {
-                AABB area = new AABB(p3(), p3()).inflate(2.5);
+                AABB area = new AABB(position(), position()).inflate(2.5);
                 // Multipart children are plain Entity instances, so a LivingEntity query never
                 // returns them; resolve child hitboxes to their living root instead.
                 for (LivingEntity e : MultipartEntity.collectTargets(level(), area,
                         owner instanceof LivingEntity living ? living : null)) {
-                    if (e == owner || !e.isAttackable()) continue;
-                    e.hurt(damageSources().thrown(this, owner), dmg);
-                    e.invulnerableTime = 10;
+                    if (!JinLiRenEntity.isValidAttackTarget(owner, e)) continue;
+                    var contact = SkillTargeting.nearest(e, position());
+                    if (contact == null || contact.point().distanceToSqr(position()) > 2.5 * 2.5) continue;
+                    if (level().clip(new ClipContext(position(), contact.point(), ClipContext.Block.COLLIDER,
+                            ClipContext.Fluid.NONE, this)).getType() != HitResult.Type.MISS) continue;
+                    if (contact.hurt(damageSources().thrown(this, owner), dmg)) e.invulnerableTime = 10;
                 }
             }
         }

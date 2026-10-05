@@ -19,9 +19,8 @@ import net.neoforged.neoforge.entity.PartEntity;
  * A parent-owned interaction handle, with no independent health, tick or spawn packet.
  *
  * <p>The entity only exists so vanilla can report "the player is looking at this
- * dragon" and so projectiles have something to collide with. Melee hit resolution is
- * deliberately decided on the server by {@link GraveDragonEntity#pickPartAlongViewRay},
- * not by whichever part the client happened to name.
+ * dragon" and so projectiles have something to collide with. The server validates
+ * reach for the client's selected part through {@link GraveDragonEntity#resolveMeleeStrike}.
  */
 public final class GraveDragonPartEntity extends PartEntity<GraveDragonEntity>
         implements MultipartEntity.MultipartPart, MultipartEntity.OrientedPart {
@@ -77,12 +76,6 @@ public final class GraveDragonPartEntity extends PartEntity<GraveDragonEntity>
             // Melee: one call into the dragon's resolver, one reach gate, one verdict. This
             // method contributes no policy of its own. Damage reporting happens centrally in
             // the dragon's hurtSelectedPart, so every attack type is covered by one path.
-            if (GraveDragonDamageDebug.enabled()) {
-                GraveDragonDamageDebug.log("part.hurt named=" + partIndex
-                        + " (" + GraveDragonEntity.PART_LABELS[partIndex] + ")"
-                        + " local=" + (player.level().isClientSide ? "client" : "server")
-                        + " side=" + (level().isClientSide ? "client" : "server"));
-            }
             int struck = getParent().resolveMeleeStrike(player, partIndex);
             if (struck < 0) return false;
             return getParent().hurtPart(struck, source, amount);

@@ -38,7 +38,11 @@ public record LookTipRequestPayload(
     );
 
     public TargetType getType() {
-        return TargetType.values()[typeOrdinal];
+        return switch (typeOrdinal) {
+            case 0 -> TargetType.ENTITY;
+            case 1 -> TargetType.BLOCK;
+            default -> TargetType.NONE;
+        };
     }
 
     public static LookTipRequestPayload create(TargetType type, UUID entityUuid, BlockPos blockPos) {

@@ -452,6 +452,14 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
         this.setActionState(attacking ? ActionState.ATTACKING : ActionState.IDLE_OR_WALK);
     }
 
+    @Override
+    public void kill() {
+        super.kill();
+        if (!this.level().isClientSide && this.isDeadOrDying() && !this.isRemoved()) {
+            this.remove(RemovalReason.KILLED);
+        }
+    }
+
     // ==== 受击 ====
     @Override
     public boolean hurt(DamageSource source, float amount) {
@@ -497,6 +505,11 @@ public class PanGuEntity extends Monster implements GeoEntity, PanLingEntities {
 
     @Override
     public void die(DamageSource source) {
+        if (source.is(DamageTypes.GENERIC_KILL)) {
+            super.die(source);
+            return;
+        }
+
         //技能判定
         if (!this.level().isClientSide()) {
             //一阶段判定

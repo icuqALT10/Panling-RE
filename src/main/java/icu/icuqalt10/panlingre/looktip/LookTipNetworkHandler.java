@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -25,21 +26,24 @@ public class LookTipNetworkHandler {
 
         ServerLevel level = (ServerLevel) serverPlayer.level();
         Optional<Component> result = Optional.empty();
+        double rangeSquared = serverPlayer.blockInteractionRange() * serverPlayer.blockInteractionRange();
 
         try {
             if (payload.getType() == LookTipRequestPayload.TargetType.ENTITY) {
                 UUID entityUuid = payload.entityUuid();
                 Entity entity = level.getEntity(entityUuid);
 
-                if (entity != null) {
+                if (entity != null && entity.getBoundingBox().distanceToSqr(serverPlayer.getEyePosition()) <= rangeSquared) {
                     result = matchEntity(entity);
                 }
             } else if (payload.getType() == LookTipRequestPayload.TargetType.BLOCK) {
                 BlockPos pos = payload.blockPos();
-                BlockState blockState = level.getBlockState(pos);
-                BlockEntity blockEntity = level.getBlockEntity(pos);
-
-                result = matchBlock(blockState, blockEntity);
+                if (level.isInWorldBounds(pos) && level.hasChunkAt(pos)
+                        && new AABB(pos).distanceToSqr(serverPlayer.getEyePosition()) <= rangeSquared) {
+                    BlockState blockState = level.getBlockState(pos);
+                    BlockEntity blockEntity = level.getBlockEntity(pos);
+                    result = matchBlock(blockState, pos, blockEntity);
+                }
             }
         } catch (Exception e) {
             PanlingRE.LOGGER.error("Error matching look tip", e);
@@ -67,12 +71,12 @@ public class LookTipNetworkHandler {
         return Optional.empty();
     }
 
-    private static Optional<Component> matchBlock(BlockState blockState, BlockEntity blockEntity) {
+    private static Optional<Component> matchBlock(BlockState blockState, BlockPos blockPos, BlockEntity blockEntity) {
         Map<ResourceLocation, LookTipData> lookTips = LookTipLoader.getLookTips();
 
         for (LookTipData data : lookTips.values()) {
             for (LookTipData.EntityCondition condition : data.entries()) {
-                if (LookTipMatcher.matchesBlock(blockState, blockEntity, condition)) {
+                if (LookTipMatcher.matchesBlock(blockState, blockPos, blockEntity, condition)) {
                     return Optional.of(data.title());
                 }
             }

@@ -1,7 +1,7 @@
 package icu.icuqalt10.panlingre.client.renderer.boss.ShiHuang;
 
 import icu.icuqalt10.panlingre.client.models.boss.ShiHuang.GraveDragonModel;
-import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.culling.Frustum;

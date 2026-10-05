@@ -1,5 +1,7 @@
 package icu.icuqalt10.panlingre.item.warrior;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
+
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
@@ -88,7 +90,7 @@ public class kai_shan_dao extends Item implements skill_trigger {
                 float attack_damage = (float) (player.getAttributeValue(Attributes.ATTACK_DAMAGE));
 
                 for (LivingEntity entity : entities) {
-                    entity.hurt(player.damageSources().playerAttack(player), attack_damage);
+                    SkillTargeting.hurtInArea(entity, player.position(), area, player.damageSources().playerAttack(player), attack_damage);
                 }
             //音效
             level.playSound(null, player.getX(), player.getY(), player.getZ(),

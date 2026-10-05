@@ -3,10 +3,10 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "panlingre:item/suo_hun_lu/shl0",
-		"1": "panlingre:item/suo_hun_lu/shl1",
-		"2": "panlingre:item/suo_hun_lu/fire4",
-		"particle": "panlingre:item/suo_hun_lu/fire4"
+		"0": "panlingre:item/ldl/suo_hun_lu/shl0",
+		"1": "panlingre:item/ldl/suo_hun_lu/shl1",
+		"2": "panlingre:item/ldl/suo_hun_lu/fire4",
+		"particle": "panlingre:item/ldl/suo_hun_lu/fire4"
 	},
 	"elements": [
 		{

@@ -2,7 +2,7 @@ package icu.icuqalt10.panlingre.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonEntity;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;

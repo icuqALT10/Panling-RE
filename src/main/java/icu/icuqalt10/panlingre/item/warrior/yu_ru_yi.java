@@ -1,5 +1,7 @@
 package icu.icuqalt10.panlingre.item.warrior;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
+
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
@@ -127,7 +129,7 @@ public class yu_ru_yi extends Item implements skill_trigger {
 
             for (LivingEntity target : targets) {
                 target.addEffect(new MobEffectInstance(ModEffects.po_jia, 200, 3));
-                target.hurt(level.damageSources().playerAttack(player), finalDamage);
+                SkillTargeting.hurtInArea(target, targetPos, damageArea, level.damageSources().playerAttack(player), finalDamage);
             }
 
             // 4. 局部视觉效果：仅发送给半径16格内的玩家

@@ -1,6 +1,6 @@
 package icu.icuqalt10.panlingre.mixin;
 
-import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonPartEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonPartEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;

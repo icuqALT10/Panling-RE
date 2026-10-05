@@ -1,6 +1,8 @@
 package icu.icuqalt10.panlingre.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +31,7 @@ public class FireTrailTracker {
     }
 
     // 仅允许服务端线程访问；静态字段在集成服务器的逻辑两端之间并不隔离。
-    private static final Map<BlockPos, TrailData> ACTIVE_TRAILS = new HashMap<>();
+    private static final Map<GlobalPos, TrailData> ACTIVE_TRAILS = new HashMap<>();
 
     /**
      * 添加一个火焰轨迹位置
@@ -37,8 +39,9 @@ public class FireTrailTracker {
      * @param originalState 原始方块状态（可为 null）
      * @param ticks 持续时间（20 ticks = 1秒）
      */
-    public static void addTrail(BlockPos pos, BlockState originalState, int ticks) {
-        ACTIVE_TRAILS.put(pos, new TrailData(pos, originalState, ticks));
+    public static void addTrail(Level level, BlockPos pos, BlockState originalState, int ticks) {
+        BlockPos immutablePos = pos.immutable();
+        ACTIVE_TRAILS.put(GlobalPos.of(level.dimension(), immutablePos), new TrailData(immutablePos, originalState, ticks));
     }
 
     /**
@@ -47,9 +50,9 @@ public class FireTrailTracker {
     public static void tick() {
         if (ACTIVE_TRAILS.isEmpty()) return;
 
-        Iterator<Map.Entry<BlockPos, TrailData>> iterator = ACTIVE_TRAILS.entrySet().iterator();
+        Iterator<Map.Entry<GlobalPos, TrailData>> iterator = ACTIVE_TRAILS.entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry<BlockPos, TrailData> entry = iterator.next();
+            Map.Entry<GlobalPos, TrailData> entry = iterator.next();
             TrailData trail = entry.getValue();
             trail.remainingTicks--;
             if (trail.remainingTicks <= 0) {
@@ -63,8 +66,8 @@ public class FireTrailTracker {
      * @param pos 要检查的方块位置
      * @return 如果该位置在龙卷风经过的轨迹中返回 true
      */
-    public static boolean isPositionInTrail(BlockPos pos) {
-        return ACTIVE_TRAILS.containsKey(pos);
+    public static boolean isPositionInTrail(Level level, BlockPos pos) {
+        return ACTIVE_TRAILS.containsKey(GlobalPos.of(level.dimension(), pos));
     }
 
     /**
@@ -76,12 +79,12 @@ public class FireTrailTracker {
         BlockPos entityPos = entity.blockPosition();
 
         // 检查玩家脚下的位置
-        if (isPositionInTrail(entityPos)) {
+        if (isPositionInTrail(entity.level(), entityPos)) {
             return true;
         }
 
         // 检查玩家脚下一格的位置
-        if (isPositionInTrail(entityPos.below())) {
+        if (isPositionInTrail(entity.level(), entityPos.below())) {
             return true;
         }
 
@@ -89,7 +92,7 @@ public class FireTrailTracker {
         BlockPos[] checkPositions = getBlockPos(entity);
 
         for (BlockPos pos : checkPositions) {
-            if (isPositionInTrail(pos)) {
+            if (isPositionInTrail(entity.level(), pos)) {
                 return true;
             }
         }
@@ -119,15 +122,15 @@ public class FireTrailTracker {
      * @param pos 要检查的方块位置
      * @return 剩余 tick 数，如果不在轨迹中返回 0
      */
-    public static int getTrailRemainingTicks(BlockPos pos) {
-        TrailData trail = ACTIVE_TRAILS.get(pos);
+    public static int getTrailRemainingTicks(Level level, BlockPos pos) {
+        TrailData trail = ACTIVE_TRAILS.get(GlobalPos.of(level.dimension(), pos));
         return trail != null ? trail.remainingTicks : 0;
     }
 
     /**
      * 获取所有活跃的轨迹数据（供渲染器使用）
      */
-    public static Map<BlockPos, TrailData> getActiveTrails() {
+    public static Map<GlobalPos, TrailData> getActiveTrails() {
         return ACTIVE_TRAILS;
     }
 

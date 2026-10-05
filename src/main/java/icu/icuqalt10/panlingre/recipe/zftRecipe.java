@@ -48,13 +48,13 @@ public record zftRecipe(List<SlotIngredient> slotIngredients, ItemStack result) 
 
     @Override
     public boolean matches(RecipeInput input, Level level) {
-        if (level.isClientSide) return false;
+        if (level.isClientSide || slotIngredients.isEmpty() || input.size() < 7) return false;
 
         boolean[] occupiedSlots = new boolean[7];
 
         for (SlotIngredient si : slotIngredients) {
             int targetSlot = si.slot();
-            if (targetSlot < 0 || targetSlot >= 7) continue;
+            if (targetSlot < 0 || targetSlot >= 7 || occupiedSlots[targetSlot]) return false;
 
             ItemStack stackInSlot = input.getItem(targetSlot);
 

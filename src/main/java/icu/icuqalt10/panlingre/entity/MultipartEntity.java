@@ -11,8 +11,9 @@ import java.util.*;
 
 /** Base class for bosses with parent-owned interaction parts. */
 public abstract class MultipartEntity extends Monster {
+    private int receivingDamagePart = -1;
     private static final Set<MultipartEntity> LIVE_ROOTS =
-            Collections.newSetFromMap(new WeakHashMap<>());
+            Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
 
     protected MultipartEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
@@ -66,12 +67,40 @@ public abstract class MultipartEntity extends Monster {
     protected float damageMultiplierForPart(int partIndex) { return 1.0F; }
 
     protected boolean hurtSelectedPart(int partIndex, net.minecraft.world.damagesource.DamageSource source, float amount) {
-        return super.hurt(source, amount * damageMultiplierForPart(partIndex));
+        int previous = receivingDamagePart;
+        receivingDamagePart = partIndex;
+        try {
+            return super.hurt(source, amount * damageMultiplierForPart(partIndex));
+        } finally {
+            receivingDamagePart = previous;
+        }
+    }
+
+    /** Damage event handlers must use the hit body part, not the locomotion anchor. */
+    public Entity receivingDamagePart() {
+        Entity[] parts = multipartParts();
+        return receivingDamagePart >= 0 && receivingDamagePart < parts.length ? parts[receivingDamagePart] : this;
     }
 
     public static MultipartEntity rootOf(Entity entity) {
         if (entity instanceof MultipartPart part && part.getMultipartRoot() instanceof MultipartEntity root) return root;
         return entity instanceof MultipartEntity root ? root : null;
+    }
+
+    public static LivingEntity livingRoot(Entity entity) {
+        if (entity instanceof MultipartPart part) entity = part.getMultipartRoot();
+        else if (entity instanceof net.neoforged.neoforge.entity.PartEntity<?> part) entity = part.getParent();
+        return entity instanceof LivingEntity living ? living : null;
+    }
+
+    public static Entity[] targetParts(LivingEntity root) {
+        Entity[] parts = root instanceof MultipartEntity multipart ? multipart.multipartParts() : root.getParts();
+        return parts == null || parts.length == 0 ? new Entity[]{root} : parts;
+    }
+
+    /** Spell selectors already chose a body part; do not reinterpret them as a melee click. */
+    public boolean hurtPart(int index, net.minecraft.world.damagesource.DamageSource source, float amount) {
+        return hurtSelectedPart(index, source, amount);
     }
 
     public interface MultipartPart {
@@ -105,38 +134,45 @@ public abstract class MultipartEntity extends Monster {
 
     public static List<LivingEntity> collectTargets(Level level, AABB area, LivingEntity source) {
         Map<UUID, LivingEntity> result = new LinkedHashMap<>();
-        // The logical root deliberately has a tiny box. Query a generous
-        // neighbourhood first, then keep only roots whose real part boxes
-        // intersect the requested area. This avoids making the root itself a
-        // giant collision box while still allowing skill area scans to find it.
-        AABB search = area.inflate(128.0D);
-        for (Entity e : level.getEntities(source, search)) {
-            Entity root = e instanceof MultipartPart p ? p.getMultipartRoot() : e;
-            if (!(root instanceof LivingEntity living) || living == source || !living.isAlive()) continue;
+        // 普通实体只查询技能区域；主体在区域外的多部位生物由下方专门检查。
+        for (Entity e : level.getEntities(source, area)) {
+            LivingEntity root = livingRoot(e);
+            if (root == null || root == source || !root.isAlive()) continue;
+            LivingEntity living = root;
             if (root instanceof MultipartEntity multipart) {
                 if (!multipart.intersectsMultipartArea(area)) continue;
             } else if (!e.getBoundingBox().intersects(area)) {
-                // The enlarged query is only an index lookup. Ordinary
-                // entities must still obey the caller's exact area.
                 continue;
             }
             result.putIfAbsent(living.getUUID(), living);
+        }
+        // Native multipart bosses (including the Ender Dragon) expose non-living children too.
+        for (var part : level.getPartEntities()) {
+            LivingEntity root = livingRoot(part);
+            if (root != null && root != source && root.isAlive() && !part.isRemoved()
+                    && (part instanceof OrientedPart oriented
+                            ? oriented.getOrientedBox().intersects(area)
+                            : part.getBoundingBox().intersects(area)))
+                result.putIfAbsent(root.getUUID(), root);
         }
         // A root can be outside the normal entity query because its logical
         // box is intentionally tiny; explicitly inspect nearby multipart roots.
         // Native parts are not LivingEntity instances, so typed area queries need
         // to resolve their OBBs to the root explicitly. Ignore roots not yet spawned.
-        for (MultipartEntity multipart : LIVE_ROOTS) {
-            if (multipart.level() == level && multipart.isAddedToLevel() && multipart != source && multipart.isAlive()
-                    && multipart.intersectsMultipartArea(area))
-                result.putIfAbsent(multipart.getUUID(), multipart);
+        // 集成服务器的客户端和服务端共享该集合，迭代期间也需要持有集合锁。
+        synchronized (LIVE_ROOTS) {
+            for (MultipartEntity multipart : LIVE_ROOTS) {
+                if (multipart.level() == level && multipart.isAddedToLevel() && multipart != source && multipart.isAlive()
+                        && multipart.intersectsMultipartArea(area))
+                    result.putIfAbsent(multipart.getUUID(), multipart);
+            }
         }
         return new ArrayList<>(result.values());
     }
 
     protected boolean intersectsMultipartArea(AABB area) {
         for (Entity part : multipartParts()) {
-            if (part != null && (part instanceof OrientedPart oriented
+            if (part != null && !part.isRemoved() && (part instanceof OrientedPart oriented
                     ? oriented.getOrientedBox().intersects(area)
                     : part.getBoundingBox().intersects(area))) return true;
         }

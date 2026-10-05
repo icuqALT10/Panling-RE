@@ -169,6 +169,11 @@ public final class InstanceManager {
         OWNED_ENTITIES.remove(entity.getUUID());
     }
 
+    public static InstanceSession sessionFor(LivingEntity entity) {
+        InstanceSession session = OWNED_ENTITIES.get(entity.getUUID());
+        return session != null && !session.isEnding() ? session : null;
+    }
+
     public static void entityDied(LivingEntity entity) {
         InstanceSession session = OWNED_ENTITIES.get(entity.getUUID());
         if (session != null && !session.isEnding()) session.controller().onEntityDeath(session, entity);
@@ -241,6 +246,8 @@ public final class InstanceManager {
         }
         boolean placed = template.placeInWorld(level, origin, origin, new StructurePlaceSettings(), level.random, 2);
         if (placed) {
+            if (runtime.definition.controller().equals(ResourceLocation.fromNamespaceAndPath("panlingre", "shihuang")))
+                icu.icuqalt10.panlingre.instance.shihuang.ShiHuangGates.prepare(level,origin);
             runtime.slots[request.slot] = SlotState.READY;
             savedData.setPreparedVersion(request.id.toString(), request.slot, runtime.definition.arenaVersion());
             PanlingRE.LOGGER.info("Prepared instance {} slot {} at {}", request.id, request.slot, origin);

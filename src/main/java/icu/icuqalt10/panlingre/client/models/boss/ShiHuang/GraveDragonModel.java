@@ -5,15 +5,13 @@ import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonEntit
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.animation.AnimationState;
-import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonPose;
 
 public class GraveDragonModel extends GeoModel<GraveDragonEntity> {
     @Override
     public void setCustomAnimations(GraveDragonEntity dragon, long instanceId, AnimationState<GraveDragonEntity> state) {
         // Apply the very same spline sample and world time as server OBBs. A controller's
         // first-render time is client-local and cannot serve as the collision clock.
-        var frame = GraveDragonPose.sample(dragon.animation(),
-                dragon.animationSeconds(state.getPartialTick()), dragon.loopingAnimation());
+        var frame = dragon.poseAt(dragon.animationSeconds(state.getPartialTick()));
         // 脊柱链式跟随：服务端与客户端各自推进同一条链（输入全是同步量），这里用**同一个反解**
         // 套上去，并按 partialTick 在上一 tick 与这一 tick 之间插值——渲染与碰撞箱因此仍然一致
         // （链没起来时 withSpine 原样返回）。
@@ -25,10 +23,9 @@ public class GraveDragonModel extends GeoModel<GraveDragonEntity> {
                 bone.updateScale((float)pose.scale().x, (float)pose.scale().y, (float)pose.scale().z);
             });
         }
-        // The visible model interpolates smoothly. Collision boxes deliberately do NOT follow
-        // this frame: they come from the quantised pose both sides compute identically and are
-        // refreshed by the entity tick. Overwriting them here with an interpolated render frame
-        // made the client's crosshair disagree with the server's validation.
+        // Client hitboxes use this same frame, including root movement and interpolated pitch.
+        // The server accepts the selected part id after its own reach validation.
+        dragon.updateClientPartPose(state.getPartialTick(), frame);
     }
 
     @Override

@@ -39,12 +39,12 @@ public class FreezeEffect extends MobEffect {
     public void onEffectStarted(LivingEntity entity, int amplifier) {
         if (entity.level().isClientSide) return;
 
-        if (entity instanceof Mob mob) {
-            mob.setNoAi(true);
-        }
-
         if (entity instanceof PanLingEntities panLingEntity) {
             panLingEntity.whenFroozen();
+        }
+
+        if (entity instanceof Mob mob) {
+            mob.setNoAi(true);
         }
     }
 

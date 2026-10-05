@@ -3,15 +3,15 @@ package icu.icuqalt10.panlingre.init;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.entity.*;
 import icu.icuqalt10.panlingre.entity.boss.PanGuEntity;
-import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonFireballEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonRockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-
-import java.util.function.Supplier;
 
 public class ModEntities {
     // 1. 创建注册表容器
@@ -56,6 +56,12 @@ public class ModEntities {
                     .build("xing_hai"));
 
     //生物
+    public static final DeferredHolder<EntityType<?>, EntityType<TombDisplayEntity>> TOMB_DISPLAY =
+            ENTITIES.register("tomb_display", () -> EntityType.Builder.<TombDisplayEntity>of(TombDisplayEntity::new, MobCategory.MISC)
+                    .sized(.1F, .1F).clientTrackingRange(16).updateInterval(20).build("tomb_display"));
+    public static final DeferredHolder<EntityType<?>, EntityType<TombTrapArrowEntity>> TOMB_TRAP_ARROW =
+            ENTITIES.register("tomb_trap_arrow", () -> EntityType.Builder.<TombTrapArrowEntity>of(TombTrapArrowEntity::new, MobCategory.MISC)
+                    .sized(.5F, .5F).clientTrackingRange(8).updateInterval(1).noSave().build("tomb_trap_arrow"));
     //盘古
     public static final DeferredHolder<EntityType<?>, EntityType<PanGuEntity>> PAN_GU =
             ENTITIES.register("pan_gu", () -> EntityType.Builder.of(PanGuEntity::new, MobCategory.MISC)
@@ -70,6 +76,15 @@ public class ModEntities {
                     .clientTrackingRange(12)
                     .updateInterval(1)
                     .build("grave_dragon"));
+    public static final DeferredHolder<EntityType<?>, EntityType<GraveDragonFireballEntity>> GRAVE_DRAGON_FIREBALL =
+            ENTITIES.register("grave_dragon_fireball", () -> EntityType.Builder.<GraveDragonFireballEntity>of(GraveDragonFireballEntity::new, MobCategory.MISC)
+                    .sized(6.0F, 6.0F).clientTrackingRange(12).updateInterval(1).fireImmune()
+                    .build("grave_dragon_fireball"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<GraveDragonRockEntity>> GRAVE_DRAGON_ROCK =
+            ENTITIES.register("grave_dragon_rock", () -> EntityType.Builder.<GraveDragonRockEntity>of(GraveDragonRockEntity::new, MobCategory.MISC)
+                    .sized(4F, 4F).clientTrackingRange(12).updateInterval(1)
+                    .build("grave_dragon_rock"));
 
 
     public static final DeferredHolder<EntityType<?>, EntityType<ZhuRiArrowEntity>> ZHU_RI_ARROW =

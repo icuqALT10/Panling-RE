@@ -8,11 +8,13 @@ import icu.icuqalt10.panlingre.client.gui.ldlScreen;
 import icu.icuqalt10.panlingre.client.gui.zftScreen;
 import icu.icuqalt10.panlingre.client.layer.FireTornadoWindLayer;
 import icu.icuqalt10.panlingre.client.models.FireTornadoModel;
-import icu.icuqalt10.panlingre.client.models.boss.ShiHuang.GraveDragonModel;
 import icu.icuqalt10.panlingre.client.renderer.*;
 import icu.icuqalt10.panlingre.client.renderer.boss.ShiHuang.GraveDragonRenderer;
 import icu.icuqalt10.panlingre.client.task.TaskGuideOverlay;
 import icu.icuqalt10.panlingre.client.renderer.boss.PanGuRenderer;
+import icu.icuqalt10.panlingre.entity.OrientedBoundingBox;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonPartEntity;
 import icu.icuqalt10.panlingre.init.*;
 import icu.icuqalt10.panlingre.item.fuzhi.FuZhiBagItem;
 import icu.icuqalt10.panlingre.item.common.WeaponCaseItem;
@@ -20,7 +22,6 @@ import icu.icuqalt10.panlingre.looktip.LookTipOverlay;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -35,10 +36,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.entity.Entity;
-import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonEntity;
-import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonPartEntity;
-import icu.icuqalt10.panlingre.entity.OrientedBoundingBox;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -74,13 +71,6 @@ public class ClientModEvents {
                 if (!part.isPickable()) continue;
                 float[] color = colorForPart(part.getPartIndex());
                 drawObb(pose, lines, part.getOrientedBox(), color[0], color[1], color[2]);
-            }
-            // Highlight what the server actually damaged most recently, so a mismatch with
-            // the crosshair is visible instead of silent.
-            int struck = GraveDragonDamageLog.highlightPartFor(dragon);
-            if (struck >= 0 && struck < dragon.getWorldParts().length) {
-                drawObb(pose, lines, dragon.getWorldParts()[struck].getOrientedBox(),
-                        1.0F, 0.1F, 1.0F);
             }
         }
         mc.renderBuffers().bufferSource().endBatch(RenderType.lines());
@@ -152,6 +142,15 @@ public class ClientModEvents {
         event.registerEntityRenderer(ModEntities.PAN_GU.get(), PanGuRenderer::new);
         //始皇
         event.registerEntityRenderer(ModEntities.GRAVE_DRAGON.get(), GraveDragonRenderer::new);
+        event.registerEntityRenderer(ModEntities.GRAVE_DRAGON_FIREBALL.get(), GraveDragonFireballRenderer::new);
+        event.registerEntityRenderer(ModEntities.GRAVE_DRAGON_ROCK.get(), GraveDragonRockRenderer::new);
+        event.registerEntityRenderer(ModEntities.TOMB_DISPLAY.get(), TombDisplayRenderer::new);
+        event.registerEntityRenderer(ModEntities.TOMB_TRAP_ARROW.get(), TombTrapArrowRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void registerTombReloadListener(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(TombDisplayRenderer.RELOAD);
     }
 
     @SubscribeEvent
@@ -267,16 +266,14 @@ public class ClientModEvents {
                             && entity.getUseItem() == stack ? 1.0F : 0.0F
             );
 
-            //逐日 powered状态下拉弓动画10倍速
+            //逐日拉弓动画
             ItemProperties.register(
                     ModItems.zhu_ri.get(),
                     ResourceLocation.withDefaultNamespace("pull"),
                     (stack, level, entity, seed) -> {
                         if (entity == null) return 0.0F;
                         if (entity.getUseItem() != stack) return 0.0F;
-                        boolean powered = stack.getOrDefault(ModComponents.IS_POWERED.get(), false);
-                        float divisor = powered ? 10.0F : 20.0F;
-                        return (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / divisor;
+                        return (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / 30.0F;
                     }
             );
 
@@ -492,7 +489,7 @@ public class ClientModEvents {
             effect.remainingTicks--;
             return effect.remainingTicks <= 0;
         });
-        GraveDragonDamageLog.tick();
+        GraveDragonEffects.tick();
     }
 
     @SubscribeEvent

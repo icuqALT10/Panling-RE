@@ -8,6 +8,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +20,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /** The sniper target selected locally by a player's crosshair. */
+@EventBusSubscriber(modid = PanlingRE.MODID)
 public record TianXingTargetPayload(int entityId) implements CustomPacketPayload {
     public static final Type<TianXingTargetPayload> TYPE = new Type<>(
             ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "tian_xing_target"));
@@ -48,6 +53,16 @@ public record TianXingTargetPayload(int entityId) implements CustomPacketPayload
             return null;
         }
         return target;
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        TARGETS.remove(event.getEntity().getUUID());
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        TARGETS.clear();
     }
 
     @Override

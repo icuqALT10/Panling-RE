@@ -1175,5 +1175,14 @@
   "item.panlingre.na_wu_ci_shi.no_byd":"§c未安装超越维度，无法绑定维度网络",
   "item.panlingre.na_wu_ci_shi.no_network":"§c你当前没有可绑定的主维度网络",
   "item.panlingre.na_wu_ci_shi.tooltip.bound":"已绑定网络：#%s",
-  "item.panlingre.na_wu_ci_shi.tooltip.unbound":"未绑定维度网络"
+  "item.panlingre.na_wu_ci_shi.tooltip.unbound":"未绑定维度网络",
+  "instance.panlingre.shihuang.abyss": "§7深渊下的特殊阵法将你送回了起点……",
+  "instance.panlingre.shihuang.path_wrong": "§7路线错误，阵法将你丢了出来……",
+  "instance.panlingre.shihuang.path_timeout": "§7你的速度太慢，阵法关闭后将你丢了出来……",
+  "instance.panlingre.shihuang.seal_on": "封龙结界已开启，持续二十秒。",
+  "instance.panlingre.shihuang.dragon_retreat": "墓龙濒死！十秒内点亮四处信标，开启封龙结界！",
+  "instance.panlingre.shihuang.dragon_absorbed": "墓龙已归入帝棺，始皇获得墓龙之力。",
+  "instance.panlingre.shihuang.dragon_sealed": "墓龙陨落，始皇未获得墓龙之力。",
+  "instance.panlingre.shihuang.emperor_ready": "帝棺已开启……",
+  "instance.panlingre.shihuang.complete": "始皇挑战完成！"
 }

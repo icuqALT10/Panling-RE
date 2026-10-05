@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.entity;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import icu.icuqalt10.panlingre.init.ModEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
@@ -22,6 +24,8 @@ import java.util.Set;
 public class JinLiRenEntity extends AbstractArrow {
     private static final int MAX_LIFETIME_TICKS = 1200;
     private static final EntityDataAccessor<Boolean> CURVED =
+            SynchedEntityData.defineId(JinLiRenEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_DECAYING =
             SynchedEntityData.defineId(JinLiRenEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> X0 = floatData(), Y0 = floatData(), Z0 = floatData();
     private static final EntityDataAccessor<Float> X1 = floatData(), Y1 = floatData(), Z1 = floatData();
@@ -37,7 +41,8 @@ public class JinLiRenEntity extends AbstractArrow {
     private int curveTargetId = -1;
     private int curveAge;
     private int decayAge;
-    private boolean decaying;
+    private JinLiRenEntity damageCarrier;
+    private boolean curveDamageApplied;
     private float previousProgress;
     private float previousDecay;
 
@@ -57,7 +62,7 @@ public class JinLiRenEntity extends AbstractArrow {
     }
 
     public JinLiRenEntity(Level level, LivingEntity owner, double damage,
-                          LivingEntity target, Vec3 p0, Vec3 p1, Vec3 p2, Vec3 p3) {
+                          Entity target, Vec3 p0, Vec3 p1, Vec3 p2, Vec3 p3) {
         this(level, owner, damage);
         this.curveTargetId = target.getId();
         entityData.set(CURVED, true);
@@ -73,7 +78,12 @@ public class JinLiRenEntity extends AbstractArrow {
     /** Uses the exact control-point construction used by Ys2HealingSkill. */
     public static JinLiRenEntity createCurved(Level level, LivingEntity owner,
                                                LivingEntity target, double damage, Vec3 p0) {
-        Vec3 p3 = target.getEyePosition().add(0.0D, -0.2D, 0.0D);
+        SkillTargeting.Target selected = SkillTargeting.nearest(target, p0);
+        return selected == null ? null : createCurved(level, owner, selected.part(), selected.point(), damage, p0);
+    }
+
+    public static JinLiRenEntity createCurved(Level level, LivingEntity owner,
+                                               Entity target, Vec3 p3, double damage, Vec3 p0) {
         Vec3 towardTarget = p3.subtract(p0);
         double distance = towardTarget.length();
         if (distance < 0.01D) return null;
@@ -108,6 +118,7 @@ public class JinLiRenEntity extends AbstractArrow {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(CURVED, false);
+        builder.define(IS_DECAYING, false);
         builder.define(X0, 0.0F); builder.define(Y0, 0.0F); builder.define(Z0, 0.0F);
         builder.define(X1, 0.0F); builder.define(Y1, 0.0F); builder.define(Z1, 0.0F);
         builder.define(X2, 0.0F); builder.define(Y2, 0.0F); builder.define(Z2, 0.0F);
@@ -132,16 +143,44 @@ public class JinLiRenEntity extends AbstractArrow {
             this.zOld = getZ();
             this.yRotO = getYRot();
             this.xRotO = getXRot();
-            if (decaying || entityData.get(DECAY) > 0.0F) {
-                decaying = true;
+            if (decaying()) {
                 float decay = Math.min(1.0F, ++decayAge / 10.0F);
                 entityData.set(DECAY, decay);
-                setPos(p3());
                 if (!level().isClientSide && decay >= 1.0F) discard();
                 return;
             }
+            Entity owner = getOwner();
+            if (!level().isClientSide) {
+                Entity target = ((net.minecraft.server.level.ServerLevel)level()).getEntityOrPart(curveTargetId);
+                if (isValidAttackTarget(owner, target)) {
+                    Vec3 next = SkillTargeting.closestPoint(target, position());
+                    setPoint(X2, Y2, Z2, p2().add(next.subtract(p3())));
+                    setPoint(X3, Y3, Z3, next);
+                }
+            }
             // Advance on both logical sides, exactly like ZhuRiArrowEntity.
             float t = Math.min(1.0F, ++curveAge / (float) entityData.get(CURVE_DURATION));
+            if (!level().isClientSide) {
+                Vec3 from = position();
+                // Subdivide the curved portion of this tick; checking only its end can skip an OBB.
+                for (int step = 1; step <= 4; step++) {
+                    float end = previousProgress + (t - previousProgress) * step / 4;
+                    Vec3 to = cubicBezier(end, p0(), p1(), p2(), p3());
+                    HitResult hit = SkillTargeting.projectileHit(this, from, to,
+                            target -> isValidAttackTarget(owner, target));
+                    if (hit.getType() != HitResult.Type.MISS) {
+                        double length = from.distanceTo(to);
+                        float fraction = length < 1E-8 ? 0 : (float)(from.distanceTo(hit.getLocation()) / length);
+                        entityData.set(PROGRESS, previousProgress + (t - previousProgress) * (step - 1 + fraction) / 4);
+                        setPos(hit.getLocation());
+                        if (hit instanceof EntityHitResult contact) hurtCurvedTarget(contact, owner);
+                        entityData.set(IS_DECAYING, true);
+                        decayAge = 0;
+                        return;
+                    }
+                    from = to;
+                }
+            }
             entityData.set(PROGRESS, t);
             setPos(cubicBezier(t, p0(), p1(), p2(), p3()));
             Vec3 tangent = cubicTangent(t, p0(), p1(), p2(), p3());
@@ -151,19 +190,7 @@ public class JinLiRenEntity extends AbstractArrow {
                 setXRot((float) Math.toDegrees(Math.asin(direction.y)));
             }
             if (t >= 1.0F) {
-                if (!this.level().isClientSide) {
-                    Entity owner = getOwner();
-                    Entity target = level().getEntity(curveTargetId);
-                    if (owner != null && isValidAttackTarget(owner, target)) {
-                        if (skillDamage > 0.0D) {
-                            target.hurt(damageSources().arrow(this, owner), (float) skillDamage);
-                            if (owner instanceof LivingEntity livingOwner && target instanceof LivingEntity livingTarget) {
-                                livingOwner.setLastHurtMob(livingTarget);
-                            }
-                        }
-                    }
-                }
-                decaying = true;
+                entityData.set(IS_DECAYING, true);
                 decayAge = 0;
                 return;
             }
@@ -175,6 +202,20 @@ public class JinLiRenEntity extends AbstractArrow {
         // vanilla arrow despawn duration while it is still in flight.
         if (!this.level().isClientSide && this.tickCount >= MAX_LIFETIME_TICKS) {
             this.discard();
+        }
+    }
+
+    /** Any contacting blade can settle this target's volley, but the total damage applies once. */
+    public void shareDamageWith(JinLiRenEntity carrier) { damageCarrier = carrier; }
+
+    private void hurtCurvedTarget(EntityHitResult hit, Entity owner) {
+        JinLiRenEntity carrier = damageCarrier == null ? this : damageCarrier;
+        if (carrier.curveDamageApplied || carrier.skillDamage <= 0) return;
+        var root = MultipartEntity.livingRoot(hit.getEntity());
+        var contact = new SkillTargeting.Target(root, hit.getEntity(), hit.getLocation());
+        if (contact.hurt(damageSources().arrow(this, owner), (float)carrier.skillDamage)) {
+            carrier.curveDamageApplied = true;
+            if (owner instanceof LivingEntity livingOwner) livingOwner.setLastHurtMob(root);
         }
     }
 
@@ -200,7 +241,7 @@ public class JinLiRenEntity extends AbstractArrow {
     public float decay(float partialTick) {
         return previousDecay + (decay() - previousDecay) * partialTick;
     }
-    public boolean decaying() { return decaying || decay() > 0.0F; }
+    public boolean decaying() { return entityData.get(IS_DECAYING); }
     public Vec3 p0() { return point(X0, Y0, Z0); }
     public Vec3 p1() { return point(X1, Y1, Z1); }
     public Vec3 p2() { return point(X2, Y2, Z2); }
@@ -244,11 +285,11 @@ public class JinLiRenEntity extends AbstractArrow {
 
     /** The target predicate shared by the blade collision and auto-targeting skills. */
     public static boolean isValidAttackTarget(Entity owner, Entity entity) {
-        if (!(entity instanceof LivingEntity livingTarget)
-                || !livingTarget.isAlive()
+        LivingEntity livingTarget = MultipartEntity.livingRoot(entity);
+        if (livingTarget == null || !livingTarget.isAlive()
                 || !livingTarget.isAttackable()
                 || livingTarget.isInvulnerable()
-                || entity == owner) {
+                || livingTarget == owner) {
             return false;
         }
         if (livingTarget instanceof Player targetPlayer

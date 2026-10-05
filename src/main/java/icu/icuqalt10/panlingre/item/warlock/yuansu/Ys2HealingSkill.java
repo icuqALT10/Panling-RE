@@ -4,6 +4,7 @@ import icu.icuqalt10.panlingre.entity.MultipartEntity;
 import icu.icuqalt10.panlingre.entity.YsMuHealingEntity;
 import icu.icuqalt10.panlingre.network.ItemActivationPayload;
 import icu.icuqalt10.panlingre.util.SkillHelper;
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,7 +17,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -61,17 +64,18 @@ public final class Ys2HealingSkill {
         AABB searchArea = owner.getBoundingBox().inflate(TARGET_RADIUS);
         // Multipart children are plain Entity instances, so a LivingEntity query never
         // sees them; collectTargets resolves part hitboxes back to their living root.
-        List<LivingEntity> targets = MultipartEntity.collectTargets(level, searchArea, owner)
+        List<SkillTargeting.Target> targets = MultipartEntity.collectTargets(level, searchArea, owner)
                 .stream()
-                .filter(SkillHelper.friendlyTargetFilter(owner)
-                        .and(target -> !target.is(owner)
-                                && owner.distanceToSqr(target)
-                                <= TARGET_RADIUS * TARGET_RADIUS))
-                .sorted(SkillHelper.friendlyTargetComparator(owner))
+                .filter(SkillHelper.friendlyTargetFilter(owner))
+                .map(target -> SkillTargeting.nearest(target, owner.position()))
+                .filter(Objects::nonNull)
+                .filter(target -> target.point().distanceToSqr(owner.position()) <= TARGET_RADIUS * TARGET_RADIUS)
+                .sorted(Comparator.comparingInt((SkillTargeting.Target target) -> target.root() instanceof Player ? 0 : 1)
+                        .thenComparingDouble(target -> target.point().distanceToSqr(owner.position())))
                 .limit(MAX_TEAMMATES)
                 .toList();
 
-        for (LivingEntity target : targets) {
+        for (SkillTargeting.Target target : targets) {
             spawnHealingItem(level, owner, target, flyingStack, sound,
                     trailColor, effectValue, targetEffect);
         }
@@ -79,13 +83,14 @@ public final class Ys2HealingSkill {
     }
 
     private static void spawnHealingItem(ServerLevel level, Player owner,
-                                         LivingEntity target, ItemStack stack,
+                                         SkillTargeting.Target target, ItemStack stack,
                                          Holder<SoundEvent> sound,
                                          int trailColor,
                                          float effectValue,
                                          BiConsumer<LivingEntity, Float> targetEffect) {
         Vec3 p0 = owner.getEyePosition().add(owner.getLookAngle().scale(0.8)).add(0.0, -0.5, 0.0);
-        Vec3 p3 = target.getEyePosition().add(0.0, -0.2, 0.0);
+        Vec3 p3 = target.part() == target.root() ? target.root().getEyePosition().add(0.0, -0.2, 0.0)
+                : SkillTargeting.closestPoint(target.part(), p0);
         Vec3 towardTarget = p3.subtract(p0);
         double distance = towardTarget.length();
         if (distance < 0.01) return;
@@ -114,7 +119,7 @@ public final class Ys2HealingSkill {
                 .add(right.scale(horizontalOffset2))
                 .add(0.0, verticalSign * verticalMagnitude * 0.3, 0.0);
         level.addFreshEntity(new YsMuHealingEntity(
-                level, target, stack, sound, trailColor,
+                level, target.root(), stack, sound, trailColor,
                 effectValue, targetEffect, p0, p1, p2, p3));
     }
 }

@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.entity;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.client.FireTrailRenderer;
 import icu.icuqalt10.panlingre.util.SkillHelper;
@@ -130,7 +131,7 @@ public class FireTornadoEntity extends Mob {
                 } else {
                     // 逻辑轨迹只由服务端维护。集成服务器的客户端和服务端运行在不同线程，
                     // 共用 FireTrailTracker 会在服务端遍历时被客户端写入并触发 CME。
-                    FireTrailTracker.addTrail(pos, state, 60);
+                    FireTrailTracker.addTrail(level(), pos, state, 60);
                 }
             }
         }
@@ -204,15 +205,17 @@ public class FireTornadoEntity extends Mob {
                 if (player.isCreative() || player.isSpectator()) continue;
             }
 
+            var selected = SkillTargeting.inArea(entity, position(), tornadoBox);
+            if (selected == null) continue;
             // 击飞（所有生物均适用）
             if (!entity.getType().is(CantKnockAway_TAG)) {
-                Vec3 pushDir = entity.position().subtract(position()).normalize();
+                Vec3 pushDir = selected.point().subtract(position()).normalize();
                 Vec3 push = pushDir.scale(1.5).add(0, 0.5, 0);
                 entity.setDeltaMovement(push);
             }
 
             // 造成伤害
-            entity.hurt(this.damageSources().source(ModDamageTypes.FIRE_TORNADO, this), this.damage);
+            selected.hurt(this.damageSources().source(ModDamageTypes.FIRE_TORNADO, this), this.damage);
             //清除冰冻值
             entity.setTicksFrozen(0);
 
@@ -234,6 +237,7 @@ public class FireTornadoEntity extends Mob {
         compound.putInt("Lifespan", lifespan);
         compound.putInt("Age", age);
         compound.putBoolean("Initialized", initialized);
+        compound.putFloat("Damage", damage);
         if (ownerUuid != null) compound.putUUID("Owner", ownerUuid);
     }
 
@@ -255,6 +259,7 @@ public class FireTornadoEntity extends Mob {
         if (compound.contains("Initialized")) {
             initialized = compound.getBoolean("Initialized");
         }
+        if (compound.contains("Damage", 99)) damage = compound.getFloat("Damage");
         ownerUuid = compound.hasUUID("Owner") ? compound.getUUID("Owner") : null;
     }
 

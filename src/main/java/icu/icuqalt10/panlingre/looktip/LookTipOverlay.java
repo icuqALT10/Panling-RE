@@ -3,15 +3,15 @@ package icu.icuqalt10.panlingre.looktip;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -29,21 +29,42 @@ public class LookTipOverlay implements LayeredDraw.Layer {
     // 缓存上一tick的目标信息
     private UUID lastEntityUuid = null;
     private BlockPos lastBlockPos = null;
-    private ResourceLocation lastBlockId = null;
-    private String lastBlockState = null;
+    private BlockState lastBlockState = null;
+    private ClientLevel lastLevel;
+    private long lastCheckTick = -1;
+    private Map<ResourceLocation, LookTipData> lastTips = Map.of();
 
     @Override
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) {
+            resetTarget();
+            lastLevel = null;
             return;
         }
 
-        checkTarget(mc);
+        Map<ResourceLocation, LookTipData> tips = LookTipLoader.getLookTips();
+        if (lastLevel != mc.level || lastTips != tips) {
+            resetTarget();
+            lastLevel = mc.level;
+            lastTips = tips;
+        }
+        if (lastCheckTick != mc.level.getGameTime()) {
+            lastCheckTick = mc.level.getGameTime();
+            checkTarget(mc);
+        }
 
         if (currentTip != null) {
             renderTip(guiGraphics, currentTip, mc);
         }
+    }
+
+    private void resetTarget() {
+        currentTip = null;
+        lastEntityUuid = null;
+        lastBlockPos = null;
+        lastBlockState = null;
+        lastCheckTick = -1;
     }
 
     private void checkTarget(Minecraft mc) {
@@ -53,7 +74,6 @@ public class LookTipOverlay implements LayeredDraw.Layer {
             if (lastEntityUuid != null || lastBlockPos != null) {
                 lastEntityUuid = null;
                 lastBlockPos = null;
-                lastBlockId = null;
                 lastBlockState = null;
                 doMatch(mc, hitResult);
             }
@@ -68,7 +88,6 @@ public class LookTipOverlay implements LayeredDraw.Layer {
             if (!entityUuid.equals(lastEntityUuid)) {
                 lastEntityUuid = entityUuid;
                 lastBlockPos = null;
-                lastBlockId = null;
                 lastBlockState = null;
                 doMatch(mc, hitResult);
             }
@@ -76,14 +95,10 @@ public class LookTipOverlay implements LayeredDraw.Layer {
             BlockHitResult blockHit = (BlockHitResult) hitResult;
             BlockPos blockPos = blockHit.getBlockPos();
             var blockState = mc.level.getBlockState(blockPos);
-            Block block = blockState.getBlock();
-            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
-            String blockStateStr = blockState.toString();
 
-            if (!blockPos.equals(lastBlockPos) || !blockId.equals(lastBlockId) || !blockStateStr.equals(lastBlockState)) {
+            if (!blockPos.equals(lastBlockPos) || blockState != lastBlockState) {
                 lastBlockPos = blockPos;
-                lastBlockId = blockId;
-                lastBlockState = blockStateStr;
+                lastBlockState = blockState;
                 lastEntityUuid = null;
                 doMatch(mc, hitResult);
             }
@@ -102,6 +117,12 @@ public class LookTipOverlay implements LayeredDraw.Layer {
             return;
         }
 
+        // 远程客户端没有服务端数据包配置，交由服务器匹配当前目标。
+        if (!mc.hasSingleplayerServer()) {
+            requestServerMatch(hitResult);
+            return;
+        }
+
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             EntityHitResult entityHit = (EntityHitResult) hitResult;
             Entity entity = entityHit.getEntity();
@@ -114,11 +135,7 @@ public class LookTipOverlay implements LayeredDraw.Layer {
                         // 客户端条件通过，检查是否需要 nbt
                         if (needsNbt(condition)) {
                             // 发包给服务端验证 nbt
-                            PacketDistributor.sendToServer(LookTipRequestPayload.create(
-                                    LookTipRequestPayload.TargetType.ENTITY,
-                                    entity.getUUID(),
-                                    BlockPos.ZERO
-                            ));
+                            requestServerMatch(hitResult);
                             return;
                         } else {
                             // 不需要 nbt，直接显示
@@ -141,11 +158,7 @@ public class LookTipOverlay implements LayeredDraw.Layer {
                         // 客户端条件通过，检查是否需要 nbt
                         if (needsNbt(condition)) {
                             // 发包给服务端验证 nbt
-                            PacketDistributor.sendToServer(LookTipRequestPayload.create(
-                                    LookTipRequestPayload.TargetType.BLOCK,
-                                    new UUID(0, 0),
-                                    blockPos
-                            ));
+                            requestServerMatch(hitResult);
                             return;
                         } else {
                             // 不需要 nbt，直接显示
@@ -165,8 +178,20 @@ public class LookTipOverlay implements LayeredDraw.Layer {
         return condition.nbt().isPresent() && !condition.nbt().get().isEmpty();
     }
 
+    private void requestServerMatch(HitResult hitResult) {
+        currentTip = null;
+        if (hitResult instanceof EntityHitResult entityHit) {
+            PacketDistributor.sendToServer(LookTipRequestPayload.create(
+                    LookTipRequestPayload.TargetType.ENTITY, entityHit.getEntity().getUUID(), BlockPos.ZERO));
+        } else if (hitResult instanceof BlockHitResult blockHit) {
+            PacketDistributor.sendToServer(LookTipRequestPayload.create(
+                    LookTipRequestPayload.TargetType.BLOCK, new UUID(0, 0), blockHit.getBlockPos()));
+        }
+    }
+
     // 处理服务端响应
     public static void handleResponse(LookTipResponsePayload payload) {
+        if (INSTANCE.lastEntityUuid == null && INSTANCE.lastBlockPos == null) return;
         if (payload.hasResult()) {
             INSTANCE.currentTip = payload.tipText();
         } else {
@@ -213,7 +238,7 @@ public class LookTipOverlay implements LayeredDraw.Layer {
 
         EntityHitResult entityHit = null;
         double closestDistance = blockHit.getType() == HitResult.Type.BLOCK ?
-                eyePos.distanceTo(blockHit.getLocation()) : reachDistance;
+                eyePos.distanceToSqr(blockHit.getLocation()) : reachDistance * reachDistance;
 
         for (Entity entity : mc.level.getEntities(mc.player, mc.player.getBoundingBox().inflate(reachDistance))) {
             if (entity == mc.player) {
@@ -224,7 +249,7 @@ public class LookTipOverlay implements LayeredDraw.Layer {
             var optionalVec = entityBox.clip(eyePos, endPos);
 
             if (optionalVec.isPresent()) {
-                double distance = eyePos.distanceTo(optionalVec.get());
+                double distance = eyePos.distanceToSqr(optionalVec.get());
                 if (distance < closestDistance) {
                     entityHit = new EntityHitResult(entity, optionalVec.get());
                     closestDistance = distance;

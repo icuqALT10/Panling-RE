@@ -6,7 +6,6 @@
     "LivingEntityMixin",
     "OrientedEntityPickMixin",
     "PartInteractionReachMixin",
-    "ServerInteractDebugMixin",
     "PlayerAttackMixin",
     "RangedAttributeMixin",
     "AbstractArrowMixin",

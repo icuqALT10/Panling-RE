@@ -163,11 +163,15 @@ public class ModNetworks {
                 ClientPayloadHandlers::handleShake
         );
 
-        // 墓龙命中播报（聊天栏显示部位、倍率、实际扣血）
         registrar.playToClient(
-                GraveDragonHitPayload.TYPE,
-                GraveDragonHitPayload.STREAM_CODEC,
-                GraveDragonHitPayload::handle
+                GraveDragonActionPayload.TYPE,
+                GraveDragonActionPayload.STREAM_CODEC,
+                GraveDragonActionPayload::handle
+        );
+        registrar.playToClient(
+                GraveDragonFireFieldPayload.TYPE,
+                GraveDragonFireFieldPayload.STREAM_CODEC,
+                GraveDragonFireFieldPayload::handle
         );
 
         // Look Tip 网络包

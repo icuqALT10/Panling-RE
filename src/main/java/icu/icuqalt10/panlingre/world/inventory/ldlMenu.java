@@ -121,7 +121,8 @@ public class ldlMenu extends AbstractContainerMenu {
             itemstack = itemstack1.copy();
 
             if (index == 5) {
-                while (this.slots.get(5).hasItem()) {
+                boolean crafted = false;
+                while (slot.hasItem() && ItemStack.isSameItemSameComponents(slot.getItem(), itemstack)) {
                     ItemStack currentOutput = this.slots.get(5).getItem();
                     ItemStack toCopy = currentOutput.copy();
 
@@ -129,11 +130,13 @@ public class ldlMenu extends AbstractContainerMenu {
                         break;
                     }
 
-                    this.consumeIngredients();
                     slot.onQuickCraft(currentOutput, toCopy);
-
-                    if (currentOutput.getCount() == toCopy.getCount()) break;
+                    slot.onTake(player, currentOutput);
+                    // 和原版工作台一致：背包只能接收部分产物时，将余量掉落给玩家。
+                    player.drop(currentOutput, false);
+                    crafted = true;
                 }
+                return crafted ? itemstack : ItemStack.EMPTY;
             // 输入槽位为 0-4，输出槽位为 5；玩家背包从 6 开始。
             // 原来使用 < 7 会把玩家背包的第一个槽位（index=6）
             // 当成机器槽位，导致 shift-click 在背包内部再次搬运物品。

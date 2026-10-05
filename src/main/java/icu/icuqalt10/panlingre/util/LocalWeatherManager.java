@@ -141,7 +141,8 @@ public class LocalWeatherManager {
      */
     private void restoreRealWeather(UUID uuid) {
         ServerPlayer player = getPlayerByUUID(uuid);
-        if (player != null && centerEntity.level() instanceof ServerLevel serverLevel) {
+        if (player != null) {
+            ServerLevel serverLevel = player.serverLevel();
             boolean isRaining = serverLevel.isRaining();
             float rainLevel = serverLevel.getRainLevel(1.0F);
             float thunderLevel = serverLevel.getThunderLevel(1.0F);

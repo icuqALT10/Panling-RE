@@ -1,5 +1,7 @@
 package icu.icuqalt10.panlingre.item.warrior;
 
+import icu.icuqalt10.panlingre.entity.MultipartEntity;
+
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.init.ModAttachments;
@@ -77,21 +79,18 @@ public class tao_mu_jian extends SwordItem implements skill_trigger {
             //释放技能
         if (!level.isClientSide) {
                 AABB area = player.getBoundingBox().inflate(5.0);
-                List<Entity> entities = level.getEntities(player, area);
+                List<LivingEntity> entities = MultipartEntity.collectTargets(level, area, player);
 
-                for (Entity entity : entities) {
-                    if (entity.isAttackable() && entity.isAlive() && entity.getType() != EntityType.PLAYER) {
-                        if (entity instanceof LivingEntity livingEntity) {
-                                livingEntity.addEffect(new MobEffectInstance(
-                                        MobEffects.MOVEMENT_SLOWDOWN, 100, 1
-                                ));
-                                //粒子效果
-                                if (level instanceof ServerLevel serverLevel) {
-
-                                    serverLevel.sendParticles(ParticleTypes.SNOWFLAKE,
-                                            livingEntity.getX(), livingEntity.getY() + 1, livingEntity.getZ(),
-                                            10, 0.2, 0.2, 0.2, 0.1);
-                                }
+                for (LivingEntity livingEntity : entities) {
+                    if (livingEntity.isAttackable() && livingEntity.isAlive() && livingEntity.getType() != EntityType.PLAYER) {
+                        livingEntity.addEffect(new MobEffectInstance(
+                                MobEffects.MOVEMENT_SLOWDOWN, 100, 1
+                        ));
+                        //粒子效果
+                        if (level instanceof ServerLevel serverLevel) {
+                            serverLevel.sendParticles(ParticleTypes.SNOWFLAKE,
+                                    livingEntity.getX(), livingEntity.getY() + 1, livingEntity.getZ(),
+                                    10, 0.2, 0.2, 0.2, 0.1);
                         }
                     }
                 }

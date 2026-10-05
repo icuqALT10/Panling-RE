@@ -229,6 +229,7 @@ public class dztMenu extends AbstractContainerMenu {
 
             if (itemstack1.getCount() == itemstack.getCount()) return ItemStack.EMPTY;
             slot.onTake(player, itemstack1);
+            if (index == 3) player.drop(itemstack1, false);
         }
         return itemstack;
     }

@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.event;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.ZhiyeData;
 import icu.icuqalt10.panlingre.entity.MultipartEntity;
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.item.archer.other.tian_xing_jian;
 import icu.icuqalt10.panlingre.network.TianXingTargetPayload;
@@ -63,9 +64,9 @@ public class ArcherWeaponHandler {
             // explosion difference (for example 50 - 10 = 40).
             PENDING_ARROW_EXPLOSIONS
                     .computeIfAbsent(serverLevel, ignored -> new ArrayList<>())
-                    .add(new PendingArrowExplosion(arrow, multiplier));
+                    .add(new PendingArrowExplosion(arrow, multiplier, event.getRayTraceResult().getLocation()));
         } else {
-            triggerArrowExplosion(serverLevel, arrow, multiplier);
+            triggerArrowExplosion(serverLevel, arrow, multiplier, event.getRayTraceResult().getLocation());
             arrow.discard();
         }
     }
@@ -78,22 +79,22 @@ public class ArcherWeaponHandler {
         if (pending == null) return;
 
         for (PendingArrowExplosion explosion : pending) {
-            triggerArrowExplosion(serverLevel, explosion.arrow(), explosion.multiplier());
+            triggerArrowExplosion(serverLevel, explosion.arrow(), explosion.multiplier(), explosion.impact());
             explosion.arrow().discard();
         }
     }
     //箭矢爆炸效果
-    private static void triggerArrowExplosion(Level level, AbstractArrow arrow,float multiplied) {
+    private static void triggerArrowExplosion(Level level, AbstractArrow arrow,float multiplied, Vec3 impact) {
 
         if (level instanceof ServerLevel serverLevel) {
 
             serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER,
-                    arrow.getX(), arrow.getY(), arrow.getZ(),
+                    impact.x, impact.y, impact.z,
                     1, 0.0D, 0.0D, 0.0D, 0.0D);
         }
 
         double radius = 2.0D;
-        AABB area = arrow.getBoundingBox().inflate(radius);
+        AABB area = arrow.getBoundingBox().move(impact.subtract(arrow.position())).inflate(radius);
         Entity owner = arrow.getOwner();
         // 多节实体的子碰撞箱是普通 Entity，LivingEntity 查询取不到它们；
         // 先把子节归并回主体，再按原有敌我判断处理。
@@ -107,11 +108,11 @@ public class ArcherWeaponHandler {
             }
 
             float explosionDamage = (float) (arrow.getBaseDamage() * multiplied);
-            target.hurt(level.damageSources().explosion(arrow, owner), explosionDamage);
+            SkillTargeting.hurtInArea(target, impact, area, level.damageSources().explosion(arrow, owner), explosionDamage);
         }
     }
 
-    private record PendingArrowExplosion(AbstractArrow arrow, float multiplier) {
+    private record PendingArrowExplosion(AbstractArrow arrow, float multiplier, Vec3 impact) {
     }
 
     //给玩家自带无限
@@ -160,12 +161,13 @@ public class ArcherWeaponHandler {
         TianXingTargetPayload.LockedTarget lock = TianXingTargetPayload.getRecent(player);
         if (lock == null) return;
 
-        Entity entity = player.level().getEntity(lock.entityId());
-        if (!(entity instanceof LivingEntity target)
+        Entity entity = player.serverLevel().getEntityOrPart(lock.entityId());
+        LivingEntity target = MultipartEntity.livingRoot(entity);
+        if (target == null || entity.isRemoved()
                 || !tian_xing_jian.isValidSniperTarget(player, target)) return;
 
         Vec3 eye = player.getEyePosition();
-        Vec3 targetPoint = target.getBoundingBox().getCenter();
+        Vec3 targetPoint = SkillTargeting.aimPoint(entity, eye, player.getLookAngle().normalize(), 128);
         Vec3 toTarget = targetPoint.subtract(eye);
         double distance = toTarget.length();
         if (distance > 128.0D || distance < 1.0E-4D

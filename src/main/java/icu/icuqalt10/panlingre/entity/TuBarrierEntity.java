@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.entity;
 
 import icu.icuqalt10.panlingre.init.ModEntities;
 import icu.icuqalt10.panlingre.util.SkillHelper;
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -114,8 +115,10 @@ public class TuBarrierEntity extends Entity {
 
     public boolean protects(LivingEntity target) {
         if (!isAlive() || !isActive() || target.level() != level() || !target.isAlive()) return false;
-        double dx = target.getX() - getX();
-        double dz = target.getZ() - getZ();
+        Entity part = target instanceof MultipartEntity multipart ? multipart.receivingDamagePart() : target;
+        var point = part == target ? target.position() : SkillTargeting.closestPoint(part, position());
+        double dx = point.x - getX();
+        double dz = point.z - getZ();
         double radius = getDiameter() * 0.5;
         if (dx * dx + dz * dz > radius * radius) return false;
 
@@ -132,10 +135,11 @@ public class TuBarrierEntity extends Entity {
     }
 
     public static TuBarrierEntity findProtecting(ServerLevel level, LivingEntity target) {
-        AABB search = target.getBoundingBox().inflate(SEARCH_RANGE);
+        Entity part = target instanceof MultipartEntity multipart ? multipart.receivingDamagePart() : target;
+        AABB search = part.getBoundingBox().inflate(SEARCH_RANGE);
         return level.getEntitiesOfClass(TuBarrierEntity.class, search, barrier -> barrier.protects(target))
                 .stream()
-                .min(Comparator.comparingDouble(target::distanceToSqr))
+                .min(Comparator.comparingDouble(barrier -> SkillTargeting.closestPoint(part, barrier.position()).distanceToSqr(barrier.position())))
                 .orElse(null);
     }
 

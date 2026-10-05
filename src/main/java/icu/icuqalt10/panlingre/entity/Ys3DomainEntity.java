@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.entity;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import icu.icuqalt10.panlingre.util.SkillHelper;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -122,8 +123,12 @@ public abstract class Ys3DomainEntity extends Entity {
     }
 
     private double horizontalDistanceSqr(LivingEntity target) {
-        double dx = target.getX() - getX();
-        double dz = target.getZ() - getZ();
+        var contact = SkillTargeting.inArea(target, position(),
+                new AABB(position(), position()).inflate(getDomainRadius(), 4.0D, getDomainRadius()));
+        if (contact == null) return Double.POSITIVE_INFINITY;
+        Vec3 point = contact.part() == target ? target.position() : contact.point();
+        double dx = point.x - getX();
+        double dz = point.z - getZ();
         return dx * dx + dz * dz;
     }
 

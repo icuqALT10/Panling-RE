@@ -171,7 +171,8 @@ public class zftMenu extends AbstractContainerMenu {
             itemstack = itemstack1.copy();
 
             if (index == 7) {
-                while (this.slots.get(7).hasItem()) {
+                boolean crafted = false;
+                while (slot.hasItem() && ItemStack.isSameItemSameComponents(slot.getItem(), itemstack)) {
                     ItemStack currentOutput = this.slots.get(7).getItem();
                     ItemStack toCopy = currentOutput.copy();
 
@@ -179,11 +180,13 @@ public class zftMenu extends AbstractContainerMenu {
                         break;
                     }
 
-                    this.consumeIngredients();
                     slot.onQuickCraft(currentOutput, toCopy);
-
-                    if (currentOutput.getCount() == toCopy.getCount()) break;
+                    slot.onTake(player, currentOutput);
+                    // 和原版工作台一致：背包只能接收部分产物时，将余量掉落给玩家。
+                    player.drop(currentOutput, false);
+                    crafted = true;
                 }
+                return crafted ? itemstack : ItemStack.EMPTY;
             } else if (index < 7) {
                 if (!this.moveItemStackTo(itemstack1, 8, 44, false)) return ItemStack.EMPTY;
             } else {

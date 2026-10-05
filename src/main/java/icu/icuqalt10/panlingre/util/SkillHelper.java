@@ -4,6 +4,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.Entity;
 import icu.icuqalt10.panlingre.entity.MultipartEntity;
+import icu.icuqalt10.panlingre.entity.OrientedBoundingBox;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -17,8 +18,7 @@ public class SkillHelper {
 
     /** Applies an effect to the living multipart root when a selector returns a child. */
     public static boolean addEffectToTarget(Entity target, MobEffectInstance effect) {
-        MultipartEntity root = MultipartEntity.rootOf(target);
-        LivingEntity living = root != null ? root : target instanceof LivingEntity e ? e : null;
+        LivingEntity living = MultipartEntity.livingRoot(target);
         return living != null && living.addEffect(new MobEffectInstance(effect));
     }
 
@@ -65,24 +65,24 @@ public class SkillHelper {
     /**
      * 判断实体是否落在以 {@code center} 为中心、沿 {@code forward} 方向延伸的前方长方体区域内。
      *
-     * <p>普通实体只有一个采样点（其 {@code position()}）。多节实体的逻辑坐标只是一个记账用的
-     * 锚点，躯体可能整体都在该点之外，因此必须改采样各子碰撞箱，否则“只有翅膀或尾巴伸进区域”
-     * 的 Boss 会被整个漏掉。
+     * <p>任一部位与技能范围相交即可命中；候选列表已按主体去重。
      */
     private static boolean insideForwardBox(LivingEntity entity, Vec3 center, Vec3 forward, Vec3 right, Vec3 up,
                                             double halfLength, double halfWidth, double halfHeight) {
-        List<Vec3> samples = entity instanceof MultipartEntity multipart
-                ? multipart.multipartBodySamples()
-                : List.of(entity.position());
-        for (Vec3 sample : samples) {
-            Vec3 relativePos = sample.subtract(center);
-            if (Math.abs(relativePos.dot(forward)) <= halfLength
-                    && Math.abs(relativePos.dot(right)) <= halfWidth
-                    && Math.abs(relativePos.dot(up)) <= halfHeight) {
-                return true;
-            }
+        AABB area = new AABB(-halfWidth, -halfHeight, -halfLength, halfWidth, halfHeight, halfLength);
+        for (Entity part : MultipartEntity.targetParts(entity)) {
+            if (part == null || part.isRemoved()) continue;
+            var box = SkillTargeting.box(part);
+            var local = new OrientedBoundingBox(inBasis(box.center.subtract(center), right, up, forward),
+                    inBasis(box.axisX, right, up, forward), inBasis(box.axisY, right, up, forward),
+                    inBasis(box.axisZ, right, up, forward), box.halfExtents);
+            if (local.intersects(area)) return true;
         }
         return false;
+    }
+
+    private static Vec3 inBasis(Vec3 vector, Vec3 right, Vec3 up, Vec3 forward) {
+        return new Vec3(vector.dot(right), vector.dot(up), vector.dot(forward));
     }
 
     /**
@@ -114,6 +114,11 @@ public class SkillHelper {
     /** 玩家始终优先，同类型目标再按距释放者由近到远排列。 */
     public static Comparator<LivingEntity> friendlyTargetComparator(LivingEntity source) {
         return Comparator.comparingInt((LivingEntity target) -> target instanceof Player ? 0 : 1)
-                .thenComparingDouble(source::distanceToSqr);
+                .thenComparingDouble(target -> {
+                    var contact = SkillTargeting.nearest(target, source.position());
+                    if (contact == null) return Double.POSITIVE_INFINITY;
+                    return contact.part() == target ? source.distanceToSqr(target)
+                            : contact.point().distanceToSqr(source.position());
+                });
     }
 }

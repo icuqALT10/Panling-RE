@@ -24,8 +24,6 @@ import java.util.*;
  * 采样结果可以逐位对齐——这正是碰撞箱与渲染能一致的前提。
  */
 public final class GraveDragonPose {
-    public static final boolean APPLY_ANIMATION = true;
-
     /** 默认动画，也是整条龙的骨骼基准。 */
     public static final String IDLE_AIR = "idle_air";
 
@@ -119,23 +117,28 @@ public final class GraveDragonPose {
     private static Vec3 sample(List<Key> keys, double time, Vec3 fallback) {
         if (keys.isEmpty()) return fallback;
         if (time <= keys.getFirst().time) return keys.getFirst().value;
-        for (int i = 1; i < keys.size(); i++) {
-            Key a = keys.get(i - 1), b = keys.get(i);
-            if (time > b.time) continue;
-            double t = (time - a.time) / (b.time - a.time);
-            if (!a.spline && !b.spline) return a.value.lerp(b.value, t);
-            boolean closed = keys.size() > 2 && keys.getFirst().value.distanceToSqr(keys.getLast().value) < 1e-10;
-            Vec3 before = keys.get(i > 1 ? i - 2 : closed ? keys.size() - 2 : 0).value;
-            Vec3 after = keys.get(i + 1 < keys.size() ? i + 1 : closed ? 1 : i).value;
-            return a.value.scale(2).add(b.value.subtract(before).scale(t))
-                    .add(before.scale(2).subtract(a.value.scale(5)).add(b.value.scale(4)).subtract(after).scale(t * t))
-                    .add(before.scale(-1).add(a.value.scale(3)).subtract(b.value.scale(3)).add(after).scale(t * t * t))
-                    .scale(0.5);
+        if (time > keys.getLast().time) return keys.getLast().value;
+        // Find the first key at or after time, preserving the interpolation at exact key times.
+        int low = 1, high = keys.size() - 1;
+        while (low < high) {
+            int middle = (low + high) >>> 1;
+            if (time > keys.get(middle).time) low = middle + 1;
+            else high = middle;
         }
-        return keys.getLast().value;
+        int i = low;
+        Key a = keys.get(i - 1), b = keys.get(i);
+        double t = (time - a.time) / (b.time - a.time);
+        if (!a.spline && !b.spline) return a.value.lerp(b.value, t);
+        boolean closed = keys.size() > 2 && keys.getFirst().value.distanceToSqr(keys.getLast().value) < 1e-10;
+        Vec3 before = keys.get(i > 1 ? i - 2 : closed ? keys.size() - 2 : 0).value;
+        Vec3 after = keys.get(i + 1 < keys.size() ? i + 1 : closed ? 1 : i).value;
+        return a.value.scale(2).add(b.value.subtract(before).scale(t))
+                .add(before.scale(2).subtract(a.value.scale(5)).add(b.value.scale(4)).subtract(after).scale(t * t))
+                .add(before.scale(-1).add(a.value.scale(3)).subtract(b.value.scale(3)).add(after).scale(t * t * t))
+                .scale(0.5);
     }
 
-    /** 全部动画名，供状态机与测试枚举。 */
+    /** 全部动画名，供动作同步时核对。 */
     public static Set<String> animationNames() {
         return Resources.DEFINITION.animations.keySet();
     }
@@ -185,8 +188,25 @@ public final class GraveDragonPose {
     /** 用一组骨骼位姿重建整帧（含全部骨骼矩阵）。链式跟随覆盖龙头旋转后需要重算矩阵。 */
     public static Frame rebuild(Map<String, BonePose> merged) {
         Map<String, Matrix4f> matrices = new HashMap<>();
-        for (String name : merged.keySet()) matrix(name, merged, matrices, new HashSet<>());
+        Set<String> visiting = new HashSet<>();
+        for (String name : merged.keySet()) matrix(name, merged, matrices, visiting);
         return new Frame(Map.copyOf(merged), Map.copyOf(matrices));
+    }
+
+    /** Blend local transforms before rebuilding the hierarchy; rotations take the shortest arc. */
+    public static Frame blend(Frame from, Frame to, double weight) {
+        if (weight <= 0) return from;
+        if (weight >= 1) return to;
+        Map<String, BonePose> poses = new LinkedHashMap<>();
+        for (var entry : to.bones.entrySet()) {
+            BonePose a = from.bones.get(entry.getKey()), b = entry.getValue();
+            Vec3 delta = b.rotation.subtract(a.rotation);
+            Vec3 rotation = a.rotation.add(new Vec3(Math.IEEEremainder(delta.x, Math.PI * 2),
+                    Math.IEEEremainder(delta.y, Math.PI * 2), Math.IEEEremainder(delta.z, Math.PI * 2)).scale(weight));
+            poses.put(entry.getKey(), new BonePose(rotation,
+                    a.position.lerp(b.position, weight), a.scale.lerp(b.scale, weight)));
+        }
+        return rebuild(poses);
     }
 
     /** 某个动画的时长（秒）。 */
@@ -213,7 +233,7 @@ public final class GraveDragonPose {
         Map<String, BonePose> poses = new LinkedHashMap<>();
         for (var entry : definition.bones.entrySet()) {
             Bone bone = entry.getValue();
-            Track track = APPLY_ANIMATION ? anim.tracks.get(entry.getKey()) : null;
+            Track track = anim.tracks.get(entry.getKey());
             Vec3 rotation = bone.rotation, position = Vec3.ZERO, scale = ONE;
             if (track != null) {
                 rotation = rotation.add(sample(track.rotation, time, Vec3.ZERO).multiply(-RAD, -RAD, RAD));
@@ -224,9 +244,7 @@ public final class GraveDragonPose {
             }
             poses.put(entry.getKey(), new BonePose(rotation, position, scale));
         }
-        Map<String, Matrix4f> matrices = new HashMap<>();
-        for (String name : poses.keySet()) matrix(name, poses, matrices, new HashSet<>());
-        return new Frame(Map.copyOf(poses), Map.copyOf(matrices));
+        return rebuild(poses);
     }
 
     /** 循环采样，等价于 {@code sample(animation, seconds, true)}。 */
@@ -262,7 +280,8 @@ public final class GraveDragonPose {
 
     /** Split arm boxes share their original bone. Horn geometry belongs to head. */
     public static String boneForPart(String label) {
-        String name = (label.startsWith("horn_") || label.equals("upper_jaw")) ? "head" : label.replaceFirst("_(a|b)$", "");
+        String name = (label.startsWith("horn_") || label.equals("upper_jaw")) ? "head"
+                : label.endsWith("_a") || label.endsWith("_b") ? label.substring(0, label.length() - 2) : label;
         if (!Resources.DEFINITION.bones.containsKey(name)) throw new IllegalArgumentException("Unmapped dragon part: " + label);
         return name;
     }
@@ -301,14 +320,29 @@ public final class GraveDragonPose {
         // Config centers are already in Blockbench/GeckoLib model space, in BLOCKS.
         // Never multiply by 16 here or mirror X again.
         Vector3f center = transform.transformPosition(new Vector3f(bounds[3], bounds[4], bounds[5]));
-        // A fitted antler has an additional bind-space rotation around its center.
+        // Fitted limbs, fingers and antlers retain their bind-space cube orientation.
         if (bounds.length >= 9) transform.rotateZ((float)Math.toRadians(bounds[8]))
                 .rotateY((float)Math.toRadians(bounds[7])).rotateX((float)Math.toRadians(bounds[6]));
         Vector3f x = transform.transformDirection(new Vector3f(1, 0, 0));
         Vector3f y = transform.transformDirection(new Vector3f(0, 1, 0));
         Vector3f z = transform.transformDirection(new Vector3f(0, 0, 1));
-        return new OrientedBoundingBox(entityPosition.add(center.x, center.y, center.z), vec(x), vec(y), vec(z),
-                new Vec3(bounds[0] * x.length() / 2, bounds[1] * y.length() / 2, bounds[2] * z.length() / 2));
+        Vec3 axisX = vec(x).normalize(), axisY = vec(y).normalize(), axisZ = vec(z).normalize();
+        Vec3 half = new Vec3(bounds[0] * x.length() / 2, bounds[1] * y.length() / 2, bounds[2] * z.length() / 2);
+        if (Math.abs(axisX.dot(axisY)) > 1e-5 || Math.abs(axisX.dot(axisZ)) > 1e-5
+                || Math.abs(axisY.dot(axisZ)) > 1e-5) {
+            // Animated non-uniform scale can shear a rotated cube. SAT needs orthogonal axes;
+            // project its three transformed half-edges onto an orthonormal enclosing frame.
+            Vec3 edgeX = vec(x).scale(bounds[0] / 2), edgeY = vec(y).scale(bounds[1] / 2), edgeZ = vec(z).scale(bounds[2] / 2);
+            axisY = axisY.subtract(axisX.scale(axisY.dot(axisX))).normalize();
+            axisZ = axisX.cross(axisY).normalize();
+            half = new Vec3(projectedExtent(axisX, edgeX, edgeY, edgeZ),
+                    projectedExtent(axisY, edgeX, edgeY, edgeZ), projectedExtent(axisZ, edgeX, edgeY, edgeZ));
+        }
+        return new OrientedBoundingBox(entityPosition.add(center.x, center.y, center.z), axisX, axisY, axisZ, half);
+    }
+
+    private static double projectedExtent(Vec3 axis, Vec3 x, Vec3 y, Vec3 z) {
+        return Math.abs(axis.dot(x)) + Math.abs(axis.dot(y)) + Math.abs(axis.dot(z));
     }
 
     private static Vec3 vec(Vector3f v) { return new Vec3(v.x, v.y, v.z); }

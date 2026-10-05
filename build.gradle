@@ -193,59 +193,6 @@ tasks.register('worldTemplateTest', JavaExec) {
     mainClass = 'icu.icuqalt10.panlingre.worldtemplate.WorldTemplateUpdaterTest'
 }
 
-sourceSets.register('multipartTest') {
-    compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
-    runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
-}
-
-tasks.register('multipartPoseTest', JavaExec) {
-    dependsOn multipartTestClasses
-    classpath = sourceSets.multipartTest.runtimeClasspath
-    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonPoseTest'
-}
-
-// Diagnostic: how far part boxes drift over the idle animation, and how much a one-tick
-// phase difference between client and server moves them relative to their own size.
-tasks.register('poseDriftAudit', JavaExec) {
-    dependsOn multipartTestClasses
-    classpath = sourceSets.multipartTest.runtimeClasspath
-    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonPoseDriftAudit'
-}
-
-tasks.register('animAudit', JavaExec) {
-    dependsOn multipartTestClasses
-    classpath = sourceSets.multipartTest.runtimeClasspath
-    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonAnimationAudit'
-}
-
-tasks.register('heightAudit', JavaExec) {
-    dependsOn multipartTestClasses
-    classpath = sourceSets.multipartTest.runtimeClasspath
-    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonHeightAudit'
-}
-
-tasks.register('orientationAudit', JavaExec) {
-    dependsOn multipartTestClasses
-    classpath = sourceSets.multipartTest.runtimeClasspath
-    mainClass = 'icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonOrientationAudit'
-}
-
-// Opt-in integration checks; keep test classes and test worlds out of release jars/run saves.
-if (providers.gradleProperty('multipartGameTest').isPresent()) {
-    neoForge.mods.named(project.mod_id) { sourceSet(sourceSets.multipartTest) }
-    neoForge.runs.named('gameTestServer') {
-        gameDirectory = project.file('run')
-    }
-}
-
-// Opt-in melee tracing: `gradlew runClient -PdamageDebug` prints the melee verdict to chat
-// and a per-event line to the log, for diagnosing hits that produce no damage.
-if (providers.gradleProperty('damageDebug').isPresent()) {
-    neoForge.runs.named('client') {
-        systemProperty 'panlingre.damageDebug', 'true'
-    }
-}
-
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {
     module {

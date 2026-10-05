@@ -1,0 +1,9 @@
+[309月2026 16:48:29.599] [main/DEBUG] [io.netty.util.internal.logging.InternalLoggerFactory/]: Using SLF4J as the default logging framework
+[309月2026 16:48:29.607] [main/DEBUG] [io.netty.util.ResourceLeakDetector/]: -Dio.netty.leakDetection.level: simple
+[309月2026 16:48:29.607] [main/DEBUG] [io.netty.util.ResourceLeakDetector/]: -Dio.netty.leakDetection.targetRecords: 4
+[309月2026 16:48:29.771] [main/INFO] [icu.icuqalt10.panlingre.PanlingRE/]: Updating Panling world C:\Users\icuqA\AppData\Local\Temp\panlingre-world-template-test-4743193331686485881\world to mod version test-1
+[309月2026 16:48:29.787] [main/INFO] [icu.icuqalt10.panlingre.PanlingRE/]: Finished updating Panling world C:\Users\icuqA\AppData\Local\Temp\panlingre-world-template-test-4743193331686485881\world to mod version test-1
+[309月2026 16:48:29.790] [main/INFO] [icu.icuqalt10.panlingre.PanlingRE/]: Updating Panling world C:\Users\icuqA\AppData\Local\Temp\panlingre-world-template-test-4743193331686485881\world to mod version test-2
+[309月2026 16:48:29.800] [main/INFO] [icu.icuqalt10.panlingre.PanlingRE/]: Finished updating Panling world C:\Users\icuqA\AppData\Local\Temp\panlingre-world-template-test-4743193331686485881\world to mod version test-2
+[309月2026 16:48:29.803] [main/INFO] [icu.icuqalt10.panlingre.PanlingRE/]: Updating Panling world C:\Users\icuqA\AppData\Local\Temp\panlingre-world-template-test-4743193331686485881\legacy-world to mod version test-1
+[309月2026 16:48:29.813] [main/INFO] [icu.icuqalt10.panlingre.PanlingRE/]: Finished updating Panling world C:\Users\icuqA\AppData\Local\Temp\panlingre-world-template-test-4743193331686485881\legacy-world to mod version test-1

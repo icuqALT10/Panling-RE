@@ -4,6 +4,7 @@ import icu.icuqalt10.panlingre.instance.baihu.BaihuController;
 import icu.icuqalt10.panlingre.instance.qinglong.QinglongController;
 import icu.icuqalt10.panlingre.instance.xuanwu.XuanwuController;
 import icu.icuqalt10.panlingre.instance.zhuque.ZhuqueController;
+import icu.icuqalt10.panlingre.instance.shihuang.ShiHuangController;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public final class InstanceControllerRegistry {
         register(ResourceLocation.fromNamespaceAndPath("panlingre", "qinglong"), QinglongController::new);
         register(ResourceLocation.fromNamespaceAndPath("panlingre", "xuanwu"), XuanwuController::new);
         register(ResourceLocation.fromNamespaceAndPath("panlingre", "zhuque"), ZhuqueController::new);
+        register(ResourceLocation.fromNamespaceAndPath("panlingre", "shihuang"), ShiHuangController::new);
     }
 
     private InstanceControllerRegistry() {

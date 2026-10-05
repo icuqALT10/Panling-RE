@@ -3,7 +3,7 @@ package icu.icuqalt10.panlingre.init;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.entity.FireTornadoEntity;
 import icu.icuqalt10.panlingre.entity.boss.PanGuEntity;
-import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;

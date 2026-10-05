@@ -116,7 +116,7 @@ public class JinLiRenRenderer extends EntityRenderer<JinLiRenEntity> {
                                          MultiBufferSource buffer) {
         float max = entity.progress(partialTick);
         float decay = entity.decay(partialTick);
-        float min = entity.decaying() ? decay : 0.0F;
+        float min = entity.decaying() ? decay * max : 0.0F;
         if (max <= min || max <= 0.0F) return;
         Vec3 entityPos = entity.getPosition(partialTick);
         List<Vec3> points = new ArrayList<>();

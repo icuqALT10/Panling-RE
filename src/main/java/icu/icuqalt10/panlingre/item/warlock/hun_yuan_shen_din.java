@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.item.warlock;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 
 import com.google.common.collect.HashMultimap;
@@ -246,7 +247,9 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
         for (LivingEntity entity : entities) {
             if (SkillHelper.combatTargetFilter(player).test(entity)) {
                 // 记录实体当前的位置
-                final Vec3 targetPos = entity.position();
+                final SkillTargeting.Target selected = SkillTargeting.nearest(entity, player.position());
+                if (selected == null) continue;
+                final Vec3 targetPos = selected.point();
 
                 // 主雷
                 // 触发主雷粒子
@@ -257,9 +260,7 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
                 }
 
                 // 检测主雷伤害
-                if (entity.position().distanceToSqr(targetPos) <= 4.0) {
-                    entity.hurt(serverLevel.damageSources().lightningBolt(), lighting_damage);
-                }
+                selected.hurt(serverLevel.damageSources().lightningBolt(), lighting_damage);
 
                 // 原地生成第一个滚地雷
                 spawnGundilei(serverLevel, player, targetPos, gundilei_damage);
@@ -306,8 +307,9 @@ public class hun_yuan_shen_din extends Item implements ICurioItem,skill_trigger,
                         }
 
                         // 检测扩散雷伤害
-                        if (entity.position().distanceToSqr(spreadPos) <= 4.0) {
-                            entity.hurt(serverLevel.damageSources().lightningBolt(), 15.0f);
+                        var contact = SkillTargeting.nearest(entity, spreadPos);
+                        if (contact != null && contact.point().distanceToSqr(spreadPos) <= 4.0) {
+                            contact.hurt(serverLevel.damageSources().lightningBolt(), 15.0f);
                         }
 
                         // 生成苦力怕

@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.item.archer;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
@@ -41,6 +42,7 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
 
     private static final ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "zhu_ri");
     private static final int POWERED_SHOT_COOLDOWN_TICKS = 2;
+    private static final int POWERED_REPEAT_TICKS = 4;
 
     private final int cooldown = 400;
     private final float cost = 50.0f;
@@ -103,23 +105,28 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
             return super.use(level, player, hand);
         }
 
-        // Fire on press instead of entering CrossbowItem's continuous-use state. The client
-        // drains every queued click in a tick, but drops the later ones once isUsingItem is set.
-        // Keeping powered shots stateless makes one accepted click equal exactly one shot.
+        player.startUsingItem(hand);
         poweredShoot(stack, level, player);
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }
 
     @Override
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingUseDuration) {
+        if (!stack.getOrDefault(ModComponents.IS_POWERED.get(), false)) {
+            super.onUseTick(level, entity, stack, remainingUseDuration);
+            return;
+        }
+
+        int usedTicks = stack.getUseDuration(entity) - remainingUseDuration;
+        if (!level.isClientSide && entity instanceof Player player
+                && usedTicks > 0 && usedTicks % POWERED_REPEAT_TICKS == 0) {
+            poweredShoot(stack, level, player);
+        }
+    }
+
+    @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
-        if (entity instanceof Player player) {
-            boolean isPowered = stack.getOrDefault(ModComponents.IS_POWERED.get(), false);
-            if (isPowered) {
-                poweredShoot(stack, level, player);
-            } else {
-                super.releaseUsing(stack, level, entity, timeLeft);
-            }
-        } else {
+        if (!(entity instanceof Player) || !stack.getOrDefault(ModComponents.IS_POWERED.get(), false)) {
             super.releaseUsing(stack, level, entity, timeLeft);
         }
     }
@@ -135,7 +142,7 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
         Vec3 look = player.getLookAngle();
 
         // Target locking
-        LivingEntity lockedTarget = null;
+        Entity lockedTarget = null;
         Vec3 targetPoint;
 
         // AABB: 8x8 cross-section, 100 blocks forward
@@ -148,22 +155,16 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
         double maxZ = Math.max(eye.z, endFar.z) + 4.0;
         AABB scanBox = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
 
-        double bestDist = Double.MAX_VALUE;
-        for (LivingEntity e : skill_trigger.skillTargets(level, scanBox, player).stream()
-                .filter(e -> canLockTarget(player, e)).toList()) {
-            Vec3 toE = e.position().subtract(eye);
-            double proj = toE.dot(look);
-            if (proj <= 0 || proj > 100) continue;
-            Vec3 onRay = eye.add(look.scale(proj));
-            double dist = e.position().distanceTo(onRay);
-            if (dist <= 4.0 && proj < bestDist) {
-                bestDist = proj;
-                lockedTarget = e;
-            }
-        }
-
-        if (lockedTarget != null) {
-            targetPoint = lockedTarget.getEyePosition();
+        SkillTargeting.Target selected = SkillTargeting.aimed(player, scanBox, eye, look, 100, 90).stream()
+                .filter(target -> canLockTarget(player, target.root()))
+                .filter(target -> {
+                    Vec3 offset = target.point().subtract(eye);
+                    double along = offset.dot(look);
+                    return along > 0 && offset.subtract(look.scale(along)).lengthSqr() <= 16;
+                }).findFirst().orElse(null);
+        if (selected != null) {
+            lockedTarget = selected.part();
+            targetPoint = selected.point();
         } else {
             var hit = player.pick(30, 0, false);
             if (hit.getType() != HitResult.Type.MISS) {
@@ -268,6 +269,9 @@ public class zhu_ri extends HiddenEnchantedCrossbowItem implements skill_trigger
         if (isPowered) {
             long startTime = stack.getOrDefault(ModComponents.POWERED_TIMER.get(), 0L);
             if (level.getGameTime() - startTime > 200) {
+                if (entity instanceof Player player && player.isUsingItem() && player.getUseItem() == stack) {
+                    player.stopUsingItem();
+                }
                 stack.set(ModComponents.IS_POWERED.get(), false);
                 syncBuiltInEnchantments(stack, level);
                 if (entity instanceof Player player) {

@@ -99,7 +99,7 @@ public class ZhuRiArrowRenderer extends EntityRenderer<ZhuRiArrowEntity> {
         if (P0 == null || P3 == null) return List.of();
 
         float tMin, tMax;
-        if (dec) { tMin = decay; tMax = 1f; }
+        if (dec) { tMin = decay * prog; tMax = prog; }
         else     { tMin = 0f;    tMax = prog; }
         if (tMax <= tMin || tMax <= 0) return List.of();
 

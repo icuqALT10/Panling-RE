@@ -1172,5 +1172,14 @@
   "item.panlingre.na_wu_ci_shi.no_byd":"§c未安装超越维度，无法绑定维度网络",
   "item.panlingre.na_wu_ci_shi.no_network":"§c你当前没有可绑定的主维度网络",
   "item.panlingre.na_wu_ci_shi.tooltip.bound":"已绑定网络：#%s",
-  "item.panlingre.na_wu_ci_shi.tooltip.unbound":"未绑定维度网络"
+  "item.panlingre.na_wu_ci_shi.tooltip.unbound":"未绑定维度网络",
+  "instance.panlingre.shihuang.abyss": "§7The abyss array sends you back to the start...",
+  "instance.panlingre.shihuang.path_wrong": "§7Wrong route. The array throws you out...",
+  "instance.panlingre.shihuang.path_timeout": "§7Too slow. The closing array throws you out...",
+  "instance.panlingre.shihuang.seal_on": "The dragon seal is active for twenty seconds.",
+  "instance.panlingre.shihuang.dragon_retreat": "The grave dragon is retreating! Activate all four beacons within ten seconds!",
+  "instance.panlingre.shihuang.dragon_absorbed": "The grave dragon entered the imperial coffin. The emperor gains its power.",
+  "instance.panlingre.shihuang.dragon_sealed": "The grave dragon perished. The emperor gains no dragon power.",
+  "instance.panlingre.shihuang.emperor_ready": "The imperial coffin has opened...",
+  "instance.panlingre.shihuang.complete": "Emperor challenge complete!"
 }

@@ -3,10 +3,12 @@ package icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon;
 import icu.icuqalt10.panlingre.entity.PanLingEntities;
 import icu.icuqalt10.panlingre.animation.WorldTimeAnimationController;
 import icu.icuqalt10.panlingre.entity.MultipartEntity;
-import icu.icuqalt10.panlingre.entity.MultipartPartConfig;
 import icu.icuqalt10.panlingre.entity.OrientedBoundingBox;
+import icu.icuqalt10.panlingre.network.GraveDragonActionPayload;
+import icu.icuqalt10.panlingre.instance.InstanceManager;
+import icu.icuqalt10.panlingre.instance.shihuang.ShiHuangController;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -29,9 +31,6 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.Heightmap;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.entity.PartEntity;
@@ -41,16 +40,20 @@ import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Set;
-import net.neoforged.fml.loading.FMLPaths;
 
 public class GraveDragonEntity extends MultipartEntity implements GeoEntity, PanLingEntities {
     /** 当前动画的起始时刻（世界时钟）。两侧共用它推算动画相位，掉线重连也不会重启动画。 */
     private static final EntityDataAccessor<Long> ANIMATION_START = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.LONG);
     /** 当前动画名。用字符串而不是下标，因为 animationNames() 的遍历顺序不保证稳定。 */
     private static final EntityDataAccessor<String> ANIMATION = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Boolean> FAST_LANDING = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> FROZEN = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.BOOLEAN);
+    private boolean frozenWasNoAi;
     /** 形态：0 = 地面，1 = 空中。 */
     private static final EntityDataAccessor<Integer> FORM = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> BODY_PITCH = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> HEAD_BROKEN = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> BROKEN_MASK = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.INT);
 
     /** 龙首俯仰的限幅（度）。身体水平长 46 格，再大就会大面积戳进地形。 */
     private static final float MAX_BODY_PITCH = 22.0F;
@@ -59,22 +62,30 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /** 上一 tick 的俯仰，渲染插值用。 */
     private float bodyPitchO;
+    private long lastClientActionSequence = Long.MIN_VALUE;
+    private String blendFrom = "";
+    private double blendFromSeconds;
+    private String blendTarget = "";
+    private long blendStart;
 
     /**
      * {@link #ANIMATION_START} 的未初始化哨兵。
      *
-     * <p>判断"未初始化"只能用这个精确值，不能用"任意负数"：回拨动画时间（测试里模拟过渡播完）
-     * 会让起点落到 0 以下，游戏刚开局的低 gameTime 也一样，那时必须照常计时。
+     * <p>仅此值表示未初始化，已保存的其他起点必须照常计时。
      */
-    private static final long UNINITIALISED_ANIMATION_START = -1L;
+    private static final long UNINITIALISED_ANIMATION_START = Long.MIN_VALUE;
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(ANIMATION_START, UNINITIALISED_ANIMATION_START);
         builder.define(ANIMATION, "idle_air");
+        builder.define(FAST_LANDING, false);
+        builder.define(FROZEN, false);
         builder.define(FORM, FORM_GROUND);
         builder.define(BODY_PITCH, 0.0F);
+        builder.define(HEAD_BROKEN, false);
+        builder.define(BROKEN_MASK, 0);
     }
 
     /** 地面 / 空中两种形态。 */
@@ -85,16 +96,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /** 空中形态要求的最小离地高度，也是起飞前要检查的垂直净空（格）。 */
     private static final double FLIGHT_CLEARANCE = 12.0;
-    /**
-     * 飞行姿态相对锚点向下的最大深度（格，正数）。
-     *
-     * <p>实测（本地 {@code GraveDragonPoseExtentAudit} 量出）：{@code fly} 的 79 个碰撞箱相对锚点
-     * 覆盖 Y ∈ [−10.72, +24.84]，{@code idle_air} 是 [−11.32, +24.21]。也就是说**身体会伸到锚点
-     * 下方十几格**——所以"离地 10 格"是不足以让飞行姿态不插地的，判定必须按这个深度来。
-     */
-    private static final double FLIGHT_BODY_DEPTH = 11.5;
-    /** 降落时向下探测地面的最大距离（格）。 */
-    private static final double LANDING_PROBE = 160.0;
     /**
      * 起飞净空检查里每个姿态采样多少个相位。
      *
@@ -112,90 +113,32 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private static final double POSE_CLEARANCE_TOLERANCE = 0.05;
     /** 姿态判定的整体抬升（格）：抵消"脚底与地面方块浮点贴合"造成的假穿透。 */
     private static final double POSE_CLEARANCE_LIFT = 0.06;
-    /** 形态切换区间：1~3 分钟。 */
-    private static final int FORM_MIN_TICKS = 20 * 60;
-    private static final int FORM_RANDOM_TICKS = 20 * 120;
     /** 净空不足时推迟多久再试一次。 */
     private static final int TAKEOFF_RETRY_TICKS = 20 * 5;
 
     /** 循环播放的动画；其余按一次性处理（播完停在末帧，由 takeoff/land/turn_* 这类过渡用）。 */
-    private static final Set<String> LOOPING_ANIMATIONS = Set.of("idle_air", "idle_ground", "fly", "run");
+    private static final Set<String> LOOPING_ANIMATIONS = Set.of("idle_air", "idle_ground", "fly", "run", "into_1", "escape_wait", "escape_flight");
 
-    /** 到达判定半径（格）。 */
-    private static final double WANDER_ARRIVE_DISTANCE = 3.0;
-    /** 单个目标点最多追多久（tick）；导航找不到路时不至于永远卡在原地。 */
-    private static final int WANDER_TIMEOUT_TICKS = 20 * 30;
-    /** 地面移动速度（传给 {@code moveTo}，见 {@link #wanderSpeed()} 的说明）。 */
-    private static final double WANDER_SPEED = 0.7;
-    /** 空中水平速度（格/tick）：直接给 {@code deltaMovement}，不再经过 moveTo 的倍率换算。 */
-    private static final double FLIGHT_SPEED_PER_TICK = 0.22;
-    /** 空中转向上限（度/tick）：大身体要有惯性感，不能像原版飞行控制那样一下子拧 90°。 */
-    private static final float FLIGHT_TURN_RATE = 2.5F;
-    /** 连续多少 tick 没位移算"撞住了"（随后抬高目标点绕行）。 */
-    private static final int FLIGHT_STUCK_TICKS = 30;
-    /** "挑不出目标点"之后停顿多久再试（tick）。 */
-    private static final int STALL_RETRY_TICKS = 40;
-    /** 空中爬升/下降速率（格/tick）。 */
-    private static final double FLIGHT_CLIMB_RATE = 0.30;
-    private static final double FLIGHT_DESCEND_RATE = 0.22;
-    /**
-     * 空中形态传给 {@code moveTo} 的速度。
-     *
-     * <p>{@code moveTo} 的 speed **不是**"格/秒"，而是 {@code speedModifier}：
-     * {@code FlyingMoveControl} 先乘 {@code Attributes.FLYING_SPEED}（默认 0.4），
-     * 再经 {@code LivingEntity#travel} 乘 0.1，所以两者差着一个数量级。
-     *
-     * <p>实测（{@code flightMovesAtTheConfiguredSpeed}）：2.1 时只有 0.102 格/tick（约 2 格/秒），
-     * 12.0 时 0.212 格/tick（约 4.25 格/秒）——注意**不是线性**的：{@code travel} 的加速度会被
-     * 摩擦与转向吃掉一部分。翼展 40 格的龙用 2 格/秒根本看不出在移动，4 格/秒才算"在飞"。
-     */
-    private static final double WANDER_AIR_SPEED = 12.0;
-    /** 到达后原地待机的概率（%）与时长（tick）。 */
-    private static final int WANDER_IDLE_CHANCE = 30;
-    private static final int WANDER_IDLE_TICKS = 20 * 10;
-    /**
-     * 领地半径（格，水平）。
-     *
-     * <p>目标是"在某片区域里盘踞/盘旋"，而不是一路飞走，所以所有漫游目标点都被钳在这个圆内。
-     * 比巡航距离大一些，这样它在领地内仍然有"从这头飞到那头"的行程感。
-     */
-    private static final double WANDER_TERRITORY_RADIUS = 48.0;
-    /**
-     * 空中待机的冷却（tick）：刚从 idle_air 切回 fly 之后，这段时间内不再进 idle_air。
-     *
-     * <p>否则 fly 飞两格就掷一次骰子，30% 的概率会让它频繁地"飞一下歇一下"，
-     * 看不出在赶路。10 秒待机 + 30 秒冷却 = 空中最多每 40 秒歇一次。
-     */
-    private static final int AIR_IDLE_COOLDOWN_TICKS = 20 * 30;
     /** 飞行时每 tick 最多抬升多少格，用来维持离地高度。 */
-    private static final double ALTITUDE_CLIMB_RATE = 0.5;
-    /** 转向动画的判定阈值（度/tick）。 */
-    private static final float TURN_ANIMATION_THRESHOLD = 1.2F;
-
-    /** 漫游的当前目标点（null = 没有）。 */
-    private Vec3 wanderTarget;
-    /** 还要原地待机多少 tick。 */
-    private int wanderIdleTicks;
     /** 是否正在移动，决定播 fly/run 还是 idle_*。 */
     private boolean moving;
-    /** 漫游总开关；关掉之后 moving 不再被 tickWander 改写。 */
-    private boolean wanderEnabled = true;
-    /** 当前目标点已经追了多少 tick，用来做超时（导航找不到路时不至于永远卡着）。 */
-    private int wanderTicks;
     /** 空中移动的过渡动画播完后要进入的循环动画（null = 没有正在过渡）。 */
     private String pendingLoopAnimation;
     /** 正在走"下落第一段"（fly → idle_air），播完接着播 land。 */
-    private boolean descending;
-    /** 撞墙自救用的记录：上一 tick 位置与连续"没动"的 tick 数。 */
-    private Vec3 lastFlightPosition = Vec3.ZERO;
-    private int flightStuckTicks;
-    /** "挑不出目标点"的短暂停顿剩余 tick（与待机分开计）。 */
-    private int stallTicks;
 
     /** 服务端：下一次形态切换的时刻。 */
     private long nextFormSwitchAt;
     /** 服务端：正在过渡到哪个形态（null = 没在过渡）。过渡动画播完才真正切换。 */
     private Form pendingForm;
+    private boolean introStarted;
+    private boolean introComplete;
+    private boolean loadingDragonData;
+    private boolean bypassHealthLock;
+    private boolean introRoarPlayed;
+    private Vec3 spawnPosition;
+    private final GraveDragonCombat combat = new GraveDragonCombat(this);
+    private final float[] partDurabilityDamage = new float[6];
+    private final boolean[] brokenParts = new boolean[6];
     /** 过渡动画期间的起止高度；位置每 tick 按动画进度插值，播完刚好到位。 */
     private double transitionFromY;
     private double transitionToY;
@@ -207,12 +150,19 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /** 当前动画已播放的秒数；{@code partialTick} 用于渲染插值。 */
     public double animationSeconds(float partialTick) {
+        if (entityData.get(FROZEN)) return 0;
         long start = entityData.get(ANIMATION_START);
         if (start == UNINITIALISED_ANIMATION_START) return 0;
-        return Math.max(0, level().getGameTime() - start + partialTick) / 20.0;
+        return Math.max(0, level().getGameTime() - start + partialTick) / 20.0 * animationSpeed();
     }
 
-    /** 供测试与调试：当前动画的起始世界时刻。 */
+    private double animationSpeed() {
+        if (animation().startsWith("turn_ground_") || animation().startsWith("turn_air_"))
+            return GraveDragonPose.duration(animation()) * 4;
+        return entityData.get(FAST_LANDING) && animation().equals("land") ? GraveDragonPose.duration("land") * 2 : 1;
+    }
+
+    /** 当前动画的起始世界时刻，用于同步动作与特效。 */
     public long animationStart() {
         return entityData.get(ANIMATION_START);
     }
@@ -233,8 +183,124 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /** 服务端：切换到某个动画。{@code restart} 为真时即使同名也从头播。 */
     private void playAnimation(String name, boolean restart) {
         if (!restart && name.equals(animation())) return;
+        blendFrom = "";
+        entityData.set(FAST_LANDING, false);
         entityData.set(ANIMATION, name);
         entityData.set(ANIMATION_START, level().getGameTime());
+    }
+
+    void beginCombatAnimation(String name) {
+        pendingLoopAnimation = null;
+        playAnimation(name, true);
+    }
+
+    ShiHuangController tombController() {
+        var session = InstanceManager.sessionFor(this);
+        return session != null && session.controller() instanceof ShiHuangController tomb ? tomb : null;
+    }
+
+    /** The owning instance controls all motion until removal; combat cannot restart. */
+    public void beginSceneAnimation(String name) {
+        if (!name.startsWith("escape_")) throw new IllegalArgumentException("Not a tomb scene animation: " + name);
+        pendingForm = null;
+        moving = false;
+        disableAutomaticFormSwitch();
+        entityData.set(FROZEN, false);
+        entityData.set(BODY_PITCH, 0F);
+        setNoAi(true);
+        setNoGravity(true);
+        setInvulnerable(true);
+        setDeltaMovement(Vec3.ZERO);
+        getNavigation().stop();
+        beginCombatAnimation(name);
+        combat.announceAnimation(name);
+        updateDragonParts();
+    }
+
+    public Vec3 sceneHeadOffset(String animation, double seconds, float yaw) {
+        return GraveDragonPose.box(GraveDragonPose.sample(animation, seconds, false),
+                PART_LABELS[11], PART_BOUNDS[11], GraveDragonPose.modelToEntity(yaw, 0, getScale()), Vec3.ZERO).center;
+    }
+
+    public Vec3 sceneGateOffset(double seconds, float yaw) {
+        var frame = GraveDragonPose.sample("escape_flight", seconds, true);
+        var transform = GraveDragonPose.modelToEntity(yaw, 0, getScale());
+        var head = GraveDragonPose.box(frame, PART_LABELS[11], PART_BOUNDS[11], transform, Vec3.ZERO);
+        double front = Double.NEGATIVE_INFINITY;
+        for (int i = 0; i < PART_LABELS.length; i++)
+            front = Math.max(front, GraveDragonPose.box(frame, PART_LABELS[i], PART_BOUNDS[i], transform, Vec3.ZERO).enclosingAabb().maxZ);
+        return new Vec3(head.center.x, head.center.y, front);
+    }
+
+    public boolean moveSceneTo(Vec3 destination, float yaw, double floor) {
+        Vec3 start = position();
+        int steps = Math.max(1, (int) Math.ceil(start.distanceTo(destination) * 2));
+        float previousYaw = getYRot();
+        steps = Math.max(steps, (int) Math.ceil(Math.abs(Mth.wrapDegrees(yaw - previousYaw)) / 3));
+        for (int i = 1; i <= steps; i++) {
+            double weight = i / (double) steps;
+            Vec3 candidate = start.lerp(destination, weight);
+            float facing = previousYaw + Mth.wrapDegrees(yaw - previousYaw) * (float) weight;
+            if (!combatPoseFitsAt(animation(), animationSeconds(0), facing, 0, candidate, floor)) return false;
+        }
+        setYRot(yaw);
+        yBodyRot = yHeadRot = yaw;
+        setPos(destination);
+        setDeltaMovement(Vec3.ZERO);
+        updateDragonParts();
+        return true;
+    }
+
+    void beginBlendedCombatAnimation(String name) {
+        String previous = animation();
+        double seconds = animationSeconds(0);
+        double duration = GraveDragonPose.duration(previous);
+        seconds = loopingAnimation() ? seconds % duration : Math.min(seconds, duration);
+        beginCombatAnimation(name);
+        blendFrom = previous;
+        blendFromSeconds = seconds;
+        blendTarget = name;
+        blendStart = animationStart();
+    }
+
+    String blendFrom() { return blendFrom; }
+    double blendFromSeconds() { return blendFromSeconds; }
+
+    /** Rendering, hitboxes and attached particles share the same two-tick transition. */
+    public GraveDragonPose.Frame poseAt(double seconds) {
+        var frame = GraveDragonPose.sample(animation(), seconds, loopingAnimation());
+        if (blendFrom.isEmpty() || !blendTarget.equals(animation()) || blendStart != animationStart()
+                || seconds >= .1) return frame;
+        return GraveDragonPose.blend(GraveDragonPose.sample(blendFrom, blendFromSeconds, false),
+                frame, Math.max(0, seconds / .1));
+    }
+
+    void requestCombatForm(Form wanted) {
+        if (form() != wanted && pendingForm == null) nextFormSwitchAt = level().getGameTime();
+    }
+
+    boolean canTakeoffForCombat() { return !flying() && hasTakeoffClearance(); }
+
+    double combatGroundLevel() { return groundLevelBelow(); }
+    Vec3 combatSpawnPosition() { return spawnPosition == null ? position() : spawnPosition; }
+    void setCombatPitch(float pitch) { entityData.set(BODY_PITCH, pitch); }
+
+    public boolean headBroken() { return entityData.get(HEAD_BROKEN); }
+
+    /** The action activation packet starts animation and effects on the same client tick. */
+    public void applyClientAction(GraveDragonActionPayload payload) {
+        if (!level().isClientSide || payload.entityId() != getId()
+                || payload.sequence() < lastClientActionSequence) return;
+        lastClientActionSequence = payload.sequence();
+        blendFrom = payload.blendFrom();
+        blendFromSeconds = payload.blendFromSeconds();
+        blendTarget = payload.action();
+        blendStart = payload.startTick();
+        if (!payload.action().equals(animation()) || payload.startTick() != animationStart()) {
+            entityData.set(ANIMATION, payload.action());
+            entityData.set(ANIMATION_START, payload.startTick());
+        }
+        updateDragonParts();
     }
 
     /**
@@ -265,6 +331,10 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * 绕**实体局部 X 轴**施加（顺序 {@code Ry · Rx}，符号取负），所以是竖直面内的俯仰。
      */
     private void updateBodyPitch() {
+        if (isTransitioningForm()) {
+            entityData.set(BODY_PITCH, 0.0F);
+            return;
+        }
         // 地面形态不俯仰：走路本来就不该斜；而且下落时的俯冲会让几十格长的身体插进地面，
         // 被 move() 的逐部件判定挡住，表现成"悬在空中"。飞行形态会 noGravity=true，届时自动生效。
         if (!this.isNoGravity()) {
@@ -280,55 +350,26 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         entityData.set(BODY_PITCH, Mth.lerp(BODY_PITCH_SMOOTHING, bodyPitch(), target));
     }
 
-    /**
-     * Animation phase used for the collision boxes, quantised so both sides agree exactly.
-     *
-     * <p>The two sides sample the pose independently and their {@code getGameTime()} values are
-     * not the same number at the moment each one works, so a fine-grained clock gives them
-     * slightly different poses. With 79 overlapping parts, a few centimetres is enough for a
-     * neighbouring box to win the pick: measured reports were "aiming at one segment damages the
-     * next one" and "the far end of a chain cannot be hit at all".
-     *
-     * <p>Rounding the phase down to a fixed step makes the value a pure function of integers
-     * that both sides share ({@code gameTime} and the synced {@link #ANIMATION_START}), so the boxes
-     * come out bit-for-bit identical. The animation still plays; boxes only advance once per
-     * {@link #POSE_QUANTUM_TICKS}, which is invisible over a 3.2 second cycle (13 steps).
-     *
-     * <p>Server-side hit resolution uses {@link #collisionPoseSeconds()} instead, which is
-     * quantised the same way, so the ray is measured against exactly the boxes the client saw.
-     */
-    public double collisionPoseSeconds() {
-        long start = entityData.get(ANIMATION_START);
-        if (start == UNINITIALISED_ANIMATION_START) return 0;
-        long stepped = Math.floorDiv(level().getGameTime() - start, POSE_QUANTUM_TICKS) * POSE_QUANTUM_TICKS;
-        return Math.max(0, stepped) / 20.0;
-    }
-
     // ===== 形态状态机 =====
 
     /** 服务端每 tick 驱动形态切换，客户端只读同步结果。 */
     private void tickForm() {
+        if (combat.active() || combat.retreatReady()) return;
         long now = level().getGameTime();
 
         if (pendingForm != null) {
             // 过渡动画**播放期间**就做垂直位移：按动画进度插值高度，播完的那一刻刚好到位。
             applyTransitionLift();
             if (animationSeconds(0) >= GraveDragonPose.duration(animation())) {
-                if (descending) {
-                    // 第一段（fly → idle_air）结束：**不**切形态，接着播 land。
-                    descending = false;
-                    pendingForm = null;
-                    beginLanding();
-                    return;
-                }
                 Form target = pendingForm;
                 pendingForm = null;
                 // 收尾到精确高度，消掉插值残差。
                 setPos(getX(), transitionToY, getZ());
                 entityData.set(FORM, target == Form.AIR ? FORM_AIR : FORM_GROUND);
                 applyFormPhysics(target == Form.AIR);
+                combat.onFormChanged(target == Form.AIR);
                 playAnimation(target == Form.AIR ? "idle_air" : "idle_ground", true);
-                scheduleNextFormSwitch(now);
+                disableAutomaticFormSwitch();
             }
             return;
         }
@@ -336,7 +377,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         if (now < nextFormSwitchAt) return;
 
         if (form() == Form.AIR) {
-            beginDescent();
+            beginLanding();
         } else if (hasTakeoffClearance()) {
             pendingForm = Form.AIR;
             beginVerticalTransition(true, getY() + FLIGHT_CLEARANCE);
@@ -347,26 +388,25 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         }
     }
 
-    /**
-     * 落地分两段走：{@code fly → idle_air}（减速盘住），再 {@code idle_air → land}（落下）。
-     *
-     * <p>直接 {@code fly → land} 会出现一个 15 格的高度跳变：两个姿态的锚点高度差太大，
-     * 过渡插值等于"瞬间跌下去"。分两段之后每段的姿态差都在 4 格以内，插值才像真的落下来。
-     */
-    private void beginDescent() {
-        descending = true;
-        pendingForm = Form.GROUND;
-        // 只下到"起飞离地高度"：这个高度上 idle_air 的姿态刚好不插进地面，剩下的落差交给 land。
-        beginVerticalTransition(false, groundLevelBelow() + FLIGHT_CLEARANCE);
-        playAnimation("fly_to_idle_air", true);
-    }
-
-    /** 第二段：从巡航高度落到地面，动画播完刚好贴地。 */
+    /** 从当前空中姿态直接播放 land，动画播完刚好贴地。 */
     private void beginLanding() {
+        pendingLoopAnimation = null;
         pendingForm = Form.GROUND;
+        getNavigation().stop();
+        setDeltaMovement(Vec3.ZERO);
+        moving = false;
         beginVerticalTransition(false, groundLevelBelow());
         playAnimation("land", true);
+        combat.announceAnimation("land");
     }
+
+    void beginRetreatLanding() {
+        entityData.set(BODY_PITCH, 0F);
+        beginLanding();
+        entityData.set(FAST_LANDING, true);
+    }
+
+    boolean isRetreatLanding() { return pendingForm == Form.GROUND && entityData.get(FAST_LANDING); }
 
     /**
      * 记下过渡的起止高度，并临时关掉重力——否则插值抬升会和下落叠加。
@@ -375,7 +415,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private void beginVerticalTransition(boolean ascending, double targetY) {
         this.transitionFromY = getY();
         // 方向由状态机决定，不能被地面探测的边界情况反转：下降只允许往下、上升只允许往上。
-        // （曾经因为 groundLevelBelow() 在测试世界里探到了比龙更高的"地面"，落地过程变成上升。）
         this.transitionToY = ascending ? Math.max(targetY, getY()) : Math.min(targetY, getY());
         this.setNoGravity(true);
     }
@@ -388,30 +427,14 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         if (Math.abs(y - getY()) > 1.0E-6) setPos(getX(), y, getZ());
     }
 
-    /**
-     * 从当前位置向下探测可落地的地面高度；探不到（虚空）就保持原位。
-     *
-     * <p>这里用 {@code setPos} 直接落位而不是走 {@code move()}：{@code move()} 的逐部件判定会在
-     * 身体刚碰到地面的那一刻取消整步，降落会永远卡在半空。起飞前已经检查过上方净空，
-     * 降落用的是实际探测到的地面，所以直接落位是安全的。
-     */
-    /**
-     * 当前位置下方的地面高度。
-     *
-     * <p>用高度图（{@code MOTION_BLOCKING}），不用向下扫方块：向下扫有两个独立的坑——
-     * 龙若已经在山体内部，扫到的"地面"是它脚底那块，落地会变成原地不动甚至往上飞；
-     * 而在测试世界里结构方块与方块坐标差着原点偏移，扫出来的值完全对不上（实测踩到过）。
-     * 高度图给的是"这一列真正的表面"，与龙站在哪里无关。
-     *
-     * <p>只有高度图低于龙当前高度太多（说明它在洞穴/平台下方）时才退化成"保持原高"，
-     * 避免把落点算到头顶去。
-     */
+    /** 从实体脚下向下探测当前房间的碰撞表面；虚空中保持原高。 */
     private double groundLevelBelow() {
-        int height = level().getHeight(Heightmap.Types.MOTION_BLOCKING, getBlockX(), getBlockZ());
-        if (height <= level().getMinBuildHeight()) return getY();
-        // 只要高度图低于龙当前位置，就照它落；只有在"高度图反而在头顶"（龙在平台/洞穴下方）
-        // 这种明显不可信的情况下才保持原高。
-        return height <= getY() + 2.0 ? height : getY();
+        // 从实体下方找当前房间的地面，避免高度图把墓室屋顶当成落地高度。
+        var hit = level().clip(new net.minecraft.world.level.ClipContext(
+                position().add(0, .25, 0), new Vec3(getX(), level().getMinBuildHeight(), getZ()),
+                net.minecraft.world.level.ClipContext.Block.COLLIDER,
+                net.minecraft.world.level.ClipContext.Fluid.NONE, this));
+        return hit.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK ? hit.getLocation().y : getY();
     }
 
     /** 墓龙是飞行生物：落地、以及过渡期间的程序化位移都不该造成摔落伤害。 */
@@ -450,27 +473,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         this.moving = moving;
     }
 
-    /**
-     * 飞行时维持离地高度：地形升高就抬起来，保证"自身离下方地面 ≥ {@link #FLIGHT_CLEARANCE}"。
-     * 每 tick 最多抬 {@link #ALTITUDE_CLIMB_RATE} 格，免得猛地跳一下。
-     */
-    private void maintainFlightAltitude() {
-        if (!flying() || pendingForm != null) return;
-        double lowest = groundLevelBelow() + FLIGHT_CLEARANCE;
-        if (getY() < lowest - 0.05) {
-            setPos(getX(), Math.min(lowest, getY() + ALTITUDE_CLIMB_RATE), getZ());
-        }
-    }
-
-    /**
-     * 按"形态 + 是否移动 + 是否在转向"选动画。
-     *
-     * <p>地面：idle_ground / run / turn_ground_left / turn_ground_right（后两者是一次性动画）。
-     * 空中：idle_air / fly，两者之间要走 idle_air_to_fly / fly_to_idle_air 过渡。
-     * turn_air_* 是留给后续攻击的（待机 → 转向目标 → 攻击），这里刻意不用。
-     */
+    /** Select the idle or locomotion loop when combat and form transitions are not driving a clip. */
     private void tickAnimation() {
-        if (pendingForm != null) return;
+        if (pendingForm != null || combat.active() || combat.controlsMovement()) return;
 
         if (pendingLoopAnimation != null) {
             if (animationSeconds(0) >= GraveDragonPose.duration(animation())) {
@@ -481,21 +486,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
             return;
         }
 
-        // 转向判定用"目标点方向与当前朝向的偏角"：它不依赖 tick 内的赋值时序，比朝向变化率可靠。
-        float turn = desiredTurnDegrees();
-        boolean turning = !flying() && moving && Math.abs(turn) > TURN_ANIMATION_THRESHOLD;
-        String desired;
-        if (turning) {
-            // 注意命名反直觉：turn_ground_left 其实是**实体右转**的动作，turn_ground_right 才是
-            // 实体左转。依据有两条，互相印证：
-            //   1) 动画数据里 turn_ground_left 的 head Y 旋转是 -58°、right 是 +58°，而模型空间
-            //      绕 Y 正转经 modelToEntity 之后是实体左转；
-            //   2) 集成测试实测 yaw 增大（实体右转）时播的就是 turn_ground_left。
-            // 美术是按"观众在屏幕上看到的偏向"命名的：龙朝屏幕左边偏就叫 left。
-            desired = turn > 0 ? "turn_ground_left" : "turn_ground_right";
-        } else {
-            desired = moving ? (flying() ? "fly" : "run") : (flying() ? "idle_air" : "idle_ground");
-        }
+        String desired = moving ? (flying() ? "fly" : "run") : (flying() ? "idle_air" : "idle_ground");
         if (desired.equals(animation())) return;
 
         // 空中的待机 <-> 飞行之间必须走过渡动画；地面 run 与 idle_ground 是同一套形状，直接切。
@@ -518,105 +509,14 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         playAnimation(next.equals("fly") ? "idle_air_to_fly" : "fly_to_idle_air", true);
     }
 
-    /**
-     * 目标点方向与当前朝向的偏角（度）。正数表示需要向右转。
-     *
-     * <p>用它而不是朝向变化率：变化率依赖 tick 内 yBodyRot 的赋值时序（LivingEntity.tick 内部
-     * 会同步 yBodyRotO），很容易恒为 0 或者反号。
-     */
-    private float desiredTurnDegrees() {
-        Vec3 target = wanderTarget;
-        if (target == null) return 0;
-        Vec3 toTarget = target.subtract(position());
-        if (toTarget.x * toTarget.x + toTarget.z * toTarget.z < 1.0E-4) return 0;
-        // 与飞行转向同一个约定：yaw = atan2(dx, dz)，yaw 增大 = 实体向右转。
-        // （原来写成 atan2(-dx, dz)，左右是反的：目标在 -X 时算出 +90，其实是右转 -90。）
-        float wantedYaw = (float) Math.toDegrees(Math.atan2(toTarget.x, toTarget.z));
-        return Mth.wrapDegrees(wantedYaw - yBodyRot);
-    }
-
-    /** 供测试：直接注入漫游目标点（跳过随机搜索）。 */
-    public void setWanderTarget(Vec3 target) {
-        this.wanderTarget = target;
-        // 注入目标点意味着"从现在开始按这个点走"，所以把计时状态一并清掉：
-        // 否则上一次"挑不出目标点"留下的 stallTicks、或待机计时会继续压着 moving=false，
-        // 测试就会看到"设了目标却不动"（实测被这里误导过一轮）。
-        this.stallTicks = 0;
-        this.wanderIdleTicks = 0;
-        this.wanderTicks = 0;
-    }
-
-    /** 是否已经"到了"目标点：水平 4 格、垂直 3 格以内（空中形态的锚点是个点，不能用球面距离）。 */
-    private boolean wanderedTarget() {
-        if (wanderTarget == null) return true;
-        double horizontal = Math.hypot(wanderTarget.x - getX(), wanderTarget.z - getZ());
-        return horizontal < 4.0 && Math.abs(wanderTarget.y - getY()) < 3.0;
-    }
-
-    public boolean isWanderIdle() {
-        return wanderIdleTicks > 0;
-    }
-
-    public int wanderIdleTicks() {
-        return wanderIdleTicks;
-    }
-
-    /** 供测试：清掉待机计时，好继续验证"到达后换下一个点"的分支。 */
-    public void resetWanderIdle() {
-        this.wanderIdleTicks = 0;
-    }
-
-    /** 供测试诊断：当前漫游目标（null = 没有）。 */
-    public Vec3 wanderTarget() {
-        return wanderTarget;
-    }
-
-    /** 供测试诊断：当前漫游目标是否为空。 */
-    public boolean hasWanderTarget() {
-        return wanderTarget != null;
-    }
-
-    /** 供测试诊断：漫游是否被允许。 */
-    public boolean wanderEnabled() {
-        return wanderEnabled;
-    }
-
-    /** 供测试诊断：单个目标点已经追了多少 tick。 */
-    public int wanderTicksElapsed() {
-        return wanderTicks;
-    }
-
-    private void scheduleNextFormSwitch(long now) {
-        this.nextFormSwitchAt = now + FORM_MIN_TICKS + random.nextInt(FORM_RANDOM_TICKS);
-    }
-
-    /** 供测试与调试：把下一次形态切换提前到 {@code delayTicks} tick 之后。 */
-    public void scheduleFormSwitchIn(int delayTicks) {
-        this.nextFormSwitchAt = level().getGameTime() + delayTicks;
-    }
-
-    /**
-     * 供测试与调试：把当前动画的起点往前挪，模拟"已经播了 {@code seconds} 秒"。
-     *
-     * <p>集成测试里连续调用 {@code tick()} 并不会推进 {@code level().getGameTime()}（那由服务端
-     * 主循环负责），所以光靠连续 tick 无法让过渡动画播完，需要这个钩子。
-     */
-    public void backdateAnimation(double seconds) {
-        entityData.set(ANIMATION_START, level().getGameTime() - (long) (seconds * 20.0));
-    }
-
-    /**
-     * 供测试与调试：把动画**冻结**在 {@code seconds} 秒处（每 tick 重新对齐，相位不再前进）。
-     *
-     * <p>用来做"同一动画相位下对比两种姿态"的测量：否则两次测量落在动画的不同相位上，
-     * idle_air 自带的头部摆动会混进差值里，分不清是姿态变化还是动画噪声。
-     */
-    public void freezeAnimationAt(double seconds) {
-        backdateAnimation(seconds);
+    private void disableAutomaticFormSwitch() {
+        this.nextFormSwitchAt = Long.MAX_VALUE;
     }
 
     private void applyFormPhysics(boolean air) {
         this.setNoGravity(air);
+        this.setDeltaMovement(Vec3.ZERO);
+        this.moving = false;
         // 换形态就换寻路器。旧导航连同它的路径一起丢弃，新导航是干净的，不会残留上一种形态的路线。
         this.navigation = createNavigation(this.level());
     }
@@ -624,32 +524,14 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /**
      * 起飞前的净空检查：**把整个飞行姿态逐碰撞箱摆到巡航高度**，任何一个碰撞箱插进方块都不许起飞。
      *
-     * <p>为什么不按固定高度/距离判据：这条龙的身体相对锚点向上下各伸出十几格
-     * （{@code fly} 实测 Y ∈ [−10.72, +24.84]，见 {@link #FLIGHT_BODY_DEPTH}），
-     * "头顶有 10 格空气"完全不代表飞行姿态放得下。所以这里直接采样 {@code fly} / {@code idle_air}
-     * 的几个相位、把 79 个 OBB 摆上去逐块判定（{@link #poseFitsAt}），起点再补一次 {@code idle_ground}。
-     *
-     * <p>这条判定对**身体跨度内的任何方块**都敏感：跨度是水平 ±30 格、垂直 −11..+25 格。
-     * 2026-09 排查"集成测试里时过时不过"时确认过：原因不在判定本身，而在测试场地——
-     * gametest 同一批次的测试**共用同一个世界并发运行**，而结构区只隔 10 格，
-     * 于是别的测试留下的平台/天花板会正好落在这条龙的跨度里，起飞就时成时不成
-     * （实测日志：悬在空中的龙 {@code flyFits=false}，而 19 格外就是另一条测试的稀疏石台）。
-     * 现在测试侧统一"独立批次 + 结束还原方块"，判定本身保持不变。
+     * <p>按最新导出动作的实际 79 个 OBB 检查，不沿用旧模型的固定身体深度。
+     * 采样 {@code fly} / {@code idle_air} 的多个相位，起点再检查 {@code idle_ground}。
      */
     private boolean hasTakeoffClearance() {
-        // 起飞后锚点会停在"当前高度 + FLIGHT_CLEARANCE"上。飞行姿态的身体相对锚点向下伸出
-        // FLIGHT_BODY_DEPTH 格（实测 fly 的碰撞箱最低点是 −10.72），所以离地高度必须**大于**这个
-        // 深度，否则光是把姿态摆到巡航高度就已经插进地面了。
-        if (FLIGHT_CLEARANCE <= FLIGHT_BODY_DEPTH) return false;
         if (!poseFitsAt("fly", FLIGHT_CLEARANCE)) return false;
         if (!poseFitsAt("idle_air", FLIGHT_CLEARANCE)) return false;
         // 起点也要放得下：地面姿态此刻就在地面上。
         return poseFitsAt("idle_ground", 0.0);
-    }
-
-    /** 供测试：飞行姿态相对锚点向下的最大深度（格，正数）。 */
-    public static double flightBodyDepth() {
-        return FLIGHT_BODY_DEPTH;
     }
 
     /**
@@ -659,16 +541,16 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * 有 20 多格高，射线一出锚点就撞到自己身上，"地面"永远探在当前高度（实测确认过）。
      */
     private boolean poseFitsAt(String pose, double lift) {
-        // 地面姿态的脚底在锚点**上方**约 0.05 格（OBB 表实测），龙站在地面上时脚底方块与
-        // 脚掌在浮点上贴在一起，不抬这一点就会把"站在地上"判成穿透。
+        // v6 地面循环最低点约 -0.033 格；小幅抬高检测位，避免脚底贴地被当成穿透。
         Vec3 origin = new Vec3(getX(), getY() + lift + POSE_CLEARANCE_LIFT, getZ());
         double duration = GraveDragonPose.duration(pose);
+        var transform = GraveDragonPose.modelToEntity(yBodyRot, 0.0F, getScale());
         // 采样几个相位，覆盖尾巴最低 / 身体最开的时刻。
         for (int step = 0; step < POSE_CLEARANCE_SAMPLES; step++) {
             var frame = GraveDragonPose.sample(pose, duration * step / POSE_CLEARANCE_SAMPLES, false);
             for (int i = 0; i < PART_LABELS.length; i++) {
                 var box = GraveDragonPose.box(frame, PART_LABELS[i], PART_BOUNDS[i],
-                        GraveDragonPose.modelToEntity(yBodyRot, 0.0F, getScale()), origin);
+                        transform, origin);
                 if (penetrationIntoBlocks(box) > POSE_CLEARANCE_TOLERANCE) return false;
             }
         }
@@ -685,10 +567,15 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * <p>深度取 OBB 包围盒与方块的 Y 重叠量：对"站在方块上"这种情形就是最直观的穿模深度。
      */
     private double penetrationIntoBlocks(OrientedBoundingBox box) {
+        return penetrationIntoBlocks(box, Double.NEGATIVE_INFINITY);
+    }
+
+    private double penetrationIntoBlocks(OrientedBoundingBox box, double contactFloor) {
         net.minecraft.world.phys.AABB envelope = box.enclosingAabb();
         double deepest = 0;
         for (var shape : level().getBlockCollisions(this, envelope)) {
             for (var block : shape.toAabbs()) {
+                if (block.maxY <= contactFloor + POSE_CLEARANCE_TOLERANCE) continue;
                 deepest = Math.max(deepest, obbBlockPenetration(box, block));
             }
         }
@@ -740,44 +627,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         return minOverlap == Double.MAX_VALUE ? 0 : minOverlap;
     }
 
-    /**
-     * 某个水平位置的地面高度（最高非空气方块的顶面）。
-     *
-     * <p>用高度图而不是向下扫方块：{@code level().clip} 会把墓龙自己当成忽略对象，而它的身体有
-     * 20 多格高，射线一出锚点就撞到自己身上，于是"地面"永远探在当前高度、起飞/降落全失效
-     * （实测确认过）。高度图还顺带解决"龙在平台下方"这类位置关系。
-     */
-    private double groundLevelAt(Vec3 from) {
-        int bx = Mth.floor(from.x), bz = Mth.floor(from.z);
-        int start = Mth.floor(from.y);
-        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
-        for (int y = start; y >= start - (int) LANDING_PROBE; y--) {
-            if (!level().getBlockState(cursor.set(bx, y, bz)).getCollisionShape(level(), cursor).isEmpty()) {
-                return y + 1.0;
-            }
-        }
-        return Double.NaN;
-    }
-
-    /** 供测试：当前水平位置的地面高度（虚空返回 NaN）。 */
-    public double groundLevelForTest() {
-        return groundLevelAt(position());
-    }
-
-    /**
-     * How often collision boxes may advance, in ticks. See {@link #collisionPoseSeconds()}.
-     *
-     * <p>One tick is the vanilla tick granularity, so the boxes advance every tick with no
-     * extra lag and no visible stutter. The guarantee only needs both sides to round to the
-     * same value, and the phase is a pure function of two integers they share — the world clock
-     * and the synced {@link #ANIMATION_START} — which holds at any step size. What actually broke
-     * earlier was the renderer overwriting the boxes with an interpolated frame, not the step.
-     *
-     * <p>Kept as a named constant rather than inlined so the value can be raised again if a
-     * future change ever lets the two clocks drift apart.
-     */
-    private static final long POSE_QUANTUM_TICKS = 1;
-
     // ===== OBB 调整表：行号必须与下方 PART_LABELS 一一对应，不要单独增删/换序 =====
     // 每行前 6 项：[宽 X, 高 Y, 长 Z, 中心 X, 中心 Y, 中心 Z]。
     // 尺寸是完整边长，不是半长；单位为方块（Blockbench 的像素坐标/尺寸除以 16）。
@@ -786,197 +635,91 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     // 前 3 项改大小，后 3 项移位置；动画、实体朝向及 getScale() 缩放由姿态代码统一应用。
     // 可选第 7~9 项：[旋转 X, 旋转 Y, 旋转 Z]，单位为度；不填即 0。
     // 旋转围绕碰撞框中心，矩阵为 Rz * Ry * Rx（对点先 X、再 Y、最后 Z）。
-    // 上下嘴（12/78）保持同宽/同高/同长、同中心 X/Z，嘴缝 Y = 119.80492 / 16。
-    // 调整嘴高 H 时：下嘴中心 Y = 嘴缝 Y - H/2，上嘴中心 Y = 嘴缝 Y + H/2。
-    // 当前 USE_EXTERNAL_PART_CONFIG=false，本表直接生效；修改 Java 后须重新启动游戏。
+    // 2026-10-01：按用户最终 dragon_v6 的实心几何重新拟合；忽略鬃毛/胡须面片。
+    // 上下嘴各自贴合模型；四肢保留双段 ID，指节与龙角使用几何自身的局部旋转。
+    // 碰撞箱尺寸以本表为准；修改 Java 后须重新启动游戏。
     private static final float[][] HARD_CODED_PART_BOUNDS = {
-            // [00] neck_01：躯干/颈部第 01 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.16125f, 1.959375f, 3.25f, 0f, 7.7351811438f, 14.875f},
-            // [01] neck_02：躯干/颈部第 02 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.16125f, 1.959375f, 3.25f, 0f, 7.7351811438f, 11.875f},
-            // [02] neck_03：躯干/颈部第 03 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.16125f, 1.959375f, 3.25f, 0f, 7.7351811438f, 8.875f},
-            // [03] neck_04：躯干/颈部第 04 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.16125f, 1.959375f, 3.25f, 0f, 7.7351811438f, 5.875f},
-            // [04] neck_05：躯干/颈部第 05 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.16125f, 1.959375f, 3.25f, 0f, 7.7351811438f, 2.875f},
-            // [05] neck_06：躯干/颈部第 06 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.16125f, 1.959375f, 3.25f, 0f, 7.7351811438f, -0.125f},
-            // [06] neck_07：躯干/颈部第 07 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.16125f, 1.959375f, 3.25f, 0f, 7.7351811438f, -3.125f},
-            // [07] neck_08：躯干/颈部第 08 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.16125f, 1.959375f, 3.25f, 0f, 7.7351811438f, -6.125f},
-            // [08] neck_09：躯干/颈部第 09 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.1715000875f, 1.959375f, 3.27195055f, -0.01626625f, 7.7351811438f, -9.124911875f},
-            // [09] neck_10：躯干/颈部第 10 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.1715000875f, 1.959375f, 3.27195055f, -0.01626625f, 7.7351811438f, -12.124911875f},
-            // [10] neck_11：躯干/颈部第 11 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.1715000875f, 1.959375f, 3.27195055f, -0.01626625f, 7.7351811438f, -15.124911875f},
-            // [11] head：龙头主体（不含嘴、角和鬃毛）；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {3.97826388f, 3.53500841f, 4.25518141f, -0.05112175f, 8.30309733f, -19.23630925f},
-            // [12] jaw：下嘴（随 jaw 骨骼）；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.53125000f, 1.00000000f, 3.43343688f, -0.04983688f, 6.98780750f, -22.14738031f},
-            // [13] tail_01：尾巴第 01 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.16125f, 1.959375f, 3.25f, 0f, 7.7351811438f, 17.875f},
-            // [14] tail_02：尾巴第 02 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.16125f, 1.959375f, 3.25f, 0f, 7.7351811438f, 20.875f},
-            // [15] tail_03：尾巴第 03 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.9925f, 1.815625f, 3.25f, 0f, 7.7508061438f, 23.875f},
-            // [16] tail_04：尾巴第 04 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.7675f, 1.584375f, 3.25f, 0f, 7.7508061438f, 26.875f},
-            // [17] tail_05：尾巴第 05 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.48625f, 1.296875f, 3.25f, 0f, 7.7539311438f, 29.875f},
-            // [18] tail_06：尾巴第 06 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.14875f, 0.95f, 3.25f, 0f, 7.7554936438f, 32.875f},
-            // [19] tail_07：尾巴第 07 节；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.81125f, 0.6375f, 3.25f, 0f, 7.7398686438f, 35.875f},
-            // [20] tail_tip：尾尖；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.4375f, 0.4375f, 3.125f, 0f, 7.7711186438f, 38.8125f},
-            // [21] neck_joint：头颈连接段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {2.0275646813f, 1.959375f, 2.52199655f, -0.047760625f, 7.7351811438f, -17.999735625f},
-            // [22] front_l_upper_a：左前肢上肢近身段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.5f, 2.3203126782f, 1.5f, -1.5f, 7.3609623016f, -0.1875f},
-            // [23] front_l_upper_b：左前肢上肢远身段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.5f, 2.3203126782f, 1.5f, -1.5f, 5.0406496234f, -0.1875f},
-            // [24] front_l_forearm_a：左前肢前臂近身段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.125f, 1.78125f, 1f, -1.500000425f, 3.1377341838f, -0.1875001563f},
-            // [25] front_l_forearm_b：左前肢前臂近爪段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.125f, 1.78125f, 1f, -1.500000425f, 1.3564841838f, -0.1875001563f},
-            // [26] front_l_hand：左前肢掌部；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.6875f, 0.5625f, 1.3125f, -1.5f, 0.28125f, -0.5f},
-            // [27] front_l_digit_1：左前肢第 1 趾根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.8945518875f, 0.375f, 1.3480108188f, -2.308593125f, 0.1875f, -1.688514375f},
-            // [28] front_l_digit_1_tip：左前肢第 1 趾尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.761376925f, 0.25f, 1.418891775f, -2.8269226813f, 0.125f, -2.8832537063f},
-            // [29] front_l_digit_2：左前肢第 2 趾根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.375f, 0.375f, 1.5f, -1.5f, 0.1875f, -1.84375f},
-            // [30] front_l_digit_2_tip：左前肢第 2 趾尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.25f, 0.25f, 1.5f, -1.5f, 0.125f, -3.28125f},
-            // [31] front_l_digit_3：左前肢第 3 趾根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.9737928125f, 0.375f, 1.5179435313f, -0.65178625f, 0.1875f, -1.773480625f},
-            // [32] front_l_digit_3_tip：左前肢第 3 趾尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.761376925f, 0.25f, 1.4188924f, -0.0938360688f, 0.125f, -3.0531865188f},
-            // [33] front_l_thumb：左前肢拇指根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.375f, 0.375f, 1.5f, -1.46875f, 0.1875f, 0.84375f},
-            // [34] front_l_thumb_tip：左前肢拇指尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.25f, 0.25f, 1.5f, -1.46875f, 0.125f, 2.28125f},
-            // [35] front_r_upper_a：右前肢上肢近身段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.5f, 2.32031245f, 1.5f, 1.5f, 7.3609623063f, -0.1875f},
-            // [36] front_r_upper_b：右前肢上肢远身段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.5f, 2.32031245f, 1.5f, 1.5f, 5.0406500813f, -0.1875f},
-            // [37] front_r_forearm_a：右前肢前臂近身段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.125f, 1.78125f, 1f, 1.5000000188f, 3.1377344088f, -0.1875000188f},
-            // [38] front_r_forearm_b：右前肢前臂近爪段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.125f, 1.78125f, 1f, 1.5000000188f, 1.3564844088f, -0.1875000188f},
-            // [39] front_r_hand：右前肢掌部；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.6875f, 0.5625f, 1.3125f, 1.5f, 0.28125f, -0.5f},
-            // [40] front_r_digit_1：右前肢第 1 趾根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.8945518875f, 0.375f, 1.3480108188f, 0.691406875f, 0.1875f, -1.688514375f},
-            // [41] front_r_digit_1_tip：右前肢第 1 趾尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.761376925f, 0.25f, 1.4188924f, 0.1730773188f, 0.125f, -2.8832540188f},
-            // [42] front_r_digit_2：右前肢第 2 趾根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.375f, 0.375f, 1.5f, 1.5f, 0.1875f, -1.84375f},
-            // [43] front_r_digit_2_tip：右前肢第 2 趾尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.25f, 0.25f, 1.5f, 1.5f, 0.125f, -3.28125f},
-            // [44] front_r_digit_3：右前肢第 3 趾根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.9737928125f, 0.375f, 1.5179435313f, 2.34821375f, 0.1875f, -1.77348125f},
-            // [45] front_r_digit_3_tip：右前肢第 3 趾尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.7896990438f, 0.25f, 1.432099225f, 2.8920028688f, 0.125f, -3.0465831063f},
-            // [46] front_r_thumb：右前肢拇指根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.375f, 0.375f, 1.5f, 1.53125f, 0.1875f, 0.84375f},
-            // [47] front_r_thumb_tip：右前肢拇指尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.25f, 0.25f, 1.5f, 1.53125f, 0.125f, 2.28125f},
-            // [48] hind_l_upper_a：左后肢上肢近身段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.5f, 2.3203126782f, 1.5f, -1.5f, 7.3609623016f, 20.8125f},
-            // [49] hind_l_upper_b：左后肢上肢远身段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.5f, 2.3203126782f, 1.5f, -1.5f, 5.0406496234f, 20.8125f},
-            // [50] hind_l_forearm_a：左后肢前臂近身段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.125f, 1.78125f, 1f, -1.500000425f, 3.1377341838f, 20.8124998438f},
-            // [51] hind_l_forearm_b：左后肢前臂近爪段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.125f, 1.78125f, 1f, -1.500000425f, 1.3564841838f, 20.8124998438f},
-            // [52] hind_l_hand：左后肢掌部；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.6875f, 0.5625f, 1.3125f, -1.5f, 0.28125f, 20.5f},
-            // [53] hind_l_digit_1：左后肢第 1 趾根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.8945518875f, 0.375f, 1.3480108188f, -2.308593125f, 0.1875f, 19.311485625f},
-            // [54] hind_l_digit_1_tip：左后肢第 1 趾尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.761376925f, 0.25f, 1.418891775f, -2.8269226813f, 0.125f, 18.1167462938f},
-            // [55] hind_l_digit_2：左后肢第 2 趾根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.375f, 0.375f, 1.5f, -1.5f, 0.1875f, 19.15625f},
-            // [56] hind_l_digit_2_tip：左后肢第 2 趾尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.25f, 0.25f, 1.5f, -1.5f, 0.125f, 17.71875f},
-            // [57] hind_l_digit_3：左后肢第 3 趾根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.9737928125f, 0.375f, 1.5179435313f, -0.65178625f, 0.1875f, 19.226519375f},
-            // [58] hind_l_digit_3_tip：左后肢第 3 趾尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.761376925f, 0.25f, 1.4188924f, -0.0938360688f, 0.125f, 17.9468134813f},
-            // [59] hind_l_thumb：左后肢拇指根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.375f, 0.375f, 1.5f, -1.46875f, 0.1875f, 21.84375f},
-            // [60] hind_l_thumb_tip：左后肢拇指尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.25f, 0.25f, 1.5f, -1.46875f, 0.125f, 23.28125f},
-            // [61] hind_r_upper_a：右后肢上肢近身段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.5f, 2.32031245f, 1.5f, 1.5f, 7.3609623063f, 20.8125f},
-            // [62] hind_r_upper_b：右后肢上肢远身段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.5f, 2.32031245f, 1.5f, 1.5f, 5.0406500813f, 20.8125f},
-            // [63] hind_r_forearm_a：右后肢前臂近身段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.125f, 1.78125f, 1f, 1.5000000188f, 3.1377344088f, 20.8124999813f},
-            // [64] hind_r_forearm_b：右后肢前臂近爪段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.125f, 1.78125f, 1f, 1.5000000188f, 1.3564844088f, 20.8124999813f},
-            // [65] hind_r_hand：右后肢掌部；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.6875f, 0.5625f, 1.3125f, 1.5f, 0.28125f, 20.5f},
-            // [66] hind_r_digit_1：右后肢第 1 趾根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.8945518875f, 0.375f, 1.3480108188f, 0.691406875f, 0.1875f, 19.311485625f},
-            // [67] hind_r_digit_1_tip：右后肢第 1 趾尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.761376925f, 0.25f, 1.4188924f, 0.1730773188f, 0.125f, 18.1167459813f},
-            // [68] hind_r_digit_2：右后肢第 2 趾根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.375f, 0.375f, 1.5f, 1.5f, 0.1875f, 19.15625f},
-            // [69] hind_r_digit_2_tip：右后肢第 2 趾尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.25f, 0.25f, 1.5f, 1.5f, 0.125f, 17.71875f},
-            // [70] hind_r_digit_3：右后肢第 3 趾根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.9737928125f, 0.375f, 1.5179435313f, 2.34821375f, 0.1875f, 19.22651875f},
-            // [71] hind_r_digit_3_tip：右后肢第 3 趾尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.761376925f, 0.25f, 1.4188924f, 2.9061639313f, 0.125f, 17.9468134813f},
-            // [72] hind_r_thumb：右后肢拇指根段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.375f, 0.375f, 1.5f, 1.46875f, 0.1875f, 21.84375f},
-            // [73] hind_r_thumb_tip：右后肢拇指尖段；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {0.25f, 0.25f, 1.5f, 1.46875f, 0.125f, 23.28125f},
-            // [74] horn_l_1：左龙角下段（根部）；宽, 高, 长, 中心X, 中心Y, 中心Z，旋转X°, Y°, Z°
-            {0.67814893f, 3.88308897f, 0.67660680f, -2.07643895f, 10.22741913f, -18.03062303f, 43.63387000f, -22.22635000f, 12.52337000f},
-            // [75] horn_l_2：左龙角上段（角尖方向）；宽, 高, 长, 中心X, 中心Y, 中心Z，旋转X°, Y°, Z°
-            {1.66040069f, 3.99819307f, 1.41199179f, -2.98039116f, 11.89310617f, -16.64814665f, 55.75736000f, -7.08012000f, 3.10512000f},
-            // [76] horn_r_1：右龙角下段（根部）；宽, 高, 长, 中心X, 中心Y, 中心Z，旋转X°, Y°, Z°
-            {0.67814898f, 3.88308984f, 0.67660685f, 1.97415562f, 10.22650067f, -18.02628364f, 43.63386000f, 22.22636000f, -12.52338000f},
-            // [77] horn_r_2：右龙角上段（角尖方向）；宽, 高, 长, 中心X, 中心Y, 中心Z，旋转X°, Y°, Z°
-            {1.66039994f, 4.02522898f, 1.41199178f, 2.87989528f, 11.89970810f, -16.63271714f, 55.75736000f, 7.08011000f, -3.10512000f},
-            // [78] upper_jaw：上嘴（随 head 骨骼）；宽, 高, 长, 中心X, 中心Y, 中心Z
-            {1.53125000f, 1.00000000f, 3.43343688f, -0.04983688f, 7.98780750f, -22.14738031f}
+        {3.16125000f, 2.95937500f, 4.00000000f, 0.00000000f, 8.23518125f, 15.25000000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [0] neck_01
+        {3.16125000f, 2.95937500f, 4.00000000f, 0.00000000f, 8.23518125f, 12.25000000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [1] neck_02
+        {3.16125000f, 2.95937500f, 4.00000000f, 0.00000000f, 8.23518125f, 9.25000000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [2] neck_03
+        {3.16125000f, 2.95937500f, 4.00000000f, 0.00000000f, 8.23518125f, 6.25000000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [3] neck_04
+        {3.16125000f, 2.95937500f, 4.37500000f, 0.00000000f, 8.23518125f, 3.06250000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [4] neck_05
+        {3.16125000f, 2.95937500f, 3.50000000f, 0.00000000f, 8.23518125f, 0.00000000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [5] neck_06
+        {3.16125000f, 2.95937500f, 4.00000000f, 0.00000000f, 8.23518125f, -2.75000000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [6] neck_07
+        {3.17143904f, 2.95937500f, 4.01601147f, -0.02379250f, 8.23518125f, -5.75800574f, 0.00000000f, 0.00000000f, 0.00000000f}, // [7] neck_08
+        {3.17143904f, 2.95937500f, 4.01601147f, -0.02379250f, 8.23518125f, -8.75800574f, 0.00000000f, 0.00000000f, 0.00000000f}, // [8] neck_09
+        {3.17143904f, 2.95937500f, 4.01601147f, -0.02379250f, 8.23518125f, -11.75800574f, 0.00000000f, 0.00000000f, 0.00000000f}, // [9] neck_10
+        {3.17143904f, 2.95937500f, 4.01601147f, -0.02379250f, 8.23518125f, -14.75800574f, 0.00000000f, 0.00000000f, 0.00000000f}, // [10] neck_11
+        {4.90922001f, 4.47634781f, 4.57501377f, -0.04951432f, 8.79381203f, -19.18794739f, 0.00000000f, 0.00000000f, 0.00000000f}, // [11] head
+        {1.87704875f, 0.87516813f, 3.32710937f, -0.04951375f, 7.31714406f, -22.12241906f, 0.00000000f, 0.00000000f, 0.00000000f}, // [12] jaw
+        {3.16125000f, 2.95937500f, 4.00000000f, 0.00000000f, 8.23518125f, 18.25000000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [13] tail_01
+        {3.16125000f, 2.95937500f, 4.00000000f, 0.00000000f, 8.23518125f, 21.25000000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [14] tail_02
+        {2.68394000f, 2.51060062f, 3.98453125f, 0.00000000f, 8.25678719f, 24.24226563f, 0.00000000f, 0.00000000f, 0.00000000f}, // [15] tail_03
+        {2.17640687f, 1.98868125f, 3.87828125f, 0.00000031f, 8.25479375f, 27.18914063f, 0.00000000f, 0.00000000f, 0.00000000f}, // [16] tail_04
+        {1.65817000f, 1.46234562f, 3.71890625f, 0.00000000f, 8.25632344f, 30.10945313f, 0.00000000f, 0.00000000f, 0.00000000f}, // [17] tail_05
+        {1.14875000f, 0.95000000f, 3.58609375f, 0.00000000f, 8.25549375f, 33.04304688f, 0.00000000f, 0.00000000f, 0.00000000f}, // [18] tail_06
+        {0.81125000f, 0.63750000f, 3.47984375f, 0.00000000f, 8.23986875f, 35.98992188f, 0.00000000f, 0.00000000f, 0.00000000f}, // [19] tail_07
+        {0.43750000f, 0.43750000f, 3.12500000f, 0.00000000f, 8.27111875f, 38.81250000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [20] tail_tip
+        {2.97700709f, 2.95937500f, 3.51604197f, -0.05780479f, 8.23518125f, -17.50783724f, 0.00000000f, 0.00000000f, 0.00000000f}, // [21] neck_joint
+        {2.05000000f, 1.75000000f, 2.30000000f, -2.05623432f, 8.42226581f, -0.40990349f, -26.40319000f, -7.98133000f, -25.62489000f}, // [22] front_l_upper_a
+        {1.65000000f, 3.95226938f, 1.65000000f, -2.00000000f, 6.35662781f, -0.18750000f, 0.00000000f, 90.00000000f, 180.00000000f}, // [23] front_l_upper_b
+        {1.35000000f, 2.03125000f, 1.20000000f, -2.00000063f, 3.50545688f, -0.18750000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [24] front_l_forearm_a
+        {1.35000000f, 2.03125000f, 1.20000000f, -2.00000063f, 1.47420688f, -0.18750000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [25] front_l_forearm_b
+        {2.02500000f, 0.56250000f, 1.57500000f, -2.00000000f, 0.28125000f, -0.56250000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [26] front_l_hand
+        {0.37500000f, 1.31250000f, 0.37500000f, -2.91484312f, 0.18750000f, -1.86976437f, -90.00000000f, 25.00000000f, 0.00000000f}, // [27] front_l_digit_1
+        {0.25000000f, 0.93750000f, 0.25000000f, -3.36387500f, 0.12500000f, -2.83271688f, -90.00000000f, 25.00000000f, 0.00000000f}, // [28] front_l_digit_1_tip
+        {0.37500000f, 1.50000000f, 0.37500000f, -2.00000000f, 0.18750000f, -2.02500000f, -90.00000000f, 0.00000000f, 0.00000000f}, // [29] front_l_digit_2
+        {0.25000000f, 0.93750000f, 0.25000000f, -2.00000000f, 0.12500000f, -3.18125000f, -90.00000000f, 0.00000000f, 0.00000000f}, // [30] front_l_digit_2_tip
+        {0.37500000f, 1.50000000f, 0.37500000f, -1.04553625f, 0.18750000f, -1.95473063f, -90.00000000f, -25.00000000f, 0.00000000f}, // [31] front_l_digit_3
+        {0.25000000f, 0.93750000f, 0.25000000f, -0.55688375f, 0.12500000f, -3.00264937f, -90.00000000f, -25.00000000f, 0.00000000f}, // [32] front_l_digit_3_tip
+        {0.37500000f, 1.50000000f, 0.37500000f, -1.96250000f, 0.18750000f, 0.90000000f, 90.00000000f, 0.00000000f, 180.00000000f}, // [33] front_l_thumb
+        {0.25000000f, 0.93750000f, 0.25000000f, -1.96250000f, 0.12500000f, 2.05625000f, 90.00000000f, 0.00000000f, 180.00000000f}, // [34] front_l_thumb_tip
+        {2.05000000f, 1.75000000f, 2.30000000f, 1.84692453f, 8.32186950f, -0.40990345f, -26.40320000f, -7.98130000f, 25.62490000f}, // [35] front_r_upper_a
+        {1.65000000f, 3.95226937f, 1.65000000f, 2.00000000f, 6.35662844f, -0.18750000f, 0.00000000f, 90.00000000f, 180.00000000f}, // [36] front_r_upper_b
+        {1.35000000f, 2.03125000f, 1.20000000f, 2.00000000f, 3.50545688f, -0.18750000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [37] front_r_forearm_a
+        {1.35000000f, 2.03125000f, 1.20000000f, 2.00000000f, 1.47420688f, -0.18750000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [38] front_r_forearm_b
+        {2.02500000f, 0.56250000f, 1.57500000f, 2.00000000f, 0.28125000f, -0.56250000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [39] front_r_hand
+        {0.37500000f, 1.31250000f, 0.37500000f, 1.08515687f, 0.18750000f, -1.86976437f, -90.00000000f, 25.00000000f, 0.00000000f}, // [40] front_r_digit_1
+        {0.25000000f, 0.93750000f, 0.25000000f, 0.63612500f, 0.12500000f, -2.83271688f, -90.00000000f, 25.00000000f, 0.00000000f}, // [41] front_r_digit_1_tip
+        {0.37500000f, 1.50000000f, 0.37500000f, 2.00000000f, 0.18750000f, -2.02500000f, -90.00000000f, 0.00000000f, 0.00000000f}, // [42] front_r_digit_2
+        {0.25000000f, 0.93750000f, 0.25000000f, 2.00000000f, 0.12500000f, -3.18125000f, -90.00000000f, 0.00000000f, 0.00000000f}, // [43] front_r_digit_2_tip
+        {0.37500000f, 1.50000000f, 0.37500000f, 2.95446375f, 0.18750000f, -1.95473125f, -90.00000000f, -25.00000000f, 0.00000000f}, // [44] front_r_digit_3
+        {0.31250000f, 0.93750000f, 0.25000000f, 3.44311625f, 0.12500000f, -3.00264937f, -90.00000000f, -25.00000000f, 0.00000000f}, // [45] front_r_digit_3_tip
+        {0.37500000f, 1.50000000f, 0.37500000f, 2.03750000f, 0.18750000f, 0.90000000f, 90.00000000f, 0.00000000f, 180.00000000f}, // [46] front_r_thumb
+        {0.25000000f, 0.93750000f, 0.25000000f, 2.03750000f, 0.12500000f, 2.05625000f, 90.00000000f, 0.00000000f, 180.00000000f}, // [47] front_r_thumb_tip
+        {2.05000000f, 1.75000000f, 2.30000000f, -2.05623433f, 8.42226583f, 20.59009655f, -26.40320000f, -7.98130000f, -25.62490000f}, // [48] hind_l_upper_a
+        {1.65000000f, 3.95226938f, 1.65000000f, -2.00000000f, 6.35662781f, 20.81250000f, 0.00000000f, 90.00000000f, 180.00000000f}, // [49] hind_l_upper_b
+        {1.35000000f, 2.03125000f, 1.20000000f, -2.00000063f, 3.50545688f, 20.81250000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [50] hind_l_forearm_a
+        {1.35000000f, 2.03125000f, 1.20000000f, -2.00000063f, 1.47420688f, 20.81250000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [51] hind_l_forearm_b
+        {2.02500000f, 0.56250000f, 1.57500000f, -2.00000000f, 0.28125000f, 20.43750000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [52] hind_l_hand
+        {0.37500000f, 1.31250000f, 0.37500000f, -2.91484313f, 0.18750000f, 19.13023563f, -90.00000000f, 25.00000000f, 0.00000000f}, // [53] hind_l_digit_1
+        {0.25000000f, 0.93750000f, 0.25000000f, -3.36387500f, 0.12500000f, 18.16728313f, -90.00000000f, 25.00000000f, 0.00000000f}, // [54] hind_l_digit_1_tip
+        {0.37500000f, 1.50000000f, 0.37500000f, -2.00000000f, 0.18750000f, 18.97500000f, -90.00000000f, 0.00000000f, 0.00000000f}, // [55] hind_l_digit_2
+        {0.25000000f, 0.93750000f, 0.25000000f, -2.00000000f, 0.12500000f, 17.81875000f, -90.00000000f, 0.00000000f, 0.00000000f}, // [56] hind_l_digit_2_tip
+        {0.37500000f, 1.50000000f, 0.37500000f, -1.04553625f, 0.18750000f, 19.04526937f, -90.00000000f, -25.00000000f, 0.00000000f}, // [57] hind_l_digit_3
+        {0.25000000f, 0.93750000f, 0.25000000f, -0.55688375f, 0.12500000f, 17.99735062f, -90.00000000f, -25.00000000f, 0.00000000f}, // [58] hind_l_digit_3_tip
+        {0.37500000f, 1.50000000f, 0.37500000f, -1.96250000f, 0.18750000f, 21.90000000f, 90.00000000f, 0.00000000f, 180.00000000f}, // [59] hind_l_thumb
+        {0.25000000f, 0.93750000f, 0.25000000f, -1.96250000f, 0.12500000f, 23.05625000f, 90.00000000f, 0.00000000f, 180.00000000f}, // [60] hind_l_thumb_tip
+        {2.05000000f, 1.75000000f, 2.30000000f, 1.84692453f, 8.32186950f, 20.59009655f, -26.40320000f, -7.98130000f, 25.62490000f}, // [61] hind_r_upper_a
+        {1.65000000f, 3.95226937f, 1.65000000f, 2.00000000f, 6.35662844f, 20.81250000f, 0.00000000f, 90.00000000f, 180.00000000f}, // [62] hind_r_upper_b
+        {1.35000000f, 2.03125000f, 1.20000000f, 2.00000000f, 3.50545688f, 20.81250000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [63] hind_r_forearm_a
+        {1.35000000f, 2.03125000f, 1.20000000f, 2.00000000f, 1.47420688f, 20.81250000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [64] hind_r_forearm_b
+        {2.02500000f, 0.56250000f, 1.57500000f, 2.00000000f, 0.28125000f, 20.43750000f, 0.00000000f, 0.00000000f, 0.00000000f}, // [65] hind_r_hand
+        {0.37500000f, 1.31250000f, 0.37500000f, 1.08515687f, 0.18750000f, 19.13023562f, -90.00000000f, 25.00000000f, 0.00000000f}, // [66] hind_r_digit_1
+        {0.25000000f, 0.93750000f, 0.25000000f, 0.63612500f, 0.12500000f, 18.16728313f, -90.00000000f, 25.00000000f, 0.00000000f}, // [67] hind_r_digit_1_tip
+        {0.37500000f, 1.50000000f, 0.37500000f, 2.00000000f, 0.18750000f, 18.97500000f, -90.00000000f, 0.00000000f, 0.00000000f}, // [68] hind_r_digit_2
+        {0.25000000f, 0.93750000f, 0.25000000f, 2.00000000f, 0.12500000f, 17.81875000f, -90.00000000f, 0.00000000f, 0.00000000f}, // [69] hind_r_digit_2_tip
+        {0.37500000f, 1.50000000f, 0.37500000f, 2.95446375f, 0.18750000f, 19.04526875f, -90.00000000f, -25.00000000f, 0.00000000f}, // [70] hind_r_digit_3
+        {0.25000000f, 0.93750000f, 0.25000000f, 3.44311625f, 0.12500000f, 17.99735062f, -90.00000000f, -25.00000000f, 0.00000000f}, // [71] hind_r_digit_3_tip
+        {0.37500000f, 1.50000000f, 0.37500000f, 1.96250000f, 0.18750000f, 21.90000000f, 90.00000000f, 0.00000000f, 180.00000000f}, // [72] hind_r_thumb
+        {0.25000000f, 0.93750000f, 0.25000000f, 1.96250000f, 0.12500000f, 23.05625000f, 90.00000000f, 0.00000000f, 180.00000000f}, // [73] hind_r_thumb_tip
+        {0.69710479f, 4.24955625f, 1.65265285f, -2.43765162f, 11.59364793f, -18.22347607f, 43.63387000f, -22.22635000f, 12.52337000f}, // [74] horn_l_1
+        {2.02707429f, 3.14880841f, 1.16569227f, -3.62348373f, 13.46511602f, -16.09811009f, 55.75736000f, -7.08012000f, 3.10512000f}, // [75] horn_l_2
+        {0.69710485f, 4.24955625f, 1.65265277f, 2.31265159f, 11.59364791f, -18.22347603f, 43.63387000f, 22.22635000f, -12.52337000f}, // [76] horn_r_1
+        {2.02707429f, 3.14880841f, 1.16569227f, 3.49848373f, 13.46511602f, -16.09811009f, 55.75736000f, 7.08012000f, -3.10512000f}, // [77] horn_r_2
+        {1.87704875f, 1.38457125f, 3.40218688f, -0.04951375f, 8.28292375f, -22.14738031f, 0.00000000f, 0.00000000f, 0.00000000f}, // [78] upper_jaw
     };
-    /** Set true only when deliberately switching back to the live JSON tuner. */
-    private static final boolean USE_EXTERNAL_PART_CONFIG = false;
-    private static final java.nio.file.Path PART_CONFIG_FILE =
-            FMLPaths.CONFIGDIR.get().resolve("panlingre/grave_dragon_parts.json");
-    /**
-     * Active bounds table. Package-private rather than private so the pose/drift
-     * diagnostics in the same package can read the live values.
-     */
-    static float[][] PART_BOUNDS = HARD_CODED_PART_BOUNDS;
-    private static boolean partConfigLoaded;
-    private static long partConfigTimestamp = Long.MIN_VALUE;
-
-    public static void reloadPartConfig() {
-        PART_BOUNDS = USE_EXTERNAL_PART_CONFIG
-                ? MultipartPartConfig.load(PART_CONFIG_FILE, HARD_CODED_PART_BOUNDS)
-                : HARD_CODED_PART_BOUNDS;
-        if (USE_EXTERNAL_PART_CONFIG && !java.nio.file.Files.exists(PART_CONFIG_FILE)) {
-            try { MultipartPartConfig.save(PART_CONFIG_FILE, HARD_CODED_PART_BOUNDS); }
-            catch (java.io.IOException ignored) { }
-        }
-        try { partConfigTimestamp = java.nio.file.Files.getLastModifiedTime(PART_CONFIG_FILE).toMillis(); }
-        catch (java.io.IOException ignored) { partConfigTimestamp = Long.MIN_VALUE; }
-        partConfigLoaded = true;
-    }
-
-    public static void saveCurrentPartConfig() throws java.io.IOException {
-        MultipartPartConfig.save(PART_CONFIG_FILE, PART_BOUNDS);
-    }
+    static final float[][] PART_BOUNDS = HARD_CODED_PART_BOUNDS;
     private final GraveDragonPartEntity[] worldParts = new GraveDragonPartEntity[PART_BOUNDS.length];
     static final String[] PART_LABELS = {
             "neck_01", "neck_02", "neck_03", "neck_04", "neck_05", "neck_06", "neck_07", "neck_08",
@@ -1011,7 +754,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     @Override
     public void startSeenByPlayer(ServerPlayer player) {
         super.startSeenByPlayer(player);
-        this.bossEvent.addPlayer(player);
+        if (introStarted) this.bossEvent.addPlayer(player);
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, combat.trackingPayload());
+        combat.sendFireField(player);
     }
 
     @Override
@@ -1020,21 +765,14 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         this.bossEvent.removePlayer(player);
     }
 
-    /** 当前正在看到这条 BossBar 的玩家，供测试与调试使用。 */
-    public java.util.Collection<ServerPlayer> bossBarViewers() {
-        return this.bossEvent.getPlayers();
-    }
-
     public GraveDragonEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
-        if (!partConfigLoaded) reloadPartConfig();
         if (!level.isClientSide) {
-            // 初始为地面形态（走地、idle_ground），并立刻安排一次起飞判断——也就是说召唤出来
-            // 只要头顶有空间就会马上起飞，而不是先傻站着。
+            // Spawn dormant on the ground; the first NoAI:false starts into_2.
             entityData.set(ANIMATION_START, level.getGameTime());
-            entityData.set(ANIMATION, "idle_ground");
+            entityData.set(ANIMATION, "into_1");
             entityData.set(FORM, FORM_GROUND);
-            this.nextFormSwitchAt = level.getGameTime();
+            this.nextFormSwitchAt = Long.MAX_VALUE;
         }
         // The tiny root is only a locomotion anchor; OBB parts handle interaction.
         for (int i = 0; i < worldParts.length; i++) {
@@ -1044,12 +782,11 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         // from the root spawn packet, with no independently tracked child entities.
         setId(ENTITY_COUNTER.getAndAdd(worldParts.length + 1) + 1);
         updatePartPose(GraveDragonPose.sample(0), yBodyRot, position());
-        updateBodyFootprint();
         // Entity 的构造函数只把 dimensions 设成 EntityType 的默认值，refreshDimensions() 要等
         // pose 同步数据变化才会跑；所以这里显式刷一次，否则 NAME_TAG 挂点还是默认值。
         this.refreshDimensions();
         this.noPhysics = false;
-        this.setNoAi(false);
+        this.setNoAi(true);
         // 初始是地面形态，先吃重力；起飞过渡开始时才会临时关掉。
         this.setNoGravity(false);
     }
@@ -1058,6 +795,14 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     @Override public PartEntity<?>[] getParts() { return worldParts; }
     @Override protected Entity[] multipartParts() { return worldParts; }
     public GraveDragonPartEntity[] getWorldParts() { return worldParts; }
+
+    /** Shared charge damage volume and client cloud emitter volume. */
+    public net.minecraft.world.phys.AABB chargeBounds() {
+        var box = worldParts[0].getOrientedBox().enclosingAabb();
+        for (int i = 1; i < worldParts.length; i++)
+            box = box.minmax(worldParts[i].getOrientedBox().enclosingAabb());
+        return box;
+    }
 
     @Override public void setId(int id) {
         super.setId(id);
@@ -1070,33 +815,6 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /** The locomotion anchor is never an extra damage target. */
     @Override public boolean isPickable() { return false; }
-
-    // ===== 寻路体型 =====
-    // WalkNodeEvaluator 只用 getBbWidth()/getBbHeight() 给路径节点定尺寸，而主体自己的盒子
-    // 只有 1cm，于是 AI 一直在给一个 1cm 的生物规划路线，最后每一步又被 move() 的真实 OBB
-    // 判定否掉——龙只会贴着墙反复尝试，不会绕路。
-    //
-    // 这里不改实体尺寸（那会连带改变挤压、粒子散布、MoveControl 跳跃等一大堆行为），而是给龙
-    // 换一个按真实身体判定的 NodeEvaluator，见 GraveDragonPathNavigation。
-    //
-    // 身体范围**每个 tick 从当前 OBB 现算**（见 updateBodyFootprint），不是固定常量：颈部摆动、
-    // 抬头、张嘴都会改变真实轮廓，寻路应该跟着当前姿态走。
-
-    /** 上一 tick 量出的身体范围，坐标系是"相对锚点、已去掉 yBodyRot"的自身坐标系。 */
-    private double bodyMinX, bodyMaxX, bodyMinZ, bodyMaxZ, bodyMaxY;
-    private boolean bodyFootprintValid;
-
-    public boolean bodyFootprintValid() { return bodyFootprintValid; }
-
-    public double bodyMinX() { return bodyMinX; }
-
-    public double bodyMaxX() { return bodyMaxX; }
-
-    public double bodyMinZ() { return bodyMinZ; }
-
-    public double bodyMaxZ() { return bodyMaxZ; }
-
-    public double bodyMaxY() { return bodyMaxY; }
 
     @Override
     protected PathNavigation createNavigation(Level level) {
@@ -1137,193 +855,72 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /** Part damage is routed here; head is vulnerable, tail is more resistant. */
     protected float damageMultiplierForPart(int index) {
-        // Table order: neck_01..11, head, jaw, tail_01..07, tail_tip,
-        // neck_joint, four limbs (including digits), horn_l/horn_r.
-        return (index == 11 || index == 12 || index == 78) ? 2.0F
-                : (index >= 13 && index <= 20 ? 0.6F : 0.8F);
+        if (index == 11 || index == 12 || index >= 74 && index <= 78) return 2.0F;
+        if (index >= 15 && index <= 20) return 0.6F;
+        if (index <= 10 || index == 21) return 1.0F;
+        return 0.8F;
+    }
+
+    private static int durabilityGroup(int index) {
+        if (index == 11 || index == 12 || index >= 74 && index <= 78) return 0;
+        if (index >= 22 && index <= 34) return 1;
+        if (index >= 35 && index <= 47) return 2;
+        if (index >= 48 && index <= 60) return 3;
+        if (index >= 61 && index <= 73) return 4;
+        if (index >= 15 && index <= 20) return 5;
+        return -1;
+    }
+
+    private static final String[] BREAK_GROUPS = {"head", "front_l", "front_r", "hind_l", "hind_r", "tail"};
+    private static final float[] BREAK_THRESHOLDS = {.20F, .08F, .08F, .08F, .08F, .10F};
+
+    public boolean partBroken(String group) {
+        for (int i = 0; i < BREAK_GROUPS.length; i++)
+            if (BREAK_GROUPS[i].equals(group)) return (entityData.get(BROKEN_MASK) & (1 << i)) != 0;
+        return false;
     }
 
     public boolean hurtPart(int index, DamageSource source, float amount) {
         return hurtSelectedPart(index, source, amount);
     }
 
-    /**
-     * Every damage path (melee, projectiles, area skills) funnels through here, so this is
-     * the one place to learn which part actually took the hit and how much health left with
-     * it. The attacking player is told about it and gets a chat line naming the part, its
-     * multiplier and the damage.
-     *
-     * <p>The health delta is captured right here rather than reconstructed later: the same
-     * tick can carry several damage events, so a deferred snapshot compared against the
-     * current health reports zero for every hit but the last.
-     */
+    /** Count damage to each breakable part through the shared multipart damage path. */
     @Override
     protected boolean hurtSelectedPart(int partIndex, DamageSource source, float amount) {
         float healthBefore = getHealth();
         boolean applied = super.hurtSelectedPart(partIndex, source, amount);
         float dealt = healthBefore - getHealth();
-        if (GraveDragonDamageDebug.enabled()) {
-            GraveDragonDamageDebug.log("funnel part=" + partIndex
-                    + " src=" + source.getMsgId()
-                    + " direct=" + (source.getDirectEntity() == null ? "null"
-                            : source.getDirectEntity().getClass().getSimpleName())
-                    + " in=" + amount
-                    + " mult=" + damageMultiplierForPart(partIndex)
-                    + " invul=" + invulnerableTime
-                    + " lastHurt=" + lastHurt
-                    + " applied=" + applied
-                    + " hp=" + healthBefore + "->" + getHealth() + " dealt=" + dealt);
-        }
         if (applied && dealt > 0) {
-            // getEntity() is the attacker for every damage type (melee, thrown items, skills,
-            // explosions), whereas getDirectEntity() is the projectile or null for skills, so
-            // using the latter silently dropped every non-melee report.
-            if (source.getEntity() instanceof net.minecraft.server.level.ServerPlayer attacker) {
-                pendingReportPart = partIndex;
-                pendingReportPlayer = attacker;
-                pendingReportDealt = dealt;
-                pendingReportRemaining = getHealth();
+            int group = durabilityGroup(partIndex);
+            if (group >= 0 && !brokenParts[group]) {
+                // Head durability counts actual health lost, including its vulnerability multiplier.
+                // Keep the existing unmultiplied durability rules for limbs and tail.
+                float effective = dealt;
+                if (group != 0) {
+                    float multiplier = damageMultiplierForPart(partIndex);
+                    float armor = (float) getArmorValue();
+                    float toughness = (float) getAttributeValue(Attributes.ARMOR_TOUGHNESS);
+                    float withMultiplier = source.is(DamageTypeTags.BYPASSES_ARMOR) ? amount * multiplier
+                            : net.minecraft.world.damagesource.CombatRules.getDamageAfterAbsorb(
+                                    this, amount * multiplier, source, armor, toughness);
+                    float withoutMultiplier = source.is(DamageTypeTags.BYPASSES_ARMOR) ? amount
+                            : net.minecraft.world.damagesource.CombatRules.getDamageAfterAbsorb(
+                                    this, amount, source, armor, toughness);
+                    effective = withMultiplier > 0 ? dealt * withoutMultiplier / withMultiplier : 0;
+                }
+                partDurabilityDamage[group] += effective;
+                float threshold = group == 0 ? 2000F : getMaxHealth() * BREAK_THRESHOLDS[group];
+                if (partDurabilityDamage[group] >= threshold) {
+                    brokenParts[group] = true;
+                    entityData.set(BROKEN_MASK, entityData.get(BROKEN_MASK) | (1 << group));
+                    if (group == 0) entityData.set(HEAD_BROKEN, true);
+                }
             }
         }
         return applied;
     }
 
-    private int pendingReportPart = -1;
-    private net.minecraft.server.level.ServerPlayer pendingReportPlayer;
-    private float pendingReportDealt;
-    private float pendingReportRemaining;
-
-    /**
-     * Sends the deferred hit report once the health change is final. Runs on the server
-     * only, from {@link #tick()}.
-     */
-    private void flushHitReport() {
-        if (pendingReportPart < 0 || pendingReportPlayer == null) return;
-        int part = pendingReportPart;
-        net.minecraft.server.level.ServerPlayer player = pendingReportPlayer;
-        float dealt = pendingReportDealt;
-        float remaining = pendingReportRemaining;
-        pendingReportPart = -1;
-        pendingReportPlayer = null;
-        if (dealt <= 0) {
-            GraveDragonDamageDebug.log("report skipped, dealt=" + dealt);
-            return;
-        }
-        GraveDragonDamageDebug.log("report part=" + part + " dealt=" + dealt
-                + " remaining=" + remaining + " to=" + player.getGameProfile().getName());
-        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player,
-                new icu.icuqalt10.panlingre.network.GraveDragonHitPayload(
-                        getId(), part, PART_LABELS[part], damageMultiplierForPart(part), dealt, remaining));
-    }
-
-    /**
-     * Melee tolerance applied to the oriented boxes when the player's view ray is
-     * re-cast on the server, in blocks. It only ever widens a box by a few centimetres
-     * to absorb animation drift between the client's frame and the server's tick; it
-     * never extends attack range.
-     */
-    private static final double MELEE_RAY_TOLERANCE = 0.06;
-
-    /**
-     * Which part a view ray reaches, measured against the current oriented boxes.
-     *
-     * <p>Kept for tests and diagnostics only. It is deliberately <em>not</em> used to resolve
-     * melee: the client's pick is authoritative, see {@link #resolveMeleeStrike}.
-     *
-     * <p>Uses the un-interpolated eye position and look angle, because the server player has
-     * not moved this tick and interpolating would aim from a position it never occupied.
-     *
-     * @return the part index, or -1 when the ray reaches no part
-     */
-    public int pickPartAlongViewRay(Player player) {
-        Vec3 eye = player.getEyePosition();
-        // Ask for slightly more than the attack range, then validate properly below, so
-        // a part just past the raw range can still be measured and rejected on distance.
-        Vec3 end = eye.add(player.getLookAngle()
-                .scale(player.entityInteractionRange() + 1.0 + MELEE_RAY_TOLERANCE));
-        Vec3 direction = player.getLookAngle();
-        int exact = bestPartAlongRay(eye, end, direction, 0.0);
-        return exact >= 0 ? exact : bestPartAlongRay(eye, end, direction, MELEE_RAY_TOLERANCE);
-    }
-
-    /**
-     * The part a ray should be credited with, when several boxes overlap.
-     *
-     * <p>Entry distance alone is the wrong criterion here. A boss this size has overlapping
-     * parts — the foreleg box reaches into the neck, the head box covers the neck joint, the
-     * finger boxes overlap each other — so "whoever's surface the ray crosses first" picks a
-     * neighbour instead of the part under the crosshair. Reported symptoms were exactly that:
-     * aiming at one segment damaged the next one, and the last links of a chain could not be
-     * hit at all because an earlier neighbour always won.
-     *
-     * <p>Candidates are therefore ranked by how close the crosshair passes to the part's own
-     * centre, with the distance along the ray breaking ties. Aiming at a part's middle then
-     * selects that part even when a neighbour's box leans into the line of sight.
-     *
-     * @param padding expands local faces, to absorb animation drift between frames
-     */
-    private int bestPartAlongRay(Vec3 from, Vec3 to, Vec3 direction, double padding) {
-        int best = -1;
-        double bestMissDistance = Double.MAX_VALUE;
-        double bestAlongRay = Double.MAX_VALUE;
-        for (int i = 0; i < worldParts.length; i++) {
-            OrientedBoundingBox box = worldParts[i].getOrientedBox();
-            if (box == null) continue;
-            if (padding > 0) box = box.inflate(padding, padding, padding);
-            var hit = box.clip(from, to);
-            if (hit.isEmpty()) continue;
-
-            // How far the ray passes from this part's centre: the part the crosshair is
-            // actually pointed at has the smallest value.
-            Vec3 offset = box.center.subtract(from);
-            Vec3 closestOnRay = from.add(direction.scale(offset.dot(direction)));
-            double missDistance = box.center.distanceToSqr(closestOnRay);
-            double alongRay = hit.get().distanceToSqr(from);
-
-            if (missDistance < bestMissDistance - 1.0e-6
-                    || (Math.abs(missDistance - bestMissDistance) <= 1.0e-6 && alongRay < bestAlongRay)) {
-                bestMissDistance = missDistance;
-                bestAlongRay = alongRay;
-                best = i;
-            }
-        }
-        return best;
-    }
-
-    /** Whether a single part is within the player's attack range. */
-    public boolean canPlayerReachPart(Player player, int index) {
-        if (index < 0 || index >= worldParts.length) return false;
-        if (worldParts[index].getOrientedBox() == null) return false;
-        return player.canInteractWithEntity(worldParts[index].getBoundingBox(),
-                MELEE_RAY_TOLERANCE);
-    }
-
-    /**
-     * The single place that decides what a player's melee attack hits.
-     *
-     * <p>Vanilla has already validated reach for the part the client named: the server drops
-     * the entire attack packet when {@code Player#canInteractWithEntity} fails for it, so a
-     * hurt call can only happen for an in-range part. This method therefore trusts that
-     * choice and uses its own ray only to <em>correct</em> it, never to veto it:
-     * <ol>
-     *   <li>Cast the server's view ray. When it reaches a different part that is itself in
-     *       reach, use it. This fixes the wrong-part selections the client makes through
-     *       AABB envelopes, where a large part's empty corner steals the pick from the
-     *       small part under the crosshair.</li>
-     *   <li>Otherwise damage the part the client named.</li>
-     * </ol>
-     *
-     * <p>Both earlier orderings were wrong in opposite ways. Resolving the ray first let a
-     * long body part further along the view line (the torso runs several blocks deep) win
-     * the ray and then be rejected as out of reach, discarding a valid click on a nearby
-     * limb. Re-validating the client's part with a second, differently computed reach check
-     * (this one uses {@code interactionRange + 1 + tolerance} against an oriented box, where
-     * vanilla uses {@code interactionRange + 1} against the part's bounding box) threw away
-     * every click that landed between the two thresholds.
-     *
-     * @param requested part index named by the client's attack packet
-     * @return the part index to damage, or -1 when the attack must be discarded
-     */
+    /** Validate reach for the client's selected OBB part without re-casting a different server frame. */
     public int resolveMeleeStrike(Player player, int requested) {
         // The client's pick is authoritative, exactly as it is for a vanilla mob.
         //
@@ -1376,55 +973,33 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         super.move(type, delta);
     }
 
-    /** Server collision poses are evaluated once per tick; clients use the same world clock. */
+    /** Tick poses drive server physics and initialise client parts before the first render. */
     private void updateDragonParts() {
-        // Collision boxes are driven from the quantised phase on both sides, so the client's
-        // crosshair and the server's validation measure the very same boxes. Rendering does
-        // NOT touch them: an interpolated render frame used to overwrite them, which is what
-        // made the two sides disagree.
-        updatePartPose(GraveDragonPose.sample(animation(), collisionPoseSeconds(), loopingAnimation()),
+        updatePartPose(poseAt(animationSeconds(0)),
                 yBodyRot, position());
-        updateBodyFootprint();
     }
 
-    /**
-     * 把这一刻的 79 个碰撞箱换算进"相对锚点、已去掉 yBodyRot"的自身坐标系，记下真实占地范围，
-     * 供 {@link GraveDragonPathNavigation} 判定路径节点。
-     *
-     * <p>刻意**不用固定常量**：颈部摆动、抬头、张嘴都会改变身体的真实轮廓，寻路应该跟着当前
-     * 姿态走，而不是跟一张量好的表走。
-     *
-     * <p>OBB 是按 {@code modelToEntity(yaw)} 摆的，也就是 {@code worldOffset = R_y(-yaw) · local}，
-     * 所以这里用 {@code R_y(+yaw)} 反解回自身坐标系。缩放已经含在 OBB 里，不必再乘。
-     */
-    private void updateBodyFootprint() {
-        double angle = yBodyRot * Math.PI / 180.0;
-        double cos = Math.cos(angle), sin = Math.sin(angle);
-        double originX = getX(), originY = getY(), originZ = getZ();
-        double minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE;
-        double minZ = Double.MAX_VALUE, maxZ = -Double.MAX_VALUE;
-        double maxY = -Double.MAX_VALUE;
-        for (GraveDragonPartEntity part : worldParts) {
-            OrientedBoundingBox box = part.getOrientedBox();
-            if (box == null) continue;
-            for (Vec3 corner : box.corners()) {
-                double worldX = corner.x - originX, worldZ = corner.z - originZ;
-                double localX = worldX * cos + worldZ * sin;
-                double localZ = -worldX * sin + worldZ * cos;
-                minX = Math.min(minX, localX);
-                maxX = Math.max(maxX, localX);
-                minZ = Math.min(minZ, localZ);
-                maxZ = Math.max(maxZ, localZ);
-                maxY = Math.max(maxY, corner.y - originY);
-            }
+    void refreshCombatPose() { updateDragonParts(); }
+
+    boolean combatPoseFits(String animation, double... seconds) {
+        for (double time : seconds)
+            if (!combatPoseFitsAt(animation, time, yBodyRot, bodyPitch(), position())) return false;
+        return true;
+    }
+
+    boolean combatPoseFitsAt(String animation, double seconds, float yaw, float pitch, Vec3 position) {
+        return combatPoseFitsAt(animation, seconds, yaw, pitch, position, Double.NEGATIVE_INFINITY);
+    }
+
+    boolean combatPoseFitsAt(String animation, double seconds, float yaw, float pitch, Vec3 position, double contactFloor) {
+        Vec3 origin = position.add(0, POSE_CLEARANCE_LIFT, 0);
+        var transform = GraveDragonPose.modelToEntity(yaw, pitch, getScale());
+        var frame = GraveDragonPose.sample(animation, seconds, false);
+        for (int i = 0; i < PART_LABELS.length; i++) {
+            var box = GraveDragonPose.box(frame, PART_LABELS[i], PART_BOUNDS[i], transform, origin);
+            if (penetrationIntoBlocks(box, contactFloor) > POSE_CLEARANCE_TOLERANCE) return false;
         }
-        if (minX > maxX) return;
-        bodyMinX = minX;
-        bodyMaxX = maxX;
-        bodyMinZ = minZ;
-        bodyMaxZ = maxZ;
-        bodyMaxY = maxY;
-        bodyFootprintValid = true;
+        return true;
     }
 
     private void updatePartPose(GraveDragonPose.Frame frame, float yaw, Vec3 origin) {
@@ -1435,30 +1010,26 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         }
     }
 
-    /**
-     * Collision pose sampler shared by both sides. The renderer must not call the second
-     * overload: an interpolated render frame would move the boxes to a pose the server never
-     * computes, which is what previously made the two sides disagree about what the crosshair
-     * was on.
-     */
+    /** Refresh before client picking, which runs before the model is rendered. */
     public void updateClientPartPose(float partialTick) {
-        if (!level().isClientSide) return;
-        updatePartPose(GraveDragonPose.sample(animation(), collisionPoseSeconds(), loopingAnimation()),
-                Mth.rotLerp(partialTick, yBodyRotO, yBodyRot), position());
+        updateClientPartPose(partialTick, poseAt(animationSeconds(partialTick)));
     }
 
-    /** Kept for the pose regression test, which drives poses explicitly. */
+    /** Reuse the exact bone frame applied to the visible model. */
     public void updateClientPartPose(float partialTick, GraveDragonPose.Frame frame) {
         if (!level().isClientSide) return;
         Vec3 origin = new Vec3(Mth.lerp(partialTick, xOld, getX()), Mth.lerp(partialTick, yOld, getY()), Mth.lerp(partialTick, zOld, getZ()));
-        updatePartPose(frame, Mth.rotLerp(partialTick, yBodyRotO, yBodyRot), origin);
+        var transform = GraveDragonPose.modelToEntity(Mth.rotLerp(partialTick, yBodyRotO, yBodyRot),
+                bodyPitch(partialTick), getScale());
+        for (int i = 0; i < worldParts.length; i++)
+            worldParts[i].setOrientedBox(GraveDragonPose.box(frame, PART_LABELS[i], PART_BOUNDS[i], transform, origin));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 10000.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.25)
-                .add(Attributes.ARMOR, 100)
+                .add(Attributes.ARMOR, 200)
                 .add(Attributes.ATTACK_DAMAGE, 8.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.FOLLOW_RANGE, 80.0);
@@ -1466,34 +1037,147 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     @Override
     protected void registerGoals() {
-        // 目前不是敌对生物（还没有攻击动画），所以没有仇恨目标，也不挂原版的随机漫步目标：
-        // 移动全部交给 tickWander，这样空中与地面共用同一套"随机可达点"逻辑。
-        // turn_air_* 也是留给后续攻击的（待机 → 视角转向目标 → 发动攻击）。
+        // 移动、转向与选招由 combat.tick 驱动。
+    }
+
+    @Override
+    protected float tickHeadTurn(float yaw, float animationStep) {
+        // Combat owns yaw. Vanilla's delayed head-follow otherwise rotates the
+        // client model/OBBs differently from the server during short claw attacks.
+        yBodyRot = getYRot();
+        yHeadRot = getYRot();
+        return animationStep;
     }
 
     @Override
     public void tick() {
+        // Instance sessions are rebuilt after a restart; never retain an orphaned,
+        // invulnerable cinematic dragon in a previously occupied slot.
+        if (!level().isClientSide && getPersistentData().hasUUID("ShiHuangOwner")
+                && InstanceManager.sessionFor(this) == null) {
+            discard();
+            return;
+        }
+        if (animation().startsWith("escape_")) {
+            setDeltaMovement(Vec3.ZERO);
+            setNoGravity(true);
+            super.tick();
+            bodyPitchO = bodyPitch();
+            updateDragonParts();
+            if (!level().isClientSide) bossEvent.setProgress(getHealth() / getMaxHealth());
+            return;
+        }
+        if (entityData.get(FROZEN)) setDeltaMovement(Vec3.ZERO);
+        if (!level().isClientSide && spawnPosition == null) spawnPosition = position();
+        if (!level().isClientSide && introComplete) {
+            Vec3 velocity = getDeltaMovement();
+            setDeltaMovement(0, flying() ? 0 : velocity.y, 0);
+        }
         super.tick();
         // 先记下上一 tick 的俯仰供渲染插值，再由服务端按新的速度方向更新（客户端用同步值）。
         this.bodyPitchO = bodyPitch();
+        if (entityData.get(FROZEN) || !level().isClientSide && introComplete && isNoAi()) {
+            setDeltaMovement(Vec3.ZERO);
+            updateDragonParts();
+            if (!level().isClientSide) bossEvent.setProgress(getHealth() / getMaxHealth());
+            return;
+        }
         if (!this.level().isClientSide) {
+            if (!introComplete) {
+                if (!introStarted) {
+                    if (!isNoAi()) {
+                        introStarted = true;
+                        playAnimation("into_2", true);
+                        combat.announceAnimation("into_2");
+                        if (level() instanceof net.minecraft.server.level.ServerLevel server)
+                            for (ServerPlayer player : server.players())
+                                if (player.distanceToSqr(this) <= 128 * 128) bossEvent.addPlayer(player);
+                    }
+                } else if (!introRoarPlayed && animationSeconds(0) >= 5.1) {
+                    introRoarPlayed = true;
+                    updateDragonParts();
+                    Vec3 head = worldParts[11].getOrientedBox().center;
+                    level().playSound(null, head.x, head.y, head.z,
+                            net.minecraft.sounds.SoundEvents.ENDER_DRAGON_GROWL,
+                            net.minecraft.sounds.SoundSource.HOSTILE, 5F, .8F);
+                } else if (animationSeconds(0) >= GraveDragonPose.duration("into_2")) {
+                    introComplete = true;
+                    playAnimation("idle_ground", true);
+                    combat.announceAnimation("idle_ground");
+                    combat.onFormChanged(false);
+                }
+                updateDragonParts();
+                bossEvent.setProgress(getHealth() / getMaxHealth());
+                return;
+            }
             tickForm();
             tickAnimation();
-            maintainFlightAltitude();
             updateBodyPitch();
         }
         updateDragonParts();
         if (this.level().isClientSide) return;
-        flushHitReport();
-        if (USE_EXTERNAL_PART_CONFIG && this.tickCount % 20 == 0) {
-            try {
-                long timestamp = java.nio.file.Files.getLastModifiedTime(PART_CONFIG_FILE).toMillis();
-                if (timestamp != partConfigTimestamp) reloadPartConfig();
-            } catch (java.io.IOException ignored) { }
-        }
-
+        combat.tick();
         // 同步 BossBar 血量进度
         this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+    }
+
+    @Override
+    public void kill() {
+        super.kill();
+        if (!level().isClientSide && isDeadOrDying() && !isRemoved())
+            remove(RemovalReason.KILLED);
+    }
+
+    @Override
+    public void whenFroozen() {
+        if (animation().startsWith("escape_")) return;
+        if (level().isClientSide || entityData.get(FROZEN)) return;
+        frozenWasNoAi = isNoAi();
+        entityData.set(FROZEN, true);
+        setNoAi(true);
+        setNoGravity(true);
+        setDeltaMovement(Vec3.ZERO);
+        getNavigation().stop();
+        moving = false;
+        pendingForm = null;
+        pendingLoopAnimation = null;
+        disableAutomaticFormSwitch();
+        entityData.set(BODY_PITCH, 0F);
+        bodyPitchO = 0F;
+        if (introStarted) introComplete = true;
+        combat.interruptForFreeze();
+    }
+
+    @Override
+    public void whenUnFroozen() {
+        if (animation().startsWith("escape_")) return;
+        if (level().isClientSide || !entityData.get(FROZEN)) return;
+        entityData.set(FROZEN, false);
+        setNoAi(frozenWasNoAi);
+        applyFormPhysics(flying());
+        combat.recoverFromFreeze();
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if (!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return super.hurt(source, amount);
+        boolean previous = bypassHealthLock;
+        bypassHealthLock = true;
+        try {
+            return super.hurt(source, amount);
+        } finally {
+            bypassHealthLock = previous;
+        }
+    }
+
+    @Override
+    public void setHealth(float health) {
+        if (!level().isClientSide && !loadingDragonData && !bypassHealthLock && combat != null
+                && !combat.retreatReady() && health <= getMaxHealth() * .5F) {
+            float floor = getMaxHealth() * (combat.phaseDone() ? .05F : .5F);
+            health = Math.max(health, floor);
+        }
+        super.setHealth(health);
     }
 
     @Override
@@ -1502,28 +1186,64 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         tag.putLong("AnimationStartedAt", entityData.get(ANIMATION_START));
         tag.putString("Animation", animation());
         tag.putInt("Form", entityData.get(FORM));
+        tag.putBoolean("DragonIntroStarted", introStarted);
+        tag.putBoolean("DragonIntroComplete", introComplete);
+        tag.putBoolean("DragonIntroRoarPlayed", introRoarPlayed);
+        tag.putBoolean("DragonFrozen", entityData.get(FROZEN));
+        tag.putBoolean("DragonFrozenWasNoAI", frozenWasNoAi);
+        if (spawnPosition != null) {
+            tag.putDouble("DragonSpawnX", spawnPosition.x);
+            tag.putDouble("DragonSpawnY", spawnPosition.y);
+            tag.putDouble("DragonSpawnZ", spawnPosition.z);
+        }
+        combat.save(tag);
+        for (int i = 0; i < brokenParts.length; i++) {
+            tag.putFloat("PartDamage" + i, partDurabilityDamage[i]);
+            tag.putBoolean("PartBroken" + i, brokenParts[i]);
+        }
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
+        loadingDragonData = true;
+        try {
+            super.readAdditionalSaveData(tag);
+        } finally {
+            loadingDragonData = false;
+        }
         if (tag.contains("AnimationStartedAt")) entityData.set(ANIMATION_START, tag.getLong("AnimationStartedAt"));
         if (tag.contains("Animation")) entityData.set(ANIMATION, tag.getString("Animation"));
         if (tag.contains("Form")) entityData.set(FORM, tag.getInt("Form"));
+        introStarted = tag.getBoolean("DragonIntroStarted");
+        introComplete = tag.getBoolean("DragonIntroComplete");
+        introRoarPlayed = tag.getBoolean("DragonIntroRoarPlayed");
+        entityData.set(FROZEN, tag.getBoolean("DragonFrozen"));
+        frozenWasNoAi = tag.getBoolean("DragonFrozenWasNoAI");
+        if (tag.contains("DragonSpawnX"))
+            spawnPosition = new Vec3(tag.getDouble("DragonSpawnX"), tag.getDouble("DragonSpawnY"), tag.getDouble("DragonSpawnZ"));
+        if (introStarted && !introComplete) {
+            playAnimation("into_2", true);
+            setNoAi(false);
+        }
+        combat.load(tag);
+        for (int i = 0; i < brokenParts.length; i++) {
+            partDurabilityDamage[i] = tag.getFloat("PartDamage" + i);
+            brokenParts[i] = tag.getBoolean("PartBroken" + i);
+        }
+        int mask = 0;
+        for (int i = 0; i < brokenParts.length; i++) if (brokenParts[i]) mask |= 1 << i;
+        entityData.set(BROKEN_MASK, mask);
+        entityData.set(HEAD_BROKEN, brokenParts[0]);
     }
 
     // ===== 方法 =====
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        if (GraveDragonPose.APPLY_ANIMATION) {
-            // 这个 controller 只负责驱动 GeckoLib 每帧调用 setCustomAnimations；真正的骨骼姿态由
-            // GraveDragonModel.setCustomAnimations 按当前动画名自己采样，所以这里播哪个名字不影响
-            // 最终结果，跟着当前动画走只是让 GeckoLib 自己的兜底路径也正确。
-            controllers.add(new WorldTimeAnimationController<>(this, "dragon",
-                    () -> WorldTimeAnimationController.Playback.loop(animation(), entityData.get(ANIMATION_START)),
-                    state -> level().getGameTime() + state.getPartialTick()));
-        }
+        // 这个 controller 驱动每帧的 setCustomAnimations；最终骨骼姿态由共用采样器生成。
+        controllers.add(new WorldTimeAnimationController<>(this, "dragon",
+                () -> new WorldTimeAnimationController.Playback(animation(), animationStart(), true, animationSpeed()),
+                state -> entityData.get(FROZEN) ? animationStart() : level().getGameTime() + state.getPartialTick()));
     }
 
     @Override

@@ -9,6 +9,7 @@ import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModComponents;
 import icu.icuqalt10.panlingre.item.archer.zhu_ri;
 import icu.icuqalt10.panlingre.util.SafeClientAccess;
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -90,6 +91,14 @@ public class tian_xing_jian extends Item implements ICurioItem {
                 .flatMap(handler -> handler.findFirstCurio(stack ->
                         stack.getItem() instanceof tian_xing_jian))
                 .isPresent();
+    }
+
+    @Nullable
+    public static SkillTargeting.Target findSniperTarget(Player player) {
+        return SkillTargeting.aimed(player, player.getBoundingBox().inflate(128),
+                        player.getEyePosition(), player.getLookAngle(), 128,
+                        Math.toDegrees(Math.acos(SNIPER_MIN_DOT)))
+                .stream().filter(target -> isValidSniperTarget(player, target.root())).findFirst().orElse(null);
     }
 
     public static boolean isValidSniperTarget(Player player, LivingEntity target) {

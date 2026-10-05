@@ -44,10 +44,6 @@ public abstract class OrientedEntityPickMixin {
     private static void panlingre$selectByOrientedBox(Entity viewer, Vec3 from, Vec3 to, AABB search,
                                                       Predicate<Entity> filter, double maxDistanceSquared,
                                                       CallbackInfoReturnable<EntityHitResult> cir) {
-        // Temporary diagnostic escape hatch: lets the in-game audit compare the fixed
-        // selection against the previous envelope-only behaviour in one run.
-        if (Boolean.getBoolean("panlingre.legacyEnvelopePick")) return;
-
         var level = viewer.level();
         if (level == null) return;
 
@@ -56,6 +52,7 @@ public abstract class OrientedEntityPickMixin {
         Vec3 direction = to.subtract(from).normalize();
 
         EntityHitResult best = resolveCandidate(cir.getReturnValue(), from, to);
+        if (best != null && best.getLocation().distanceToSqr(from) > maxDistanceSquared) best = null;
         double bestMiss = best == null ? Double.MAX_VALUE : missDistance(best.getEntity(), from, direction);
         double bestAlongRay = best == null ? Double.MAX_VALUE : best.getLocation().distanceToSqr(from);
 
@@ -76,6 +73,7 @@ public abstract class OrientedEntityPickMixin {
             Vec3 closestOnRay = from.add(direction.scale(offset.dot(direction)));
             double miss = box.center.distanceToSqr(closestOnRay);
             double alongRay = clip.get().distanceToSqr(from);
+            if (alongRay > maxDistanceSquared) continue;
             if (miss < bestMiss - 1.0e-6
                     || (Math.abs(miss - bestMiss) <= 1.0e-6 && alongRay < bestAlongRay)) {
                 bestMiss = miss;
@@ -94,10 +92,6 @@ public abstract class OrientedEntityPickMixin {
         if (vanilla != null && best.getEntity() == selected
                 && best.getLocation().distanceToSqr(from) >= vanilla.getLocation().distanceToSqr(from)) {
             return;
-        }
-        if (icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonDamageDebug.enabled()) {
-            icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonDamageDebug.log(
-                    "pick corrected " + describe(selected) + " -> " + describe(best.getEntity()));
         }
         cir.setReturnValue(best);
     }
@@ -132,11 +126,4 @@ public abstract class OrientedEntityPickMixin {
                 .orElse(hit);
     }
 
-    private static String describe(Entity entity) {
-        if (entity == null) return "null";
-        if (entity instanceof icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragonPartEntity part) {
-            return "part" + part.getPartIndex();
-        }
-        return entity.getClass().getSimpleName();
-    }
 }

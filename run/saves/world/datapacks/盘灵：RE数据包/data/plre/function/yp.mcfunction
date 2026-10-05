@@ -1,1 +1,0 @@
-summon ghast ~ ~ ~ {Invulnerable:1b,attributes:[{id:"generic.scale",base:2}],DeathLootTable:"empty"}

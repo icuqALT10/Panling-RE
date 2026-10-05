@@ -130,14 +130,17 @@ public class Shockwave {
         for (LivingEntity entity : MultipartEntity.collectTargets(level, aabb, attacker)) {
             if (this.hitEntities.contains(entity.getUUID())) continue;
             if (!SkillHelper.combatTargetFilter(attacker).test(entity)) continue;
-            double yDiff = entity.getY() - this.center.y;
+            SkillTargeting.Target selected = SkillTargeting.inArea(entity, this.center, aabb);
+            if (selected == null) continue;
+            Vec3 targetPoint = selected.part() == entity ? entity.position() : selected.point();
+            double yDiff = targetPoint.y - this.center.y;
             if (yDiff < -1.0 || yDiff > 2.5) continue;
-            Vec3 centerToEntityHoriz = new Vec3(entity.getX() - this.center.x, 0, entity.getZ() - this.center.z);
+            Vec3 centerToEntityHoriz = targetPoint.subtract(this.center).multiply(1, 0, 1);
             double horizontalDist = centerToEntityHoriz.length();
             if (horizontalDist >= innerR && horizontalDist <= outerR) {
                 // 3. 山体视线遮挡检查
                 Vec3 startPos = this.center.add(0, 0.5, 0);
-                Vec3 endPos = new Vec3(entity.getX(), entity.getY() + 1.0, entity.getZ());
+                Vec3 endPos = targetPoint.add(0, selected.part() == entity ? 1 : 0, 0);
                 HitResult raycast = level.clip(new ClipContext(
                         startPos,
                         endPos,
@@ -147,7 +150,7 @@ public class Shockwave {
                 ));
                 if (raycast.getType() == HitResult.Type.MISS) {
                     this.hitEntities.add(entity.getUUID());
-                    entity.hurt(level.damageSources().mobAttack(attacker), this.damage);
+                    selected.hurt(level.damageSources().mobAttack(attacker), this.damage);
                     if (!entity.getType().is(CantKnockAway_TAG)) {
                         Vec3 launchDir = centerToEntityHoriz.normalize();
                         entity.setDeltaMovement(launchDir.scale(1.5).add(0, 0.5, 0));

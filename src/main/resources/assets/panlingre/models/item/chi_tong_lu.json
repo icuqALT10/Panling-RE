@@ -3,10 +3,10 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "panlingre:item/chi_tong_lu/ldl0",
-		"1": "panlingre:item/chi_tong_lu/ldl1",
-		"2": "panlingre:item/chi_tong_lu/fire",
-		"particle": "panlingre:item/chi_tong_lu/fire"
+		"0": "panlingre:item/ldl/chi_tong_lu/ldl0",
+		"1": "panlingre:item/ldl/chi_tong_lu/ldl1",
+		"2": "panlingre:item/ldl/chi_tong_lu/fire",
+		"particle": "panlingre:item/ldl/chi_tong_lu/fire"
 	},
 	"elements": [
 		{

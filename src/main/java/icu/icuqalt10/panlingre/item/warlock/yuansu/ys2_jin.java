@@ -1,10 +1,10 @@
 package icu.icuqalt10.panlingre.item.warlock.yuansu;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attachment.YuansuData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.entity.JinLiRenEntity;
-import icu.icuqalt10.panlingre.entity.MultipartEntity;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModSounds;
@@ -15,7 +15,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -25,11 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class ys2_jin extends Item {
 
@@ -63,42 +59,35 @@ public class ys2_jin extends Item {
 
             // 与弩的多重射击相同：中间一发，两侧各偏转 10 度。
             Vec3 origin = player.getEyePosition().add(view.scale(0.8D)).add(0.0D, -0.5D, 0.0D);
-            // Multipart children are plain Entity instances, so a LivingEntity query
-            // never sees them and the boss would silently drop out of auto-targeting.
-            List<LivingEntity> targets = new ArrayList<>(MultipartEntity.collectTargets(level,
-                    player.getBoundingBox().inflate(32.0D), player));
-            targets.removeIf(target -> !JinLiRenEntity.isValidAttackTarget(player, target));
-            targets.removeIf(target -> angleTo(view, target.getEyePosition().subtract(origin)) > 30.0D);
-            targets.sort(Comparator.<LivingEntity>comparingDouble(target -> angleTo(view,
-                    target.getEyePosition().subtract(origin)))
-                    .thenComparingDouble(player::distanceToSqr));
-            targets = new ArrayList<>(targets.stream().limit(3).toList());
+            List<SkillTargeting.Target> targets = SkillTargeting.aimed(player,
+                    player.getBoundingBox().inflate(32), player.getEyePosition(), view, 32, 30).stream()
+                    .filter(target -> JinLiRenEntity.isValidAttackTarget(player, target.part())).limit(3).toList();
             Vec3 launchRight = view.cross(new Vec3(0.0D, 1.0D, 0.0D));
             if (launchRight.lengthSqr() < 0.01D) launchRight = new Vec3(1.0D, 0.0D, 0.0D);
             launchRight = launchRight.normalize();
             double[] launchOffsets = {-0.65D, 0.0D, 0.65D};
-            List<LivingEntity> bladeTargets = new ArrayList<>(3);
+            List<SkillTargeting.Target> bladeTargets = new ArrayList<>(3);
             for (int bladeIndex = 0; !targets.isEmpty() && bladeIndex < 3; bladeIndex++) {
                 bladeTargets.add(targets.get(bladeIndex % targets.size()));
             }
 
-            // 同一目标会在同一 tick 被命中，逐刃调用 hurt 会被受伤保护合并掉。
-            // 因此每个目标只由第一枚利刃结算一次总伤害，其余利刃仅保留视觉表现。
+            // 同一目标的三刃共享一次总伤害，由实际命中的利刃结算。
             Map<Integer, Integer> bladesPerTarget = new HashMap<>();
-            for (LivingEntity target : bladeTargets) {
-                bladesPerTarget.merge(target.getId(), 1, Integer::sum);
+            for (SkillTargeting.Target target : bladeTargets) {
+                bladesPerTarget.merge(target.root().getId(), 1, Integer::sum);
             }
-            Set<Integer> settledTargets = new HashSet<>();
+            Map<Integer, JinLiRenEntity> damageCarriers = new HashMap<>();
             for (int bladeIndex = 0; bladeIndex < bladeTargets.size(); bladeIndex++) {
-                LivingEntity target = bladeTargets.get(bladeIndex);
-                boolean dealsDamage = settledTargets.add(target.getId());
-                double bladeDamage = dealsDamage
-                        ? attack_damage * bladesPerTarget.get(target.getId())
-                        : 0.0D;
+                SkillTargeting.Target target = bladeTargets.get(bladeIndex);
+                double bladeDamage = attack_damage * bladesPerTarget.get(target.root().getId());
                 Vec3 launchPoint = origin.add(launchRight.scale(launchOffsets[bladeIndex]));
                 JinLiRenEntity blade = JinLiRenEntity.createCurved(
-                        level, player, target, bladeDamage, launchPoint);
-                if (blade != null) level.addFreshEntity(blade);
+                        level, player, target.part(), target.point(), bladeDamage, launchPoint);
+                if (blade != null) {
+                    JinLiRenEntity carrier = damageCarriers.putIfAbsent(target.root().getId(), blade);
+                    if (carrier != null) blade.shareDamageWith(carrier);
+                    level.addFreshEntity(blade);
+                }
             }
             if (targets.isEmpty()) {
                 for (int bladeIndex = 0; bladeIndex < 3; bladeIndex++) {
@@ -122,11 +111,6 @@ public class ys2_jin extends Item {
         }
 
         return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
-    }
-
-    private static double angleTo(Vec3 view, Vec3 direction) {
-        if (direction.lengthSqr() < 1.0E-8D) return 0.0D;
-        return Math.toDegrees(Math.acos(Math.clamp(view.dot(direction.normalize()), -1.0D, 1.0D)));
     }
 
     @Override

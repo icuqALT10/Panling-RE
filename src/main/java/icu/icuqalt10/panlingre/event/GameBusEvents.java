@@ -1,5 +1,8 @@
 package icu.icuqalt10.panlingre.event;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
+import icu.icuqalt10.panlingre.entity.MultipartEntity;
+
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.entity.FireTrailTracker;
@@ -43,6 +46,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -240,6 +244,13 @@ public class GameBusEvents {
     }
 
     @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        SKILL_TASKS.clear();
+        ENTITY_SHOCKWAVES.clear();
+        FireTrailTracker.clear();
+    }
+
+    @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
         Entity entity = event.getEntity();
 
@@ -272,10 +283,9 @@ public class GameBusEvents {
                 creeper.getPersistentData().putInt("GundileiTicks", remainingTicks);
 
                 // 2. 检测周围是否有碰到的玩家 (碰撞箱略微放大 0.3 格做碰撞区域)
-                List<LivingEntity> bumpedEntyties = creeper.level().getEntitiesOfClass(
-                        LivingEntity.class,
-                        creeper.getBoundingBox().inflate(0.3)
-                );
+                AABB contactArea = creeper.getBoundingBox().inflate(0.3);
+                List<LivingEntity> bumpedEntyties = MultipartEntity.collectTargets(
+                        creeper.level(), contactArea, creeper);
 
                 if (!bumpedEntyties.isEmpty()) {
                     float damage = creeper.getPersistentData().getInt("GundileiDamage");
@@ -294,10 +304,11 @@ public class GameBusEvents {
                         if (creeper.getTeam() != null && creeper.getTeam() == bumpedentity.getTeam()) continue;
 
                         // 扣除精确的 10 点爆炸伤害
-                        bumpedentity.hurt(serverLevel.damageSources().explosion(creeper, damageOwner), damage);
+                        SkillTargeting.hurtInArea(bumpedentity, creeper.position(), contactArea,
+                                serverLevel.damageSources().explosion(creeper, damageOwner), damage);
 
                         // 计算击飞向量 (由苦力怕指向玩家的方向，给予 XZ 方向冲量，并给予稳定的向上速度)
-                        if (!entity.getType().is(CantKnockAway_TAG)) {
+                        if (!bumpedentity.getType().is(CantKnockAway_TAG)) {
                             Vec3 moveDirection = bumpedentity.position().subtract(creeper.position()).normalize().scale(1.4);
                             bumpedentity.setDeltaMovement(moveDirection.x, 0.65, moveDirection.z);
                             bumpedentity.hurtMarked = true;

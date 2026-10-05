@@ -1,5 +1,6 @@
 package icu.icuqalt10.panlingre.item.warlock;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
@@ -19,7 +20,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -28,7 +28,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
@@ -85,7 +84,7 @@ public class jing_tie_lu extends Item implements ICurioItem,skill_trigger {
 
         //释放技能
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
-            LivingEntity target = findAlchemistTarget(serverPlayer, 5.0);
+            SkillTargeting.Target target = findAlchemistTarget(serverPlayer, 5.0);
 
             if (target != null) {
 
@@ -107,7 +106,7 @@ public class jing_tie_lu extends Item implements ICurioItem,skill_trigger {
 
                 Vec3 furnaceSource = playerPos.add(worldX, localUp, worldZ);
 
-                Vec3 targetDest = target.getBoundingBox().getCenter();
+                Vec3 targetDest = target.point();
 
                 //绘制法术连线粒子
                 drawSpellLine(serverPlayer, furnaceSource, targetDest);
@@ -148,35 +147,10 @@ public class jing_tie_lu extends Item implements ICurioItem,skill_trigger {
     @Override
     public int getSkillCastTimeTicks(int skillIndex) { return 3; }
 
-    private static LivingEntity findAlchemistTarget(ServerPlayer player, double range) {
-        Level level = player.level();
-        // 找出范围内所有的生物
-        AABB searchBox = player.getBoundingBox().inflate(range);
-        List<Mob> entities = skill_trigger.skillTargets(level, searchBox, player).stream()
-                .filter(Mob.class::isInstance).map(Mob.class::cast).filter(entity -> {
-            return entity.isAttackable() && entity.isAlive();
-        }).toList();
-
-        LivingEntity closest = null;
-        double closestScore = Double.MAX_VALUE;
-        Vec3 lookVec = player.getLookAngle().normalize();
-
-        for (Mob mob : entities) {
-            Vec3 toMob = mob.position().add(0, mob.getEyeHeight(), 0).subtract(player.getEyePosition());
-            double dist = toMob.length();
-            toMob = toMob.normalize();
-
-            double dotProduct = lookVec.dot(toMob);
-
-            if (dotProduct > 0.85) {
-                double score = dist * (2.0 - dotProduct);
-                if (score < closestScore) {
-                    closestScore = score;
-                    closest = mob;
-                }
-            }
-        }
-        return closest;
+    private static SkillTargeting.Target findAlchemistTarget(ServerPlayer player, double range) {
+        return SkillTargeting.aimed(player, player.getBoundingBox().inflate(range),
+                        player.getEyePosition(), player.getLookAngle(), range, Math.toDegrees(Math.acos(.85)))
+                .stream().filter(target -> target.root() instanceof Mob).findFirst().orElse(null);
     }
     private static void drawSpellLine(ServerPlayer player, Vec3 source, Vec3 dest) {
         ServerLevel serverLevel = player.serverLevel();

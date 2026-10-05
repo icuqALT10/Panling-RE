@@ -1,5 +1,7 @@
 package icu.icuqalt10.panlingre.item.warrior;
 
+import icu.icuqalt10.panlingre.util.SkillTargeting;
+
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
@@ -114,7 +116,7 @@ public class po_kong_fu extends Item implements skill_trigger {
 
             for (LivingEntity living : targets) {
                 living.addEffect(new MobEffectInstance(ModEffects.po_jia, 200, 1));
-                living.hurt(level.damageSources().playerAttack(player), finalDamage);
+                SkillTargeting.hurtInArea(living, player.position(), dashArea, level.damageSources().playerAttack(player), finalDamage);
                 living.knockback(0.5, -lookVec.x, -lookVec.z);
             }
 
