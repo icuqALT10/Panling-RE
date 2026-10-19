@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.init;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.block.chest.LootChestBlock;
+import icu.icuqalt10.panlingre.block.spawner.MonsterSpawnerBlock;
 import icu.icuqalt10.panlingre.block.dzt;
 import icu.icuqalt10.panlingre.block.ldl.ldl;
 import icu.icuqalt10.panlingre.block.ldl.ldlProxyBlock;
@@ -20,6 +21,9 @@ public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(PanlingRE.MODID);
 
     //功能方块
+    public static final DeferredBlock<Block> spawner = BLOCKS.register("spawner",
+            () -> new MonsterSpawnerBlock(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.SPAWNER)));
+
     public static final DeferredBlock<Block> ldl = BLOCKS.register("ldl",
             () -> new ldl(BlockBehaviour.Properties.of()
                     .strength(3.0f)

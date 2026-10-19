@@ -187,9 +187,12 @@
 			}
 			id: "79409E2F1B455F35"
 			rewards: [{
-				id: "53E7C896D437CFC9"
-				type: "xp"
-				xp: 10
+				id: "60B8A451CA74DA43"
+				item: {
+					count: 1
+					id: "panlingre:qing_ying_feather"
+				}
+				type: "item"
 			}]
 			tasks: [{
 				advancement: "plre:misson/xian/5"
@@ -352,9 +355,12 @@
 			}
 			id: "25D639F75A3AEE02"
 			rewards: [{
-				id: "1F105CD33B58959A"
-				type: "xp"
-				xp: 10
+				id: "65721FD233C231E4"
+				item: {
+					count: 1
+					id: "panlingre:ba_fang_yi"
+				}
+				type: "item"
 			}]
 			tasks: [{
 				advancement: "plre:misson/xian/9"

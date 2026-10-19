@@ -1,0 +1,12 @@
+allprojects {
+    afterEvaluate {
+        sourceSets.register('sourceReviewTest') {
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+            runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+        }
+        neoForge.mods.named(project.mod_id) { sourceSet(sourceSets.sourceReviewTest) }
+        neoForge.runs.named('gameTestServer') {
+            gameDirectory = project.file('build/source-review-run')
+        }
+    }
+}

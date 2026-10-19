@@ -1,0 +1,58 @@
+{
+  "type": "panlingre:zft_crafting",
+  "ingredients": [
+    {
+      "slot": 0,
+      "ingredient": {
+        "item": "panlingre:zhu_sha_4",
+        "count": 4
+      }
+    },
+    {
+      "slot": 1,
+      "ingredient": {
+        "item": "panlingre:fu_zhi",
+        "count": 1
+      }
+    },
+    {
+      "slot": 2,
+      "ingredient": {
+        "item": "panlingre:ys1_jin",
+        "count": 50
+      }
+    },
+    {
+      "slot": 3,
+      "ingredient": {
+        "item": "panlingre:ys1_mu",
+        "count": 50
+      }
+    },
+    {
+      "slot": 4,
+      "ingredient": {
+        "item": "panlingre:ys1_shui",
+        "count": 50
+      }
+    },
+    {
+      "slot": 5,
+      "ingredient": {
+        "item": "panlingre:ys1_huo",
+        "count": 50
+      }
+    },
+    {
+      "slot": 6,
+      "ingredient": {
+        "item": "panlingre:ys1_tu",
+        "count": 50
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "panlingre:huan_hun_fu"
+  }
+}

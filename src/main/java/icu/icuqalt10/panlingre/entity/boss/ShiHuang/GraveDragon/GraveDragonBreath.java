@@ -35,8 +35,12 @@ public final class GraveDragonBreath {
 
     public static Geometry geometry(GraveDragonEntity dragon, String action) {
         var parts = dragon.getWorldParts();
-        return geometry(parts[11].getOrientedBox(), parts[78].getOrientedBox(),
+        var geometry = geometry(parts[11].getOrientedBox(), parts[78].getOrientedBox(),
                 parts[12].getOrientedBox(), action);
+        Vec3 target = dragon.phaseFirefieldTarget();
+        if (action.equals("phase50_firefield") && target != null)
+            return new Geometry(geometry.mouth(), target.subtract(geometry.mouth()).normalize(),geometry.range(),geometry.width());
+        return aimEmperorBreath(dragon,geometry);
     }
 
     static Geometry geometry(GraveDragonPose.Frame frame, Matrix4f transform, Vec3 origin, String action) {
@@ -66,6 +70,16 @@ public final class GraveDragonBreath {
         return flow(dragon, action, seconds, geometry(dragon, action));
     }
 
+    public static Flow flowAtPose(GraveDragonEntity dragon, String action, double seconds) {
+        return flow(dragon,action,seconds,aimEmperorBreath(dragon,geometry(dragon.posedPart(11,seconds),
+                dragon.posedPart(78,seconds),dragon.posedPart(12,seconds),action)));
+    }
+
+    private static Geometry aimEmperorBreath(GraveDragonEntity dragon,Geometry source){
+        Vec3 target=dragon.emperorBreathTarget();
+        return target==null?source:new Geometry(source.mouth(),target.subtract(source.mouth()).normalize(),source.range(),source.width());
+    }
+
     private static Flow flow(GraveDragonEntity dragon, String action, double seconds, Geometry source) {
         GraveDragonActions.Window window = GraveDragonActions.get(action).windows().getFirst();
         double elapsedTicks = Math.max(0, (seconds - window.from()) * 20 + 1);
@@ -78,7 +92,11 @@ public final class GraveDragonBreath {
         double distance = hit.getType() == HitResult.Type.MISS ? front
                 : source.mouth().distanceTo(hit.getLocation());
         Geometry jet = new Geometry(source.mouth(), source.direction(), distance, source.width());
-        if (!spread || hit.getType() == HitResult.Type.MISS || hit.getDirection() != Direction.UP)
+        // A ray through a block's top edge can report a side face at large world coordinates.
+        boolean top=hit.getType()!=HitResult.Type.MISS&&(hit.getDirection()==Direction.UP
+                || source.direction().y<0&&Math.abs(hit.getLocation().y-hit.getBlockPos().getY()
+                -dragon.level().getBlockState(hit.getBlockPos()).getCollisionShape(dragon.level(),hit.getBlockPos()).max(Direction.Axis.Y))<1e-5);
+        if (!spread || !top)
             return new Flow(jet, null, 0);
         // The phase field uses its first impact to build a cached flood fill.
         if (field) return new Flow(jet, hit.getLocation(), 0);

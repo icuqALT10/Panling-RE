@@ -141,9 +141,12 @@
 			hide_until_deps_visible: false
 			id: "25E5FA2D06F7C579"
 			rewards: [{
-				id: "3511FEE0627E742F"
-				type: "xp"
-				xp: 10
+				id: "18A7C78E44288839"
+				item: {
+					count: 1
+					id: "panlingre:qing_ying_feather"
+				}
+				type: "item"
 			}]
 			tasks: [{
 				advancement: "plre:misson/ren/5"
@@ -244,9 +247,12 @@
 			hide_until_deps_visible: false
 			id: "09F5BF434DB71025"
 			rewards: [{
-				id: "2A98DBFD1E8E3399"
-				type: "xp"
-				xp: 10
+				id: "21F2CE9AA1C400AC"
+				item: {
+					count: 1
+					id: "panlingre:ba_fang_yi"
+				}
+				type: "item"
 			}]
 			tasks: [{
 				advancement: "plre:misson/ren/9"

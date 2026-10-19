@@ -3,6 +3,9 @@
   "package": "icu.icuqalt10.panlingre.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "LockedItemUseMixin",
+    "LockedCraftingResultMixin",
+    "HuanHunTotemMixin",
     "LivingEntityMixin",
     "OrientedEntityPickMixin",
     "PartInteractionReachMixin",

@@ -1,4 +1,25 @@
 {
+  "boss.grave_dragon.death_cry": {
+    "sounds": [{"name": "panlingre:entity/grave_dragon/death_cry", "stream": false, "attenuation_distance": 1024}]
+  },
+  "boss.grave_dragon.breath.ground_fan_breath": {
+    "sounds": [{"name": "panlingre:entity/grave_dragon/breath_ground_fan_breath", "stream": false, "attenuation_distance": 1024}]
+  },
+  "boss.grave_dragon.breath.air_open_fire_ring": {
+    "sounds": [{"name": "panlingre:entity/grave_dragon/breath_air_open_fire_ring", "stream": false, "attenuation_distance": 1024}]
+  },
+  "boss.grave_dragon.breath.phase50_firefield": {
+    "sounds": [{"name": "panlingre:entity/grave_dragon/breath_phase50_firefield", "stream": false, "attenuation_distance": 1024}]
+  },
+  "boss.grave_dragon.breath.ground_turn_sweep": {
+    "sounds": [{"name": "panlingre:entity/grave_dragon/breath_ground_turn_sweep", "stream": false, "attenuation_distance": 1024}]
+  },
+  "boss.grave_dragon.breath.ground_turn_breath": {
+    "sounds": [{"name": "panlingre:entity/grave_dragon/breath_ground_turn_breath", "stream": false, "attenuation_distance": 1024}]
+  },
+  "boss.grave_dragon.breath.ground_sweep_breath": {
+    "sounds": [{"name": "panlingre:entity/grave_dragon/breath_ground_sweep_breath", "stream": false, "attenuation_distance": 1024}]
+  },
   "boss.pan_gu": {
     "sounds": [
       {
@@ -6,6 +27,12 @@
         "stream": true
       }
     ]
+  },
+  "boss.shihuang": {
+    "sounds": [{"name": "panlingre:instance/shihuang_first", "stream": true}]
+  },
+  "boss.shihuang.loop": {
+    "sounds": [{"name": "panlingre:instance/shihuang_loop", "stream": true}]
   },
   "instance.sishou": {
     "sounds": [

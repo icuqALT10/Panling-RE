@@ -54,4 +54,9 @@ public final class InstanceEvents {
             InstanceManager.failAndKill(player);
         }
     }
+
+    @SubscribeEvent
+    public static void playerRespawned(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) InstanceManager.clearOrphanedPlayerTag(player);
+    }
 }

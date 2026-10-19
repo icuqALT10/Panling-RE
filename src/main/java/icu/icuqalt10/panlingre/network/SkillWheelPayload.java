@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.network;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
+import icu.icuqalt10.panlingre.attachment.ItemUnlockData;
 import icu.icuqalt10.panlingre.attribute.cooldown_remove;
 import icu.icuqalt10.panlingre.init.ModAttachments;
 import icu.icuqalt10.panlingre.item.fuzhi.FuZhiBagItem;
@@ -69,6 +70,7 @@ public record SkillWheelPayload(ResourceLocation itemId, int skillIndex) impleme
         }
 
         ItemStack stack = findSkillStack(player, itemId, sourceHand);
+        if (!ItemUnlockData.canUse(player, stack)) return;
         if (!BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(itemId)
                 || !(stack.getItem() instanceof skill_trigger skillItem)) {
             return;
@@ -135,16 +137,7 @@ public record SkillWheelPayload(ResourceLocation itemId, int skillIndex) impleme
         if (lingqiCost > 0) lingQiData.sync(player);
         long actualCooldown = Math.max(
                 0L, cooldown_remove.skill_cd_remove(player, baseCooldown));
-        player.getPersistentData().putLong(
-                cdTag, System.currentTimeMillis() + actualCooldown);
-
-        if (cooldownItem != null && actualCooldown > 0) {
-            int cooldownTicks = (int) Math.min(
-                    Integer.MAX_VALUE, (actualCooldown + 49L) / 50L);
-            player.getCooldowns().addCooldown(cooldownItem, cooldownTicks);
-        }
-        PacketDistributor.sendToPlayer(player,
-                new SkillUseSucceededPayload(cooldownKey, actualCooldown));
+        applyCooldown(player, castKey, cooldownKey, cooldownItem, actualCooldown);
         if (allowWindup) {
             player.swing(castingHand, true);
         } else {
@@ -152,6 +145,31 @@ public record SkillWheelPayload(ResourceLocation itemId, int skillIndex) impleme
                     new SkillCastReleasePayload(
                             player.getId(), castingHand == InteractionHand.MAIN_HAND));
         }
+    }
+
+    public static void applyInterruptedCooldown(ServerPlayer player, ResourceLocation itemId,
+                                                 int skillIndex, @Nullable InteractionHand sourceHand,
+                                                 String castKey) {
+        ItemStack stack = findSkillStack(player, itemId, sourceHand);
+        if (!BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(itemId)
+                || !(stack.getItem() instanceof skill_trigger skillItem)
+                || skillIndex < 0 || skillIndex >= skillItem.getSkillCount(stack)) return;
+        long normalCooldown = Math.max(0L,
+                cooldown_remove.skill_cd_remove(player, Math.max(0L, skillItem.getSkillCD(stack, skillIndex))));
+        String cooldownKey = skillItem.getSkillNameKey(stack, skillIndex);
+        if (cooldownKey.isEmpty()) cooldownKey = stack.getDescriptionId();
+        applyCooldown(player, castKey, cooldownKey, skillItem.getSkillCooldownItem(stack, skillIndex),
+                (long) Math.ceil(normalCooldown * 1.5));
+    }
+
+    private static void applyCooldown(ServerPlayer player, String castKey, String cooldownKey,
+                                      @Nullable Item cooldownItem, long actualCooldown) {
+        player.getPersistentData().putLong("cd." + castKey, System.currentTimeMillis() + actualCooldown);
+        if (cooldownItem != null && actualCooldown > 0) {
+            int cooldownTicks = (int) Math.min(Integer.MAX_VALUE, (actualCooldown + 49L) / 50L);
+            player.getCooldowns().addCooldown(cooldownItem, cooldownTicks);
+        }
+        PacketDistributor.sendToPlayer(player, new SkillUseSucceededPayload(cooldownKey, actualCooldown));
     }
 
     private static ItemStack findSkillStack(Player player, ResourceLocation itemId,

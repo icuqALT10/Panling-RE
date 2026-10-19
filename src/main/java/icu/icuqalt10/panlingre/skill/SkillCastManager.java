@@ -74,6 +74,21 @@ public final class SkillCastManager {
         return true;
     }
 
+    public static boolean isCasting(ServerPlayer player) {
+        PendingCast pending = ACTIVE_CASTS.get(player.getUUID());
+        return pending != null && !shouldInterrupt(player, pending);
+    }
+
+    /** Cancel without releasing the skill, then impose its normal cooldown penalty. */
+    public static boolean interruptWithCooldown(ServerPlayer player) {
+        PendingCast pending = ACTIVE_CASTS.get(player.getUUID());
+        if (pending == null || shouldInterrupt(player, pending)) return false;
+        cancel(player);
+        SkillWheelPayload.applyInterruptedCooldown(player, pending.itemId(), pending.skillIndex(),
+                pending.sourceHand(), pending.castKey());
+        return true;
+    }
+
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
         if (ACTIVE_CASTS.isEmpty()) return;

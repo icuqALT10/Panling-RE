@@ -1,1 +1,1 @@
-# Test completion is announced by ShiHuangController; rewards are not configured yet.
+# Completion callbacks are configured by the instance JSON's success field.

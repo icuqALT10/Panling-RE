@@ -1,15 +1,14 @@
 {
   "controller": "panlingre:zhuque",
-  
   "template": "panlingre:instance/zhuque",
 
-  "center_pos": [0.0, 70.0, 2250.0],
-  "player_spawn_pos": [0.5, 62.00, 2250.5],
+  "center_pos": [256, 70.0, 2816],
+  "player_spawn_pos": [256.5, 62.0, 2816.5],
 
-  "spacing": 128,
-
+  "spacing": 512,
+  "region_depth": 1,
   "prewarm_slots": 20,
-  "arena_version": 1,
+  "arena_version": 2,
 
   "success": "plre:instances/zhuque/success",
   "failure": "plre:instances/zhuque/failure"

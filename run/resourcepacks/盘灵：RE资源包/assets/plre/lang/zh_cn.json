@@ -330,6 +330,83 @@
 
 
 
+	"plre.npc.name.tai_zi.1":"§a§l醉醺醺的人",
+	"plre.npc.name.tai_zi.2":"§a§l太子",
+
+	"plre.task.instance.shi_huang_ling.3":"§f进入§6始皇陵",
+	"plre.task.instance.shi_huang_ling.4":"§f通关§6始皇陵",
+	"plre.dialog.instance.shi_huang_ling.failure":"§c始皇陵-失败",
+
+	"plre.dialog.npc.tai_zi.1":"呃……呕……",
+  "plre.dialog.npc.tai_zi.1.option":"(离开)",
+  "plre.dialog.npc.tai_zi.1.option1":"你怎么了？",
+  "plre.dialog.npc.tai_zi.1.1":"唉,我真是没用啊,连§6先祖的试炼§r都过不了……",
+  "plre.dialog.npc.tai_zi.1.2":"（突然清醒）等等,你是何人？啊,原来是先前在§6圣山§r大展身手的那位！既然如此,你的身手一定很了得吧！",
+  "plre.dialog.npc.tai_zi.1.3":"实不相瞒,我乃当朝§a§l太子§r,也是皇位的继承人。\n不过,皇室有一条祖训：§c每位继任者都须前往先祖的陵墓,通过重重考验,获得始皇帝的认可§r。",
+  "plre.dialog.npc.tai_zi.1.4":"可凭我自己的本事,别说通过试炼,只怕还没到陵墓,就已在半路身受重伤了。\n因此,祖训允许每位继任者携带至多§e五名侍卫§r,一同接受试炼。可我找来的那些侍卫,偏偏都是些酒囊饭袋！",
+  "plre.dialog.npc.tai_zi.1.5":"若今年仍无法获得先祖认可,我便会被废去太子之位,由我的兄弟取而代之。所以,还望先生助我一臂之力！",
+  "plre.dialog.npc.tai_zi.1.6":"当然,我绝不会亏待你。这是§c阴阳还魂符§r的配方,只要你答应相助,我便将它赠予你。此符能在危急时刻为你抵挡致命一击,也算多一分应对不测的底气。",
+  "plre.dialog.npc.tai_zi.1.7":"若能通过试炼,你还可以从陵墓的宝库中取得一些§e宝物§r。至于能得到什么,就要看你的气运了。",
+  "plre.dialog.npc.tai_zi.1.option2":"（同意）",
+  "plre.dialog.npc.tai_zi.1.option3":"（拒绝）",
+  "plre.dialog.npc.tai_zi.1.2.1":"太好了！我再去找些人手,你也可以邀上同伴一同前往。",
+  "plre.dialog.npc.tai_zi.1.2.2":"我们就在§2龙鳞之森§r的这处地方汇合。\n§a湖泊边缘有一座洞穴,陵墓的入口就在洞中。",
+  "plre.dialog.npc.tai_zi.1.2.3":"对了,§c阴阳还魂符§r的配方交给你,还请笑纳。待你准备妥当,便来那里与我汇合吧。",
+  "plre.dialog.npc.tai_zi.1.3.1":"啊……也是,此去九死一生,我也不好强求。",
+  "plre.dialog.npc.tai_zi.1.3.2":"不过,若你哪日回心转意,还请来这里找我。我许下的条件,依然作数。",
+  
+	"plre.dialog.npc.tai_zi.2":"……",
+  "plre.dialog.npc.tai_zi.2.option":"(离开)",
+  "plre.dialog.npc.tai_zi.2.option1":"我来了",
+  "plre.dialog.npc.tai_zi.2.1":"你终于来了！准备得如何了？",
+  "plre.dialog.npc.tai_zi.2.2":"踩下§a前方的踏板§r,便可进入传送阵。待人到齐,所有人都站上传送阵后,就能正式进入陵墓。",
+  "plre.dialog.npc.tai_zi.2.3":"若无其他问题,我们便动身吧。",
+  
+	"plre.dialog.npc.tai_zi.3":"此处应该就是双印回廊了。",
+  "plre.dialog.npc.tai_zi.3.option":"(离开)",
+  "plre.dialog.npc.tai_zi.3.option1":"接下来怎么做？",
+  "plre.dialog.npc.tai_zi.3.1":"这里是一座§b迷宫§r,其中藏着§a两处机关§r。只有将它们全部激活,通往下一间墓室的大门才会开启。",
+  "plre.dialog.npc.tai_zi.3.2":"接下来,就得靠我们自己探路了。",
+  
+	"plre.dialog.npc.tai_zi.4":"总算走出那座迷宫了。",
+  "plre.dialog.npc.tai_zi.4.option":"(离开)",
+  "plre.dialog.npc.tai_zi.4.option1":"这里是？",
+  "plre.dialog.npc.tai_zi.4.1":"此处名为三匣渡渊。\n我们得避开两侧射来的箭矢,沿着这些台阶逐级跃过去。",
+  "plre.dialog.npc.tai_zi.4.2":"看到对面那个角落了吗？那里有一处§a机关§r,必须有人过去将它激活,才能打开大门。",
+  "plre.dialog.npc.tai_zi.4.3":"总之,千万小心！",
+  
+	"plre.dialog.npc.tai_zi.5":"你没事吧？方才破除机关,辛苦你了。",
+  "plre.dialog.npc.tai_zi.5.option":"(离开)",
+  "plre.dialog.npc.tai_zi.5.option1":"无碍,接下来要做什么？",
+  "plre.dialog.npc.tai_zi.5.1":"这里名为四象归流殿。\n§a我们需要在四处高台上,分别点亮相应数量的灯。",
+  "plre.dialog.npc.tai_zi.5.2":"哦,这里有§6一首诗§r,想必就是破局的关键。",
+  "plre.dialog.npc.tai_zi.5.3":"§6春生三枝,夏燃四焰。秋列两兵,冬守一印。",
+  "plre.dialog.npc.tai_zi.5.4":"这诗……总觉得先祖还挺……仁慈的。",
+  
+	"plre.dialog.npc.tai_zi.6":"呼,倒是轻松。",
+  "plre.dialog.npc.tai_zi.6.option":"(离开)",
+  "plre.dialog.npc.tai_zi.6.option1":"这一关是什么？",
+  "plre.dialog.npc.tai_zi.6.1":"这一关也不难。\n§a按下按钮后,顶部便会亮起一条星路,循着星路前行便能通过。",
+  
+	"plre.dialog.npc.tai_zi.7":"到了……只剩最后两关了。",
+  "plre.dialog.npc.tai_zi.7.option":"(离开)",
+  "plre.dialog.npc.tai_zi.7.option1":"里面那是……",
+  "plre.dialog.npc.tai_zi.7.1":"你也看到了吧？里面那便是传说中的生灵——§e龙§r。",
+  "plre.dialog.npc.tai_zi.7.2":"相传,当年先祖统一大陆、建立皇城后,一条§e金色巨龙§r从天而降,为祸四方。\n先祖御驾亲征,与巨龙鏖战数日,最终将其降服。",
+  "plre.dialog.npc.tai_zi.7.3":"没想到,传说竟是真的……而那条龙,竟成了这陵墓其中一关的阵眼！",
+  "plre.dialog.npc.tai_zi.7.4":"按照典籍留下的提示,这便是§c倒数第二关§r。至于最后一关,则要与§c先祖的残魂§r交战。",
+  "plre.dialog.npc.tai_zi.7.5":"这两关都非我力所能及,贸然跟去,恐怕只会拖累你们。我便在此等候佳音了。",
+  
+  "plre.dialog.npc.tai_zi.8.option1":"终于出来了",
+  "plre.dialog.npc.tai_zi.8.1":"是啊,这一路辛苦你了。好在,我们总算通过了试炼。",
+  "plre.dialog.npc.tai_zi.8.2":"你也拿到§e金钥匙§r了吧？那便是开启§6宝库§r的关键。",
+  "plre.dialog.npc.tai_zi.8.3":"手持§e金钥匙§r,打开§e金色宝箱§r,就能获得§6宝库§r中的一件物品。\n§a宝箱应该藏在某间机关房里,你可以四处找找,看看有没有可疑之处。",
+  "plre.dialog.npc.tai_zi.8.4":"说起来,我倒想起一件事。相传先祖一统天下时,神族的一位长老曾赐予他一顶§c头冠§r。据说那§c头冠§r威能非凡,至于它的来历,我就不得而知了。",
+  "plre.dialog.npc.tai_zi.8.5":"想来,那顶头冠也藏在陵墓的宝库之中,只是不知能否寻到。",
+  "plre.dialog.npc.tai_zi.8.6":"若此次所得不合心意,或许可以再闯一次始皇陵,重新取得§e金钥匙§r\n……这件事,应该也没人会过问。",
+
+
+
 
   "plre.task.guide.title":"§6任务指引\n",
   "plre.task.guide.title.speak":"§6任务指引\n§f与%s§f交谈",
@@ -414,6 +491,7 @@
   "plre.looktip.ore.available.shovel.netherite":"\\n§a可使用§d§n玄铁铲§a或以上采集",
   
   "plre.looktip.chest.sheng_shan":"§e金宝箱\\n§f可使用§e金钥匙§6「§b§l圣山§6」§f开启",
+  "plre.looktip.chest.shi_huang":"§e金宝箱\\n§f可使用§e金钥匙§6「§b§l始皇陵§6」§f开启",
   
   "plre.looktip.entity.can_interact":"§a可与其交互",
   

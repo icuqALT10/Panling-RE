@@ -11,12 +11,13 @@ public class GraveDragonModel extends GeoModel<GraveDragonEntity> {
     public void setCustomAnimations(GraveDragonEntity dragon, long instanceId, AnimationState<GraveDragonEntity> state) {
         // Apply the very same spline sample and world time as server OBBs. A controller's
         // first-render time is client-local and cannot serve as the collision clock.
-        var frame = dragon.poseAt(dragon.animationSeconds(state.getPartialTick()));
+        var frame = dragon.poseAt(dragon.animationSeconds(state.getPartialTick()),state.getPartialTick());
         // 脊柱链式跟随：服务端与客户端各自推进同一条链（输入全是同步量），这里用**同一个反解**
         // 套上去，并按 partialTick 在上一 tick 与这一 tick 之间插值——渲染与碰撞箱因此仍然一致
         // （链没起来时 withSpine 原样返回）。
         for (var entry : frame.bones().entrySet()) {
             getBone(entry.getKey()).ifPresent(bone -> {
+                bone.setHidden(false);
                 var pose = entry.getValue();
                 bone.updateRotation((float)pose.rotation().x, (float)pose.rotation().y, (float)pose.rotation().z);
                 bone.updatePosition((float)pose.position().x, (float)pose.position().y, (float)pose.position().z);

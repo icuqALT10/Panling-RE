@@ -97,13 +97,12 @@ public final class XuanwuController implements InstanceController {
 
     @Override
     public void start(InstanceSession session) {
-        ServerPlayer player = session.player();
         bossBar = new ServerBossEvent(
                 Component.translatable("instance.panlingre.xuanwu.countdown", 5),
                 BossEvent.BossBarColor.BLUE,
                 BossEvent.BossBarOverlay.PROGRESS
         );
-        if (player != null) {
+        for (ServerPlayer player : session.players()) {
             player.connection.send(new ClientboundSetTitleTextPacket(
                     Component.translatable("instance.panlingre.xuanwu.preparing.1")));
             player.connection.send(new ClientboundSetSubtitleTextPacket(
@@ -133,11 +132,18 @@ public final class XuanwuController implements InstanceController {
     }
 
     @Override
+    public void onPlayerLeave(InstanceSession session, ServerPlayer player) {
+        if (bossBar != null) bossBar.removePlayer(player);
+        PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
+        pendingBreaks.forEach((position, pending) -> player.connection.send(
+                new ClientboundBlockDestructionPacket(pending.animationId, position, -1)));
+    }
+
+    @Override
     public void stop(InstanceSession session, InstanceResult result) {
         if (bossBar != null) bossBar.removeAllPlayers();
         restoreFloor(session);
-        ServerPlayer player = session.player();
-        if (player != null) PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
+        for (ServerPlayer player : session.players()) PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
         for (Mob mob : spawnedMonsters) {
             if (!mob.isRemoved()) mob.discard();
         }
@@ -182,8 +188,7 @@ public final class XuanwuController implements InstanceController {
             if (followRange != null) followRange.setBaseValue(0.0);
             removeFloorUnderMob(session, mob);
         }
-        ServerPlayer player = session.player();
-        if (player != null) {
+        for (ServerPlayer player : session.players()) {
             player.connection.send(new ClientboundSetTitleTextPacket(
                     Component.translatable("instance.panlingre.xuanwu.preparing.1")));
             player.connection.send(new ClientboundSetSubtitleTextPacket(
@@ -223,8 +228,7 @@ public final class XuanwuController implements InstanceController {
         remainingTicks = SUCCESS_DELAY_TICKS;
         bossBar.setName(Component.translatable("instance.panlingre.xuanwu.completed"));
         bossBar.setProgress(1.0F);
-        ServerPlayer player = session.player();
-        if (player != null) {
+        for (ServerPlayer player : session.players()) {
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0F, 1.0F);
             PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
@@ -261,8 +265,8 @@ public final class XuanwuController implements InstanceController {
         CompoundTag entityNbt = mob.saveWithoutId(new CompoundTag());
         entityNbt.merge(nbtFor(index).copy());
         mob.load(entityNbt);
-        double slotOffset = (double) session.slot() * session.definition().spacing();
-        mob.setPos(BASE_MONSTER_POSITIONS.get(index).add(slotOffset, 0.0, 0.0));
+        Vec3 slotOffset = session.center().subtract(0.0, 70.0, 3000.0);
+        mob.setPos(BASE_MONSTER_POSITIONS.get(index).add(slotOffset));
         if (level.addFreshEntity(mob)) spawnedMonsters.add(mob);
     }
 
@@ -271,10 +275,8 @@ public final class XuanwuController implements InstanceController {
     }
 
     private void scheduleCobblestoneBelowPlayer(InstanceSession session) {
-        ServerPlayer player = session.player();
-        ServerLevel level = session.level();
-        if (player == null || level == null) return;
-        scheduleCobblestones(session, player.getBoundingBox(), player.getY());
+        if (session.level() == null) return;
+        for (ServerPlayer player : session.players()) scheduleCobblestones(session, player.getBoundingBox(), player.getY());
     }
 
     private void scheduleCobblestonesBelowMonsters(InstanceSession session) {
@@ -284,7 +286,6 @@ public final class XuanwuController implements InstanceController {
     }
 
     private void scheduleCobblestones(InstanceSession session, AABB bounds, double feetY) {
-        ServerPlayer player = session.player();
         ServerLevel level = session.level();
         if (level == null) return;
         int minX = (int) Math.floor(bounds.minX + 1.0E-4);
@@ -299,7 +300,7 @@ public final class XuanwuController implements InstanceController {
                         || pendingBreaks.containsKey(position)) continue;
                 int animationId = nextBreakAnimationId++;
                 pendingBreaks.put(position, new PendingBreak(animationId, COBBLESTONE_BREAK_TICKS));
-                if (player != null) {
+                for (ServerPlayer player : session.players()) {
                     player.connection.send(new ClientboundBlockDestructionPacket(animationId, position, 0));
                 }
             }
@@ -307,7 +308,6 @@ public final class XuanwuController implements InstanceController {
     }
 
     private void tickPendingBreaks(InstanceSession session) {
-        ServerPlayer player = session.player();
         ServerLevel level = session.level();
         if (level == null) return;
         Iterator<Map.Entry<BlockPos, PendingBreak>> iterator = pendingBreaks.entrySet().iterator();
@@ -316,16 +316,18 @@ public final class XuanwuController implements InstanceController {
             PendingBreak pending = entry.getValue();
             pending.remainingTicks--;
             if (pending.remainingTicks <= 0) {
-                if (player != null) {
+                for (ServerPlayer player : session.players()) {
                     player.connection.send(new ClientboundBlockDestructionPacket(
                             pending.animationId, entry.getKey(), -1));
                 }
                 removeFloorBlock(level, entry.getKey());
                 iterator.remove();
-            } else if (player != null) {
+            } else {
                 int progress = Math.min(9, COBBLESTONE_BREAK_TICKS - pending.remainingTicks);
-                player.connection.send(new ClientboundBlockDestructionPacket(
-                        pending.animationId, entry.getKey(), progress));
+                for (ServerPlayer player : session.players()) {
+                    player.connection.send(new ClientboundBlockDestructionPacket(
+                            pending.animationId, entry.getKey(), progress));
+                }
             }
         }
     }
@@ -342,8 +344,7 @@ public final class XuanwuController implements InstanceController {
 
     private void restoreFloor(InstanceSession session) {
         ServerLevel level = session.level();
-        ServerPlayer player = session.player();
-        if (player != null) {
+        for (ServerPlayer player : session.players()) {
             pendingBreaks.forEach((position, pending) -> player.connection.send(
                     new ClientboundBlockDestructionPacket(pending.animationId, position, -1)));
         }

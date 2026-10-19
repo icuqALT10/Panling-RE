@@ -7,13 +7,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.sounds.SoundEvents;
+import icu.icuqalt10.panlingre.init.ModSounds;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import java.util.HashMap;
 import java.util.Map;
 
-/** One continuous fire loop follows the head for the entire breath window. */
+/** Each attack has one complete, duration-matched recording following the mouth. */
 public final class GraveDragonBreathSound extends AbstractTickableSoundInstance {
     private static final Map<Integer, GraveDragonBreathSound> PLAYING = new HashMap<>();
     private final GraveDragonEntity dragon;
@@ -37,7 +37,9 @@ public final class GraveDragonBreathSound extends AbstractTickableSoundInstance 
         for (var entity : level.entitiesForRendering()) {
             if (!(entity instanceof GraveDragonEntity dragon) || !isBreathing(dragon)) continue;
             var sound = PLAYING.get(dragon.getId());
-            if (sound == null || sound.isStopped() || level.getGameTime() % 20 == 0 && !manager.isActive(sound)) {
+            // Retain the instance until the window ends, even if its one-shot
+            // recording finishes early. Never restart the attack inside a breath.
+            if (sound == null) {
                 sound = new GraveDragonBreathSound(dragon);
                 PLAYING.put(dragon.getId(), sound);
                 manager.play(sound);
@@ -46,19 +48,20 @@ public final class GraveDragonBreathSound extends AbstractTickableSoundInstance 
     }
 
     public GraveDragonBreathSound(GraveDragonEntity dragon) {
-        super(SoundEvents.FIRE_AMBIENT, SoundSource.HOSTILE, RandomSource.create());
+        super(ModSounds.GRAVE_DRAGON_BREATHS.get(dragon.animation()).get(), SoundSource.HOSTILE, RandomSource.create());
         this.dragon = dragon;
         this.action = dragon.animation();
         this.startedAt = dragon.animationStart();
-        looping = true;
+        looping = false;
         delay = 0;
         attenuation = SoundInstance.Attenuation.LINEAR;
         volume = 5F;
-        pitch = .7F;
+        pitch = 1F;
         tick();
     }
 
     public static boolean isBreathing(GraveDragonEntity dragon) {
+        if (dragon.arenaAudio()) return false; // The instance broadcasts to all arena players.
         var action = GraveDragonActions.get(dragon.animation());
         if (action == null) return false;
         double seconds = dragon.animationSeconds(0);

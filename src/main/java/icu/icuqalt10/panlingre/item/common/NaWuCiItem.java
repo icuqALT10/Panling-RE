@@ -159,6 +159,7 @@ public class NaWuCiItem extends Item implements ICurioItem {
         tooltip.add(Component.translatable("item.PanlingRE.na_wu_ci_shi.skill2"));
         tooltip.add(Component.translatable("item.PanlingRE.na_wu_ci_shi.skill3"));
         tooltip.add(Component.translatable("item.PanlingRE.na_wu_ci_shi.skill4"));
+        tooltip.add(Component.translatable("item.PanlingRE.na_wu_ci_shi.skill5"));
         tooltip.add(Component.empty());
         tooltip.add(Component.translatable(networkMode
                         ? "item.PanlingRE.na_wu_ci_shi.tip1"

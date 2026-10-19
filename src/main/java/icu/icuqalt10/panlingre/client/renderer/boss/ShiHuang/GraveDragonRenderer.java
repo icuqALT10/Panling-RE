@@ -4,6 +4,7 @@ import icu.icuqalt10.panlingre.client.models.boss.ShiHuang.GraveDragonModel;
 import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.core.BlockPos;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
@@ -13,6 +14,22 @@ public class GraveDragonRenderer extends GeoEntityRenderer<GraveDragonEntity> {
     public GraveDragonRenderer(EntityRendererProvider.Context context) {
         super(context, new GraveDragonModel());
         this.shadowRadius = 0F;
+    }
+
+    // The ally's origin can sit below the floor while its visible back carries the emperor.
+    private BlockPos lightPosition(GraveDragonEntity dragon, BlockPos position) {
+        return dragon.animation().startsWith("ally_")
+                ? BlockPos.containing(dragon.position().add(dragon.emperorMountOffset())) : position;
+    }
+
+    @Override
+    protected int getBlockLightLevel(GraveDragonEntity dragon, BlockPos position) {
+        return super.getBlockLightLevel(dragon, lightPosition(dragon, position));
+    }
+
+    @Override
+    protected int getSkyLightLevel(GraveDragonEntity dragon, BlockPos position) {
+        return super.getSkyLightLevel(dragon, lightPosition(dragon, position));
     }
 
     /**

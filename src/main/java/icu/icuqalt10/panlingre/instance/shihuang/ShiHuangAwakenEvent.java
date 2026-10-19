@@ -4,7 +4,7 @@ import icu.icuqalt10.panlingre.instance.InstanceSession;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.Event;
 
-/** Server-side entrance hooks. A future emperor listener spawns and binds its entity here. */
+/** Server-side notification after the controller has spawned/bound the emperor or enabled combat. */
 public final class ShiHuangAwakenEvent extends Event {
     public enum Phase { REVEAL, COMBAT_READY }
     public final InstanceSession session;

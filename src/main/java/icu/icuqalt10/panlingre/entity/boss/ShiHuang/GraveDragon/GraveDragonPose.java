@@ -185,12 +185,82 @@ public final class GraveDragonPose {
         return rebuild(merged);
     }
 
+    /** Place the connected spine on a shared curve, keeping the authored limb poses. */
+    static Frame curveSpine(Frame base, List<Vec3> centers, List<Quaternionf> orientations, Frame resting, double connection) {
+        var poses=new LinkedHashMap<>(base.bones());
+        var labels=Arrays.asList(GraveDragonEntity.PART_LABELS);
+        Vector3f previousCenter=null,previousTarget=null;Quaternionf previousRotation=null;
+        for(int i=0;i<SPINE.size();i++) {
+            String name=SPINE.get(i);var bone=Resources.DEFINITION.bones.get(name);
+            float[] bounds=GraveDragonEntity.PART_BOUNDS[labels.indexOf(name)];
+            var center=new Vector3f(bounds[3],bounds[4],bounds[5]);
+            var target=new Vector3f((float)centers.get(i).x,(float)centers.get(i).y,(float)centers.get(i).z);
+            var rotation=orientations.get(i);
+            if(previousCenter!=null) {
+                var joint=new Vector3f(center).add(previousCenter).mul(.5F);
+                target.set(previousTarget).add(previousRotation.transform(new Vector3f(joint).sub(previousCenter)))
+                        .sub(rotation.transform(new Vector3f(joint).sub(center)));
+                var natural=resting.matrices().get(name).transformPosition(new Vector3f(joint))
+                        .sub(resting.matrices().get(SPINE.get(i-1)).transformPosition(new Vector3f(joint)));
+                target.add(natural.mul((float)(1-connection)));
+            }
+            var parent=base.matrices().get(bone.parent);
+            var parentRotation=parent.getUnnormalizedRotation(new Quaternionf());
+            var local=new Quaternionf(parentRotation).invert().mul(rotation);
+            var matrix=new org.joml.Matrix3f().rotation(local);
+            Vec3 angles=new Vec3(Math.atan2(matrix.m12(),matrix.m22()),Math.asin(Math.max(-1,Math.min(1,-matrix.m02()))),Math.atan2(matrix.m01(),matrix.m00()));
+            var pivot=new Vector3f((float)bone.pivot.x,(float)bone.pivot.y,(float)bone.pivot.z);
+            var offset=new Matrix4f(parent).invert().transformPosition(new Vector3f(target)).sub(pivot)
+                    .sub(local.transform(new Vector3f(center).sub(pivot)));
+            poses.put(name,new BonePose(angles,new Vec3(-offset.x*16,offset.y*16,offset.z*16),base.bones().get(name).scale));
+            previousCenter=center;previousTarget=target;previousRotation=rotation;
+        }
+        return rebuild(poses);
+    }
+
     /** 用一组骨骼位姿重建整帧（含全部骨骼矩阵）。链式跟随覆盖龙头旋转后需要重算矩阵。 */
     public static Frame rebuild(Map<String, BonePose> merged) {
         Map<String, Matrix4f> matrices = new HashMap<>();
         Set<String> visiting = new HashSet<>();
         for (String name : merged.keySet()) matrix(name, merged, matrices, visiting);
         return new Frame(Map.copyOf(merged), Map.copyOf(matrices));
+    }
+
+    static Frame translate(Frame frame, Vec3 offset) {
+        var poses = new LinkedHashMap<>(frame.bones());
+        var root = poses.get("motion_root");
+        poses.put("motion_root", new BonePose(root.rotation, root.position.add(offset.multiply(-16, 16, 16)), root.scale));
+        return rebuild(poses);
+    }
+
+    /** Distribute one world-space correction through the neck, without introducing head roll. */
+    public static Frame look(Frame base, Matrix4f modelToWorld, float yaw, float pitch, float weight) {
+        if (weight <= 0) return base;
+        var worldHead = new Matrix4f(modelToWorld).mul(base.matrices.get("head"));
+        var forward = worldHead.transformDirection(new Vector3f(0, 0, -1)).normalize();
+        float heading = (float)Math.atan2(-forward.x, -forward.z) + yaw * (float)RAD;
+        float elevation = (float)Math.atan2(forward.y, Math.hypot(forward.x, forward.z)) + pitch * (float)RAD;
+        var upright = new Quaternionf().rotationY(heading).rotateX(elevation);
+        var correction = upright.mul(worldHead.getUnnormalizedRotation(new Quaternionf()).invert());
+        Map<String, BonePose> poses = new LinkedHashMap<>(base.bones);
+        String[] chain = {"neck_10_ctrl", "neck_11_ctrl", "neck_joint_ctrl", "head_ctrl"};
+        String parent = Resources.DEFINITION.bones.get(chain[0]).parent;
+        var parentWorld = new Matrix4f(modelToWorld).mul(base.matrices.get(parent)).getUnnormalizedRotation(new Quaternionf());
+        for (int i = 0; i < chain.length; i++) {
+            String name = chain[i];
+            float share = (i == 3 ? 1 : (i + 1) * .15F) * weight;
+            var original = new Matrix4f(modelToWorld).mul(base.matrices.get(name)).getUnnormalizedRotation(new Quaternionf());
+            var world = new Quaternionf().slerp(correction, share).mul(original);
+            // Extract Rz * Ry * Rx directly; JOML 1.10.5's quaternion ZYX getter has
+            // the wrong sign for y*y in its X-angle denominator.
+            var local = new org.joml.Matrix3f().rotation(new Quaternionf(parentWorld).invert().mul(world));
+            var rotation = new Vec3(Math.atan2(local.m12(),local.m22()),
+                    Math.asin(Math.max(-1,Math.min(1,-local.m02()))),Math.atan2(local.m01(),local.m00()));
+            var pose = poses.get(name);
+            poses.put(name, new BonePose(rotation, pose.position, pose.scale));
+            parentWorld = world;
+        }
+        return rebuild(poses);
     }
 
     /** Blend local transforms before rebuilding the hierarchy; rotations take the shortest arc. */
@@ -200,14 +270,17 @@ public final class GraveDragonPose {
         Map<String, BonePose> poses = new LinkedHashMap<>();
         for (var entry : to.bones.entrySet()) {
             BonePose a = from.bones.get(entry.getKey()), b = entry.getValue();
-            Vec3 delta = b.rotation.subtract(a.rotation);
-            Vec3 rotation = a.rotation.add(new Vec3(Math.IEEEremainder(delta.x, Math.PI * 2),
-                    Math.IEEEremainder(delta.y, Math.PI * 2), Math.IEEEremainder(delta.z, Math.PI * 2)).scale(weight));
+            var arc=new Quaternionf().rotationZYX((float)a.rotation.z,(float)a.rotation.y,(float)a.rotation.x)
+                    .slerp(new Quaternionf().rotationZYX((float)b.rotation.z,(float)b.rotation.y,(float)b.rotation.x),(float)weight);
+            var matrix=new org.joml.Matrix3f().rotation(arc);
+            Vec3 rotation=new Vec3(Math.atan2(matrix.m12(),matrix.m22()),
+                    Math.asin(Math.max(-1,Math.min(1,-matrix.m02()))),Math.atan2(matrix.m01(),matrix.m00()));
             poses.put(entry.getKey(), new BonePose(rotation,
                     a.position.lerp(b.position, weight), a.scale.lerp(b.scale, weight)));
         }
         return rebuild(poses);
     }
+    public static Frame blendConnected(Frame from,Frame to,double weight){return closeAscentJoints(blend(from,to,weight));}
 
     /** 某个动画的时长（秒）。 */
     public static double duration(String animation) {
@@ -237,6 +310,8 @@ public final class GraveDragonPose {
             Vec3 rotation = bone.rotation, position = Vec3.ZERO, scale = ONE;
             if (track != null) {
                 rotation = rotation.add(sample(track.rotation, time, Vec3.ZERO).multiply(-RAD, -RAD, RAD));
+                if(Set.of("ally_emerge_exit","ally_combo_coil","ally_combo_charge","ally_charge_rise").contains(animation)&&SPINE.contains(entry.getKey()))
+                    rotation=ascentRotation(track.rotation,time,bone.rotation,rotation);
                 // Animation position is an OFFSET, including the large first-frame value.
                 // GeckoLib uses it directly. Subtracting frame 0 shifts every descendant.
                 position = sample(track.position, time, Vec3.ZERO);
@@ -244,7 +319,57 @@ public final class GraveDragonPose {
             }
             poses.put(entry.getKey(), new BonePose(rotation, position, scale));
         }
+        var frame=rebuild(poses);
+        if(animation.equals("ally_emerge"))return closeAscentJoints(frame,true);
+        return Set.of("ally_emerge_exit","ally_combo_coil","ally_combo_charge","ally_charge_rise").contains(animation)?closeAscentJoints(frame):frame;
+    }
+
+    private static final class AscentJoints {
+        static final Frame FLIGHT=sample("ally_orbit",0,false);
+    }
+
+    // Independently interpolated offsets can open a tiny gap on a tight curve. Close it
+    // with the same pose correction on client and server, retaining the flight pose's overlap.
+    private static Frame closeAscentJoints(Frame frame){
+        return closeAscentJoints(frame,false);
+    }
+
+    private static Frame closeAscentJoints(Frame frame,boolean emerging){
+        var poses=new LinkedHashMap<>(frame.bones);
+        var matrices=new HashMap<>(frame.matrices);
+        var labels=Arrays.asList(GraveDragonEntity.PART_LABELS);
+        for(int i=1;i<SPINE.size();i++){
+            String previous=SPINE.get(i-1),name=SPINE.get(i);
+            float[] a=GraveDragonEntity.PART_BOUNDS[labels.indexOf(previous)],b=GraveDragonEntity.PART_BOUNDS[labels.indexOf(name)];
+            var joint=new Vector3f((a[3]+b[3])*.5F,(a[4]+b[4])*.5F,(a[5]+b[5])*.5F);
+            var flight=AscentJoints.FLIGHT.matrices;
+            float allowance=emerging?0:flight.get(name).transformPosition(new Vector3f(joint)).distance(flight.get(previous).transformPosition(new Vector3f(joint)));
+            var current=matrices.get(name).transformPosition(new Vector3f(joint));
+            var anchor=matrices.get(previous).transformPosition(new Vector3f(joint));
+            var gap=new Vector3f(current).sub(anchor);float distance=gap.length();
+            if(distance<=allowance+1e-6F)continue;
+            var shift=gap.mul(allowance/distance-1);
+            var parent=matrices.get(Resources.DEFINITION.bones.get(name).parent);
+            var local=new Matrix4f(parent).invert().transformDirection(new Vector3f(shift));
+            var pose=poses.get(name);
+            poses.put(name,new BonePose(pose.rotation,pose.position.add(-local.x*16,local.y*16,local.z*16),pose.scale));
+            matrices.put(name,new Matrix4f(matrices.get(name)).translateLocal(shift));
+        }
         return rebuild(poses);
+    }
+
+    // The rising path crosses vertical; Euler interpolation can twist a segment through
+    // a different orientation between equivalent keys. Both renderer and OBBs use this arc.
+    private static Vec3 ascentRotation(List<Key> keys,double time,Vec3 rest,Vec3 fallback){
+        if(keys.size()<2||time<=keys.getFirst().time||time>=keys.getLast().time)return fallback;
+        int low=0,high=keys.size()-1;
+        while(high-low>1){int middle=(low+high)/2;if(keys.get(middle).time<=time)low=middle;else high=middle;}
+        var a=keys.get(low);var b=keys.get(high);
+        Vec3 ra=rest.add(a.value.multiply(-RAD,-RAD,RAD)),rb=rest.add(b.value.multiply(-RAD,-RAD,RAD));
+        var rotation=new Quaternionf().rotationZYX((float)ra.z,(float)ra.y,(float)ra.x)
+                .slerp(new Quaternionf().rotationZYX((float)rb.z,(float)rb.y,(float)rb.x),(float)((time-a.time)/(b.time-a.time)));
+        var matrix=new org.joml.Matrix3f().rotation(rotation);
+        return new Vec3(Math.atan2(matrix.m12(),matrix.m22()),Math.asin(Math.max(-1,Math.min(1,-matrix.m02()))),Math.atan2(matrix.m01(),matrix.m00()));
     }
 
     /** 循环采样，等价于 {@code sample(animation, seconds, true)}。 */

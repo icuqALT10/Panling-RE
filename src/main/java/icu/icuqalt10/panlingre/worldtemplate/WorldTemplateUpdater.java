@@ -163,11 +163,29 @@ public final class WorldTemplateUpdater {
                     .filter(path -> path.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".mca"))
                     .sorted(Comparator.comparing(path -> path.getFileName().toString()))
                     .toList()) {
+                String[] coordinates = source.getFileName().toString().split("\\.");
+                int regionX = Integer.parseInt(coordinates[1]), regionZ = Integer.parseInt(coordinates[2]);
+                // Z >= 2048 is reserved for independently persisted instance regions.
+                if (regionZ >= 4) continue;
                 Path target = targetDirectory.resolve(source.getFileName().toString());
                 if (Files.size(source) == 0L) {
                     Files.deleteIfExists(target);
                 } else {
                     copyRegularFile(source, target);
+                    if (regionZ == 3) {
+                        // Preserve the map portion of this boundary region, excluding old Qinglong slots.
+                        try (var file = new java.io.RandomAccessFile(target.toFile(), "rw")) {
+                            for (int index = 0; index < 1024; index++) {
+                                int x = regionX * 32 + index % 32, z = 96 + index / 32;
+                                boolean legacyQinglong = z >= 122 && java.util.stream.IntStream.range(0, 20)
+                                        .anyMatch(slot -> x >= slot * 8 - 2 && x <= slot * 8 + 1);
+                                if (z >= 125 || legacyQinglong) {
+                                    file.seek(index * 4L); file.writeInt(0);
+                                    file.seek(4096 + index * 4L); file.writeInt(0);
+                                }
+                            }
+                        }
+                    }
                 }
                 if (clearMatchingPoi && poiDirectory != null) {
                     Files.deleteIfExists(poiDirectory.resolve(source.getFileName().toString()));
@@ -212,7 +230,8 @@ public final class WorldTemplateUpdater {
             public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) throws IOException {
                 rejectSymbolicLink(file);
                 String name = file.getFileName().toString();
-                if (!name.equals(VERSION_FILE) && !name.equals(MAP_INDEX_FILE)) {
+                if (!name.equals(VERSION_FILE) && !name.equals(MAP_INDEX_FILE)
+                        && !name.equals("panlingre_instances.dat")) {
                     copyRegularFile(file, targetDirectory.resolve(sourceDirectory.relativize(file).toString()));
                 }
                 return FileVisitResult.CONTINUE;

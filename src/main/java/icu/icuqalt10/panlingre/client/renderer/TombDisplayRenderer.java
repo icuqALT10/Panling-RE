@@ -3,7 +3,6 @@ package icu.icuqalt10.panlingre.client.renderer;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Axis;
 import icu.icuqalt10.panlingre.entity.TombDisplayEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -65,7 +64,8 @@ public final class TombDisplayRenderer extends EntityRenderer<TombDisplayEntity>
     @Override public void render(TombDisplayEntity entity,float yaw,float partial,PoseStack pose,MultiBufferSource out,int light) {
         float progress=entity.progress(partial); int kind=entity.kind();
         if (kind==TombDisplayEntity.SEAL) {
-            if (progress>0) renderSeal(pose,out,progress);
+            float alpha=entity.sealAlpha(partial);
+            if (alpha>0) renderSeal(pose,out,alpha);
             return;
         }
         pose.pushPose();
@@ -73,9 +73,10 @@ public final class TombDisplayRenderer extends EntityRenderer<TombDisplayEntity>
             case 0 -> pose.translate(0,5*progress,0);
             case 1 -> pose.translate(0,7*progress,0);
             case 2 -> pose.translate(0,2*progress,0);
-            case TombDisplayEntity.BRONZE_LEFT -> pose.mulPose(Axis.YP.rotationDegrees(-95*progress));
-            case TombDisplayEntity.BRONZE_RIGHT -> pose.mulPose(Axis.YP.rotationDegrees(95*progress));
-            case TombDisplayEntity.COFFIN -> pose.mulPose(Axis.XP.rotationDegrees(-105*progress));
+            case TombDisplayEntity.BRONZE_LEFT, TombDisplayEntity.BRONZE_RIGHT -> pose.mulPose(TombDisplayEntity.bronzeTransform(kind,progress));
+            case TombDisplayEntity.COFFIN -> {
+                pose.mulPose(TombDisplayEntity.coffinTransform(progress));
+            }
         }
         VertexBuffer buffer=MESHES.computeIfAbsent(kind,k -> bake(k,Minecraft.getInstance().getResourceManager()));
         RenderType type=RenderType.cutout(); type.setupRenderState(); buffer.bind();

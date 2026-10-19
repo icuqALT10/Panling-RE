@@ -1,0 +1,1538 @@
+{
+  "status": "runtime_entity_and_scene_connected",
+  "revision": "2026-10-13 A08/A14 alternating steps and cloth from A07; windup positioning; five-element 1.25x blades and 0.25s added holds",
+  "source_model": "杂项/美术资源/models/boss/ShiHuang/shihuang_spirit.bbmodel",
+  "units_per_block": 16,
+  "model_forward": "-Z",
+  "edit_fps": 20,
+  "root_translation": [
+    0,
+    0,
+    0
+  ],
+  "root_rotation": [
+    0,
+    0,
+    0
+  ],
+  "aim": {
+    "scope": "20 normal combos, 9 normal skills, 3 dragon commands, ultimate and conditional counter",
+    "target": "nearest alive attackable player within this instance; exclude spectator and creative",
+    "sampling": "each server tick",
+    "yaw_owner": "server action controller",
+    "follow_during_active_swing": true,
+    "large_turn_owner": "entity yaw; no model root turn",
+    "starting_tuning_deg_per_second": {
+      "preparation": 180,
+      "active_swing": 60,
+      "recovery": 120
+    },
+    "turn_shortest_arc": true,
+    "reset_yaw_on_animation_end": false,
+    "released_projectiles_retarget": false,
+    "detached_cards_follow_entity_yaw": false,
+    "status": "runtime_connected"
+  },
+  "cards": {
+    "enabled": true,
+    "single": {
+      "release": 0.2,
+      "arrive": 0.45,
+      "expanded": 0.65,
+      "dissolve": 0.75,
+      "gather_end": 0.95
+    },
+    "dual": {
+      "release": [
+        0.2,
+        0.5
+      ],
+      "dissolve": 1.1,
+      "gather_end": 1.35,
+      "order": "generation order",
+      "model_targets": [
+        [
+          0,
+          3.2,
+          -3
+        ],
+        [
+          0,
+          3.2,
+          -5.4
+        ]
+      ],
+      "layout": "near-to-far on forward centerline, same height, spacing 2.4 blocks"
+    },
+    "five": {
+      "release": 0.2,
+      "layout": "five vertices of a pentagon",
+      "order": [
+        "metal",
+        "water",
+        "wood",
+        "fire",
+        "earth"
+      ],
+      "dissolve": 1,
+      "gather_end": 1.25
+    },
+    "held_height_blocks": 1.5,
+    "unfolded_height_blocks": 2
+  },
+  "shihuang": [
+    {
+      "clip": "combo_a01_duanyue",
+      "label": "断岳二连",
+      "length_seconds": 1.6,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "metal"
+        },
+        {
+          "element": "metal",
+          "stroke": "N",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "metal"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a02_guanjia",
+      "label": "贯甲三刺",
+      "length_seconds": 2.2,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "wood",
+          "stroke": "W",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "wood"
+        },
+        {
+          "element": "wood",
+          "stroke": "W",
+          "from": 0.9,
+          "to": 1.05,
+          "sword_form_element": "wood"
+        },
+        {
+          "element": "wood",
+          "stroke": "W",
+          "from": 1.45,
+          "to": 1.6,
+          "sword_form_element": "wood"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a03_huilan",
+      "label": "回澜双剑",
+      "length_seconds": 1.6,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "water",
+          "stroke": "A",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "water"
+        },
+        {
+          "element": "wood",
+          "stroke": "V",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "wood"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a04_liaotian",
+      "label": "燎天三连",
+      "length_seconds": 2.1,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "fire",
+          "stroke": "F",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "fire"
+        },
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "metal"
+        },
+        {
+          "element": "fire",
+          "stroke": "F",
+          "from": 1.35,
+          "to": 1.5,
+          "sword_form_element": "fire"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a05_zhenguan",
+      "label": "镇关双截",
+      "length_seconds": 1.6,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "earth",
+          "stroke": "E",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "earth"
+        },
+        {
+          "element": "earth",
+          "stroke": "L",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "earth"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a06_yazhen",
+      "label": "压阵三连",
+      "length_seconds": 2.1,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "earth",
+          "stroke": "E",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "earth"
+        },
+        {
+          "element": "wood",
+          "stroke": "W",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "wood"
+        },
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 1.35,
+          "to": 1.5,
+          "sword_form_element": "metal"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a07_zhuishen",
+      "label": "追身三连",
+      "length_seconds": 2.1,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "metal"
+        },
+        {
+          "element": "water",
+          "stroke": "A",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "water"
+        },
+        {
+          "element": "wood",
+          "stroke": "W",
+          "from": 1.35,
+          "to": 1.5,
+          "sword_form_element": "wood"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a08_huishen",
+      "label": "回身三连",
+      "length_seconds": 2.1,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "earth",
+          "stroke": "R",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "earth"
+        },
+        {
+          "element": "fire",
+          "stroke": "F",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "fire"
+        },
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 1.35,
+          "to": 1.5,
+          "sword_form_element": "metal"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a09_xiexing",
+      "label": "斜行双剑",
+      "length_seconds": 1.6,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "wood",
+          "stroke": "V",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "wood"
+        },
+        {
+          "element": "earth",
+          "stroke": "R",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "earth"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a10_jiebu",
+      "label": "截步二连",
+      "length_seconds": 1.6,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "earth",
+          "stroke": "L",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "earth"
+        },
+        {
+          "element": "fire",
+          "stroke": "F",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "fire"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a11_youjin",
+      "label": "诱进双杀",
+      "length_seconds": 1.6,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "water",
+          "stroke": "A",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "water"
+        },
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "metal"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a12_zhutui",
+      "label": "逐退四连",
+      "length_seconds": 2.6,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "wood",
+          "stroke": "W",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "wood"
+        },
+        {
+          "element": "wood",
+          "stroke": "W",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "wood"
+        },
+        {
+          "element": "earth",
+          "stroke": "E",
+          "from": 1.35,
+          "to": 1.5,
+          "sword_form_element": "earth"
+        },
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 1.85,
+          "to": 2.0,
+          "sword_form_element": "metal"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a13_poce",
+      "label": "破侧三连",
+      "length_seconds": 2.1,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "earth",
+          "stroke": "E",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "earth"
+        },
+        {
+          "element": "wood",
+          "stroke": "V",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "wood"
+        },
+        {
+          "element": "fire",
+          "stroke": "F",
+          "from": 1.35,
+          "to": 1.5,
+          "sword_form_element": "fire"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a14_fanzhui",
+      "label": "反追回锋",
+      "length_seconds": 1.6,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "water",
+          "stroke": "A",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "water"
+        },
+        {
+          "element": "earth",
+          "stroke": "R",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "earth"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a15_cuopai",
+      "label": "错拍四连",
+      "length_seconds": 2.75,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "wood",
+          "stroke": "W",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "wood"
+        },
+        {
+          "element": "earth",
+          "stroke": "E",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "earth"
+        },
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 1.5,
+          "to": 1.65,
+          "sword_form_element": "metal"
+        },
+        {
+          "element": "water",
+          "stroke": "A",
+          "from": 2.0,
+          "to": 2.15,
+          "sword_form_element": "water"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a16_zhongmen",
+      "label": "重门三叠",
+      "length_seconds": 2.1,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "metal"
+        },
+        {
+          "element": "metal",
+          "stroke": "N",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "metal"
+        },
+        {
+          "element": "earth",
+          "stroke": "E",
+          "from": 1.35,
+          "to": 1.5,
+          "sword_form_element": "earth"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a17_duanfeng",
+      "label": "贴身短锋",
+      "length_seconds": 2.1,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "wood",
+          "stroke": "W",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "wood"
+        },
+        {
+          "element": "water",
+          "stroke": "A",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "water"
+        },
+        {
+          "element": "fire",
+          "stroke": "F",
+          "from": 1.35,
+          "to": 1.5,
+          "sword_form_element": "fire"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a18_tianheng",
+      "label": "天衡四式",
+      "length_seconds": 2.6,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "earth",
+          "stroke": "E",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "earth"
+        },
+        {
+          "element": "fire",
+          "stroke": "F",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "fire"
+        },
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 1.35,
+          "to": 1.5,
+          "sword_form_element": "metal"
+        },
+        {
+          "element": "wood",
+          "stroke": "W",
+          "from": 1.85,
+          "to": 2.0,
+          "sword_form_element": "wood"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a19_youfeng",
+      "label": "游锋四转",
+      "length_seconds": 2.6,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "water",
+          "stroke": "A",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "water"
+        },
+        {
+          "element": "wood",
+          "stroke": "V",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "wood"
+        },
+        {
+          "element": "earth",
+          "stroke": "R",
+          "from": 1.35,
+          "to": 1.5,
+          "sword_form_element": "earth"
+        },
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 1.85,
+          "to": 2.0,
+          "sword_form_element": "metal"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "combo_a20_wuxing",
+      "label": "五行连环",
+      "length_seconds": 3.1,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 0.35,
+          "to": 0.5,
+          "sword_form_element": "metal"
+        },
+        {
+          "element": "water",
+          "stroke": "A",
+          "from": 0.85,
+          "to": 1.0,
+          "sword_form_element": "water"
+        },
+        {
+          "element": "wood",
+          "stroke": "W",
+          "from": 1.35,
+          "to": 1.5,
+          "sword_form_element": "wood"
+        },
+        {
+          "element": "fire",
+          "stroke": "F",
+          "from": 1.85,
+          "to": 2.0,
+          "sword_form_element": "fire"
+        },
+        {
+          "element": "earth",
+          "stroke": "E",
+          "from": 2.35,
+          "to": 2.5,
+          "sword_form_element": "earth"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_release_seconds": []
+    },
+    {
+      "clip": "ultimate_full",
+      "label": "帝皇歼灭斩",
+      "length_seconds": 7.6,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "metal",
+          "from": 4.5,
+          "to": 4.6
+        }
+      ],
+      "draw_start_seconds": 4.4,
+      "attack_end_seconds": 4.6
+    },
+    {
+      "clip": "skill_s01_duanyue",
+      "label": "帝皇断岳",
+      "length_seconds": 1.75,
+      "card_elements": [
+        "metal"
+      ],
+      "sword_windows": [
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 1.05,
+          "to": 1.25,
+          "sword_form_element": "metal"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "attack_release_seconds": 1.25,
+      "card_lead_seconds": 0.75,
+      "card_release_seconds": [
+        0.2
+      ],
+      "card_events": {
+        "dissolve": 0.75,
+        "gather_complete": 0.95
+      }
+    },
+    {
+      "clip": "skill_s02_jianzhen",
+      "label": "金阙剑阵",
+      "length_seconds": 1.85,
+      "card_elements": [
+        "metal"
+      ],
+      "sword_windows": [
+        {
+          "element": "metal",
+          "stroke": "E",
+          "from": 1.05,
+          "to": 1.25,
+          "sword_form_element": "earth"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "attack_release_seconds": 1.25,
+      "card_lead_seconds": 0.75,
+      "card_release_seconds": [
+        0.2
+      ],
+      "card_events": {
+        "dissolve": 0.75,
+        "gather_complete": 0.95
+      }
+    },
+    {
+      "clip": "skill_s03_fengjiang",
+      "label": "青帝封疆",
+      "length_seconds": 1.75,
+      "card_elements": [
+        "wood"
+      ],
+      "sword_windows": [
+        {
+          "element": "wood",
+          "from": 1.25,
+          "to": 1.3
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_lead_seconds": 0.75,
+      "card_release_seconds": [
+        0.2
+      ],
+      "card_events": {
+        "dissolve": 0.75,
+        "gather_complete": 0.95
+      }
+    },
+    {
+      "clip": "skill_s04_chixiao",
+      "label": "赤霄焚天",
+      "length_seconds": 1.85,
+      "card_elements": [
+        "fire"
+      ],
+      "sword_windows": [
+        {
+          "element": "fire",
+          "from": 1.05,
+          "to": 1.45
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_lead_seconds": 0.75,
+      "card_release_seconds": [
+        0.2
+      ],
+      "card_events": {
+        "dissolve": 0.75,
+        "gather_complete": 0.95
+      }
+    },
+    {
+      "clip": "skill_s05_zhenyue",
+      "label": "皇土镇岳",
+      "length_seconds": 1.75,
+      "card_elements": [
+        "earth"
+      ],
+      "sword_windows": [
+        {
+          "element": "earth",
+          "stroke": "M",
+          "from": 1.05,
+          "to": 1.2,
+          "sword_form_element": "metal"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_lead_seconds": 0.75,
+      "card_release_seconds": [
+        0.2
+      ],
+      "card_events": {
+        "dissolve": 0.75,
+        "gather_complete": 0.95
+      }
+    },
+    {
+      "clip": "skill_s06_fanzhao",
+      "label": "玄水返照",
+      "length_seconds": 1.6,
+      "card_elements": [
+        "water"
+      ],
+      "sword_windows": [],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "card_lead_seconds": 0.75,
+      "card_release_seconds": [
+        0.2
+      ],
+      "card_events": {
+        "dissolve": 0.75,
+        "gather_complete": 0.95
+      }
+    },
+    {
+      "clip": "counter_s06_fanzhao",
+      "label": "玄水返照·反击",
+      "length_seconds": 0.9,
+      "card_elements": [
+        "water"
+      ],
+      "sword_windows": [
+        {
+          "element": "water",
+          "stroke": "A",
+          "from": 0.15,
+          "to": 0.3,
+          "sword_form_element": "water"
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target"
+    },
+    {
+      "clip": "ally_d01_longting",
+      "label": "龙霆断阵",
+      "length_seconds": 11.5,
+      "card_elements": [],
+      "sword_windows": [
+        {
+          "element": "gold",
+          "stroke": "M",
+          "from": 3.3,
+          "to": 3.5
+        },
+        {
+          "element": "gold",
+          "stroke": "M",
+          "from": 6.5,
+          "to": 6.7
+        },
+        {
+          "element": "gold",
+          "stroke": "M",
+          "from": 9.7,
+          "to": 9.9
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target"
+    },
+    {
+      "clip": "ally_d02_chongfeng",
+      "label": "御龙·前冲",
+      "length_seconds": 10.5,
+      "card_elements": [],
+      "sword_windows": [],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target"
+    },
+    {
+      "clip": "ally_d03_longxi",
+      "label": "龙息裂地",
+      "length_seconds": 4.15,
+      "card_elements": [],
+      "sword_windows": [],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target"
+    },
+    {
+      "clip": "skill_s07_rongyan",
+      "sword_windows": [
+        {
+          "element": "fire+earth",
+          "from": 1.7,
+          "to": 1.75
+        }
+      ],
+      "label": "火土·熔焰贯甲",
+      "length_seconds": 2.25,
+      "card_elements": [
+        "fire",
+        "earth"
+      ],
+      "card_lead_seconds": 1.15,
+      "card_release_seconds": [
+        0.2,
+        0.5
+      ],
+      "card_events": {
+        "dissolve": 1.1,
+        "gather_complete": 1.35
+      },
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target"
+    },
+    {
+      "clip": "skill_s08_wuxing",
+      "sword_windows": [
+        {
+          "element": "metal",
+          "stroke": "M",
+          "from": 1.4,
+          "to": 1.6,
+          "sword_form_element": "metal"
+        },
+        {
+          "element": "water",
+          "stroke": "A",
+          "from": 2.15,
+          "to": 2.35,
+          "sword_form_element": "water"
+        },
+        {
+          "element": "wood",
+          "stroke": "W",
+          "from": 2.9,
+          "to": 3.1,
+          "sword_form_element": "wood"
+        },
+        {
+          "element": "fire",
+          "stroke": "F",
+          "from": 3.65,
+          "to": 3.85,
+          "sword_form_element": "fire"
+        },
+        {
+          "element": "earth",
+          "stroke": "E",
+          "from": 4.4,
+          "to": 4.6,
+          "sword_form_element": "earth"
+        }
+      ],
+      "label": "五行齐发",
+      "length_seconds": 5.15,
+      "card_elements": [
+        "metal",
+        "water",
+        "wood",
+        "fire",
+        "earth"
+      ],
+      "card_lead_seconds": 1.05,
+      "card_release_seconds": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "card_events": {
+        "dissolve": 1.0,
+        "gather_complete": 1.25
+      },
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target"
+    },
+    {
+      "clip": "skill_s09_shengxi",
+      "label": "水木·生息破阵",
+      "sword_windows": [
+        {
+          "element": "water+wood",
+          "from": 1.65,
+          "to": 1.7
+        }
+      ],
+      "entity_movement_owner": "game_code",
+      "entity_yaw_owner": "game_code",
+      "aim_target": "nearest_valid_target",
+      "length_seconds": 2.8,
+      "card_elements": [
+        "water",
+        "wood"
+      ],
+      "card_lead_seconds": 1.15,
+      "card_release_seconds": [
+        0.2,
+        0.5
+      ],
+      "card_events": {
+        "dissolve": 1.1,
+        "gather_complete": 1.35
+      }
+    }
+  ],
+  "death": {
+    "clip": "death",
+    "length_seconds": 5.5,
+    "sword_plant_seconds": 0.95,
+    "cough_seconds": [
+      1.65,
+      2.25,
+      2.9
+    ],
+    "fall_start_seconds": 3.7,
+    "floor_contact_seconds": 5,
+    "reward_seconds": 8.5,
+    "persistent_sword_bone": "death_sword",
+    "reward_function": "plre:instances/shihuang/reward",
+    "recipient_scope": "snapshot alive non-spectator players inside instance before cleanup, execute as each once",
+    "right_hand_release_start_seconds": 3.6,
+    "right_hand_back_seconds": 3.9,
+    "body_hide_light_seconds": 5.5,
+    "right_arm_neutral_seconds": 3.9,
+    "sword_swap_tick": 19,
+    "sword_swap_mode": "simultaneous step visibility; no scale interpolation"
+  },
+  "sword_trail": {
+    "coverage": "moving blade in attacks, preparation, recovery, emerge and death; exclude locomotion and idle",
+    "default_color": "blade steel silver",
+    "compound_palette": "layered gradient in card order, from recent blade edge to older trail",
+    "lifetime_seconds": 0.18,
+    "rendering": "translucent color bed and additive glow; narrow tip streak for axial thrust",
+    "element_tint_seconds": 0.1
+  },
+  "locomotion": {
+    "walk": {
+      "seconds": 1.2,
+      "blocks_per_second": 2,
+      "direction": "forward; target distance 6–12 blocks"
+    },
+    "run": {
+      "seconds": 0.7,
+      "blocks_per_second": 2.1428571429,
+      "direction": "legacy clip retained; runtime uses blink beyond 12 blocks"
+    },
+    "blink": {
+      "trigger_distance_over": 12,
+      "target_stop_distance": 3,
+      "light_ticks": 10,
+      "ghost_ticks": 16
+    },
+    "walk_back": {
+      "seconds": 1.2,
+      "blocks_per_second": 0.3645833333,
+      "direction": "face nearest target, walk backward with a slight random left/right component during attack cooldown within 6 blocks"
+    },
+    "transition_clips": [
+      "idle_to_walk",
+      "walk_to_idle",
+      "idle_to_run",
+      "run_to_idle",
+      "idle_to_walk_back",
+      "walk_back_to_idle"
+    ],
+    "stop_pose": "synchronized actual loop phase blended into idle; authored transitions use loop contact phase",
+    "distance_hysteresis": {
+      "leave_walk_back": 6.5
+    },
+    "ally_orbit_mount_height_blocks": 36,
+    "transitions_seconds": 0.4,
+    "emerge_seconds": 5
+  },
+  "entrance": {
+    "coffin_open_ticks": 60,
+    "landing_tick": 120,
+    "gather_ticks": 100,
+    "reveal_tick": 220,
+    "point_bloom_tick": 280,
+    "combat_ready_tick": 320,
+    "invulnerable_until_tick": 320,
+    "dragon_emerge_start_tick": 220,
+    "dragon_fully_grown_local_tick": 56,
+    "dragon_float_hold_local_ticks": [
+      56,
+      100
+    ],
+    "dragon_ascent_global_ticks": [
+      320,
+      370
+    ],
+    "flight": "quadratic parabola, peak offset 8 blocks",
+    "emerge_point_tick": 60,
+    "emerge_idle_tick": 100,
+    "effects": "vertex-gradient additive light volume, ribbons, rings and flashes; no particles",
+    "emerge_start": "preserve user-authored first pose; hold one second, draw up/right, hold drawn pose for one second, lower to point forward",
+    "emerge_point_blade": "vertical blade plane",
+    "emerge_hold_ticks": 20,
+    "emerge_raise_tick": 30,
+    "emerge_overhead_tick": 57,
+    "emerge_right_wrist": "preserve latest user-authored starting wrist through draw and hold; recover to idle",
+    "emerge_drawn_hold_ticks": [
+      30,
+      50
+    ],
+    "emerge_left_hand": "preserve user-authored start beside scabbard through tick 57; release naturally by tick 66",
+    "light_volume": {
+      "center_y": 2.148,
+      "geometry": "emperor crown, armor and humanoid silhouette",
+      "inner_gold_scale": 1.08,
+      "outer_purple_scale": 1.22,
+      "draw_order": "entity light layer before full-bright eye layer"
+    }
+  },
+  "guard": {
+    "clip": "skill_s06_fanzhao",
+    "window": [
+      0.1,
+      0.55
+    ],
+    "successful_hit_damage": 0,
+    "interrupt_to": "counter_s06_fanzhao",
+    "counter_window": [
+      0.15,
+      0.3
+    ],
+    "miss": "lower sword, no counter",
+    "pose": "right hand upper right, sword tip lower left, blade in front of torso"
+  },
+  "dragon_combo": {
+    "descent_seconds": 1.5,
+    "choices": [
+      "lightning",
+      "charge",
+      "breath"
+    ],
+    "elemental_derivatives": false,
+    "charge_aura": {
+      "body": "inner gold, outer purple; cube surface shell",
+      "sword": "inner purple, outer gold; cube surface shell and trail"
+    }
+  },
+  "skills": {
+    "D01": {
+      "damage_per_round": 30,
+      "rounds": 3,
+      "reference": "air_thunder_trail",
+      "minimum_body_clearance": 8
+    },
+    "D02": {
+      "damage": 35,
+      "stop": "arena barrier",
+      "motion": "head-led coil then charge",
+      "coil_radius": 9.2,
+      "coil_rise": 12,
+      "coil_center": "fixed"
+    },
+    "D03": {
+      "damage": 20,
+      "blue_multiplier": 1,
+      "sweep_seconds": [
+        0.5,
+        1.25
+      ],
+      "reference": "ground_turn_sweep",
+      "visual": "original SOUL_FIRE_FLAME particle jet and ground spread; no mesh cone",
+      "head_behind_emperor": 18,
+      "head_height": 28,
+      "minimum_body_clearance": 5,
+      "head_pitch_degrees": 36
+    },
+    "S01": {
+      "damage": 25,
+      "shape": "vertical half-exposed plasma crescent",
+      "release_seconds": 1.25
+    },
+    "S02": {
+      "damage": 20,
+      "count": "6 * locked opening players",
+      "radius": "4 * sqrt(locked opening players)",
+      "warning_seconds": 0.2,
+      "fall_seconds": 0.2,
+      "embedded_seconds": 3,
+      "release_seconds": 1.05
+    },
+    "S03": {
+      "damage": 15,
+      "shape": "8-block square missing one random edge",
+      "release_seconds": 1.25
+    },
+    "S04": {
+      "damage": 30,
+      "fire_seconds": 10,
+      "sweep_seconds": [
+        1.05,
+        1.45
+      ],
+      "direction": "right to left",
+      "shape": "blade-attached fan unfolds at fixed reach",
+      "white_gradient_fraction": 0.25
+    },
+    "S05": {
+      "damage": 20,
+      "angles_degrees": [
+        -30,
+        0,
+        30
+      ],
+      "slowness": [
+        200,
+        1
+      ],
+      "white_gradient_fraction": 0.25
+    },
+    "S06": {
+      "counter_damage": 35,
+      "column_damage": 25,
+      "columns": 8,
+      "diameter": 2.5,
+      "gap": 0.75,
+      "height": 30,
+      "rise_seconds": 0.25,
+      "next_column_at": 0.65,
+      "mining_fatigue": [
+        200,
+        1
+      ]
+    }
+  },
+  "release_timing": {
+    "skill_s01_duanyue": {
+      "swing_start": 1.1,
+      "release": 1.3
+    },
+    "skill_s02_jianzhen": {
+      "circles": 0.85,
+      "drop_start": 1.1,
+      "impact": 1.3,
+      "ground_hold_seconds": 3
+    },
+    "skill_s05_zhenyue": {
+      "swing_start": 1.1,
+      "release": 1.3
+    },
+    "counter_s06_fanzhao": {
+      "prepare": 0.15,
+      "release": 0.35,
+      "first_column_distance": 6,
+      "column_centers_apart": 3.25,
+      "count": 8,
+      "diameter": 2.5,
+      "height": 30,
+      "rise_seconds": 0.25
+    },
+    "skill_s03_fengjiang": {
+      "swing_start": 1.1,
+      "release": 1.3
+    },
+    "skill_s07_rongyan": {
+      "swing_start": 1.5,
+      "release": 1.7
+    },
+    "skill_s09_shengxi": {
+      "swing_start": 1.5,
+      "release": 1.7
+    }
+  },
+  "dragon_return": {
+    "thunder_downstrokes": [
+      3.5,
+      6.7,
+      9.9
+    ],
+    "wall_ascent_seconds": 2.4,
+    "wall_ascent_height": 36,
+    "orbit_return_seconds": 2.4,
+    "pose_blend_seconds": 1.6,
+    "transitions_synced": true
+  },
+  "aura": {
+    "body": "gold inner / purple contour",
+    "sword": "purple inner / gold contour",
+    "enabled": [
+      "D1",
+      "D2",
+      "D3",
+      "ultimate"
+    ],
+    "blink": "same gold core and purple volume as emerge",
+    "blink_bridge": {
+      "height": 4.8,
+      "route": "full ghost-to-emperor coverage",
+      "flow": "brightness travels toward destination; no coverage gaps",
+      "life_ticks": 10
+    }
+  },
+  "elemental_gradient": {
+    "white_transition": "irregular, gently moving smoothstep blend",
+    "fire_white_radius": 4,
+    "applies_to": [
+      "fan",
+      "crescent"
+    ]
+  },
+  "anatomy_revision": {
+    "source_runtime_axes": "rotation [-X,-Y,+Z], position [-X,+Y,+Z]",
+    "combo_knees": "forward/back hinge, no lateral collapse",
+    "back_walk_cycle_seconds": 5.2,
+    "right_arm_chain": "Normal skill reference poses retained from approved combos; D2 uses a straight shoulder-led rising arc; D3 keeps dorsal armor up and palm down.",
+    "emerge": "subtle offset movement of torso, head, limbs and cloth",
+    "native_review": {
+      "clips": 32,
+      "fps": 20,
+      "frames": 1824
+    },
+    "general_transition_proposal_implemented": false,
+    "interpolated_arm_check": {
+      "fps": 60,
+      "samples": 2779,
+      "source_axis_mismatches": 0,
+      "d2_d3_core_overlaps": 0,
+      "normal_combo_forms": "Some inherited forearm/torso OBB intersections remain; not an all-model zero-overlap guarantee."
+    }
+  },
+  "selection": {
+    "pools": [
+      "combo_",
+      "skill_",
+      "ally_"
+    ],
+    "normal_pool_weights": [
+      75,
+      25,
+      0
+    ],
+    "enhanced_dragon_ready_pool_weights": [
+      60,
+      20,
+      20
+    ],
+    "skill_weights": {
+      "single": 4,
+      "dual": 2,
+      "five": 1
+    },
+    "exclude_previous": "separately in each pool"
+  },
+  "combinations": {
+    "lava": {
+      "damage": 40,
+      "fire_ticks": 200,
+      "diameter": 3,
+      "speed_blocks_per_second": 40,
+      "range": 32,
+      "stops_at_walls": true,
+      "name": "火土·熔焰贯甲",
+      "motion_source": "combo_a02_guanjia first thrust only; refitted shoulder-elbow-wrist chain",
+      "motion_start_seconds": 1.15,
+      "release_seconds": 1.7,
+      "projectiles_per_cast": 1,
+      "spawn": "1.55 blocks ahead of actual sword tip, clipped before solid walls",
+      "card_gather_target": "moving sword blade; charge retained until the single thrust completes",
+      "animation_length_seconds": 2.25
+    },
+    "five_elements": {
+      "order": [
+        "metal",
+        "water",
+        "wood",
+        "fire",
+        "earth"
+      ],
+      "damage": [
+        30,
+        20,
+        25,
+        30,
+        25
+      ],
+      "effect_ticks": [
+        200,
+        200,
+        200,
+        200,
+        300
+      ],
+      "effect_amplifier": 1,
+      "wave_plane": "actual sampled sword stroke",
+      "hit_light_particles": "one matching-color burst per victim per wave"
+    },
+    "water_wood": {
+      "name": "水木·生息破阵",
+      "damage": 25,
+      "bind_ticks": 60,
+      "growth_count": 24,
+      "first_distance": 3,
+      "growth_interval_ticks": 0,
+      "rise_ticks": 2,
+      "height": "1.575 to 5.075 blocks, per-stem deterministic variation",
+      "one_hit_per_cast": true,
+      "stops_at_walls": true,
+      "selection_weight": 2,
+      "shape": "strongly leaning intertwined stems; shared render/hit curve",
+      "distribution": "24 non-row clusters; forward 3+i*.59+.65*sin(i*2.39996), lateral 4.2*sin(i*2.39996+.7)"
+    }
+  },
+  "validation_20261013": {
+    "game_tests": 10,
+    "skill_interpolated_samples_60fps": 2779,
+    "native_skill_frames_20fps": 935,
+    "game_videos": 17,
+    "outstanding": [
+      "transition duration unit confirmation"
+    ],
+    "native_reauthored_combination_frames_20fps": 187,
+    "native_skill_clips": 13,
+    "overlap_scope": "D2/D3 new arm chains clear of chest/waist; retained normal-combo forms have some pre-existing forearm/torso OBB overlaps"
+  },
+  "key_reduction": {
+    "emperor_clips": 46,
+    "dragon_clips": 74,
+    "emperor_source_keys": [
+      100492,
+      45218
+    ],
+    "dragon_source_keys": [
+      269834,
+      168295
+    ],
+    "sampled_frames_60fps": 24613,
+    "max_emperor_bone_error_blocks": 0.025273,
+    "max_dragon_bone_error_blocks": 0.056403,
+    "per_clip_report": "动画关键帧精简统计.csv"
+  },
+  "windup_positioning": {
+    "turn_degrees_per_tick": 3,
+    "regular_and_dragon_max_travel": 1,
+    "five_element_max_travel": 1.5,
+    "five_element_stride": 0.3,
+    "dragon_lock_seconds": 1.4,
+    "five_element_wave_radius": 3.5,
+    "five_element_extra_gap": 0.25
+  }
+}

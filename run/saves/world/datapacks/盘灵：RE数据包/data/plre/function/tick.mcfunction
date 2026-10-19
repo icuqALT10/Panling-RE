@@ -8,4 +8,4 @@ execute if score .system 20ticks matches 21 run scoreboard players set .system 2
 execute as @a at @s run function plre:ticks/player
 
 #==================================非玩家实体tick=================================#
-execute as @e[type=!player,type=!item_frame,type=!glow_item_frame,type=!villager,type=!painting] at @s run function plre:ticks/entity
+#execute as @e[type=!player,type=!item_frame,type=!glow_item_frame,type=!villager,type=!painting] at @s run function plre:ticks/entity

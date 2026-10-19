@@ -1,1 +1,0 @@
-execute if entity @s[tag=husk] run return run function plre:monsters/south/boss/husk

@@ -1,6 +1,7 @@
 package icu.icuqalt10.panlingre.world.inventory;
 
 import icu.icuqalt10.panlingre.init.ModBlocks;
+import icu.icuqalt10.panlingre.attachment.ItemUnlockData;
 import icu.icuqalt10.panlingre.init.ModMenus;
 import icu.icuqalt10.panlingre.init.ModRecipes;
 import icu.icuqalt10.panlingre.recipe.dztRecipe;
@@ -8,6 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -73,6 +75,11 @@ public class dztMenu extends AbstractContainerMenu {
             }
 
             @Override
+            public boolean mayPickup(Player player) {
+                return ItemUnlockData.canUse(player, getItem());
+            }
+
+            @Override
             public void onTake(Player player, ItemStack stack) {
                 dztMenu.this.consumeIngredients();
                 super.onTake(player, stack);
@@ -104,6 +111,12 @@ public class dztMenu extends AbstractContainerMenu {
         return serverPlayer.getRecipeBook().contains(recipeHolder);
     }
 
+    @Override
+    public void slotsChanged(Container container) {
+        super.slotsChanged(container);
+        checkRecipe(false);
+    }
+
     private void checkRecipe(boolean resetSelection) {
         Level level = player.level();
         if (level.isClientSide) return;
@@ -120,6 +133,7 @@ public class dztMenu extends AbstractContainerMenu {
                         .getAllRecipesFor(ModRecipes.DZT_TYPE.get())
                         .stream()
                         .filter(recipe -> recipe.value().matches(input, level))
+                        .filter(recipe -> ItemUnlockData.canUse(player, recipe.value().getResultItem(level.registryAccess())))
                         .filter(recipe -> !limitedCrafting || isUnlocked(recipe))
                         .toList();
 
@@ -162,7 +176,8 @@ public class dztMenu extends AbstractContainerMenu {
         int index = this.selectedRecipeIndex.get();
         if (index >= 0 && index < this.matchingRecipes.size()) {
             RecipeHolder<dztRecipe> selectedRecipe = this.matchingRecipes.get(index);
-            if (level.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) && !isUnlocked(selectedRecipe)) {
+            if (!ItemUnlockData.canUse(player, selectedRecipe.value().getResultItem(level.registryAccess()))
+                    || level.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) && !isUnlocked(selectedRecipe)) {
                 return;
             }
 
@@ -211,7 +226,7 @@ public class dztMenu extends AbstractContainerMenu {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
 
-        if (slot != null && slot.hasItem()) {
+        if (slot != null && slot.hasItem() && slot.mayPickup(player)) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
 

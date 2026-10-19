@@ -10,7 +10,7 @@ import net.minecraft.world.phys.Vec3;
 
 /** A fixed destination for one ground attack, calculated once before its turn animation. */
 final class GraveDragonReposition {
-    record Plan(String action, Vec3 target, Vec3 from, Vec3 to, float fromYaw, float yaw,
+    record Plan(String action, ServerPlayer player, Vec3 target, Vec3 from, Vec3 to, float fromYaw, float yaw,
                 String animation, long startedAt, int ticks) { }
 
     static Plan plan(GraveDragonEntity dragon, GraveDragonActions.Action action, ServerPlayer player) {
@@ -109,7 +109,7 @@ final class GraveDragonReposition {
                     if (!reaches) continue;
                 }
                 BlockPos floor = BlockPos.containing(destination.x, destination.y - .1, destination.z);
-                if (!dragon.level().getBlockState(floor).isFaceSturdy(dragon.level(), floor, Direction.UP)) continue;
+                if (dragon.roomMovementBounds() == null && !dragon.level().getBlockState(floor).isFaceSturdy(dragon.level(), floor, Direction.UP)) continue;
                 if (!dragon.combatPoseFitsAt(turn, GraveDragonPose.duration(turn), yaw, dragon.bodyPitch(), destination, destination.y)
                         || !dragon.combatPoseFitsAt(action.name(), 0, yaw, dragon.bodyPitch(), destination, destination.y)) continue;
                 if (window.part().equals("coil") && !dragon.combatPoseFitsAt(action.name(), seconds,
@@ -123,14 +123,15 @@ final class GraveDragonReposition {
         int steps = (int) Math.ceil(Math.max(duration * 20, Math.max(dragon.position().distanceTo(best) / .25, Math.abs(difference) / 2)));
         for (int step = 0; step <= steps; step++) {
             double progress = (double) step / steps;
-            Vec3 position = dragon.position().lerp(best, progress);
+            double eased = progress * progress * (3 - 2 * progress);
+            Vec3 position = dragon.position().lerp(best, eased);
             BlockPos floor = BlockPos.containing(position.x, position.y - .1, position.z);
-            if (!dragon.level().getBlockState(floor).isFaceSturdy(dragon.level(), floor, Direction.UP)
-                    || !dragon.combatPoseFitsAt(turn, duration * progress, dragon.yBodyRot + difference * (float) progress,
+            if (dragon.roomMovementBounds() == null && !dragon.level().getBlockState(floor).isFaceSturdy(dragon.level(), floor, Direction.UP)
+                    || !dragon.combatPoseFitsAt(turn, duration * progress, dragon.yBodyRot + difference * (float) eased,
                     dragon.bodyPitch(), position, dragon.getY())) return null;
         }
-        return new Plan(action.name(), target, dragon.position(), best, dragon.yBodyRot,
-                yaw, turn, dragon.level().getGameTime(), 5);
+        return new Plan(action.name(), player, target, dragon.position(), best, dragon.yBodyRot,
+                yaw, turn, dragon.level().getGameTime(), GraveDragonEntity.turnTicks(toward.length()));
     }
 
     private GraveDragonReposition() { }

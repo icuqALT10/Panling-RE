@@ -173,8 +173,6 @@ public class ding_hai_shen_zhen extends SwordItem implements skill_trigger {
             tooltip.add(Component.translatable("item.PanlingRE.lore.limit0"));
             tooltip.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.lore1"));
             tooltip.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.lore2"));
-            tooltip.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.lore3"));
-            tooltip.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.lore4"));
             tooltip.add(Component.empty());
             tooltip.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill1.2"));
             tooltip.add(Component.translatable("item.PanlingRE.ding_hai_shen_zhen.skill2", cooldown_remove.getCooldownText(SafeClientAccess.getClientPlayer(), cooldown),

@@ -68,8 +68,8 @@ public class ModTabs {
 
                         // 默认宝箱
                         output.accept(ModItems.loot_chest.get());
-                        // 圣山金宝箱示例
-                        output.accept(makeLootChest("golden", "sheng_shan", "test"));
+
+                        output.accept(ModItems.spawner.get());
                     })
                     .build()
             );
@@ -168,6 +168,7 @@ public class ModTabs {
                         output.accept(ModItems.ling_shi.get());
                         output.accept(ModItems.na_wu_ci_shi.get());
                         output.accept(ModItems.wu_qi_xia.get());
+                        output.accept(ModItems.spawner_boost.get());
 
                         output.accept(ModItems.tao_mu_jian.get());
                         output.accept(ModItems.kai_shan_dao.get());
@@ -213,6 +214,11 @@ public class ModTabs {
                         output.accept(ModItems.chu_xin_chestplate.get());
                         output.accept(ModItems.chu_xin_leggings.get());
                         output.accept(ModItems.chu_xin_boots.get());
+
+                        output.accept(ModItems.wutai_helmet.get());
+                        output.accept(ModItems.wutai_chestplate.get());
+                        output.accept(ModItems.wutai_leggings.get());
+                        output.accept(ModItems.wutai_boots.get());
 
                         output.accept(ModItems.zhan_lang_helmet.get());
                         output.accept(ModItems.zhan_lang_chestplate.get());
@@ -324,6 +330,7 @@ public class ModTabs {
                         output.accept(ModItems.shou_yu_fu_3.get());
                         output.accept(ModItems.tui_huo_fu.get());
                         output.accept(ModItems.ju_li_fu.get());
+                        output.accept(ModItems.huan_hun_fu.get());
                         output.accept(ModItems.fu_zhi_bao.get());
                     })
                     .build()

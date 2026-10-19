@@ -1,0 +1,15 @@
+allprojects {
+    afterEvaluate {
+        sourceSets.register('itemUnlockClientTest') {
+            java.srcDir('src/clientReviewTest/java')
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+            runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+        }
+        neoForge.mods.named(project.mod_id) { sourceSet(sourceSets.itemUnlockClientTest) }
+        neoForge.runs.register('itemUnlockClientTest') {
+            client()
+            gameDirectory = project.file('build/item-unlock-client-run')
+            programArguments.addAll('--quickPlaySingleplayer', 'huan-hun-test', '--width', '1280', '--height', '720')
+        }
+    }
+}

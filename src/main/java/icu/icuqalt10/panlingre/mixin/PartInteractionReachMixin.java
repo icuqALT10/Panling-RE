@@ -45,7 +45,7 @@ public abstract class PartInteractionReachMixin {
             at = @At("HEAD"), cancellable = true)
     private void panlingre$extendPartReachEntity(Entity entity, double distance,
                                                  CallbackInfoReturnable<Boolean> cir) {
-        if (!(entity instanceof GraveDragonPartEntity)) return;
+        if (!(entity instanceof GraveDragonPartEntity) && !(entity instanceof icu.icuqalt10.panlingre.entity.boss.ShiHuang.ShiHuangPartEntity)) return;
         Player self = (Player) (Object) this;
         double limit = self.entityInteractionRange() + distance + GraveDragonPartEntity.REACH_MARGIN;
         if (entity.getBoundingBox().distanceToSqr(self.getEyePosition()) < limit * limit) {

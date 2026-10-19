@@ -2,6 +2,7 @@ package icu.icuqalt10.panlingre.init;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.block.chest.LootChestBlockEntity;
+import icu.icuqalt10.panlingre.block.spawner.MonsterSpawnerBlockEntity;
 import icu.icuqalt10.panlingre.block.ldl.ldlEntity;
 import icu.icuqalt10.panlingre.block.ore.bamboo_block_entity;
 import icu.icuqalt10.panlingre.block.zft.zftEntity;
@@ -30,6 +31,10 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LootChestBlockEntity>> LOOT_CHEST_BE =
             BLOCK_ENTITIES.register("loot_chest_be", () -> BlockEntityType.Builder.of(
                     LootChestBlockEntity::new, ModBlocks.loot_chest.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MonsterSpawnerBlockEntity>> SPAWNER_BE =
+            BLOCK_ENTITIES.register("spawner", () -> BlockEntityType.Builder.of(
+                    MonsterSpawnerBlockEntity::new, ModBlocks.spawner.get()).build(null));
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);

@@ -29,6 +29,10 @@ public class FreezeEffect extends MobEffect {
     }
 
     public static boolean canApplyTo(LivingEntity entity) {
+        if (entity instanceof icu.icuqalt10.panlingre.entity.boss.ShiHuang.ShiHuangEntity emperor
+                && emperor.hasCombatGlow(0)) return false;
+        if (entity instanceof icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonEntity dragon
+                && dragon.isForcingHalfHealthPhase()) return false;
         return (entity instanceof MultipartEntity || !entity.isInvulnerable())
                 && (!(entity instanceof Mob mob)
                 || entity instanceof MultipartEntity

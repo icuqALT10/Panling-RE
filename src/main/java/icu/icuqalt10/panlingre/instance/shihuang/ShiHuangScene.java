@@ -35,10 +35,22 @@ public record ShiHuangScene(BlockPos origin) {
     }
     public AABB dragonRoom() { return region(-78,72,3661,78,125,3803); }
     public AABB emperorArena() { return region(-48,72,3839,48,115,3935); }
+    public boolean allInsideEmperorArena(ServerLevel level) {
+        var players=players(level);
+        var interior=emperorArena();
+        return !players.isEmpty() && players.stream().allMatch(p -> {
+            var box=p.getBoundingBox();
+            return box.minX>=interior.minX && box.maxX<=interior.maxX
+                    && box.minY>=interior.minY && box.maxY<=interior.maxY
+                    && box.minZ>=interior.minZ && box.maxZ<=interior.maxZ;
+        });
+    }
     public Vec3 emperorCombatPosition() { return worldPoint(.5,72,3887.5); }
     public Vec3 dragonSpawn() { return worldPoint(1,72,3721); }
-    public Vec3 barrierCenter() { return worldPoint(.5,86.5,3803.98); }
+    public Vec3 barrierCenter() { return worldPoint(.5,86.5,3805.98); }
     public Vec3 coffinMouth() { return point(88.5, 26.1, 744.5); }
+    public BlockPos coffinBulb() { return world(0,81,3956); }
+    public Vec3 coffinEntry() { return Vec3.atCenterOf(coffinBulb()).add(0,0,-.5); }
     // The retained coffin body ends at Y=83. Keep the final shrunken pose above its solid floor.
     public Vec3 coffinInterior() { return point(88.5, 23.3, 744.5); }
     public BlockPos doorMin() { return block(68, 12, 585); }
@@ -50,5 +62,9 @@ public record ShiHuangScene(BlockPos origin) {
     public BlockPos[] sealBulbs() {
         return new BlockPos[]{world(-73,75,3673), world(73,75,3672),
                 world(-73,75,3788), world(73,75,3788)};
+    }
+    public BlockPos[] sealIndicators() {
+        return new BlockPos[]{world(-11,103,3806), world(-4,103,3806),
+                world(3,103,3806), world(10,103,3806)};
     }
 }

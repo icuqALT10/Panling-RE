@@ -25,7 +25,8 @@ public abstract class RangedAttributeMixin {
         }
 
         if (descriptionId.equals("attribute.name.generic.max_health")) {
-            this.maxValue = 1000000.0D;
+            // Boss health scales with party size; 1,000,000 would cap ShiHuang at 20 players.
+            this.maxValue = Float.MAX_VALUE;
         }
     }
 }

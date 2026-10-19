@@ -81,6 +81,8 @@ public class ModItems {
             ));
     public static final DeferredItem<Item> loot_chest = ITEMS.register("loot_chest",
             () -> new BlockItem(ModBlocks.loot_chest.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> spawner = ITEMS.register("spawner",
+            () -> new BlockItem(ModBlocks.spawner.get(), new Item.Properties()));
 
     //材料
     public static final DeferredItem<Item> respawn_stone = ITEMS.register("respawn_stone",() -> new Item(new Item.Properties()));
@@ -223,8 +225,10 @@ public class ModItems {
     public static final DeferredItem<Item> shou_yu_fu_3 = ITEMS.register("shou_yu_fu_3", shou_yu_fu_3::new);
     public static final DeferredItem<Item> tui_huo_fu = ITEMS.register("tui_huo_fu", tui_huo_fu::new);
     public static final DeferredItem<Item> ju_li_fu = ITEMS.register("ju_li_fu", ju_li_fu::new);
+    public static final DeferredItem<Item> huan_hun_fu = ITEMS.register("huan_hun_fu", huan_hun_fu::new);
     public static final DeferredItem<Item> fu_zhi_bao = ITEMS.register("fu_zhi_bao", FuZhiBagItem::new);
     public static final DeferredItem<Item> wu_qi_xia = ITEMS.register("wu_qi_xia", WeaponCaseItem::new);
+    public static final DeferredItem<SpawnerBoostItem> spawner_boost = ITEMS.register("spawner_boost", SpawnerBoostItem::new);
 
 
     //丹药
@@ -346,6 +350,15 @@ public class ModItems {
             ITEMS.register("chu_xin_leggings", () -> new chu_xin(ModArmorMaterials.LEATHER,ArmorItem.Type.LEGGINGS));
     public static final DeferredItem<Item> chu_xin_boots =
             ITEMS.register("chu_xin_boots", () -> new chu_xin(ModArmorMaterials.LEATHER,ArmorItem.Type.BOOTS));
+
+    public static final DeferredItem<Item> wutai_helmet =
+            ITEMS.register("wutai_helmet", () -> new wutai(ModArmorMaterials.COMMON,ArmorItem.Type.HELMET));
+    public static final DeferredItem<Item> wutai_chestplate =
+            ITEMS.register("wutai_chestplate", () -> new wutai(ModArmorMaterials.COMMON,ArmorItem.Type.CHESTPLATE));
+    public static final DeferredItem<Item> wutai_leggings =
+            ITEMS.register("wutai_leggings", () -> new wutai(ModArmorMaterials.COMMON,ArmorItem.Type.LEGGINGS));
+    public static final DeferredItem<Item> wutai_boots =
+            ITEMS.register("wutai_boots", () -> new wutai(ModArmorMaterials.COMMON,ArmorItem.Type.BOOTS));
 
     public static final DeferredItem<Item> zhan_lang_helmet =
             ITEMS.register("zhan_lang_helmet", () -> new zhan_lang(ModArmorMaterials.WARRIOR,ArmorItem.Type.HELMET));

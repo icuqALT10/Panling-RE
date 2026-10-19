@@ -1,6 +1,8 @@
 package icu.icuqalt10.panlingre.instance.shihuang;
 
 import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonPose;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.ShiHuangEntity;
 import icu.icuqalt10.panlingre.instance.InstanceController;
 import icu.icuqalt10.panlingre.instance.InstanceManager;
 import icu.icuqalt10.panlingre.instance.InstanceResult;
@@ -8,7 +10,6 @@ import icu.icuqalt10.panlingre.instance.InstanceSession;
 import icu.icuqalt10.panlingre.init.ModEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -22,47 +23,88 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /** One controller per InstanceSession. Never look for the nearest dragon/coffin
  * in the world: different slots can run this sequence simultaneously.
- * Emperor combat consumes emperorEnhanced()/bindEmperor(); its additional
- * attacks and 帝皇歼灭斩 are deliberately not implemented by this scene controller.
+ * ShiHuangEntity owns combat and the death timeline; this controller owns
+ * the entrance and instance cleanup.
  */
 public final class ShiHuangController implements InstanceController {
-    public enum Stage { INITIALIZING, DORMANT, DRAGON, DYING, TAKEOFF, TO_BARRIER, TO_COFFIN, ENTER_COFFIN, BARRIER_DEATH, EMPEROR_READY, EMPEROR_REVEAL, EMPEROR_COMBAT }
-    public static final int SEAL_WINDOW_TICKS = 200;
-    public static final int BARRIER_TICKS = 400;
-    private static final int TAKEOFF_TICKS = 40, FLIGHT_TICKS = 80, ENTER_TICKS = 40, DEATH_TICKS = 60;
+    public enum Stage { INITIALIZING, DORMANT, DRAGON, DYING, TAKEOFF, FLIGHT_PREP, TO_BARRIER, TO_COFFIN, ENTER_COFFIN, BARRIER_DEATH, BARRIER_SMOKE, EMPEROR_READY, EMPEROR_REVEAL, EMPEROR_COMBAT }
+    public static final int BARRIER_TICKS = 60;
+    private static final double ESCAPE_SPEED = 2; // 40 blocks/second at 20 TPS.
+    private static final int ENTER_TICKS = 40, SMOKE_TICKS = 40;
+    private int flightTicks;
+    private Vec3 flightFromHead;
     private InstanceSession session;
     private ShiHuangScene scene;
     private GraveDragonEntity dragon;
-    private LivingEntity emperor;
+    private ShiHuangEntity emperor;
     private Stage stage = Stage.DORMANT;
-    private long stageStart, escapeNotBefore;
-    private boolean dyingFinished, emperorEnhanced;
+    private long stageStart;
+    private boolean emperorEnhanced;
+    private boolean foreheadHit;
     private Vec3 from, to;
     private float fromYaw, travelYaw;
+    private float retreatFromYaw, retreatToYaw;
+    private int retreatTurnTicks;
+    private Vec3 retreatPivot;
+    private java.util.List<Vec3> deathSmokePoints=java.util.List.of();
+    private long deathSmokeAt;
     private final Map<BlockPos, BlockState> changedBlocks = new LinkedHashMap<>();
     private final Set<BlockPos> openedPassage = new LinkedHashSet<>();
     private final Set<Long> forcedChunks = new LinkedHashSet<>();
     private final Set<Long> loadingChunks = new LinkedHashSet<>();
     private ShiHuangGates gates;
     private ShiHuangMechanisms mechanisms;
+    private final ShiHuangBossSounds bossSounds = new ShiHuangBossSounds();
+    private static final class PlatformTime { int above, below; }
+    private final Map<java.util.UUID, PlatformTime> platformTime = new LinkedHashMap<>();
 
-    public Stage stage() { return stage; }
     public ShiHuangScene scene() { return scene; }
-    public boolean emperorEnhanced() { return emperorEnhanced; }
-    public UUID dragonId() { return dragon == null ? null : dragon.getUUID(); }
+    void tickPlatformLimit(net.minecraft.server.level.ServerLevel level) {
+        if (stage != Stage.DRAGON) { platformTime.clear(); return; }
+        if (dragon != null && dragon.isForcingHalfHealthPhase()) { platformTime.clear(); return; }
+        var present = new java.util.HashSet<java.util.UUID>();
+        for (var player : scene.players(level)) {
+            if (player.isCreative() || !scene.dragonRoom().contains(player.position())) continue;
+            present.add(player.getUUID());
+            var support = level.clip(new net.minecraft.world.level.ClipContext(player.position().add(0, .1, 0),
+                    new Vec3(player.getX(), scene.dragonSpawn().y - .1, player.getZ()),
+                    net.minecraft.world.level.ClipContext.Block.COLLIDER,
+                    net.minecraft.world.level.ClipContext.Fluid.NONE, player));
+            if (support.getType() != net.minecraft.world.phys.HitResult.Type.BLOCK
+                    || support.getLocation().y < scene.dragonSpawn().y + 1.5) {
+                var time = platformTime.get(player.getUUID());
+                if (time != null && ++time.below >= 100) platformTime.remove(player.getUUID());
+                continue;
+            }
+            var time = platformTime.computeIfAbsent(player.getUUID(), ignored -> new PlatformTime());
+            time.below = 0;
+            time.above = Math.min(60, time.above + 1);
+            if (time.above >= 60) {
+                Vec3 center = scene.dragonRoom().getCenter();
+                player.teleportTo(level, center.x, scene.dragonSpawn().y, center.z, player.getYRot(), player.getXRot());
+                player.sendSystemMessage(Component.literal("§7你被高台上的阵法丢回了场地中央……"));
+                player.setDeltaMovement(Vec3.ZERO);
+                player.fallDistance = 0;
+            }
+        }
+        platformTime.keySet().retainAll(present);
+    }
     public boolean barrierActive() { return mechanisms != null && mechanisms.barrierActive(); }
+    public void playArenaSound(net.minecraft.sounds.SoundEvent sound, SoundSource source, float volume, float pitch) {
+        bossSounds.playInArena(scene,session.level(),sound,source,volume,pitch);
+    }
 
-    /** Future emperor entity calls this once after spawning in this session.
+    /** Bind the emperor spawned by this session.
      * The saved flag enables joint invulnerable-dragon skills and its 50% special.
      */
-    public void bindEmperor(LivingEntity entity) {
+    public void bindEmperor(ShiHuangEntity entity) {
         if (entity.level() != session.level() || entity.position().distanceToSqr(scene.coffinMouth()) > 160 * 160)
             throw new IllegalArgumentException("Emperor belongs to a different tomb slot");
         emperor = entity;
+        emperor.setEnhanced(emperorEnhanced);
         InstanceManager.ownEntity(session, entity);
         stampEmperor();
     }
@@ -85,10 +127,7 @@ public final class ShiHuangController implements InstanceController {
         for (int x=(int)Math.floor(bounds.minX)>>4;x<=((int)Math.floor(bounds.maxX-1)>>4);x++)
             for (int z=(int)Math.floor(bounds.minZ)>>4;z<=((int)Math.floor(bounds.maxZ-1)>>4);z++) {
                 long key=ChunkPos.asLong(x,z); loadingChunks.add(key);
-                if (!session.level().getForcedChunks().contains(key)) {
-                    session.level().setChunkForced(x,z,true); forcedChunks.add(key);
-                }
-                session.level().getChunk(x,z);
+
             }
     }
 
@@ -97,6 +136,7 @@ public final class ShiHuangController implements InstanceController {
         gates=new ShiHuangGates(session.level(),scene,layout); gates.initialize();
         for (var entity : java.util.List.copyOf(session.level().getEntities(null,scene.bounds())))
             if (!(entity instanceof net.minecraft.server.level.ServerPlayer)
+                    && !(entity instanceof net.minecraft.world.entity.npc.Villager && entity.getTags().contains("shi_huang_ling"))
                     && (!(entity instanceof icu.icuqalt10.panlingre.entity.TombDisplayEntity display) || !gates.owns(display)))
                 entity.discard();
         mechanisms=new ShiHuangMechanisms(session.level(),scene,layout,gates); mechanisms.initialize();
@@ -120,6 +160,7 @@ public final class ShiHuangController implements InstanceController {
         if (dragon == null) { session.finish(InstanceResult.FAILURE); return; }
         dragon.moveTo(scene.dragonSpawn(), 180, 0);
         dragon.setPersistenceRequired();
+        dragon.setArenaAudio();
         dragon.setNoAi(true);
         dragon.setInvulnerable(true);
         dragon.getPersistentData().putInt("ShiHuangSlot", session.slot());
@@ -132,41 +173,94 @@ public final class ShiHuangController implements InstanceController {
     /** Called exactly once when this dragon reaches its 5% lock. */
     public void dragonRetreating(GraveDragonEntity entity) {
         if (entity != dragon || stage != Stage.DRAGON) return;
+        retreatFromYaw=dragon.yBodyRot;
+        retreatPivot=dragon.position().add(dragon.sceneTurnPivotOffset(retreatFromYaw));
+        retreatToYaw=yawTo(retreatPivot,scene.barrierCenter());
+        retreatTurnTicks=GraveDragonEntity.turnTicks(dragon.position().subtract(scene.barrierCenter()).horizontalDistance());
         openDoor();
-        escapeNotBefore = now() + SEAL_WINDOW_TICKS;
         stage = Stage.DYING;
         stageStart = now();
-        tell("dragon_retreat");
     }
 
     public boolean dragonDyingFinished(GraveDragonEntity entity) {
         if (entity != dragon || stage != Stage.DYING) return false;
-        dyingFinished = true;
-        dragon.beginSceneAnimation("escape_wait");
+        Vec3 start = dragon.position();
+        travelYaw = 0;
+        // Leave room for the extended tail before unfolding into the gate-facing fly pose.
+        Vec3 min=scene.worldPoint(-28,72,3710),max=scene.worldPoint(28,72,3760);
+        Vec3 launch=new Vec3(net.minecraft.util.Mth.clamp(start.x,min.x,max.x),start.y+12,
+                net.minecraft.util.Mth.clamp(start.z,min.z,max.z));
+        begin(Stage.TAKEOFF, "takeoff", launch);
         return true;
+    }
+
+    public float retreatYaw(double seconds) {
+        double progress=net.minecraft.util.Mth.clamp(seconds*20/retreatTurnTicks,0,1);
+        progress=progress*progress*(3-2*progress);
+        return retreatFromYaw+net.minecraft.util.Mth.wrapDegrees(retreatToYaw-retreatFromYaw)*(float)progress;
+    }
+
+    /** Turn around the rear trunk, so the long tail does not sweep through the room's outer wall. */
+    public float turnRetreat(double seconds) {
+        float yaw=retreatYaw(seconds);
+        Vec3 root=retreatPivot.subtract(dragon.sceneTurnPivotOffset(yaw));
+        // The retreat pivot was captured before landing; it must not restore that airborne height.
+        dragon.moveSceneTo(new Vec3(root.x,scene.dragonSpawn().y,root.z),yaw,scene.dragonSpawn().y);
+        return dragon.getYRot();
     }
 
     @Override
     public void tick(InstanceSession session) {
         if (session.isEnding()) return;
         if (stage==Stage.INITIALIZING) {
+            // Admit four chunks per tick instead of synchronously loading the entire 763-block tomb.
+            int budget=4;
+            for(long key:loadingChunks) {
+                if(!session.level().getForcedChunks().contains(key)) {
+                    session.level().setChunkForced(ChunkPos.getX(key),ChunkPos.getZ(key),true);
+                    forcedChunks.add(key);
+                    if(--budget==0)break;
+                }
+            }
             if (loadingChunks.stream().allMatch(session.level()::areEntitiesLoaded)) initializeLoadedScene();
             return;
         }
         mechanisms.tick();
+        if(!deathSmokePoints.isEmpty() && now()>=deathSmokeAt) {
+            if(now()-deathSmokeAt>=40) deathSmokePoints=java.util.List.of();
+            else if((now()-deathSmokeAt)%4==0) for(var player:session.level().players()) {
+                if(!scene.bounds().contains(player.position())) continue;
+                for(Vec3 p:deathSmokePoints)
+                    session.level().sendParticles(player,net.minecraft.core.particles.ParticleTypes.CLOUD,true,
+                            p.x,p.y,p.z,16,1.2,.8,1.2,.06);
+            }
+        }
+        if (dragon != null) bossSounds.tick(dragon,scene);
         if (session.isEnding()) return;
         if (stage==Stage.EMPEROR_READY) {
-            if (scene.allInside(session.level(),scene.emperorArena())) {
+            if (scene.allInsideEmperorArena(session.level())) {
                 restorePassage(); gates.setOpen("bronze_left",false); gates.setOpen("bronze_right",false);
+                for(BlockPos p:BlockPos.betweenClosed(scene.world(-4,72,3838),scene.world(4,78,3838))) {
+                    changedBlocks.putIfAbsent(p.immutable(),session.level().getBlockState(p));
+                    session.level().setBlock(p,Blocks.BARRIER.defaultBlockState(),2);
+                }
                 mechanisms.resetSeals(); openCoffin(); stage=Stage.EMPEROR_REVEAL; stageStart=now();
-                session.level().playSound(null,scene.coffinMouth().x,scene.coffinMouth().y,scene.coffinMouth().z,
-                        SoundEvents.IRON_DOOR_OPEN,SoundSource.BLOCKS,5,.5F);
+                playArenaSound(SoundEvents.IRON_DOOR_OPEN,SoundSource.BLOCKS,5,.5F);
+                emperor=ModEntities.SHI_HUANG.get().create(session.level());
+                if(emperor==null){session.finish(InstanceResult.FAILURE);return;}
+                emperor.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH).setBaseValue(ShiHuangEntity.HEALTH_PER_PLAYER*Math.max(1,scene.players(session.level()).size()));
+                emperor.setHealth(emperor.getMaxHealth());
+                emperor.moveTo(scene.coffinInterior(),180,0);emperor.yBodyRot=emperor.yHeadRot=180;
+                emperor.beginEntrance();
+                session.level().addFreshEntity(emperor);bindEmperor(emperor);
                 publishEntrance(ShiHuangAwakenEvent.Phase.REVEAL);
             }
             return;
         }
         if (stage==Stage.EMPEROR_REVEAL) {
-            if (now()-stageStart>=80) { stage=Stage.EMPEROR_COMBAT; publishEntrance(ShiHuangAwakenEvent.Phase.COMBAT_READY); tell("emperor_ready"); }
+            if(emperor==null||emperor.isRemoved()||emperor.dying())return;
+            if(emperor.tickEntrance(scene.emperorCombatPosition())){
+                stage=Stage.EMPEROR_COMBAT;publishEntrance(ShiHuangAwakenEvent.Phase.COMBAT_READY);}
             return;
         }
         if (dragon == null || dragon.isRemoved() || dragon.isDeadOrDying()) return;
@@ -179,82 +273,67 @@ public final class ShiHuangController implements InstanceController {
             }
             return;
         }
-        if (stage == Stage.DYING) {
-            if (dyingFinished && now() >= escapeNotBefore) {
-                Vec3 start = dragon.position();
-                travelYaw = yawTo(start, scene.barrierCenter());
-                begin(Stage.TAKEOFF, "escape_takeoff", start.add(0, 10, 0));
-            }
-            return;
-        }
+        tickPlatformLimit(session.level());
+        if (stage == Stage.DYING) return;
+        if (stage==Stage.BARRIER_DEATH || stage==Stage.BARRIER_SMOKE) { tickBarrierFall(); return; }
         int duration = switch (stage) {
-            case TAKEOFF -> TAKEOFF_TICKS;
-            case TO_BARRIER, TO_COFFIN -> FLIGHT_TICKS;
+            case TAKEOFF -> Math.max(retreatTurnTicks,(int)Math.round(GraveDragonPose.duration("takeoff")*20));
+            case FLIGHT_PREP -> (int)Math.round(GraveDragonPose.duration("idle_air_to_fly")*10);
+            case TO_BARRIER, TO_COFFIN -> flightTicks;
             case ENTER_COFFIN -> ENTER_TICKS;
-            case BARRIER_DEATH -> DEATH_TICKS;
             default -> 0;
         };
         if (duration == 0) return;
         double progress = Math.min(1, (now() - stageStart) / (double) duration);
         double eased = progress * progress * (3 - 2 * progress);
-        float yaw = stage == Stage.TAKEOFF || stage == Stage.TO_BARRIER
-                ? fromYaw + net.minecraft.util.Mth.wrapDegrees(travelYaw - fromYaw) * (float) eased : travelYaw;
+        double turnProgress=stage==Stage.TAKEOFF
+                ? Math.min(1,(now()-stageStart)/(double)retreatTurnTicks) : progress;
+        double turnEase=turnProgress*turnProgress*(3-2*turnProgress);
+        float yaw = stage == Stage.TAKEOFF || stage == Stage.FLIGHT_PREP || stage == Stage.TO_BARRIER
+                ? fromYaw + net.minecraft.util.Mth.wrapDegrees(travelYaw - fromYaw) * (float) turnEase : travelYaw;
         Vec3 desired = from.lerp(to, stage == Stage.TO_BARRIER || stage == Stage.TO_COFFIN ? progress : eased);
-        if (stage == Stage.TO_BARRIER) {
-            double firstFront = from.z + dragon.sceneGateOffset(0, fromYaw).z;
-            double front = net.minecraft.util.Mth.lerp(progress, firstFront, scene.barrierCenter().z);
-            desired = new Vec3(desired.x, desired.y, front - dragon.sceneGateOffset(progress * 4, yaw).z);
+        if (stage==Stage.TO_BARRIER || stage==Stage.TO_COFFIN) {
+            double seconds=dragon.animationSeconds(0);
+            Vec3 headOffset=dragon.sceneHeadOffset("fly",seconds,yaw);
+            Vec3 targetHead=to;
+            if(stage==Stage.TO_BARRIER) targetHead=to.add(0,0,-(dragon.sceneGateOffset(seconds,yaw).z-headOffset.z));
+            desired=flightFromHead.lerp(targetHead,progress).subtract(headOffset);
         }
-        if (stage == Stage.ENTER_COFFIN) {
-            // Keep the shrinking body above the lid until it fits the opening.
-            // Anchor the head, not the root: root interpolation otherwise drops
-            // the still-large feet through the coffin's front rim.
-            Vec3 firstHead = from.add(dragon.sceneHeadOffset("escape_enter_coffin", 0, yaw));
-            Vec3 head = firstHead.lerp(scene.coffinInterior(), eased);
-            double descent = net.minecraft.util.Mth.clamp((progress - .75) / .25, 0, 1);
-            descent = descent * descent * (3 - 2 * descent);
-            head = new Vec3(head.x, net.minecraft.util.Mth.lerp(descent, firstHead.y, scene.coffinInterior().y), head.z);
-            desired = head.subtract(dragon.sceneHeadOffset("escape_enter_coffin", progress * 2, yaw));
-        }
+        if (stage==Stage.ENTER_COFFIN) desired=to;
         // Check every half-block of root travel against the actual posed OBBs.
         // A modified arena must not turn a fixed-time cinematic into wall clipping.
-        if (!dragon.moveSceneTo(desired, yaw, scene.dragonSpawn().y) && stage != Stage.BARRIER_DEATH) {
-            crash();
-            return;
-        }
+        var absorption=stage==Stage.ENTER_COFFIN || stage==Stage.TO_COFFIN
+                ? scene.region(-7,79,3953,7,87,3974) : null;
+        if (!dragon.moveSceneTo(desired, yaw, scene.dragonSpawn().y,absorption)) return;
         if (barrierActive() && (stage == Stage.TO_BARRIER || stage == Stage.TO_COFFIN)) {
             Vec3 p = scene.barrierCenter();
             var plane = new net.minecraft.world.phys.AABB(p.x - 20.5, p.y - 14.5, p.z - .15,
                     p.x + 20.5, p.y + 14.5, p.z + .15);
-            for (var part : dragon.getWorldParts()) {
+            for (int index : new int[]{11,12,78}) {
+                var part=dragon.getWorldParts()[index];
                 if (part.getOrientedBox().intersects(plane)) { crash(); return; }
             }
         }
         if (progress < 1) return;
         switch (stage) {
             case TAKEOFF -> {
-                travelYaw = 0;
-                Vec3 head = dragon.sceneGateOffset(0, travelYaw);
-                Vec3 contact = scene.barrierCenter().subtract(head);
-                begin(Stage.TO_BARRIER, "escape_flight", contact);
+                travelYaw=0;
+                Vec3 head=dragon.sceneHeadOffset("fly",0,travelYaw);
+                begin(Stage.FLIGHT_PREP,"idle_air_to_fly",new Vec3(dragon.getX(),scene.barrierCenter().y-head.y,dragon.getZ()));
             }
+            case FLIGHT_PREP -> beginFlight(Stage.TO_BARRIER,scene.barrierCenter());
             case TO_BARRIER -> {
                 if (barrierActive()) crash();
                 else {
-                    travelYaw = 0;
                     openPassage();
-                    // The lid needs three seconds to open; begin while the dragon is still flying there.
-                    openCoffin();
-                    Vec3 head = dragon.sceneHeadOffset("escape_flight", 0, travelYaw);
-                    // Bring the head above the coffin first. Scaling then pulls the
-                    // entire dragon into the cavity, rather than dragging its tail through the lid.
-                    begin(Stage.TO_COFFIN, "escape_flight", scene.coffinMouth().add(0, 5, -8).subtract(head));
+                    Vec3 entry=coffinEntryOrigin();
+                    beginFlight(Stage.TO_COFFIN,entry.add(dragon.sceneHeadOffset("escape_enter_coffin",0,travelYaw)));
                 }
             }
             case TO_COFFIN -> {
-                openCoffin();
-                Vec3 lastHead = dragon.sceneHeadOffset("escape_enter_coffin", 2, travelYaw);
-                begin(Stage.ENTER_COFFIN, "escape_enter_coffin", scene.coffinInterior().subtract(lastHead));
+                begin(Stage.ENTER_COFFIN,"escape_enter_coffin",coffinEntryOrigin());
+                var bulb=session.level().getBlockState(scene.coffinBulb());
+                change(scene.coffinBulb(),bulb.setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT,true));
             }
             case ENTER_COFFIN -> {
                 emperorEnhanced = true;
@@ -262,16 +341,6 @@ public final class ShiHuangController implements InstanceController {
                 stage = Stage.EMPEROR_READY;
                 InstanceManager.releaseEntity(dragon);
                 dragon.discard();
-                gates.setOpen("coffin",false);
-                tell("dragon_absorbed");
-            }
-            case BARRIER_DEATH -> {
-                stage = Stage.EMPEROR_READY;
-                emperorEnhanced = false;
-                stampEmperor();
-                dragon.kill();
-                openPassage();
-                tell("dragon_sealed");
             }
             default -> { }
         }
@@ -283,17 +352,78 @@ public final class ShiHuangController implements InstanceController {
         from = dragon.position();
         to = destination;
         fromYaw = dragon.getYRot();
-        dragon.beginSceneAnimation(animation);
+        if(next==Stage.TAKEOFF) dragon.beginSceneTakeoff(Math.max(retreatTurnTicks,(int)Math.round(GraveDragonPose.duration(animation)*20)));
+        else dragon.beginSceneAnimation(animation);
+    }
+
+    private Vec3 coffinEntryOrigin() {
+        // At 0.2 s half of the head has crossed the copper bulb's front face,
+        // still at scale 1. Later segments use that same absorption plane.
+        return scene.coffinEntry()
+                .subtract(dragon.sceneHeadOffset("escape_enter_coffin",.2,travelYaw));
+    }
+
+    private void beginFlight(Stage next,Vec3 targetHead) {
+        Vec3 start=dragon.getWorldParts()[11].getOrientedBox().center;
+        if (!dragon.animation().equals("fly")) dragon.beginSceneAnimation("fly");
+        stage=next; stageStart=now(); from=dragon.position(); fromYaw=dragon.getYRot();
+        flightFromHead=start; to=targetHead;
+        Vec3 arrival=targetHead;
+        if (next==Stage.TO_BARRIER) arrival=arrival.add(0,0,-(dragon.sceneGateOffset(0,travelYaw).z-dragon.sceneHeadOffset("fly",0,travelYaw).z));
+        flightTicks=Math.max(1,(int)Math.ceil(start.distanceTo(arrival)/ESCAPE_SPEED));
     }
 
     private void crash() {
-        Vec3 hit = dragon.getWorldParts()[11].getOrientedBox().center;
-        session.level().playSound(null, hit.x, hit.y, hit.z, SoundEvents.GENERIC_EXPLODE,
-                SoundSource.HOSTILE, 5, .75F);
-        if (session.player() != null)
-            session.level().sendParticles(session.player(), ParticleTypes.EXPLOSION, true, hit.x, hit.y, hit.z, 12, 3, 3, 1, .1);
-        begin(Stage.BARRIER_DEATH, "escape_barrier_death",
-                new Vec3(dragon.getX(), scene.dragonSpawn().y, dragon.getZ() - 3));
+        mechanisms.hitSeal();
+        foreheadHit=false;
+        Vec3 head=dragon.getWorldParts()[11].getOrientedBox().center;
+        icu.icuqalt10.panlingre.network.TombLightPayload.burst(head,0xFFF0CF,2.5F,10).send(session.level(),128);
+        double angle=Math.toRadians(travelYaw);
+        begin(Stage.BARRIER_DEATH,"escape_wall_impact",dragon.position().add(10*Math.sin(angle),0,-10*Math.cos(angle)));
+    }
+
+    private void tickBarrierFall() {
+        if(stage==Stage.BARRIER_SMOKE) {
+            if(now()-stageStart<SMOKE_TICKS) return;
+            stage=Stage.EMPEROR_READY; emperorEnhanced=false; stampEmperor();
+            deathSmokePoints=java.util.stream.IntStream.of(0,2,4,6,8,11,13,15,17,19)
+                    .mapToObj(i->dragon.getWorldParts()[i].getOrientedBox().center).toList();
+            deathSmokeAt=now()+2; // Entity removal reaches clients before the first light packet.
+            InstanceManager.releaseEntity(dragon); dragon.discard();
+            openPassage();
+            return;
+        }
+        double seconds=dragon.animationSeconds(0);
+        double floor=scene.dragonSpawn().y;
+        double lowest=dragon.sceneLowestOffset();
+        // Keep the mouth/skull against the seal during the short downward slide.
+        if (seconds<=.25) {
+            double front=dragon.sceneImpactFrontOffset();
+            if (!dragon.moveSceneTo(new Vec3(from.x,from.y-.7*(seconds/.25),scene.barrierCenter().z-front),travelYaw,floor)) return;
+            if (seconds<.25) return;
+        }
+        if (!foreheadHit) {
+            foreheadHit=true;
+            from=dragon.position();
+            double angle=Math.toRadians(travelYaw);
+            to=from.add(10*Math.sin(angle),0,-10*Math.cos(angle));
+            Vec3 head=dragon.getWorldParts()[11].getOrientedBox().center;
+            icu.icuqalt10.panlingre.network.TombLightPayload.burst(new Vec3(head.x,head.y,scene.barrierCenter().z),0xFFF0CF,3,10).send(session.level(),128);
+        }
+        // Two-second cry, twice-speed fall, then the original weakening attempts.
+        double drop=net.minecraft.util.Mth.clamp((seconds-2.25)/.325,0,1);
+        double ground=floor-lowest;
+        double y=Math.max(ground,from.y+(ground-from.y)*drop*drop);
+        double recoil=net.minecraft.util.Mth.clamp((seconds-.25)/.5,0,1);
+        Vec3 retreat=from.lerp(to,1-(1-recoil)*(1-recoil));
+        if (!dragon.moveSceneTo(new Vec3(retreat.x,y,retreat.z),travelYaw,floor)) return;
+        if(drop>=1 && dragon.getY()+lowest<=floor+.06 && dragon.sceneLandingTick()==Long.MIN_VALUE) {
+            dragon.landScene();
+            playArenaSound(SoundEvents.GENERIC_EXPLODE.value(),SoundSource.HOSTILE,5,.65F);
+        }
+        if(seconds>=GraveDragonPose.duration("escape_wall_impact")) {
+            stage=Stage.BARRIER_SMOKE; stageStart=now();
+        }
     }
 
     public void resetSeals() {
@@ -335,7 +465,7 @@ public final class ShiHuangController implements InstanceController {
 
     @Override
     public void onEntityDeath(InstanceSession session, LivingEntity entity) {
-        if (entity == emperor) { tell("complete"); session.finish(InstanceResult.SUCCESS); return; }
+        if (entity == emperor) return; // ShiHuangEntity owns the complete death timeline.
         if (entity == dragon && stage != Stage.EMPEROR_READY) {
             emperorEnhanced = false;
             stampEmperor();
@@ -345,8 +475,15 @@ public final class ShiHuangController implements InstanceController {
         }
     }
 
+    public void completeEmperor(ShiHuangEntity entity) {
+        if(entity!=emperor||session.isEnding()||!entity.rewardReady())return;
+        entity.releaseRemnant();
+        session.finish(InstanceResult.SUCCESS);
+    }
+
     @Override
     public void stop(InstanceSession session, InstanceResult result) {
+        bossSounds.stop();
         if (dragon != null) { InstanceManager.releaseEntity(dragon); dragon.discard(); }
         if (emperor != null) { InstanceManager.releaseEntity(emperor); emperor.discard(); }
         // Restore the actual placed blocks, including the door and coffin lid.
@@ -354,13 +491,13 @@ public final class ShiHuangController implements InstanceController {
         changedBlocks.clear();
         openedPassage.clear();
         resetSeals();
+        if (mechanisms!=null) mechanisms.stop();
         if (gates!=null) gates.reset();
         for (long key : forcedChunks) session.level().setChunkForced(ChunkPos.getX(key),ChunkPos.getZ(key),false);
         forcedChunks.clear(); loadingChunks.clear();
         emperorEnhanced = false;
-        dyingFinished = false;
         stage = Stage.DORMANT;
-        escapeNotBefore = stageStart = 0;
+        stageStart = 0;
     }
 
     private long now() { return session.level().getGameTime(); }

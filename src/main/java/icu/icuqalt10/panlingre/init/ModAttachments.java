@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.init;
 import com.mojang.serialization.Codec;
 import icu.icuqalt10.panlingre.PanlingRE;
 import icu.icuqalt10.panlingre.attachment.BaFangYiData;
+import icu.icuqalt10.panlingre.attachment.ItemUnlockData;
 import icu.icuqalt10.panlingre.attachment.BlessData;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.attachment.YuansuData;
@@ -20,6 +21,19 @@ public class ModAttachments {
 
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES =
             DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, PanlingRE.MODID);
+
+    public static final Supplier<AttachmentType<ItemUnlockData>> ITEM_UNLOCKS = ATTACHMENT_TYPES.register(
+            "item_unlocks", () -> AttachmentType.builder(() -> ItemUnlockData.EMPTY)
+                    .serialize(ItemUnlockData.CODEC)
+                    .copyOnDeath()
+                    .sync((holder, player) -> holder == player, ItemUnlockData.STREAM_CODEC)
+                    .build());
+
+    public static final Supplier<AttachmentType<Long>> HUAN_HUN_COOLDOWN = ATTACHMENT_TYPES.register(
+            "huan_hun_cooldown", () -> AttachmentType.builder(() -> 0L)
+                    .serialize(Codec.LONG)
+                    .copyOnDeath()
+                    .build());
 
     public static final Supplier<AttachmentType<LingQiData>> LINGQI = ATTACHMENT_TYPES.register(
             "lingqi",

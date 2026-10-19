@@ -1,0 +1,16 @@
+allprojects {
+    afterEvaluate {
+        sourceSets.register('itemUnlockTest') {
+            java.srcDir('src/sourceReviewTest/java')
+            java.include('**/item/fuzhi/**')
+            resources.srcDir('src/sourceReviewTest/resources')
+            resources.include('data/panlingre/structure/empty.nbt')
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+            runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+        }
+        neoForge.mods.named(project.mod_id) { sourceSet(sourceSets.itemUnlockTest) }
+        neoForge.runs.named('gameTestServer') {
+            gameDirectory = project.file('build/item-unlock-test-run')
+        }
+    }
+}

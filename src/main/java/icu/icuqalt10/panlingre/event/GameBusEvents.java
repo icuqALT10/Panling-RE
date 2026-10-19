@@ -4,6 +4,7 @@ import icu.icuqalt10.panlingre.util.SkillTargeting;
 import icu.icuqalt10.panlingre.entity.MultipartEntity;
 
 import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.block.spawner.SpawnerDataLoader;
 import icu.icuqalt10.panlingre.attachment.LingQiData;
 import icu.icuqalt10.panlingre.entity.FireTrailTracker;
 import icu.icuqalt10.panlingre.init.ModAttachments;
@@ -101,6 +102,7 @@ public class GameBusEvents {
     //LookTip
     @SubscribeEvent
     public static void onAddReloadListeners(AddReloadListenerEvent event) {
+        event.addListener(new SpawnerDataLoader());
         event.addListener(new LookTipLoader());
         event.addListener(new TaskGuideLoader());
     }

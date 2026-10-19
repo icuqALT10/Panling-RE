@@ -1,1 +1,0 @@
-execute if entity @s[tag=wither_skeleton] run return run function plre:monsters/west/boss/wither_skeleton

@@ -1,12 +1,14 @@
 package icu.icuqalt10.panlingre.world.inventory;
 
 import icu.icuqalt10.panlingre.init.ModBlocks;
+import icu.icuqalt10.panlingre.attachment.ItemUnlockData;
 import icu.icuqalt10.panlingre.init.ModMenus;
 import icu.icuqalt10.panlingre.init.ModRecipes;
 import icu.icuqalt10.panlingre.recipe.LdlRecipe;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -48,6 +50,11 @@ public class ldlMenu extends AbstractContainerMenu {
             }
 
             @Override
+            public boolean mayPickup(Player player) {
+                return ItemUnlockData.canUse(player, getItem());
+            }
+
+            @Override
             public void onTake(Player player, ItemStack stack) {
                 ldlMenu.this.consumeIngredients();
                 super.onTake(player, stack);
@@ -77,6 +84,12 @@ public class ldlMenu extends AbstractContainerMenu {
         return serverPlayer.getRecipeBook().contains(recipeHolder);
     }
 
+    @Override
+    public void slotsChanged(Container container) {
+        super.slotsChanged(container);
+        checkRecipe();
+    }
+
     private void checkRecipe() {
         Level level = player.level();
         if (level.isClientSide) return;
@@ -85,7 +98,8 @@ public class ldlMenu extends AbstractContainerMenu {
 
         if (recipeOpt.isPresent()) {
 
-            if (level.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) && !isUnlocked(recipeOpt.get())) {
+            if (!ItemUnlockData.canUse(player, recipeOpt.get().value().getResultItem(level.registryAccess()))
+                    || level.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) && !isUnlocked(recipeOpt.get())) {
                 container.setItem(5, ItemStack.EMPTY);
             } else {
                 container.setItem(5, recipeOpt.get().value().assemble(createInput(), level.registryAccess()));
@@ -102,7 +116,8 @@ public class ldlMenu extends AbstractContainerMenu {
 
         var recipeOpt = level.getRecipeManager().getRecipeFor(ModRecipes.LDL_TYPE.get(), createInput(), level);
         recipeOpt.ifPresent(r -> {
-            if (level.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) && !isUnlocked(r)) return;
+            if (!ItemUnlockData.canUse(player, r.value().getResultItem(level.registryAccess()))
+                    || level.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) && !isUnlocked(r)) return;
 
             for (LdlRecipe.SlotIngredient si : r.value().slotIngredients()) {
                 container.removeItem(si.slot(), si.ingredient().count());
@@ -116,7 +131,7 @@ public class ldlMenu extends AbstractContainerMenu {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
 
-        if (slot != null && slot.hasItem()) {
+        if (slot != null && slot.hasItem() && slot.mayPickup(player)) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
 

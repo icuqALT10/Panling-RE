@@ -1418,5 +1418,26 @@
 			x: 5.5d
 			y: -12.5d
 		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"1A7F00877BE6CB46"
+			]
+			dependency_requirement: "one_completed"
+			id: "4BAC17856E62A977"
+			optional: true
+			rewards: [{
+				id: "5F98B95984AEF774"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "5E6A816709506644"
+				item: { count: 1, id: "panlingre:huan_hun_fu" }
+				type: "item"
+			}]
+			x: 4.0d
+			y: -14.5d
+		}
 	]
 }

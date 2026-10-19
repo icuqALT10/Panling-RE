@@ -49,6 +49,7 @@ final class GraveDragonCombat {
     private long recoveryUntil;
     private long nextStepSoundAt;
     private long turnUntil;
+    private int turnTicks;
     private String queuedAction;
     private GraveDragonReposition.Plan reposition;
     private ServerPlayer turnTarget;
@@ -57,7 +58,6 @@ final class GraveDragonCombat {
     private float actionYaw;
     private float comboFromYaw;
     private float comboToYaw;
-    private double diveGroundY;
     private Vec3 tailFrom;
     private Vec3 tailTo;
     private float tailPitch;
@@ -66,6 +66,11 @@ final class GraveDragonCombat {
     private int airSkillsUsed;
     private boolean pendingGroundPause;
     private boolean phaseRequested;
+    private boolean phaseApproaching;
+    private Vec3 phaseFrom,phaseTo,phaseTarget;
+    private float phaseFromYaw;
+    private int phaseTravelTicks;
+    private long phaseStarted;
     private boolean phaseDone;
     private boolean retreatRequested;
     private boolean retreatReady;
@@ -81,9 +86,14 @@ final class GraveDragonCombat {
     boolean active() { return action != null; }
     boolean retreatReady() { return retreatReady; }
     boolean phaseDone() { return phaseDone; }
+    boolean forcingPhase() {
+        return !dragon.isDeadOrDying() && (phaseRequested || phaseApproaching
+                || action != null && action.name().equals("phase50_firefield")
+                || !phaseDone && !retreatRequested && dragon.getHealth() <= dragon.getMaxHealth() * .5F);
+    }
     boolean controlsMovement() {
         long now = dragon.level().getGameTime();
-        return reposition != null || returnPoint != null || pendingGroundPause || queuedAction != null || turnUntil > 0 && turnUntil >= now;
+        return phaseApproaching || reposition != null || returnPoint != null || pendingGroundPause || queuedAction != null || turnUntil > 0 && turnUntil >= now;
     }
     void onFormChanged(boolean flying) {
         returnPoint = null;
@@ -98,7 +108,10 @@ final class GraveDragonCombat {
         dragon.getNavigation().stop();
     }
 
-    void announceAnimation(String name) { sendActivation(name, List.of()); }
+    void announceAnimation(String name) {
+        var tomb=dragon.tombController();
+        sendActivation(name,name.equals("escape_wall_impact")&&tomb!=null?List.of(tomb.scene().barrierCenter()):List.of());
+    }
 
     void sendFireField(ServerPlayer player) {
         if (fireField != null)
@@ -108,10 +121,11 @@ final class GraveDragonCombat {
 
     GraveDragonActionPayload trackingPayload() {
         GraveDragonActionPayload current = activation;
-        return new GraveDragonActionPayload(dragon.getId(), current == null ? dragon.animation() : current.action(),
-                ++sequence, current == null ? dragon.animationStart() : current.startTick(),
+        if(current!=null&&(!current.action().equals(dragon.animation())||current.startTick()!=dragon.animationStart()))current=null;
+        return new GraveDragonActionPayload(dragon.getId(), dragon.animation(),
+                ++sequence, dragon.animationStart(),
                 current == null ? 0 : current.seed(), current == null ? List.of() : current.points(),
-                dragon.blendFrom(), dragon.blendFromSeconds());
+                dragon.blendFrom(), dragon.blendFromSeconds(),dragon.emperorClockId(),dragon.emperorAnimationStart(),dragon.sceneLandedTick());
     }
 
     void save(CompoundTag tag) {
@@ -138,6 +152,7 @@ final class GraveDragonCombat {
         retreatRequested = tag.getBoolean("RetreatRequested");
         retreatReady = tag.getBoolean("RetreatReady");
         sequence = tag.getLong("CombatSequence");
+        if (tag.getString("CombatAction").equals("phase50_firefield")) { phaseRequested = true; phaseDone = false; retreatRequested = false; }
         if (retreatRequested) phaseRequested = false;
         recoveryUntil = tag.getLong("CombatRecoveryUntil");
         airSkillsUsed = tag.getInt("CombatAirSkills");
@@ -158,9 +173,29 @@ final class GraveDragonCombat {
 
     void requestThresholds() {
         if (dragon.isDeadOrDying()) return;
-        float health = dragon.getHealth() / dragon.getMaxHealth();
-        if (health <= .05F && !retreatRequested) {
+        float health = dragon.getHealth();
+        if (phaseRequested || phaseApproaching || action != null && action.name().equals("phase50_firefield")) return;
+        if (health <= dragon.getMaxHealth() * .50F && !phaseRequested && !phaseDone && !retreatRequested) {
+            phaseRequested = true;
+            action = null;
+            fireField = null;
+            hitByWindow.clear();
+            returnPoint = null;
+            pendingGroundPause = false;
+            dragon.setCombatPitch(0);
+            dragon.getNavigation().stop();
+            dragon.setDeltaMovement(Vec3.ZERO);
+            dragon.setMoving(false);
+            dragon.setHealth(dragon.getMaxHealth() * .50F);
+            dragon.setInvulnerable(true);
+            queuedAction = null;
+            reposition = null;
+            turnTarget = null;
+            turnUntil = 0;
+        }
+        else if (health <= dragon.getMaxHealth() * .05F && !retreatRequested) {
             retreatRequested = true;
+            phaseApproaching = false;
             phaseRequested = false;
             action = null;
             dragon.setCombatPitch(0);
@@ -178,14 +213,6 @@ final class GraveDragonCombat {
             reposition = null;
             turnTarget = null;
             turnUntil = 0;
-        } else if (health <= .50F && !phaseRequested && !phaseDone && !retreatRequested) {
-            phaseRequested = true;
-            dragon.setHealth(dragon.getMaxHealth() * .50F);
-            dragon.setInvulnerable(true);
-            queuedAction = null;
-            reposition = null;
-            turnTarget = null;
-            turnUntil = 0;
         }
     }
 
@@ -193,6 +220,11 @@ final class GraveDragonCombat {
         long now = dragon.level().getGameTime();
         requestThresholds();
         if (dragon.isDeadOrDying()) { cancel(); return; }
+        if (phaseRequested) {
+            if (phaseApproaching) tickPhaseEntry(now);
+            else beginPhaseEntry();
+            return;
+        }
         if (action != null) {
             tickActive(now);
             return;
@@ -210,7 +242,12 @@ final class GraveDragonCombat {
             dragon.getNavigation().stop();
             dragon.setDeltaMovement(Vec3.ZERO);
         }
-        if (turnUntil > now && dragon.animationSeconds(0) < GraveDragonPose.duration(dragon.animation())) {
+        if (turnTarget != null && (!turnTarget.isAlive() || turnTarget.isSpectator() || turnTarget.isCreative()
+                || turnTarget.level() != dragon.level())) {
+            turnTarget = null; queuedAction = null; turnUntil = 0;
+            idleBeforeNextAttack(now);
+        }
+        if (turnUntil > now) {
             tickTurn(now);
             return;
         }
@@ -221,7 +258,7 @@ final class GraveDragonCombat {
             turnUntil = 0;
             ServerPlayer target = turnTarget;
             turnTarget = null;
-            if (target != null && target.isAlive() && target.distanceToSqr(dragon) <= 10000) {
+            if (target != null && target.isAlive() && !target.isSpectator() && !target.isCreative() && target.distanceToSqr(dragon) <= 10000) {
                 float yaw = (float) Math.toDegrees(Math.atan2(-turnDirection.x, turnDirection.z));
                 dragon.setYRot(yaw);
                 dragon.yBodyRot = yaw;
@@ -237,18 +274,6 @@ final class GraveDragonCombat {
                 if (dragon.flying() || dragon.isTransitioningForm()) {
                     if (!dragon.isRetreatLanding()) dragon.beginRetreatLanding();
                 } else begin("dying_thrash", List.of(), true, null);
-            }
-            return;
-        }
-        if (phaseRequested) {
-            if (!dragon.flying()) dragon.requestCombatForm(GraveDragonEntity.Form.AIR);
-            else if (!dragon.isTransitioningForm() && now >= recoveryUntil) {
-                List<Vec3> points = fieldPoints();
-                if (!points.isEmpty()) {
-                    ServerPlayer target = nearestPlayer(100);
-                    if (target == null) begin("phase50_firefield", points, true, null);
-                    else turnBefore("phase50_firefield", target);
-                }
             }
             return;
         }
@@ -284,12 +309,48 @@ final class GraveDragonCombat {
             dragon.getNavigation().stop();
             dragon.setDeltaMovement(Vec3.ZERO);
             dragon.setMoving(false);
-            dragon.beginCombatAnimation(reposition.animation());
+            dragon.beginTurnAnimation(reposition.animation(), reposition.ticks());
             previousSeconds = -1.0 / 20;
             dragon.refreshCombatPose();
             sendActivation(reposition.animation(), List.of(reposition.target()));
         } else if (selected.turn()) turnBefore(selected.action().name(), target);
         else begin(selected.action().name(), pointsFor(selected.action().name(), target), false, target);
+    }
+
+    private void beginPhaseEntry() {
+        var controller=dragon.tombController();
+        Vec3 centre=controller==null?dragon.combatSpawnPosition():controller.scene().dragonRoom().getCenter();
+        phaseTarget=new Vec3(centre.x,controller==null?dragon.combatGroundLevel():controller.scene().dragonSpawn().y,centre.z);
+        phaseFrom=dragon.position();
+        phaseTo=dragon.phaseFirefieldPosition(phaseTarget);
+        phaseFromYaw=dragon.yBodyRot;
+        String clip=dragon.flying() ? "phase50_enter_air" : "phase50_enter_ground";
+        int phaseTurnTicks=GraveDragonEntity.turnTicks(phaseFrom.distanceTo(phaseTo));
+        phaseTravelTicks=Math.max((int)Math.round(GraveDragonPose.duration(clip)*20),
+                Math.max(phaseTurnTicks,(int)Math.ceil(phaseFrom.distanceTo(phaseTo)/.6)));
+        phaseStarted=dragon.level().getGameTime();
+        phaseApproaching=true;
+        dragon.beginPhaseEntry(clip,phaseTravelTicks,phaseTarget);
+        sendActivation(clip,List.of(phaseTarget));
+    }
+
+    private void tickPhaseEntry(long now) {
+        double progress=Mth.clamp((now-phaseStarted)/(double)phaseTravelTicks,0,1);
+        double eased=progress*progress*(3-2*progress);
+        float yaw=phaseFromYaw+Mth.wrapDegrees(180-phaseFromYaw)*(float)eased;
+        Vec3 pivotFrom=phaseFrom.add(dragon.sceneTurnPivotOffset(phaseFromYaw));
+        Vec3 pivotTo=phaseTo.add(dragon.sceneTurnPivotOffset(180));
+        // Turn on the travel clock and bow inward so the unfurled tail clears the room walls.
+        Vec3 inward=phaseTarget.add(dragon.sceneTurnPivotOffset(180))
+                .subtract(pivotFrom.lerp(pivotTo,.5)).multiply(1,0,1);
+        double lift=dragon.animation().endsWith("ground") ? Mth.clamp((progress-.12)/.88,0,1) : progress;
+        Vec3 position=pivotFrom.lerp(pivotTo,eased).subtract(dragon.sceneTurnPivotOffset(yaw))
+                .add(inward.scale(2*eased*(1-eased)))
+                .add(0,8*Math.sin(Math.PI*lift),0);
+        if(!dragon.moveSceneTo(position,yaw,phaseTarget.y)) return;
+        if(progress<1) return;
+        phaseApproaching=false;
+        begin("phase50_firefield",List.of(phaseTarget),true,null);
     }
 
     private void begin(String name, List<Vec3> points, boolean keepRecovery, ServerPlayer target) {
@@ -322,7 +383,9 @@ final class GraveDragonCombat {
         if (name.equals("air_tail_pierce")) tailGroundY = dragon.combatGroundLevel();
         if (name.equals("ground_coil")) coilDirection = randomHorizontalDirection();
         returnPoint = null;
-        if (name.equals("air_dive_slam")) diveGroundY = dragon.combatGroundLevel();
+        if (name.equals("air_dive_slam")) {
+            dragon.setCombatPitch(0);
+        }
         hitByWindow.clear();
         dragon.beginCombatAnimation(name);
         dragon.refreshCombatPose();
@@ -347,18 +410,19 @@ final class GraveDragonCombat {
         }
         queuedAction = name;
         turnTarget = target;
-        startTurn(direction, difference);
+        startTurn(direction, difference, Math.sqrt(horizontalDistanceSqr(target.position(), dragon.position())));
     }
 
-    private void startTurn(Vec3 direction, float difference) {
+    private void startTurn(Vec3 direction, float difference, double distance) {
         turnDirection = direction;
         turnStartYaw = dragon.yBodyRot;
-        turnUntil = dragon.level().getGameTime() + 5;
+        turnTicks = GraveDragonEntity.turnTicks(distance);
+        turnUntil = dragon.level().getGameTime() + turnTicks;
         dragon.getNavigation().stop();
         dragon.setDeltaMovement(Vec3.ZERO);
         String turn = (dragon.flying() ? "turn_air_" : "turn_ground_")
                 + (difference > 0 ? "left" : "right");
-        dragon.beginCombatAnimation(turn);
+        dragon.beginTurnAnimation(turn, turnTicks);
         previousSeconds = -1.0 / 20;
         sendActivation(turn, List.of());
     }
@@ -366,7 +430,8 @@ final class GraveDragonCombat {
     private void tickTurn(long now) {
         float desired = (float) Math.toDegrees(Math.atan2(-turnDirection.x, turnDirection.z));
         float original = dragon.yBodyRot;
-        float progress = Mth.clamp((now - turnUntil + 5) / 5F, 0, 1);
+        float progress = Mth.clamp((now - turnUntil + turnTicks) / (float)turnTicks, 0, 1);
+        progress = progress * progress * (3 - 2 * progress);
         float yaw = turnStartYaw + Mth.wrapDegrees(desired - turnStartYaw) * progress;
         int steps = Math.max(1, (int) Math.ceil(Math.abs(Mth.wrapDegrees(yaw - original)) / 2));
         boolean fits = true;
@@ -399,7 +464,14 @@ final class GraveDragonCombat {
     /** Finish the fixed turn/translation on the clip's final tick, then attack the locked point. */
     private void tickReposition(long now) {
         var plan = reposition;
+        if (!plan.player().isAlive() || plan.player().isSpectator() || plan.player().isCreative()
+                || plan.player().level() != dragon.level()) {
+            reposition = null;
+            idleBeforeNextAttack(now);
+            return;
+        }
         double progress = Mth.clamp((double) (now - plan.startedAt()) / plan.ticks(), 0, 1);
+        progress = progress * progress * (3 - 2 * progress);
         Vec3 destination = plan.from().lerp(plan.to(), progress);
         float yaw = plan.fromYaw() + Mth.wrapDegrees(plan.yaw() - plan.fromYaw()) * (float) progress;
         Vec3 before = dragon.position();
@@ -412,7 +484,7 @@ final class GraveDragonCombat {
             Vec3 position = before.lerp(destination, fraction);
             float facing = previousYaw + Mth.wrapDegrees(yaw - previousYaw) * (float) fraction;
             BlockPos floor = BlockPos.containing(position.x, position.y - .1, position.z);
-            if (!dragon.level().getBlockState(floor).isFaceSturdy(dragon.level(), floor, Direction.UP)
+            if (dragon.roomMovementBounds() == null && !dragon.level().getBlockState(floor).isFaceSturdy(dragon.level(), floor, Direction.UP)
                     || !dragon.combatPoseFitsAt(plan.animation(), dragon.animationSeconds(0),
                     facing, dragon.bodyPitch(), position, plan.from().y)) {
                 reposition = null;
@@ -459,7 +531,7 @@ final class GraveDragonCombat {
         for (int index : new int[]{26, 39, 52, 65}) {
             Vec3 foot = dragon.getWorldParts()[index].getOrientedBox().center;
             BlockPos floor = BlockPos.containing(foot.x, dragon.getY() - .1, foot.z);
-            dragon.level().playSound(null, foot.x, foot.y, foot.z,
+            icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), foot.x, foot.y, foot.z,
                     dragon.level().getBlockState(floor).getSoundType(dragon.level(), floor, dragon).getStepSound(),
                     SoundSource.HOSTILE, SOUND_VOLUME, .7F);
         }
@@ -517,7 +589,7 @@ final class GraveDragonCombat {
                 return;
             }
         }
-        if (turnUntil > now && dragon.animationSeconds(0) < GraveDragonPose.duration(dragon.animation())) {
+        if (turnUntil > now) {
             tickTurn(now);
             return;
         }
@@ -537,7 +609,7 @@ final class GraveDragonCombat {
         float yaw = (float) Math.toDegrees(Math.atan2(-direction.x, direction.z));
         float difference = Mth.wrapDegrees(yaw - dragon.yBodyRot);
         if (Math.abs(difference) >= 8) {
-            startTurn(direction, difference);
+            startTurn(direction, difference, toward.length());
             return;
         }
         if (!dragon.animation().equals("run")) {
@@ -561,7 +633,7 @@ final class GraveDragonCombat {
             if (!supported(point) || Math.abs(point.y - dragon.getY()) > 1) continue;
             Vec3 travel = point.subtract(dragon.position()).multiply(1, 0, 1);
             float yaw = (float) Math.toDegrees(Math.atan2(-travel.x, travel.z));
-            if (!clearLine(headCenter(), headCenter().add(travel))) continue;
+            if (dragon.roomMovementBounds() == null && !clearLine(headCenter(), headCenter().add(travel))) continue;
             boolean fits = true;
             int steps = Math.max(1, (int) Math.ceil(travel.length() / 3));
             for (int step = 0; step <= steps && fits; step++) {
@@ -577,13 +649,15 @@ final class GraveDragonCombat {
     private void sendActivation(String name, List<Vec3> points) {
         activation = new GraveDragonActionPayload(dragon.getId(), name, ++sequence,
                 dragon.animationStart(), dragon.getRandom().nextLong(), List.copyOf(points),
-                dragon.blendFrom(), dragon.blendFromSeconds());
+                dragon.blendFrom(), dragon.blendFromSeconds(),dragon.emperorClockId(),dragon.emperorAnimationStart(),dragon.sceneLandedTick());
         PacketDistributor.sendToPlayersTrackingEntity(dragon, activation);
     }
 
     private void tickActive(long now) {
         // Target movement, death or logout cannot truncate a clip already in progress.
         double seconds = dragon.animationSeconds(0);
+        if (action.name().equals("dying_thrash") && dragon.tombController()!=null)
+            actionYaw=dragon.tombController().turnRetreat(seconds);
         if (action.name().equals("ground_double_bite")) tickComboTurn(seconds, 1.35, 2);
         if (action.name().equals("air_tail_pierce")) tickComboTurn(seconds, 2.15, 2.75);
         dragon.setYRot(actionYaw);
@@ -595,7 +669,7 @@ final class GraveDragonCombat {
                 moveAttack(lockedDirection.scale(GraveDragonMythic.BITE_STEP), seconds, dragon.getY());
             if (GraveDragonActions.crossed(previousSeconds, seconds, 1.2)
                     || GraveDragonActions.crossed(previousSeconds, seconds, 2))
-                dragon.level().playSound(null, headCenter().x, headCenter().y, headCenter().z,
+                icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), headCenter().x, headCenter().y, headCenter().z,
                         SoundEvents.ENDER_DRAGON_GROWL, SoundSource.HOSTILE, SOUND_VOLUME, 1.2F);
         }
         if (action.name().equals("air_tail_pierce")) tickTailPierce(seconds);
@@ -609,15 +683,15 @@ final class GraveDragonCombat {
         }
         if ((action.name().startsWith("ground_flank_press") && GraveDragonActions.crossed(previousSeconds, seconds, 2.15))
                 || action.name().equals("ground_rift_fan") && GraveDragonActions.crossed(previousSeconds, seconds, 2.1))
-            dragon.level().playSound(null, dragon.getX(), dragon.getY(), dragon.getZ(),
+            icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), dragon.getX(), dragon.getY(), dragon.getZ(),
                     SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, SOUND_VOLUME, .7F);
         if (action.name().equals("air_open_fire_ring") && GraveDragonActions.crossed(previousSeconds, seconds, 1.75))
-            dragon.level().playSound(null, headCenter().x, headCenter().y, headCenter().z,
+            icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), headCenter().x, headCenter().y, headCenter().z,
                     SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, SOUND_VOLUME, .7F);
         if ((action.name().equals("roar") || action.name().equals("roar_air"))
                 && (GraveDragonActions.crossed(previousSeconds, seconds, .9)
                 || GraveDragonActions.crossed(previousSeconds, seconds, 1.9)))
-            dragon.level().playSound(null, headCenter().x, headCenter().y, headCenter().z, SoundEvents.ENDER_DRAGON_GROWL,
+            icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), headCenter().x, headCenter().y, headCenter().z, SoundEvents.ENDER_DRAGON_GROWL,
                     SoundSource.HOSTILE, SOUND_VOLUME, .8F);
         if (action.name().startsWith("ground_claw_")
                 && GraveDragonActions.crossed(previousSeconds, seconds, 1)) {
@@ -628,7 +702,7 @@ final class GraveDragonCombat {
                 default -> 65;
             };
             Vec3 paw = dragon.getWorldParts()[index].getOrientedBox().center;
-            dragon.level().playSound(null, paw.x, paw.y, paw.z, SoundEvents.PLAYER_ATTACK_SWEEP,
+            icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), paw.x, paw.y, paw.z, SoundEvents.PLAYER_ATTACK_SWEEP,
                     SoundSource.HOSTILE, SOUND_VOLUME, .7F);
         }
         if (action.name().equals("ground_coil") && seconds >= 3 && seconds < 9) {
@@ -717,49 +791,25 @@ final class GraveDragonCombat {
 
     private void tickDiveSlam(double seconds) {
         if (seconds < 2.5) return;
-        double floor = diveGroundY;
-        if (seconds < 3.9) {
+        if (dragon.diveLanding() == null) {
             ServerPlayer target = nearestPlayer(100);
-            if (target != null) {
-                Vec3 toward = target.position().subtract(dragon.position()).multiply(1, 0, 1);
-                if (toward.lengthSqr() > .01) {
-                    float previousYaw = actionYaw;
-                    float previousPitch = dragon.bodyPitch();
-                    actionYaw = (float) Math.toDegrees(Math.atan2(-toward.x, toward.z));
-                    dragon.setYRot(actionYaw);
-                    dragon.yBodyRot = actionYaw;
-                    dragon.yHeadRot = actionYaw;
-                    double height = Math.max(1, headCenter().y - target.getY());
-                    float pitch = (float) -Math.toDegrees(Math.atan2(toward.length(), height));
-                    double fade = Mth.clamp((3.9 - seconds) / .4, 0, 1);
-                    dragon.setCombatPitch(pitch * (float) fade);
-                    if (!dragon.combatPoseFitsAt(action.name(), seconds, actionYaw, dragon.bodyPitch(), dragon.position(), floor)) {
-                        actionYaw = previousYaw;
-                        dragon.setYRot(previousYaw);
-                        dragon.yBodyRot = previousYaw;
-                        dragon.yHeadRot = previousYaw;
-                        dragon.setCombatPitch(previousPitch);
-                        dragon.refreshCombatPose();
-                    } else {
-                        dragon.refreshCombatPose();
-                        dragon.move(MoverType.SELF, toward.normalize().scale(Math.min(.5, toward.length())));
-                        double below = dragon.combatGroundLevel();
-                        if (Math.abs(below - dragon.getY()) > .001 || supported(dragon.position()))
-                            floor = diveGroundY = below;
-                    }
-                }
-            }
-            double progress = (seconds - 2.5) / 1.4;
-            Vec3 position = new Vec3(dragon.getX(), Mth.lerp(progress, actionOrigin.y, floor), dragon.getZ());
-            if (dragon.combatPoseFitsAt(action.name(), seconds, actionYaw, dragon.bodyPitch(), position, floor))
-                dragon.setPos(position);
-        } else {
-            dragon.setCombatPitch(0);
-            double progress = Mth.clamp((seconds - 4.4) / (action.duration() - 4.4), 0, 1);
-            double airY = floor == actionOrigin.y ? actionOrigin.y : floor + 12;
-            Vec3 position = new Vec3(dragon.getX(), Mth.lerp(progress, floor, airY), dragon.getZ());
-            if (dragon.combatPoseFitsAt(action.name(), seconds, actionYaw, 0, position, floor)) dragon.setPos(position);
+            Vec3 landing = target == null ? ground(actionOrigin) : ground(target.position());
+            dragon.lockDivePath(actionOrigin, actionYaw, landing);
+            sendActivation(action.name(), List.of(landing, actionOrigin, new Vec3(actionYaw, 0, 0)));
         }
+        dragon.advanceDiveRoot(seconds);
+        dragon.refreshCombatPose();
+    }
+
+    private boolean diveSpaceClear(float yaw) {
+        ServerPlayer target = nearestPlayer(100);
+        Vec3 landing = ground(target == null ? dragon.position() : target.position());
+        var path = new GraveDragonDivePath(dragon.position(), yaw, dragon.getScale(), landing);
+        for (double seconds = 0; seconds <= GraveDragonPose.duration("air_dive_slam") + .001; seconds += .1) {
+            var frame = path.pose(GraveDragonPose.sample("air_dive_slam", seconds, false), seconds);
+            if (!dragon.poseFitsAt(frame, yaw, 0, dragon.position(), landing.y)) return false;
+        }
+        return true;
     }
 
     /** Scripted translations are split into wall-tested steps; authored floor contact is allowed. */
@@ -806,7 +856,7 @@ final class GraveDragonCombat {
         moveAttack(goal.subtract(dragon.position()), seconds, tailGroundY);
         if (GraveDragonActions.crossed(previousSeconds, seconds, impact - .15)) {
             Vec3 point = dragon.getWorldParts()[20].getOrientedBox().center;
-            dragon.level().playSound(null, point.x, point.y, point.z, SoundEvents.PLAYER_ATTACK_SWEEP,
+            icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), point.x, point.y, point.z, SoundEvents.PLAYER_ATTACK_SWEEP,
                     SoundSource.HOSTILE, SOUND_VOLUME, 1F);
         }
     }
@@ -815,7 +865,7 @@ final class GraveDragonCombat {
         action = GraveDragonActions.ALL.get(name);
         if (name.equals("ground_charge_wall")) {
             point = GraveDragonBreath.geometry(dragon).mouth();
-            dragon.level().playSound(null, point.x, point.y, point.z, SoundEvents.GENERIC_EXPLODE,
+            icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), point.x, point.y, point.z, SoundEvents.GENERIC_EXPLODE,
                     SoundSource.HOSTILE, SOUND_VOLUME, .7F);
         }
         dragon.beginBlendedCombatAnimation(name);
@@ -860,6 +910,7 @@ final class GraveDragonCombat {
     }
 
     private void cancel() {
+        phaseApproaching = false;
         if (action == null) return;
         action = null;
         dragon.setCombatPitch(0);
@@ -875,6 +926,7 @@ final class GraveDragonCombat {
     }
 
     void interruptForFreeze() {
+        phaseApproaching = false;
         // Attack history and air combo count are recorded by begin(), so keep them.
         if (action != null && action.name().equals("phase50_firefield")) dragon.setInvulnerable(false);
         action = null;
@@ -951,7 +1003,7 @@ final class GraveDragonCombat {
             if (now - last < interval) return;
             lastDamageTick.put(intervalKey, now);
         }
-        if (!player.hurt(dragon.damageSources().mobAttack(dragon), amount)) return;
+        if (!player.hurt(dragon.damageSources().mobAttack(dragon), amount * 2)) return;
         if (key.contains("flank")) {
             Vec3 side = GraveDragonMythic.flank(dragon, action.name(), actionYaw, dragon.position()).direction();
             double speed = player.onGround() ? 4.3 : 2.75;
@@ -963,7 +1015,7 @@ final class GraveDragonCombat {
             int seconds = action != null && (action.name().equals("ground_turn_breath")
                     || action.name().equals("phase50_firefield")) ? 15 : 10;
             if (!dragon.headBroken()) seconds *= 2;
-            player.igniteForSeconds(seconds);
+            GraveDragonDamage.ignite(player, seconds);
         }
         if (key.contains("charge") || key.contains("coil") || key.contains("landing") || key.contains("flank") || key.contains("rift")
                 || key.contains("tail") || key.contains("dustdive")) {
@@ -1074,14 +1126,14 @@ final class GraveDragonCombat {
         if (action.name().equals("ground_slam") || action.name().equals("ground_tailroll"))
             point = dragon.position();
         else if (action.name().equals("air_dive_slam"))
-            point = ground(dragon.position());
+            point = dragon.diveLanding() == null ? ground(dragon.position()) : dragon.diveLanding();
         else point = activation.points().isEmpty() ? headCenter() : activation.points().getFirst();
-        dragon.level().playSound(null, point.x, point.y, point.z, SoundEvents.GENERIC_EXPLODE,
+        icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), point.x, point.y, point.z, SoundEvents.GENERIC_EXPLODE,
                 SoundSource.HOSTILE, SOUND_VOLUME, .8F);
         double radius = action.name().equals("air_dive_slam") ? 20 : 10;
-        for (ServerPlayer player : nearbyPlayers(45)) {
+        for (ServerPlayer player : nearbyPlayers(action.name().equals("air_dive_slam") ? point.distanceTo(dragon.position()) + radius + 3 : 45)) {
             if (player.position().multiply(1, 0, 1).distanceToSqr(point.multiply(1, 0, 1)) <= radius * radius
-                    && Math.abs(player.getY() - point.y) < 2.5) damage(player, key, amount, 0, now);
+                    && Math.abs(player.getY() - point.y) < 2.5) damage(player, key, amount, 0, now, point);
         }
     }
 
@@ -1098,7 +1150,7 @@ final class GraveDragonCombat {
     private void strikeTailSlam(String key, float amount, long now) {
         if (!GraveDragonActions.crossed(previousSeconds, dragon.animationSeconds(0), 1.5)) return;
         Vec3 point = GraveDragonMythic.ground(dragon, dragon.getWorldParts()[20].getOrientedBox().center);
-        dragon.level().playSound(null, point.x, point.y, point.z, SoundEvents.GENERIC_EXPLODE,
+        icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), point.x, point.y, point.z, SoundEvents.GENERIC_EXPLODE,
                 SoundSource.HOSTILE, SOUND_VOLUME, .7F);
         for (ServerPlayer player : nearbyPlayers(100))
             if (GraveDragonMythic.areaHits(dragon, point, GraveDragonMythic.TAIL_SLAM_RADIUS, player))
@@ -1141,11 +1193,11 @@ final class GraveDragonCombat {
     }
 
     private void strikeThunderTrail(String key, float amount, long now) {
-        dragon.level().playSound(null, headCenter().x, headCenter().y, headCenter().z,
+        icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), headCenter().x, headCenter().y, headCenter().z,
                 SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.WEATHER, SOUND_VOLUME, 1F);
         Set<Integer> contacted = new HashSet<>();
         for (Vec3 point : activation.points()) {
-            dragon.level().playSound(null, point.x, point.y, point.z, SoundEvents.GENERIC_EXPLODE,
+            icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), point.x, point.y, point.z, SoundEvents.GENERIC_EXPLODE,
                     SoundSource.HOSTILE, SOUND_VOLUME, .65F);
             for (ServerPlayer player : nearbyPlayers(100))
                 if (!contacted.contains(player.getId()) && GraveDragonMythic.areaHits(dragon, point, 5, player)) {
@@ -1157,12 +1209,12 @@ final class GraveDragonCombat {
 
     private void strikeLightning(long now) {
         if (!GraveDragonActions.crossed(previousSeconds, dragon.animationSeconds(0), 3.2)) return;
-        dragon.level().playSound(null, headCenter().x, headCenter().y, headCenter().z,
+        icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), headCenter().x, headCenter().y, headCenter().z,
                 SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.WEATHER, SOUND_VOLUME, 1F);
         List<ServerPlayer> players = nearbyPlayers(110);
         for (int i = 0; i < activation.points().size(); i++) {
                 Vec3 point = activation.points().get(i);
-                dragon.level().playSound(null, point.x, point.y, point.z, SoundEvents.GENERIC_EXPLODE,
+                icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), point.x, point.y, point.z, SoundEvents.GENERIC_EXPLODE,
                         SoundSource.HOSTILE, SOUND_VOLUME, .65F);
                 for (ServerPlayer player : players) {
                     if (horizontalDistanceSqr(player.position(), point) > 25) continue;
@@ -1210,7 +1262,7 @@ final class GraveDragonCombat {
         GraveDragonFireballEntity ball = new GraveDragonFireballEntity(dragon.level(), dragon, direction, damage, blue);
         ball.setPos(mouth.x, mouth.y, mouth.z);
         dragon.level().addFreshEntity(ball);
-        dragon.level().playSound(null, mouth.x, mouth.y, mouth.z, SoundEvents.ENDER_DRAGON_SHOOT,
+        icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(dragon, dragon.level(), mouth.x, mouth.y, mouth.z, SoundEvents.ENDER_DRAGON_SHOOT,
                 SoundSource.HOSTILE, SOUND_VOLUME, .8F);
     }
 
@@ -1279,6 +1331,7 @@ final class GraveDragonCombat {
     }
 
     private boolean supported(Vec3 point) {
+        if (dragon.roomMovementBounds() != null) return dragon.roomMovementBounds().contains(point);
         BlockPos block = BlockPos.containing(point.x, point.y - .1, point.z);
         return dragon.level().getBlockState(block).isFaceSturdy(dragon.level(), block, Direction.UP);
     }
@@ -1341,14 +1394,14 @@ final class GraveDragonCombat {
     }
 
     private static int weight(String name) {
+        if (airAction(name)) return 5;
         return switch (name) {
-            case "ground_double_bite", "ground_tail_stab", "ground_flank_press_l", "ground_flank_press_r", "air_tail_pierce" -> 5;
-            case "ground_rift_fan", "ground_fan_breath", "air_open_fire_ring", "air_thunder_trail" -> 3;
+            case "ground_double_bite", "ground_tail_stab", "ground_flank_press_l", "ground_flank_press_r" -> 5;
+            case "ground_rift_fan", "ground_fan_breath" -> 3;
             case "ground_charge", "ground_claw_front_l", "ground_claw_front_r",
                  "ground_claw_back_l", "ground_claw_back_r", "ground_slam", "ground_tailsweep" -> 5;
-            case "ground_turn_sweep", "ground_turn_breath", "ground_tailroll", "ground_firezone",
-                 "air_coil_lightning", "air_fireball3" -> 3;
-            case "roar", "roar_air", "takeoff" -> 2;
+            case "ground_turn_sweep", "ground_turn_breath", "ground_tailroll", "ground_firezone" -> 3;
+            case "roar", "takeoff" -> 2;
             default -> 1;
         };
     }
@@ -1428,7 +1481,7 @@ final class GraveDragonCombat {
             }
             case "ground_coil" -> horizontalDistanceSqr(point, dragon.position()) <= 900 && coilSpaceClear();
             case "takeoff" -> dragon.canTakeoffForCombat();
-            case "air_dive_slam" -> dragon.combatPoseFits(name, 0, 1.5, 2.5, 3.25, 3.9);
+            case "air_dive_slam" -> diveSpaceClear(yaw);
             case "air_coil_lightning" -> horizontalDistanceSqr(point, headCenter()) <= 10000
                     && dragon.combatPoseFits(name, 0, 1.8, 3.2) && lightningPoints(target).size() == 11;
             case "roar", "roar_air" -> horizontalDistanceSqr(point, dragon.position()) <= 6400;
@@ -1472,6 +1525,7 @@ final class GraveDragonCombat {
     }
 
     private boolean chargeCorridorClear(Vec3 direction, double distance) {
+        if (dragon.roomMovementBounds() != null) return true;
         for (double step = 8; step <= distance; step += 8) {
             Vec3 travel = direction.scale(step);
             for (int index : new int[]{8, 9, 10, 11, 12, 21}) {
@@ -1484,6 +1538,7 @@ final class GraveDragonCombat {
     }
 
     private boolean coilSpaceClear() {
+        if (dragon.roomMovementBounds() != null) return true;
         Vec3 center = dragon.position().add(0, 2, 0);
         for (int i = 0; i < 8; i++) {
             double angle = i * Math.PI / 4;

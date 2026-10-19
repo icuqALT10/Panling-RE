@@ -98,13 +98,12 @@ public final class BaihuController implements InstanceController {
 
     @Override
     public void start(InstanceSession session) {
-        ServerPlayer player = session.player();
         bossBar = new ServerBossEvent(
                 Component.translatable("instance.panlingre.baihu.countdown", 5),
                 BossEvent.BossBarColor.WHITE,
                 BossEvent.BossBarOverlay.PROGRESS
         );
-        if (player != null) {
+        for (ServerPlayer player : session.players()) {
             bossBar.addPlayer(player);
             PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(true));
         }
@@ -127,11 +126,16 @@ public final class BaihuController implements InstanceController {
     }
 
     @Override
+    public void onPlayerLeave(InstanceSession session, ServerPlayer player) {
+        if (bossBar != null) bossBar.removePlayer(player);
+        PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
+    }
+
+    @Override
     public void stop(InstanceSession session, InstanceResult result) {
         if (bossBar != null) bossBar.removeAllPlayers();
         clearMovementBarriers(session.level());
-        ServerPlayer player = session.player();
-        if (player != null) PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
+        for (ServerPlayer player : session.players()) PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
         for (Skeleton skeleton : skeletons) {
             if (!skeleton.isRemoved()) skeleton.discard();
         }
@@ -147,8 +151,7 @@ public final class BaihuController implements InstanceController {
                         ? BASE_HUNT_BARRIER_POSITIONS
                         : BASE_ESCAPE_BARRIER_POSITIONS
         );
-        ServerPlayer player = session.player();
-        if (player != null) {
+        for (ServerPlayer player : session.players()) {
             player.connection.send(new ClientboundSetTitleTextPacket(
                     Component.translatable("instance.panlingre.baihu.preparing.1")));
             player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable(subtitleKey)));
@@ -196,7 +199,8 @@ public final class BaihuController implements InstanceController {
             return;
         }
         Vec3 target = forSlot(session, BASE_SECOND_STAGE_POS);
-        player.teleportTo(level, target.x, target.y, target.z, SECOND_STAGE_Y_ROT, SECOND_STAGE_X_ROT);
+        for (ServerPlayer member : session.players())
+            member.teleportTo(level, target.x, target.y, target.z, SECOND_STAGE_Y_ROT, SECOND_STAGE_X_ROT);
         beginPreparation(session, Phase.SECOND_PREPARATION, "instance.panlingre.baihu.preparing.3");
     }
 
@@ -206,7 +210,7 @@ public final class BaihuController implements InstanceController {
             session.finish(InstanceResult.FAILURE);
             return;
         }
-        if (player.position().distanceToSqr(forSlot(session, BASE_GOAL_POS)) <= GOAL_RADIUS_SQR) {
+        if (session.players().stream().allMatch(member -> member.position().distanceToSqr(forSlot(session, BASE_GOAL_POS)) <= GOAL_RADIUS_SQR)) {
             beginSuccess(session, player);
             return;
         }
@@ -222,20 +226,20 @@ public final class BaihuController implements InstanceController {
         bossBar.setProgress(1.0F);
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0F, 1.0F);
-        PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
+        for (ServerPlayer member : session.players()) PacketDistributor.sendToPlayer(member, new SiShouMusicPayload(false));
     }
 
     private void spawnSkeletons(InstanceSession session) {
         ServerLevel level = session.level();
         if (level == null) return;
-        double slotOffset = (double) session.slot() * session.definition().spacing();
+        Vec3 slotOffset = session.center().subtract(0.0, 70.0, 2700.0);
         for (Vec3 basePosition : BASE_SKELETON_POSITIONS) {
             Skeleton skeleton = EntityType.SKELETON.create(level);
             if (skeleton == null) continue;
             CompoundTag entityNbt = skeleton.saveWithoutId(new CompoundTag());
             entityNbt.merge(SKELETON_NBT.copy());
             skeleton.load(entityNbt);
-            skeleton.setPos(basePosition.add(slotOffset, 0.0, 0.0));
+            skeleton.setPos(basePosition.add(slotOffset));
             if (level.addFreshEntity(skeleton)) skeletons.add(skeleton);
         }
     }
@@ -244,9 +248,9 @@ public final class BaihuController implements InstanceController {
         ServerLevel level = session.level();
         if (level == null) return;
         clearMovementBarriers(level);
-        double slotOffset = (double) session.slot() * session.definition().spacing();
+        Vec3 slotOffset = session.center().subtract(0.0, 70.0, 2700.0);
         for (Vec3 basePosition : basePositions) {
-            BlockPos position = BlockPos.containing(basePosition.add(slotOffset, 0.0, 0.0));
+            BlockPos position = BlockPos.containing(basePosition.add(slotOffset));
             replacedBarrierBlocks.put(position, level.getBlockState(position));
             level.setBlock(position, Blocks.BARRIER.defaultBlockState(), 3);
         }
@@ -280,7 +284,7 @@ public final class BaihuController implements InstanceController {
     }
 
     private static Vec3 forSlot(InstanceSession session, Vec3 basePosition) {
-        return basePosition.add((double) session.slot() * session.definition().spacing(), 0.0, 0.0);
+        return basePosition.add(session.center().subtract(0.0, 70.0, 2700.0));
     }
 
     private static CompoundTag parseNbt(String snbt) {

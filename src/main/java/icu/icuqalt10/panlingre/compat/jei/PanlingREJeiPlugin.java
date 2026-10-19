@@ -22,9 +22,21 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 @JeiPlugin
 public class PanlingREJeiPlugin implements IModPlugin {
+
+    private LockedItemJeiVisibility unlockVisibility;
+
+    public PanlingREJeiPlugin() {
+        NeoForge.EVENT_BUS.addListener(this::clientTick);
+    }
+
+    private void clientTick(ClientTickEvent.Post event) {
+        if (unlockVisibility != null) unlockVisibility.refresh(Minecraft.getInstance().player);
+    }
 
     public static final RecipeType<LdlRecipe> LDL_TYPE = RecipeType.create(PanlingRE.MODID, "ldl_crafting", LdlRecipe.class);
     public static final RecipeType<zftRecipe> ZFT_TYPE = RecipeType.create(PanlingRE.MODID, "zft_crafting", zftRecipe.class);
@@ -100,5 +112,12 @@ public class PanlingREJeiPlugin implements IModPlugin {
         recipeManager.hideRecipeCategory(RecipeTypes.SMITHING);
         recipeManager.hideRecipeCategory(RecipeTypes.SMOKING);
         recipeManager.hideRecipeCategory(RecipeTypes.STONECUTTING);
+        unlockVisibility = new LockedItemJeiVisibility(jeiRuntime);
+        unlockVisibility.refresh(Minecraft.getInstance().player);
+    }
+
+    @Override
+    public void onRuntimeUnavailable() {
+        unlockVisibility = null;
     }
 }

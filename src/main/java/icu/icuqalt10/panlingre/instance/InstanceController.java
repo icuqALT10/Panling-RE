@@ -1,6 +1,7 @@
 package icu.icuqalt10.panlingre.instance;
 
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public interface InstanceController {
     void start(InstanceSession session);
@@ -11,5 +12,8 @@ public interface InstanceController {
     }
 
     default void stop(InstanceSession session, InstanceResult result) {
+    }
+
+    default void onPlayerLeave(InstanceSession session, ServerPlayer player) {
     }
 }

@@ -6,6 +6,7 @@ clear @s
 #仓库 开启
 plre byd on
 
+give @s ftbquests:book
 give @s panlingre:tong_qian 15
 give @s bread 32
 give @s panlingre:he_ding_dan

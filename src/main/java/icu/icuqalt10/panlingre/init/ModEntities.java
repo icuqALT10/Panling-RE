@@ -6,6 +6,7 @@ import icu.icuqalt10.panlingre.entity.boss.PanGuEntity;
 import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonEntity;
 import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonFireballEntity;
 import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonRockEntity;
+import icu.icuqalt10.panlingre.entity.boss.ShiHuang.ShiHuangEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -70,6 +71,10 @@ public class ModEntities {
                     .updateInterval(1)
                     .build("pan_gu"));
     //始皇 墓龙
+    public static final DeferredHolder<EntityType<?>, EntityType<ShiHuangEntity>> SHI_HUANG =
+            ENTITIES.register("shihuang", () -> EntityType.Builder.of(ShiHuangEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 2.8F).clientTrackingRange(16).updateInterval(1).fireImmune().build("shihuang"));
+
     public static final DeferredHolder<EntityType<?>, EntityType<GraveDragonEntity>> GRAVE_DRAGON =
             ENTITIES.register("grave_dragon", () -> EntityType.Builder.of(GraveDragonEntity::new, MobCategory.MISC)
                     .sized(0.01F, 0.01F)

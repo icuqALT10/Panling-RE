@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.item.fuzhi;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import icu.icuqalt10.panlingre.PanlingRE;
+import icu.icuqalt10.panlingre.attachment.ItemUnlockData;
 import icu.icuqalt10.panlingre.component.FuZhiBagContents;
 import icu.icuqalt10.panlingre.init.ModAttributes;
 import icu.icuqalt10.panlingre.init.ModComponents;
@@ -108,7 +109,7 @@ public class FuZhiBagItem extends Item implements ICurioItem, skill_trigger {
     @Override
     public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
         SkillRef ref = getSkillRef(stack, skillIndex);
-        if (ref == null) return false;
+        if (ref == null || !ItemUnlockData.canUse(player, ref.skillStack)) return false;
 
         boolean succeeded = ref.trigger.skill_use(level, player, ref.skillStack, ref.nestedIndex);
         if (succeeded && !level.isClientSide) {
@@ -122,6 +123,7 @@ public class FuZhiBagItem extends Item implements ICurioItem, skill_trigger {
     public boolean canUse(Level level, Player player, ItemStack stack, int skillIndex) {
         SkillRef ref = getSkillRef(stack, skillIndex);
         return ref != null && ref.entry.count() > 0
+                && ItemUnlockData.canUse(player, ref.skillStack)
                 && ref.trigger.canUse(level, player, ref.skillStack, ref.nestedIndex);
     }
 

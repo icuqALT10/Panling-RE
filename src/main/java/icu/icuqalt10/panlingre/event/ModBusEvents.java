@@ -60,6 +60,15 @@ public class ModBusEvents {
                     0.05,
                     AttributeModifier.Operation.ADD_VALUE
             );
+
+            MobEffect mining_fatigue = MobEffects.DIG_SLOWDOWN.value();
+
+            mining_fatigue.addAttributeModifier(
+                    ModAttributes.COOLDOWN_REMOVE,
+                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "mining_fatigue_cooldown_add"),
+                    -0.15,
+                    AttributeModifier.Operation.ADD_VALUE
+            );
         });
     }
 }

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>墓龙动作修正与狂暴眼光</title>
+<style>body{margin:0;background:#111821;color:#e7edf6;font:16px/1.7 system-ui,sans-serif}main{max-width:1200px;margin:auto;padding:30px}h1{font-size:28px}h2{font-size:20px}p{color:#b7c5d7}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:24px}article{padding:18px;background:#1b2634;border-radius:12px}video{width:100%;background:#10141b}code{color:#f2cf7a}li{margin:6px 0}</style>
+<main><h1>墓龙动作修正与狂暴眼光</h1>
+<p>2026-10-15 · 下面四段墓龙视频是 Blockbench 原生模型预览；眼光视频为游戏内实拍。</p>
+<div class="grid">
+<article><h2>左后爪</h2><video controls loop preload="metadata" src="ground_claw_back_l.mp4"></video><p>先向后抬大腿至接近水平、小腿自然下垂，再伸展小腿并竖起脚掌向后蹬直；1.0～1.15 秒为攻击段，随后收脚落地。后腿近景预览，其他三脚保持支撑。</p></article>
+<article><h2>右后爪</h2><video controls loop preload="metadata" src="ground_claw_back_r.mp4"></video><p>与左后爪相同的竖掌向后蹬踢轨迹；按真实爪尖位置检查全程离地和落脚，避免收脚穿地。</p></article>
+<article><h2>大招盘身</h2><video controls loop preload="metadata" src="ally_ultimate_coil.mp4"></video><p><code>ally_ultimate_coil</code> 是始皇大招的支撑盘身动作，仍在使用。编辑模型与游戏资源的坐标转换已统一。</p></article>
+<article><h2>空中俯冲</h2><video controls loop preload="metadata" src="air_dive_slam.mp4"></video><p>降低竖直折返高度、扩大横向弯曲。这里展示骨骼动作；实战的整体降落和回升另由实体移动完成。</p></article>
+<article><h2>狂暴阶段眼光 · 实机</h2><video controls loop preload="metadata" src="rage_eyes.mp4"></video><p>最后 25% 血量进入狂暴后，金色火焰贴着眼线，从内眼角流向外眼角，外端上扬、分叉并飘散；在上一版基础上长度增加 50%、厚度增加 40%，飘散范围同步扩大。60 fps 实机录像，已裁去开头初始化片段。</p></article>
+</div>
+<h2>验证结果</h2><ul>
+<li>真实副本结构中的俯冲净空、落到攻击高度、恢复飞行高度，以及低净空拒绝释放均已检查。</li>
+<li>19 项 GameTest 回归通过，包括后踢命中段方向及掌底竖直朝后专项、逃棺、屏障、御龙连携和始皇战斗流程；正式构建通过。</li>
+<li>地面动作按 0.025 秒间隔检查脚掌最低点，没有穿地；抬爪、抬身和起跳阶段保留离地。</li>
+<li>可编辑模型保留 65 个动作，关键帧总数由 83,066 降为 71,985。求解过程中的密集采样不直接交付为逐帧键。</li>
+<li>几何、骨骼层级和贴图保持原样。本次追加调整只修改左右后爪两个动作，其余 63 个动作保持原样。</li>
+</ul>
+<h2>移除的旧联动动作</h2><p>以下 9 个动作已核对没有实际调用，仅剩部分循环标记的也一并清理：</p>
+<p><code>ally_recall_enter</code>、<code>ally_coil</code>、<code>ally_mount_offer</code>、<code>ally_carry</code>、<code>ally_center_dash_enter</code>、<code>ally_center_dash_loop</code>、<code>ally_center_dash_exit</code>、<code>ally_slash_support</code>、<code>ally_dismount_offer</code>。</p>
+<p>保留的 ally 动作负责出场与离场、场地盘旋、接近始皇、御龙落雷／冲撞／吐息、大招盘身与承接，以及技能结束后的回升和归位。</p>
+</main></html>

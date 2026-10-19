@@ -12,12 +12,37 @@ public final class ModSounds {
     private static final DeferredRegister<SoundEvent> SOUND_EVENTS =
             DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, PanlingRE.MODID);
 
+    public static final java.util.Map<String, DeferredHolder<SoundEvent, SoundEvent>> GRAVE_DRAGON_BREATHS = java.util.Map.of(
+            "ground_fan_breath", registerBreath("ground_fan_breath"),
+            "air_open_fire_ring", registerBreath("air_open_fire_ring"),
+            "phase50_firefield", registerBreath("phase50_firefield"),
+            "ground_turn_sweep", registerBreath("ground_turn_sweep"),
+            "ground_turn_breath", registerBreath("ground_turn_breath"),
+            "ground_sweep_breath", registerBreath("ground_sweep_breath"));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> GRAVE_DRAGON_DEATH_CRY = SOUND_EVENTS.register(
+            "boss.grave_dragon.death_cry", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "boss.grave_dragon.death_cry")));
+
+    private static DeferredHolder<SoundEvent, SoundEvent> registerBreath(String action) {
+        String name = "boss.grave_dragon.breath." + action;
+        return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(
+                ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, name)));
+    }
+
     public static final DeferredHolder<SoundEvent, SoundEvent> PAN_GU_BGM = SOUND_EVENTS.register(
             "boss.pan_gu",
             () -> SoundEvent.createVariableRangeEvent(
                     ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "boss.pan_gu")
             )
     );
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SHI_HUANG_BGM = SOUND_EVENTS.register(
+            "boss.shihuang", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "boss.shihuang")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> SHI_HUANG_BGM_LOOP = SOUND_EVENTS.register(
+            "boss.shihuang.loop", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "boss.shihuang.loop")));
 
     public static final DeferredHolder<SoundEvent, SoundEvent> SISHOU_BGM = SOUND_EVENTS.register(
             "instance.sishou",

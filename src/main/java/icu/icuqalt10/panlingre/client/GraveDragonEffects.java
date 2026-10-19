@@ -8,8 +8,7 @@ import icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon.GraveDragonMythi
 import icu.icuqalt10.panlingre.network.GraveDragonActionPayload;
 import icu.icuqalt10.panlingre.network.GraveDragonFireFieldPayload;
 import icu.icuqalt10.panlingre.client.sound.GraveDragonBreathSound;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
+import icu.icuqalt10.panlingre.client.sound.GraveDragonDeathCrySound;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
@@ -19,6 +18,8 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
@@ -29,11 +30,15 @@ import org.joml.Vector3f;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 /** Decorative effects driven by the same activation tick as the dragon's animation. */
 public final class GraveDragonEffects {
-    private static final DustParticleOptions WARNING = new DustParticleOptions(new Vector3f(1.0F, 0.85F, 0.15F), 2.0F);
-    private static final DustParticleOptions HOT_WARNING = new DustParticleOptions(new Vector3f(1.0F, 0.18F, 0.12F), 2.0F);
+    private static final int WARNING=0xFFDA36;
+    private static final int HOT_WARNING=0xFF593A;
+    private static final int[] SEAL_COLORS={0xFFE19A,0x60F595,0x66CFFF,0xFF6045,0xC997FF};
+    private static final int[] SEAL_BODY={11,21,10,9,8,7,6,5,4,3,2,1,0,13,14,15,16,17,18,19,20};
     private static final Map<Integer, State> ACTIVE = new HashMap<>();
     private static final Map<Integer, Long> LAST_SEQUENCE = new HashMap<>();
     private static final Map<Integer, GraveDragonFireFieldPayload> FIRE_FIELDS = new HashMap<>();
@@ -43,6 +48,10 @@ public final class GraveDragonEffects {
     private static long poseAge;
     private static GraveDragonPose.Frame poseFrame;
     private static Matrix4f poseToEntity;
+    private record Warning(Vec3 center,double radius,int color) {}
+    private record WarningPath(Vec3 from,Vec3 to) {}
+    private static final java.util.List<Warning> warnings=new ArrayList<>();
+    private static final java.util.List<WarningPath> warningPaths=new ArrayList<>();
 
     private GraveDragonEffects() {}
 
@@ -54,6 +63,8 @@ public final class GraveDragonEffects {
         boolean foundAction;
         Vec3 previousTailTip;
         Vec3 previousTailRoot;
+        long observedLanding = Long.MIN_VALUE;
+        boolean cryPlayed;
 
         State(GraveDragonActionPayload activation, long receivedAt) {
             this.activation = activation;
@@ -89,6 +100,7 @@ public final class GraveDragonEffects {
 
     /** Called after the client world advances. No per-frame network traffic is needed. */
     public static void tick() {
+        warnings.clear();warningPaths.clear();
         ClientLevel level = Minecraft.getInstance().level;
         GraveDragonBreathSound.update(level);
         if (level == null) {
@@ -100,6 +112,11 @@ public final class GraveDragonEffects {
             return;
         }
         resetFor(level);
+        for(var entity:level.entitiesForRendering())if(entity instanceof GraveDragonEntity dragon
+                &&dragon.animation().equals("ally_combo_breath")){
+            double seconds=dragon.animationSeconds(0);
+            if(seconds>=.5&&seconds<1.25)breathFire(level,dragon,(long)Math.round(seconds*20),level.random);
+        }
         FIRE_FIELDS.entrySet().removeIf(entry -> !(level.getEntity(entry.getKey()) instanceof GraveDragonEntity dragon)
                 || !dragon.animation().equals("phase50_firefield") || dragon.animationStart() != entry.getValue().startTick());
         long now = level.getGameTime();
@@ -110,7 +127,8 @@ public final class GraveDragonEffects {
             long age = now - activation.startTick();
             boolean idle = activation.action().equals("idle_air") || activation.action().equals("idle_ground");
             if (idle ? now - state.receivedAt > 40
-                    : age > Math.ceil(GraveDragonPose.duration(activation.action()) * 20)) {
+                    : age > Math.ceil(GraveDragonPose.duration(activation.action()) * 20)
+                            + (activation.action().equals("escape_wall_impact") ? 40 : 0)) {
                 entries.remove();
                 continue;
             }
@@ -144,12 +162,107 @@ public final class GraveDragonEffects {
         ACTIVE.clear();
         LAST_SEQUENCE.clear();
         FIRE_FIELDS.clear();
+        warnings.clear();warningPaths.clear();
+    }
+
+    public static void renderLights(com.mojang.blaze3d.vertex.VertexConsumer vertices,
+                                    com.mojang.blaze3d.vertex.PoseStack pose,float partial) {
+        var level=Minecraft.getInstance().level;
+        if(level==null)return;
+        resetFor(level);
+        for(var warning:warnings)
+            TombLightEffects.warningRing(vertices,pose,warning.center,warning.radius,warning.color,1);
+        for(var path:warningPaths)
+            TombLightEffects.warningPath(vertices,pose,path.from,path.to,WARNING);
+        for(var state:ACTIVE.values()) {
+            String action=state.activation.action();
+            if(!action.equals("roar")&&!action.equals("roar_air")&&!action.equals("escape_wall_impact"))continue;
+            if(!(level.getEntity(state.activation.entityId()) instanceof GraveDragonEntity dragon)
+                    ||!dragon.animation().equals(action)||dragon.animationStart()!=state.activation.startTick())continue;
+            double age=(level.getGameTime()-state.activation.startTick())+(double)partial;
+            if(action.equals("escape_wall_impact")){sealExecution(vertices,pose,dragon,state.activation,age);continue;}
+            if(age>=18&&age<59) {
+                Vec3 center=dragon.getWorldParts()[11].getOrientedBox().center;
+                TombLightEffects.warningRing(vertices,pose,center,8+(age-18)*1.8,WARNING,
+                        (float)Math.min(1,(59-age)/4));
+            }
+        }
+    }
+
+    private static void sealExecution(com.mojang.blaze3d.vertex.VertexConsumer vertices,
+                                      com.mojang.blaze3d.vertex.PoseStack pose,GraveDragonEntity dragon,
+                                      GraveDragonActionPayload activation,double age) {
+        if(age<0||age>=56)return;
+        float fade=(float)Math.min(1,(56-age)/16);
+        var parts=dragon.getWorldParts();
+        var boxes=new icu.icuqalt10.panlingre.entity.OrientedBoundingBox[SEAL_BODY.length];
+        for(int i=0;i<boxes.length;i++)boxes[i]=parts[SEAL_BODY[i]].getOrientedBox();
+        for(int color=0;color<5;color++){
+            double phase=color*Math.PI*2/5-age*.18;
+            Vec3 previous=null;
+            for(int step=0;step<=(boxes.length-1)*4;step++){
+                double along=step/4.0;
+                if(along>age*3+1)break;
+                int index=Math.min((int)along,boxes.length-2);double blend=along-index;
+                var a=boxes[index];var b=boxes[index+1];double angle=phase+along*.85;
+                Vec3 radialA=a.axisX.scale(Math.cos(angle)*(a.halfExtents.x+.7)).add(a.axisY.scale(Math.sin(angle)*(a.halfExtents.y+.7)));
+                Vec3 radialB=b.axisX.scale(Math.cos(angle)*(b.halfExtents.x+.7)).add(b.axisY.scale(Math.sin(angle)*(b.halfExtents.y+.7)));
+                Vec3 point=a.center.lerp(b.center,blend).add(radialA.lerp(radialB,blend));
+                if(previous!=null)TombLightEffects.beam(vertices,pose,previous,point,SEAL_COLORS[color],SEAL_COLORS[color],.06F,fade*.8F);
+                if(step==0&&!activation.points().isEmpty()&&age<40){
+                    double sourceAngle=color*Math.PI*2/5;
+                    Vec3 source=activation.points().getFirst().add(Math.cos(sourceAngle)*15,Math.sin(sourceAngle)*11,0);
+                    TombLightEffects.beam(vertices,pose,source,point,0xFFF8E9,SEAL_COLORS[color],.16F,(float)Math.min(1,(40-age)/6));
+                }
+                if(step%8==0&&previous!=null){
+                    Vec3 surface=a.center.lerp(b.center,blend),radial=radialA.lerp(radialB,blend);
+                    Vec3 start=surface.add(radial.scale(1.2)).add(a.axisZ.scale(-2));
+                    Vec3 end=surface.add(radial.scale(1.6)).add(a.axisZ.scale(3));
+                    var bolt=new icu.icuqalt10.panlingre.network.TombLightPayload(5,start,end,SEAL_COLORS[color],.13F*fade,4);
+                    TombLightEffects.lightning(vertices,pose,bolt,age%4,activation.seed()+color*97L+step+(long)(age/4)*341873128712L);
+                }
+                previous=point;
+            }
+        }
     }
 
     private static void renderTick(ClientLevel level, GraveDragonEntity dragon, State state, long previous, long age) {
         String action = state.activation.action();
         RandomSource random = RandomSource.create(state.activation.seed() ^ (age * 0x9E3779B97F4A7C15L));
         switch (action) {
+            case "escape_enter_coffin" -> {
+                if (age < 40) coffinEntryGlow(level, dragon, random);
+            }
+            case "escape_wall_impact" -> {
+                if(age<52&&age%2==0)for(int i=0;i<SEAL_BODY.length;i+=2){
+                    var box=dragon.getWorldParts()[SEAL_BODY[i]].getOrientedBox();
+                    double angle=age*.5+i;
+                    Vec3 point=box.center.add(box.axisX.scale(Math.cos(angle)*(box.halfExtents.x+.4)))
+                            .add(box.axisY.scale(Math.sin(angle)*(box.halfExtents.y+.4)));
+                    emit(level,ParticleTypes.ELECTRIC_SPARK,point,jitter(random,.18));
+                }
+                if (!state.cryPlayed && age>=5) {
+                    state.cryPlayed = true;
+                    // Late tracking must not replay the cry over the smoke phase.
+                    if (!dragon.arenaAudio() && age <= 9 && dragon.sceneLandingTick() == Long.MIN_VALUE)
+                        Minecraft.getInstance().getSoundManager().play(new GraveDragonDeathCrySound(dragon));
+                }
+                long landed=dragon.sceneLandingTick();
+                if(landed!=Long.MIN_VALUE) {
+                    long landingAge=landed-state.activation.startTick();
+                    boolean impact=state.observedLanding!=landed && age>=landingAge && age-landingAge<=10;
+                    state.observedLanding=landed;
+                    if(impact) {
+                        double floor=dragon.getY()+dragon.sceneLowestOffset();
+                        for(int index : new int[]{0,2,4,6,8,11,13,15,17,19}) {
+                            Vec3 p=dragon.getWorldParts()[index].getOrientedBox().center;
+                            p=new Vec3(p.x,floor+.15,p.z);
+                            impact(level,p,3.5,random);
+                        }
+                    }
+                }
+            }
+
             case "ground_double_bite" -> {
                 if (inWindow(action, 0, age) || inWindow(action, 1, age))
                     trail(level, dragon, action, age, "head", ParticleTypes.CLOUD, random);
@@ -209,10 +322,14 @@ public final class GraveDragonEffects {
                 if (at(previous, age, eventTick(action, 0))) impact(level, point(state, 0, dragon.position()), 5, random);
             }
             case "air_dive_slam" -> {
-                Vec3 landing = groundPoint(level, dragon);
-                if (between(age, 50, 77))
-                    ring(level, landing, 20, age, age < 70 ? WARNING : HOT_WARNING, 48);
-                if (at(previous, age, eventTick(action, 2))) impact(level, landing, 20, random);
+                Vec3 landing = state.activation.points().size() == 3 ? point(state, 0) : groundPoint(level, dragon);
+                if (between(age, 50, 65))
+                    ring(level, landing, 20, age, age < 61 ? WARNING : HOT_WARNING, 48);
+                if (at(previous, age, eventTick(action, 2))) {
+                    impact(level, landing, 20, random);
+                    diveImpactCloud(level, landing, random);
+                    GroundSmashRenderer.triggerFracture(landing, 10, 36);
+                }
             }
             case "air_coil_lightning" -> lightning(level, dragon, state, previous, age, random);
             case "ground_turn_sweep" -> {
@@ -249,13 +366,54 @@ public final class GraveDragonEffects {
                                 center.add(jitter(random, 2.5)), jitter(random, .18));
                     }
             }
-            case "roar", "roar_air" -> {
-                if (between(age, 18, 58)) {
-                    Vec3 center = dragon.getWorldParts()[11].getOrientedBox().center;
-                    ring(level, center, 8 + (age - 18) * 1.8, age, WARNING, 72, 1.2);
-                }
-            }
+            case "roar", "roar_air" -> { /* The moving ring is sampled each render frame. */ }
             default -> { /* Movement, recovery and roars have no persistent particle emitter. */ }
+        }
+    }
+
+    private static void coffinEntryGlow(ClientLevel level, GraveDragonEntity dragon, RandomSource random) {
+        // The half-entry pose defines the bulb face, shared with coffinEntryOrigin().
+        Vec3 plane = dragon.position().add(dragon.sceneHeadOffset("escape_enter_coffin", .2, dragon.yBodyRot));
+        Vec3 normal = GraveDragonMythic.forward(dragon.yBodyRot);
+        Vec3 side = new Vec3(0, 1, 0).cross(normal);
+        dragon.updateClientPartPose(0);
+        int remaining = 24;
+        for (var part : dragon.getWorldParts()) {
+            Vec3[] corners = part.getOrientedBox().corners();
+            var rim = new ArrayList<Vec3>(6);
+            // Intersect the twelve OBB edges with the lip plane, not its world AABB.
+            for (int i = 0; i < 8; i++) for (int bit : new int[]{1, 2, 4}) {
+                int j = i ^ bit;
+                if (j <= i) continue;
+                double a = corners[i].subtract(plane).dot(normal);
+                double b = corners[j].subtract(plane).dot(normal);
+                if ((a >= 0) == (b >= 0)) continue;
+                Vec3 p = corners[i].lerp(corners[j], a / (a - b));
+                if (rim.stream().noneMatch(v -> v.distanceToSqr(p) < 1e-8)) rim.add(p);
+            }
+            if (rim.size() < 3) continue;
+            Vec3 center = Vec3.ZERO;
+            for (Vec3 p : rim) center = center.add(p);
+            Vec3 middle = center.scale(1.0 / rim.size());
+            rim.sort(Comparator.comparingDouble(p -> Math.atan2(p.y - middle.y, p.subtract(middle).dot(side))));
+            double perimeter = 0;
+            for (int i = 0; i < rim.size(); i++) perimeter += rim.get(i).distanceTo(rim.get((i + 1) % rim.size()));
+            if (perimeter < .25) continue; // A swallowed, nearly invisible segment should not keep glowing.
+            int count = Math.min(remaining, Math.min(10, (int)Math.ceil(perimeter * 2)));
+            for (int i = 0; i < count; i++) {
+                double along = (i + random.nextDouble()) * perimeter / count;
+                int edge = 0;
+                while (edge < rim.size() - 1 && along > rim.get(edge).distanceTo(rim.get(edge + 1))) {
+                    along -= rim.get(edge).distanceTo(rim.get(edge + 1));
+                    edge++;
+                }
+                Vec3 from = rim.get(edge), to = rim.get((edge + 1) % rim.size());
+                Vec3 p = from.lerp(to, along / from.distanceTo(to));
+                Vec3 outward = p.subtract(middle).normalize();
+                TombLightEffects.beam(p,p.add(outward.scale(.35)),0xFFF2CD,.035F,2);
+            }
+            remaining -= count;
+            if (remaining == 0) break;
         }
     }
 
@@ -322,21 +480,11 @@ public final class GraveDragonEffects {
         for (int wave = 0; wave < 3; wave++) {
             int charge = wave == 0 ? 20 : wave == 1 ? 84 : 148;
             int strike = wave == 0 ? 40 : wave == 1 ? 104 : 168;
-            if (between(age, charge, strike - 1) && age % 3 == 0)
-                for (int part = 74; part <= 77; part++) {
-                    var horn = dragon.getWorldParts()[part].getOrientedBox();
-                    for (int i = 0; i < 20; i++) emit(level, ParticleTypes.ELECTRIC_SPARK,
-                            horn.center.add(horn.axisY.scale((random.nextDouble() * 2 - 1) * horn.halfExtents.y)), jitter(random, .16));
-                }
+            if (between(age, charge, strike - 1) && age % 3 == 0) chargeLightning(dragon, random);
             for (Vec3 point : state.activation.points()) {
                 if (between(age, charge, strike - 1)) ring(level, point, 5, age, age < strike - 4 ? WARNING : HOT_WARNING, 24);
                 if (at(previous, age, strike)) {
-                    for (int h = 0; h < 120; h++) {
-                        Vec3 position = point.add((random.nextDouble() - .5) * .6, h * .25, (random.nextDouble() - .5) * .6);
-                        emit(level, ParticleTypes.ELECTRIC_SPARK, position, jitter(random, .16).add(0, .1, 0));
-                        if (h % 5 == 0) emit(level, ParticleTypes.END_ROD, position, jitter(random, .06));
-                    }
-                    impact(level, point, 5, random);
+                    strikeLightning(point);
                 }
             }
         }
@@ -345,18 +493,7 @@ public final class GraveDragonEffects {
     private static void lightning(ClientLevel level, GraveDragonEntity dragon, State state,
                                   long previous, long age, RandomSource random) {
         String action = state.activation.action();
-        if (between(age, 20, eventTick(action, 2) - 1) && age % 3 == 0) {
-            for (int index = 74; index <= 77; index++) {
-                var horn = dragon.getWorldParts()[index].getOrientedBox();
-                for (int i = 0; i < 20; i++) {
-                    Vec3 point = horn.center
-                            .add(horn.axisX.scale((random.nextDouble() * 2 - 1) * horn.halfExtents.x))
-                            .add(horn.axisY.scale((random.nextDouble() * 2 - 1) * horn.halfExtents.y))
-                            .add(horn.axisZ.scale((random.nextDouble() * 2 - 1) * horn.halfExtents.z));
-                    emit(level, ParticleTypes.ELECTRIC_SPARK, point, jitter(random, .16));
-                }
-            }
-        }
+        if (between(age, 20, eventTick(action, 2) - 1) && age % 3 == 0) chargeLightning(dragon, random);
         for (int i = 0; i < state.activation.points().size(); i++) {
             Vec3 strike = state.activation.points().get(i);
             int strikeAt = eventTick(action, 2);
@@ -364,14 +501,23 @@ public final class GraveDragonEffects {
                 ring(level, strike, 5, age + i * 7L,
                         age < eventTick(action, 1) ? WARNING : HOT_WARNING, 24);
             if (at(previous, age, strikeAt)) {
-                for (int h = 0; h < 120; h++) {
-                    Vec3 p = strike.add((random.nextDouble() - 0.5) * 0.6, h * 0.25, (random.nextDouble() - 0.5) * 0.6);
-                    emit(level, ParticleTypes.ELECTRIC_SPARK, p, jitter(random, .16).add(0, .1, 0));
-                    if (h % 5 == 0) emit(level, ParticleTypes.END_ROD, p, jitter(random, .06).add(0, .05, 0));
-                }
-                impact(level, strike, 5, random);
+                strikeLightning(strike);
             }
         }
+    }
+
+    private static void chargeLightning(GraveDragonEntity dragon, RandomSource random) {
+        for (int part = 74; part <= 77; part++) {
+            var horn = dragon.getWorldParts()[part].getOrientedBox();
+            Vec3 from = horn.center.add(horn.axisY.scale(-horn.halfExtents.y));
+            Vec3 to = horn.center.add(horn.axisY.scale(horn.halfExtents.y)).add(jitter(random, .6));
+            TombLightEffects.lightning(from, to, .055F, 3);
+        }
+    }
+
+    private static void strikeLightning(Vec3 point) {
+        TombLightEffects.lightning(point.add(0, 30, 0), point, .16F, 10);
+        TombLightEffects.burst(point.add(0, .12, 0), 0xBCA2FF, 5, 8);
     }
 
     private static void clawWind(ClientLevel level, GraveDragonEntity dragon, String action, long age,
@@ -420,7 +566,9 @@ public final class GraveDragonEffects {
     }
 
     private static void breathFire(ClientLevel level, GraveDragonEntity dragon, long age, RandomSource random) {
-        GraveDragonBreath.Flow flow = GraveDragonBreath.flow(dragon, dragon.animation(), age / 20.0);
+        GraveDragonBreath.Flow flow = dragon.animation().equals("ally_combo_breath")
+                ? GraveDragonBreath.flowAtPose(dragon,"ground_turn_sweep",age/20.0)
+                : GraveDragonBreath.flow(dragon, dragon.animation(), age / 20.0);
         GraveDragonBreath.Geometry geometry = flow.geometry();
         double front = geometry.range();
         mouthFire(level, dragon, age, random);
@@ -452,24 +600,6 @@ public final class GraveDragonEffects {
                 fieldFire(level, dragon, cached, age, random);
         } else if (flow.ground() != null)
             groundFire(level, dragon, flow.ground(), flow.spreadRadius(), age, random);
-    }
-
-    private static void fieldFire(ClientLevel level, GraveDragonEntity dragon,
-                                  GraveDragonFireFieldPayload payload, long age, RandomSource random) {
-        Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-        var cells = payload.field().cells();
-        ParticleOptions flame = dragon.headBroken() ? ParticleTypes.FLAME : ParticleTypes.SOUL_FIRE_FLAME;
-        for (int i = (int)(age % 3); i < cells.size(); i += 3) {
-            Vec3 floor = cells.get(i);
-            if (floor.distanceToSqr(camera) > 80 * 80) continue;
-            if (floor.distanceToSqr(camera) > 40 * 40 && random.nextInt(4) != 0) continue;
-            Particle particle = emit(level, flame,
-                    floor.add((random.nextDouble() - .5) * .8, .1 + random.nextDouble() * .7,
-                            (random.nextDouble() - .5) * .8),
-                    new Vec3((random.nextDouble() - .5) * .05, .08 + random.nextDouble() * .04,
-                            (random.nextDouble() - .5) * .05));
-            if (particle != null) particle.setLifetime(6);
-        }
     }
 
     private static void mouthFire(ClientLevel level, GraveDragonEntity dragon, long age, RandomSource random) {
@@ -529,28 +659,24 @@ public final class GraveDragonEffects {
     }
 
     private static void pathWarning(ClientLevel level, Vec3 origin, Vec3 destination, long age) {
-        if (destination == null) return;
-        if (age % 3 == 0) {
-            double phase = ((age / 3) % 12) / 12.0;
-            Vec3 point = origin.lerp(destination, phase).add(0, 0.12, 0);
-            emit(level, WARNING, point, destination.subtract(origin).normalize().scale(.3).add(0, .02, 0));
-            ring(level, destination, 5, age, WARNING, 32);
-        }
+        if(destination==null)return;
+        warningPaths.add(new WarningPath(origin.add(0,.12,0),destination.add(0,.12,0)));
+        warnings.add(new Warning(destination.add(0,.12,0),5,WARNING));
     }
 
     private static void ring(ClientLevel level, Vec3 center, double radius, long age,
-                             ParticleOptions type, int count) {
-        ring(level, center, radius, age, type, count, 0);
+                             int type, int count) {
+        warnings.add(new Warning(center.add(0,.12,0),radius,type));
     }
 
-    private static void ring(ClientLevel level, Vec3 center, double radius, long age,
-                             ParticleOptions type, int count, double outwardSpeed) {
-        if (age % 3 != 0) return;
-        for (int i = 0; i < count; i++) {
-            double angle = age * .2 + i * (Math.PI * 2 / count);
-            emit(level, type, center.add(Math.cos(angle) * radius, 0.12, Math.sin(angle) * radius),
-                    new Vec3(Math.cos(angle) * outwardSpeed - Math.sin(angle) * .08, .015,
-                            Math.sin(angle) * outwardSpeed + Math.cos(angle) * .08));
+    private static void diveImpactCloud(ClientLevel level, Vec3 center, RandomSource random) {
+        for (int i = 0; i < 768; i++) {
+            double angle = random.nextDouble() * Math.PI * 2;
+            Vec3 outward = new Vec3(Math.cos(angle), 0, Math.sin(angle));
+            Vec3 position = center.add(outward.scale(Math.sqrt(random.nextDouble()) * 7)).add(0, .2 + random.nextDouble() * .7, 0);
+            Particle cloud = emit(level, ParticleTypes.CLOUD, position,
+                    outward.scale(.2 + random.nextDouble() * .45).add(0, .12 + random.nextDouble() * .3, 0));
+            if (cloud != null) { cloud.scale(6 + random.nextFloat() * 4); cloud.setLifetime(24 + random.nextInt(16)); }
         }
     }
 
@@ -603,12 +729,6 @@ public final class GraveDragonEffects {
         return dragon.position().add(p.x, p.y, p.z);
     }
 
-    private static Vec3 jitter(RandomSource random, double scale) {
-        return new Vec3((random.nextDouble() - 0.5) * 2 * scale,
-                (random.nextDouble() - 0.5) * 2 * scale,
-                (random.nextDouble() - 0.5) * 2 * scale);
-    }
-
     private static boolean between(long age, int first, int last) {
         return age >= first && age <= last;
     }
@@ -629,6 +749,34 @@ public final class GraveDragonEffects {
         return previous < tick && age >= tick && age - tick <= 1;
     }
 
+
+
+
+
+
+
+    private static void fieldFire(ClientLevel level, GraveDragonEntity dragon,
+                                  GraveDragonFireFieldPayload payload, long age, RandomSource random) {
+        Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        var cells = payload.field().cells();
+        ParticleOptions flame = dragon.headBroken() ? ParticleTypes.FLAME : ParticleTypes.SOUL_FIRE_FLAME;
+        for (int i = (int)(age % 3); i < cells.size(); i += 3) {
+            Vec3 floor = cells.get(i);
+            if (floor.distanceToSqr(camera) > 80 * 80) continue;
+            if (floor.distanceToSqr(camera) > 40 * 40 && random.nextInt(4) != 0) continue;
+            Particle particle = emit(level, flame,
+                    floor.add((random.nextDouble() - .5) * .8, .1 + random.nextDouble() * .7,
+                            (random.nextDouble() - .5) * .8),
+                    new Vec3((random.nextDouble() - .5) * .05, .08 + random.nextDouble() * .04,
+                            (random.nextDouble() - .5) * .05));
+            if (particle != null) particle.setLifetime(6);
+        }
+    }
+    private static Vec3 jitter(RandomSource random, double scale) {
+        return new Vec3((random.nextDouble() - 0.5) * 2 * scale,
+                (random.nextDouble() - 0.5) * 2 * scale,
+                (random.nextDouble() - 0.5) * 2 * scale);
+    }
     private static Particle emit(ClientLevel level, ParticleOptions type, Vec3 position, Vec3 velocity) {
         if (type == ParticleTypes.CLOUD && level.getRandom().nextInt(4) == 0) return null;
         Particle particle = Minecraft.getInstance().particleEngine.createParticle(type,
@@ -638,7 +786,6 @@ public final class GraveDragonEffects {
         if (particle != null) particle.setParticleSpeed(velocity.x, velocity.y, velocity.z);
         return particle;
     }
-
     private static boolean clearLine(ClientLevel level, GraveDragonEntity dragon, Vec3 from, Vec3 to) {
         return level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER,
                 ClipContext.Fluid.NONE, dragon)).getType() == HitResult.Type.MISS;

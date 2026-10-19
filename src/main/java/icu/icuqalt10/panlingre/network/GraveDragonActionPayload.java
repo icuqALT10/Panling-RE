@@ -14,7 +14,8 @@ import java.util.List;
 /** One activation starts both the animation and its local visual timeline. */
 public record GraveDragonActionPayload(int entityId, String action, long sequence, long startTick,
                                        long seed, List<Vec3> points,
-                                       String blendFrom, double blendFromSeconds) implements CustomPacketPayload {
+                                       String blendFrom, double blendFromSeconds,
+                                       int emperorId, double emperorStart, long landedTick) implements CustomPacketPayload {
     private static final int MAX_POINTS = 33;
     public static final Type<GraveDragonActionPayload> TYPE =
             new Type<>(ResourceLocation.fromNamespaceAndPath(PanlingRE.MODID, "grave_dragon_action"));
@@ -36,6 +37,9 @@ public record GraveDragonActionPayload(int entityId, String action, long sequenc
                 }
                 buffer.writeUtf(payload.blendFrom, 80);
                 buffer.writeDouble(payload.blendFromSeconds);
+                buffer.writeVarInt(payload.emperorId);
+                buffer.writeDouble(payload.emperorStart);
+                buffer.writeLong(payload.landedTick);
             }, buffer -> {
                 int id = buffer.readVarInt();
                 String action = buffer.readUtf(80);
@@ -47,7 +51,8 @@ public record GraveDragonActionPayload(int entityId, String action, long sequenc
                 List<Vec3> points = new ArrayList<>(count);
                 for (int i = 0; i < count; i++) points.add(new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
                 return new GraveDragonActionPayload(id, action, sequence, start, seed,
-                        List.copyOf(points), buffer.readUtf(80), buffer.readDouble());
+                        List.copyOf(points), buffer.readUtf(80), buffer.readDouble(),
+                        buffer.readVarInt(), buffer.readDouble(), buffer.readLong());
             });
 
     public static void handle(GraveDragonActionPayload payload, IPayloadContext context) {

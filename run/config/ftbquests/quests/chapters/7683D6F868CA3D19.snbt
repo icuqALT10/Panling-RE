@@ -664,5 +664,43 @@
 			x: 6.0d
 			y: 14.0d
 		}
+		{
+			dependencies: [
+				"2335B90EFC2A6A8B"
+				"2171AAF5B0B3F987"
+			]
+			dependency_requirement: "one_completed"
+			id: "0D1A7A0A0D586D30"
+			optional: true
+			rewards: [{
+				id: "23D57A7931E34CBC"
+				type: "xp"
+				xp: 4000
+			}]
+			tasks: [
+				{
+					id: "2F98EFFA712DC38B"
+					item: { count: 1, id: "panlingre:wutai_helmet" }
+					type: "item"
+				}
+				{
+					id: "67DFEDE8D22E8C7B"
+					item: { count: 1, id: "panlingre:wutai_chestplate" }
+					type: "item"
+				}
+				{
+					id: "279BADF4AC093E95"
+					item: { count: 1, id: "panlingre:wutai_leggings" }
+					type: "item"
+				}
+				{
+					id: "60153FA48703BE92"
+					item: { count: 1, id: "panlingre:wutai_boots" }
+					type: "item"
+				}
+			]
+			x: 0.0d
+			y: -17.0d
+		}
 	]
 }

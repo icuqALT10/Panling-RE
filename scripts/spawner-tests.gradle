@@ -1,0 +1,17 @@
+allprojects {
+    afterEvaluate {
+        sourceSets.register('spawnerTest') {
+            java.srcDir('src/sourceReviewTest/java')
+            java.include('**/block/spawner/**')
+            resources.srcDir('src/sourceReviewTest/resources')
+            resources.srcDir('run/saves/world/datapacks/盘灵：RE数据包')
+            resources.include('data/panlingre/spawner/**', 'data/panlingre/structure/empty.nbt')
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+            runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+        }
+        neoForge.mods.named(project.mod_id) { sourceSet(sourceSets.spawnerTest) }
+        neoForge.runs.named('gameTestServer') {
+            gameDirectory = project.file('build/spawner-test-run')
+        }
+    }
+}

@@ -2,13 +2,13 @@ package icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon;
 
 import icu.icuqalt10.panlingre.init.ModEntities;
 import icu.icuqalt10.panlingre.network.particle.HuoQiuExplosionParticles;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
@@ -137,8 +137,8 @@ public final class GraveDragonFireballEntity extends ThrowableItemProjectile {
                     new AABB(center, center).inflate(EXPLOSION_RADIUS), target -> target.isAlive()
                             && !target.isCreative() && !target.isSpectator()
                             && target.position().distanceToSqr(center) <= EXPLOSION_RADIUS * EXPLOSION_RADIUS)) {
-                player.igniteForSeconds(5);
-                if (player.hurt(damageSources().explosion(this, owner), entityData.get(DAMAGE))) {
+                GraveDragonDamage.ignite(player, 5);
+                if (player.hurt(damageSources().explosion(this, owner), entityData.get(DAMAGE) * 2)) {
                     Vec3 away = player.position().subtract(center).multiply(1, 0, 1).normalize();
                     player.push(away.x * .6, .25, away.z * .6);
                 }
@@ -146,7 +146,7 @@ public final class GraveDragonFireballEntity extends ThrowableItemProjectile {
             HuoQiuExplosionParticles particles = new HuoQiuExplosionParticles(center, blue(), true);
             for (ServerPlayer player : server.players())
                 if (player.distanceToSqr(center) <= 80 * 80) PacketDistributor.sendToPlayer(player, particles);
-            server.playSound(null, center.x, center.y, center.z,
+            icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(getOwner(), server, center.x, center.y, center.z,
                     SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 5F, .8F);
             discard();
         }

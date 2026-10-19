@@ -22,6 +22,12 @@ public final class InstanceSavedData extends SavedData {
         setDirty();
     }
 
+    public int allocatedSlots(String instanceId) {
+        String prefix = instanceId + "#";
+        return preparedVersions.keySet().stream().filter(key -> key.startsWith(prefix))
+                .mapToInt(key -> Integer.parseInt(key.substring(prefix.length())) + 1).max().orElse(0);
+    }
+
     @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         ListTag entries = new ListTag();

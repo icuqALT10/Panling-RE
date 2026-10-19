@@ -142,6 +142,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(ModEntities.PAN_GU.get(), PanGuRenderer::new);
         //始皇
         event.registerEntityRenderer(ModEntities.GRAVE_DRAGON.get(), GraveDragonRenderer::new);
+        event.registerEntityRenderer(ModEntities.SHI_HUANG.get(), icu.icuqalt10.panlingre.client.renderer.boss.ShiHuang.ShiHuangRenderer::new);
         event.registerEntityRenderer(ModEntities.GRAVE_DRAGON_FIREBALL.get(), GraveDragonFireballRenderer::new);
         event.registerEntityRenderer(ModEntities.GRAVE_DRAGON_ROCK.get(), GraveDragonRockRenderer::new);
         event.registerEntityRenderer(ModEntities.TOMB_DISPLAY.get(), TombDisplayRenderer::new);

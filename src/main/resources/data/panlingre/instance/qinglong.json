@@ -1,15 +1,14 @@
 {
   "controller": "panlingre:qinglong",
-  
   "template": "panlingre:instance/qinglong",
 
-  "center_pos": [0.0, 70.0, 2000.0],
-  "player_spawn_pos": [0.5, 61.00, 2020.5],
+  "center_pos": [256, 70.0, 2304],
+  "player_spawn_pos": [256.5, 61.0, 2324.5],
 
-  "spacing": 128,
-
+  "spacing": 512,
+  "region_depth": 1,
   "prewarm_slots": 20,
-  "arena_version": 1,
+  "arena_version": 2,
 
   "success": "plre:instances/qinglong/success",
   "failure": "plre:instances/qinglong/failure"

@@ -38,3 +38,5 @@ scoreboard objectives add xuanwu_qualification dummy "玄武进入资格"
 scoreboard objectives add task_di_shi_kun dummy "老战士 地势坤支线"
 scoreboard objectives add task_tian_xing_jian dummy "老猎户 天行健支线"
 scoreboard objectives add task_ren_he_yuan dummy "老丹师 人合元支线"
+#副本
+scoreboard objectives add task_instance_shi_huang_ling dummy "始皇 支线剧情"

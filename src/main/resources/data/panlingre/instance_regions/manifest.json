@@ -1,0 +1,22 @@
+{
+  "qinglong": {
+    "structure_sha256": "213cf12688a37239d1a022d95849bfe3d820cb672526283961517ac3140bb57c",
+    "baked_sha256": "0200b8cdda815184961de8dbb9e096d876269cae1bc550ea5d9b752fb86f15ea"
+  },
+  "zhuque": {
+    "structure_sha256": "76731007523f1f944cbb49a4119a7910a7511cdc448194d1320489061c54f4b7",
+    "baked_sha256": "fe96b1903ca9cdf38166fb3b01d5178a193ade0f30e374fa157761dc61bd2240"
+  },
+  "xuanwu": {
+    "structure_sha256": "dcefd0074ba58aef48c5fcd1021b0fc212aa5682d5761913ec63815501cc60a1",
+    "baked_sha256": "7727381323bc5dd3e1956ac3ad1cade517b6eec8dc834364e23edcf95ea13722"
+  },
+  "baihu": {
+    "structure_sha256": "c71f18fa355dae313d1d126d4771c57876709544f5e8ad7e5e01c1333b14772c",
+    "baked_sha256": "02055de499a94024b8ca9797eaed4b7fe3a1a4246e11d923be9a97f5cccded1a"
+  },
+  "shihuang": {
+    "structure_sha256": "3573ad23f74816286b097e2f68273d534a8f3d2d8a7f0ffac3fd5d37a952d574",
+    "baked_sha256": "82ffb0d5843c6a19e08d1a7d73b2effcf49c183e0e377311ef487dac2a62067f"
+  }
+}

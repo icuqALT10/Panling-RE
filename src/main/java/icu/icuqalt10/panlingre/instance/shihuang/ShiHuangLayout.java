@@ -17,7 +17,7 @@ public record ShiHuangLayout(List<Gate> gates, List<Season> seasons,
         @SerializedName("path_plates") int[][] plates,
         @SerializedName("path_routes") int[][][] routes,
         @SerializedName("backup_regions") int[][] backups) {
-    public record Gate(String id, int kind, int[] pos, int[] size) { }
+    public record Gate(String id, int kind, int[] pos, int[] size, int[][] decoration) { }
     public record Season(String name, int[] button, int target, int[][] lamps, int[][] indicator) { }
 
     public static ShiHuangLayout load(ServerLevel level) {

@@ -78,12 +78,11 @@ public class CustomPelletEntity extends ThrowableItemProjectile {
             ItemStack stack = this.getItem();
             String itemName = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
 
-            LivingEntity shooter = this.getOwner() instanceof LivingEntity living ? living : null;
             // Multipart children are regular Entity instances, so the vanilla
             // LivingEntity query misses them. Resolve the child hitbox to its
-            // living root before applying the pellet effect. A null source simply
-            // means "nothing to exclude".
-            MultipartEntity.collectTargets(level(), this.getBoundingBox().inflate(2.0, 2.0, 2.0), shooter)
+            // living root before applying the pellet effect. Include the thrower
+            // for healing and buffs; each effect handles friendly/hostile filtering.
+            MultipartEntity.collectTargets(level(), this.getBoundingBox().inflate(2.0, 2.0, 2.0), null)
                     .forEach(target -> invokeEffectMethod(itemName, target, stack));
 
             this.discard();

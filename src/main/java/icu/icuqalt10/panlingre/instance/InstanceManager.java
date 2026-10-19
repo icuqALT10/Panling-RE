@@ -2,22 +2,19 @@ package icu.icuqalt10.panlingre.instance;
 
 import icu.icuqalt10.panlingre.PanlingRE;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Collection;
+import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +30,8 @@ public final class InstanceManager {
     private static MinecraftServer server;
     private static InstanceSavedData savedData;
     private static int loadedGeneration = -1;
-    private static int buildCooldown;
+    private static InstanceRegionTask activeBuild;
+    private static BuildRequest activeRequest;
 
     private InstanceManager() {
     }
@@ -46,10 +44,13 @@ public final class InstanceManager {
     }
 
     public static void stopServer() {
-        for (InstanceSession session : java.util.List.copyOf(SESSIONS.values())) {
-            failAndKill(session.player());
+        for (InstanceSession session : new HashSet<>(SESSIONS.values())) {
+            for (ServerPlayer player : session.players()) failAndKill(player);
             if (!session.isEnding()) finish(session, InstanceResult.FAILURE);
         }
+        if (activeBuild != null) activeBuild.finishIO();
+        activeBuild = null;
+        activeRequest = null;
         RUNTIMES.clear();
         SESSIONS.clear();
         OWNED_ENTITIES.clear();
@@ -62,103 +63,169 @@ public final class InstanceManager {
         if (server == null) return;
         if (loadedGeneration != InstanceDefinitionLoader.generation() && SESSIONS.isEmpty()) reloadDefinitions();
 
-        if (buildCooldown > 0) buildCooldown--;
-        if (buildCooldown == 0 && !BUILD_QUEUE.isEmpty()) {
-            build(BUILD_QUEUE.remove());
-            buildCooldown = 10;
+        if (activeBuild == null) {
+            int attempts = Math.min(4, BUILD_QUEUE.size());
+            for (int i = 0; i < attempts && activeBuild == null; i++) {
+                BuildRequest request = BUILD_QUEUE.remove();
+                var runtime = RUNTIMES.get(request.id);
+                if (runtime != null && InstanceRegionTask.unloaded(level(runtime.definition), runtime.definition, request.slot))
+                    beginBuild(request);
+                else BUILD_QUEUE.add(request);
+            }
+        }
+        if (activeBuild != null) {
+            try {
+                if (activeBuild.tick()) {
+                    var runtime = RUNTIMES.get(activeRequest.id);
+                    savedData.setPreparedVersion(activeRequest.id.toString(), activeRequest.slot, runtime.definition.arenaVersion());
+                    server.overworld().getDataStorage().save();
+                    runtime.slots.set(activeRequest.slot, SlotState.READY);
+                    PanlingRE.LOGGER.info("Saved baked instance {} slot {}", activeRequest.id, activeRequest.slot);
+                    activeBuild = null; activeRequest = null;
+                } else if (activeBuild.blocked()) {
+                    BUILD_QUEUE.add(activeRequest);
+                    activeBuild = null; activeRequest = null;
+                }
+            } catch (RuntimeException exception) {
+                PanlingRE.LOGGER.error("Cannot prepare instance {} slot {}; it remains unavailable", activeRequest.id, activeRequest.slot, exception);
+                RUNTIMES.get(activeRequest.id).slots.set(activeRequest.slot, SlotState.FAILED);
+                activeBuild = null; activeRequest = null;
+            }
         }
 
-        for (InstanceSession session : java.util.List.copyOf(SESSIONS.values())) {
+        for (InstanceSession session : new HashSet<>(SESSIONS.values())) {
             if (session.isEnding()) continue;
-            ServerPlayer player = session.player();
             ServerLevel level = session.level();
-            if (player == null || level == null) {
+            if (level == null) {
                 finish(session, InstanceResult.FAILURE);
                 continue;
             }
-            double radius = session.definition().spacing() * 0.5;
-            if (player.level() != level || player.position().distanceToSqr(session.center()) > radius * radius) {
-                failAndKill(player);
-                continue;
+            for (UUID id : session.participantIds()) {
+                ServerPlayer player = server.getPlayerList().getPlayer(id);
+                if (player == null) {
+                    SESSIONS.remove(id);
+                    session.removeParticipant(id);
+                } else if (!player.isAlive()) {
+                    failPlayer(player);
+                } else if (player.level() != level || !session.definition().contains(session.slot(), player.position())) {
+                    failAndKill(player);
+                }
             }
-            session.controller().tick(session);
+            if (session.participantIds().isEmpty()) finish(session, InstanceResult.FAILURE);
+            if (!session.isEnding()) session.controller().tick(session);
         }
     }
 
     public static boolean start(ServerPlayer player, ResourceLocation id) {
-        if (SESSIONS.containsKey(player.getUUID())) {
-            player.sendSystemMessage(Component.translatable("command.panlingre.instance.already_running"));
-            return false;
+        return start(List.of(player), id);
+    }
+
+    public static boolean start(Collection<ServerPlayer> targets, ResourceLocation id) {
+        return start(targets, id, null);
+    }
+
+    static boolean start(Collection<ServerPlayer> targets, ResourceLocation id, CommandSourceStack source) {
+        List<ServerPlayer> players = targets.stream().distinct().toList();
+        if (players.isEmpty()) return false;
+        for (ServerPlayer player : players) {
+            if (SESSIONS.containsKey(player.getUUID())) {
+                players.forEach(member -> member.sendSystemMessage(Component.translatable("command.panlingre.instance.already_running")));
+                return false;
+            }
         }
         RuntimeDefinition runtime = RUNTIMES.get(id);
         if (runtime == null) {
-            player.sendSystemMessage(Component.translatable("command.panlingre.instance.unknown", id.toString()));
+            players.forEach(player -> player.sendSystemMessage(Component.translatable("command.panlingre.instance.unknown", id.toString())));
+            return false;
+        }
+        var limit = runtime.definition.playerLimitCount();
+        if (players.size() < limit.min() || players.size() > limit.max()) {
+            boolean tooFew = players.size() < limit.min();
+            Component reason = Component.translatable(tooFew ? "command.panlingre.instance.too_few_players"
+                    : "command.panlingre.instance.too_many_players", tooFew ? limit.min() : limit.max(), players.size());
+            players.forEach(player -> player.sendSystemMessage(reason));
+            if (source != null && !players.contains(source.getEntity())) source.sendFailure(reason);
             return false;
         }
         int slot = runtime.firstReadySlot();
         if (slot < 0) {
-            player.sendSystemMessage(Component.translatable("command.panlingre.instance.not_ready"));
+            replenish(id, runtime);
+            players.forEach(player -> player.sendSystemMessage(Component.translatable("command.panlingre.instance.not_ready")));
             return false;
         }
         Optional<InstanceController> controller = InstanceControllerRegistry.create(runtime.definition.controller());
         if (controller.isEmpty()) {
-            player.sendSystemMessage(Component.translatable("command.panlingre.instance.controller_missing", runtime.definition.controller().toString()));
+            players.forEach(player -> player.sendSystemMessage(Component.translatable("command.panlingre.instance.controller_missing", runtime.definition.controller().toString())));
             return false;
         }
         ServerLevel targetLevel = level(runtime.definition);
         if (targetLevel == null) return false;
+        List<Vec3> spawns = InstanceSpawnPlacement.find(targetLevel, runtime.definition, slot, players);
+        if (spawns.size() != players.size()) {
+            players.forEach(player -> player.sendSystemMessage(Component.translatable("command.panlingre.instance.spawn_full")));
+            return false;
+        }
 
-        runtime.slots[slot] = SlotState.RUNNING;
+        runtime.slots.set(slot, SlotState.RUNNING);
+        replenish(id, runtime);
         savedData.setPreparedVersion(id.toString(), slot, -1);
-        InstanceSession session = new InstanceSession(server, id, runtime.definition, slot, player, controller.get());
-        SESSIONS.put(player.getUUID(), session);
-        player.addTag(ACTIVE_PLAYER_TAG);
-        Vec3 spawn = session.playerSpawn();
-        player.teleportTo(targetLevel, spawn.x, spawn.y, spawn.z, player.getYRot(), player.getXRot());
+        InstanceSession session = new InstanceSession(server, id, runtime.definition, slot, players, controller.get());
+        for (int i = 0; i < players.size(); i++) {
+            ServerPlayer player = players.get(i);
+            Vec3 spawn = spawns.get(i);
+            var rotation = runtime.definition.rotation();
+            SESSIONS.put(player.getUUID(), session);
+            player.addTag(ACTIVE_PLAYER_TAG);
+            player.teleportTo(targetLevel, spawn.x, spawn.y, spawn.z, rotation.yaw(), rotation.pitch());
+            executeFunction(player, Optional.of(ResourceLocation.fromNamespaceAndPath("plre", "instances/into_load")));
+            executeFunction(player, runtime.definition.intoFunction());
+        }
         controller.get().start(session);
         return true;
     }
 
     public static void finish(InstanceSession session, InstanceResult result) {
-        finish(session, result, session.player());
-    }
-
-    private static void finish(InstanceSession session, InstanceResult result, ServerPlayer callbackPlayer) {
         if (session.isEnding()) return;
         session.markEnding();
-        SESSIONS.remove(session.playerId());
+        List<ServerPlayer> players = session.players();
+        for (UUID id : session.participantIds()) SESSIONS.remove(id);
+        players.forEach(player -> player.removeTag(ACTIVE_PLAYER_TAG));
         OWNED_ENTITIES.entrySet().removeIf(entry -> entry.getValue() == session);
         session.controller().stop(session, result);
 
         RuntimeDefinition runtime = RUNTIMES.get(session.instanceId());
-        if (runtime != null && session.slot() < runtime.slots.length) {
-            runtime.slots[session.slot()] = SlotState.PREPARING;
+        if (runtime != null && session.slot() < runtime.slots.size()) {
+            runtime.slots.set(session.slot(), SlotState.PREPARING);
             BUILD_QUEUE.add(new BuildRequest(session.instanceId(), session.slot()));
         }
 
-        if (callbackPlayer != null) {
-            callbackPlayer.removeTag(ACTIVE_PLAYER_TAG);
+        for (ServerPlayer player : players) {
             Optional<ResourceLocation> callback = result == InstanceResult.SUCCESS
                     ? Optional.of(session.definition().success()) : session.definition().failure();
-            executeFunction(callbackPlayer, callback);
+            executeFunction(player, callback);
         }
     }
 
     public static void failPlayer(ServerPlayer player) {
-        InstanceSession session = SESSIONS.get(player.getUUID());
-        if (session != null) finish(session, InstanceResult.FAILURE);
+        InstanceSession session = SESSIONS.remove(player.getUUID());
+        player.removeTag(ACTIVE_PLAYER_TAG);
+        if (session == null || session.isEnding()) return;
+        session.removeParticipant(player.getUUID());
+        session.controller().onPlayerLeave(session, player);
+        if (session.participantIds().isEmpty()) finish(session, InstanceResult.FAILURE);
+        executeFunction(player, session.definition().failure());
     }
 
     public static void failAndKill(ServerPlayer player) {
         if (player == null) return;
-        InstanceSession session = SESSIONS.get(player.getUUID());
-        if (session == null && !player.getTags().contains(ACTIVE_PLAYER_TAG)) return;
+        if (!SESSIONS.containsKey(player.getUUID()) && !player.getTags().contains(ACTIVE_PLAYER_TAG)) return;
+        // Clear membership before death/respawn can copy the player's tags into a replacement entity.
+        failPlayer(player);
         player.kill();
-        if (session != null) {
-            finish(session, InstanceResult.FAILURE, player);
-        } else {
-            player.removeTag(ACTIVE_PLAYER_TAG);
-        }
+    }
+
+    public static void clearOrphanedPlayerTag(ServerPlayer player) {
+        if (!SESSIONS.containsKey(player.getUUID())) player.removeTag(ACTIVE_PLAYER_TAG);
     }
 
     public static void ownEntity(InstanceSession session, LivingEntity entity) {
@@ -184,17 +251,21 @@ public final class InstanceManager {
     }
 
     private static void reloadDefinitions() {
+        if (activeBuild != null) activeBuild.finishIO();
+        activeBuild = null;
+        activeRequest = null;
         RUNTIMES.clear();
         BUILD_QUEUE.clear();
         for (Map.Entry<ResourceLocation, InstanceDefinition> entry : InstanceDefinitionLoader.entries()) {
             InstanceDefinition definition = entry.getValue();
-            RuntimeDefinition runtime = new RuntimeDefinition(definition);
+            RuntimeDefinition runtime = new RuntimeDefinition(definition, Math.max(definition.prewarmSlots(),
+                    savedData.allocatedSlots(entry.getKey().toString())));
             RUNTIMES.put(entry.getKey(), runtime);
-            for (int slot = 0; slot < definition.prewarmSlots(); slot++) {
+            for (int slot = 0; slot < runtime.slots.size(); slot++) {
                 if (savedData != null && savedData.preparedVersion(entry.getKey().toString(), slot) == definition.arenaVersion()) {
-                    runtime.slots[slot] = SlotState.READY;
+                    runtime.slots.set(slot, SlotState.READY);
                 } else {
-                    runtime.slots[slot] = SlotState.PREPARING;
+                    runtime.slots.set(slot, SlotState.PREPARING);
                     BUILD_QUEUE.add(new BuildRequest(entry.getKey(), slot));
                 }
             }
@@ -202,57 +273,35 @@ public final class InstanceManager {
         loadedGeneration = InstanceDefinitionLoader.generation();
     }
 
-    private static void build(BuildRequest request) {
-        RuntimeDefinition runtime = RUNTIMES.get(request.id);
-        if (runtime == null) return;
+    private static void replenish(ResourceLocation id, RuntimeDefinition runtime) {
+        // An IO/resource failure needs a reload, not an endless stream of failed new allocations.
+        if (runtime.slots.contains(SlotState.FAILED)) return;
         ServerLevel level = level(runtime.definition);
-        if (level == null) return;
-        Optional<StructureTemplate> optional = level.getStructureManager().get(runtime.definition.template());
-        if (optional.isEmpty()) {
-            PanlingRE.LOGGER.error("Missing instance structure template {}", runtime.definition.template());
-            return;
+        int available = 0;
+        for (int slot = 0; slot < runtime.slots.size(); slot++) {
+            SlotState state = runtime.slots.get(slot);
+            if (state == SlotState.READY || state == SlotState.PREPARING
+                    && InstanceRegionTask.unloaded(level, runtime.definition, slot)) available++;
         }
-        StructureTemplate template = optional.get();
-        Vec3 center = runtime.definition.centerForSlot(request.slot);
-        BlockPos origin = new BlockPos(
-                (int) Math.floor(center.x - (template.getSize().getX() - 1) * 0.5),
-                (int) Math.floor(center.y - (template.getSize().getY() - 1) * 0.5),
-                (int) Math.floor(center.z - (template.getSize().getZ() - 1) * 0.5)
-        );
-        BlockPos end = origin.offset(template.getSize().getX() - 1, template.getSize().getY() - 1, template.getSize().getZ() - 1);
-        for (int chunkX = SectionPos.blockToSectionCoord(origin.getX()); chunkX <= SectionPos.blockToSectionCoord(end.getX()); chunkX++) {
-            for (int chunkZ = SectionPos.blockToSectionCoord(origin.getZ()); chunkZ <= SectionPos.blockToSectionCoord(end.getZ()); chunkZ++) {
-                level.getChunk(chunkX, chunkZ);
-            }
+        // A reset held resident by a neighbouring player must not impose a new capacity limit.
+        while (available < runtime.definition.prewarmSlots()) {
+            int slot = runtime.slots.size();
+            runtime.slots.add(SlotState.PREPARING);
+            savedData.setPreparedVersion(id.toString(), slot, -1);
+            BUILD_QUEUE.add(new BuildRequest(id, slot));
+            if (InstanceRegionTask.unloaded(level, runtime.definition, slot)) available++;
         }
-        AABB bounds = new AABB(
-                origin.getX(), origin.getY(), origin.getZ(),
-                end.getX() + 1.0, end.getY() + 1.0, end.getZ() + 1.0
-        );
-        for (Entity entity : java.util.List.copyOf(level.getEntities(null, bounds))) {
-            if (entity instanceof ServerPlayer player) {
-                if (player.getTags().contains(ACTIVE_PLAYER_TAG) || SESSIONS.containsKey(player.getUUID())) {
-                    failAndKill(player);
-                } else {
-                    player.kill();
-                }
-            } else {
-                entity.discard();
-            }
-        }
-        // Player death may create drops after the first snapshot; discard every non-player remainder before placement.
-        for (Entity entity : java.util.List.copyOf(level.getEntities(null, bounds))) {
-            if (!(entity instanceof ServerPlayer)) entity.discard();
-        }
-        boolean placed = template.placeInWorld(level, origin, origin, new StructurePlaceSettings(), level.random, 2);
-        if (placed) {
-            if (runtime.definition.controller().equals(ResourceLocation.fromNamespaceAndPath("panlingre", "shihuang")))
-                icu.icuqalt10.panlingre.instance.shihuang.ShiHuangGates.prepare(level,origin);
-            runtime.slots[request.slot] = SlotState.READY;
-            savedData.setPreparedVersion(request.id.toString(), request.slot, runtime.definition.arenaVersion());
-            PanlingRE.LOGGER.info("Prepared instance {} slot {} at {}", request.id, request.slot, origin);
-        } else {
-            PanlingRE.LOGGER.error("Failed to place instance {} slot {}", request.id, request.slot);
+    }
+
+    private static void beginBuild(BuildRequest request) {
+        RuntimeDefinition runtime = RUNTIMES.get(request.id);
+        activeRequest = request;
+        try {
+            activeBuild = new InstanceRegionTask(level(runtime.definition), runtime.definition, request.slot);
+        } catch (RuntimeException exception) {
+            runtime.slots.set(request.slot, SlotState.FAILED);
+            PanlingRE.LOGGER.error("Cannot open baked instance {}", request.id, exception);
+            activeRequest = null;
         }
     }
 
@@ -268,20 +317,19 @@ public final class InstanceManager {
         });
     }
 
-    private enum SlotState { PREPARING, READY, RUNNING }
+    private enum SlotState { PREPARING, READY, RUNNING, FAILED }
 
     private static final class RuntimeDefinition {
         final InstanceDefinition definition;
-        final SlotState[] slots;
+        final java.util.List<SlotState> slots;
 
-        RuntimeDefinition(InstanceDefinition definition) {
+        RuntimeDefinition(InstanceDefinition definition, int count) {
             this.definition = definition;
-            this.slots = new SlotState[definition.prewarmSlots()];
-            java.util.Arrays.fill(slots, SlotState.PREPARING);
+            this.slots = new java.util.ArrayList<>(java.util.Collections.nCopies(count, SlotState.PREPARING));
         }
 
         int firstReadySlot() {
-            for (int i = 0; i < slots.length; i++) if (slots[i] == SlotState.READY) return i;
+            for (int i = 0; i < slots.size(); i++) if (slots.get(i) == SlotState.READY) return i;
             return -1;
         }
     }

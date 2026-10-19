@@ -113,13 +113,12 @@ public final class ZhuqueController implements InstanceController {
 
     @Override
     public void start(InstanceSession session) {
-        ServerPlayer player = session.player();
         bossBar = new ServerBossEvent(
                 Component.translatable("instance.panlingre.zhuque.countdown", 5),
                 BossEvent.BossBarColor.RED,
                 BossEvent.BossBarOverlay.PROGRESS
         );
-        if (player != null) {
+        for (ServerPlayer player : session.players()) {
             player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("instance.panlingre.zhuque.preparing.1")));
             player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("instance.panlingre.zhuque.preparing.2")));
             bossBar.addPlayer(player);
@@ -164,10 +163,15 @@ public final class ZhuqueController implements InstanceController {
     }
 
     @Override
+    public void onPlayerLeave(InstanceSession session, ServerPlayer player) {
+        if (bossBar != null) bossBar.removePlayer(player);
+        PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
+    }
+
+    @Override
     public void stop(InstanceSession session, InstanceResult result) {
         if (bossBar != null) bossBar.removeAllPlayers();
-        ServerPlayer player = session.player();
-        if (player != null) PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
+        for (ServerPlayer player : session.players()) PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
         for (Entity entity : spawnedEntities) {
             if (!entity.isRemoved()) entity.discard();
         }
@@ -196,12 +200,14 @@ public final class ZhuqueController implements InstanceController {
         if (level == null || player == null) return;
 
         if (countZhuqueMonsters(session) + MONSTERS_PER_WAVE > MONSTER_OVERLOAD_LIMIT) {
-            player.igniteForSeconds(OVERLOAD_FIRE_SECONDS);
-            player.hurt(level.damageSources().onFire(), OVERLOAD_FIRE_DAMAGE);
+            for (ServerPlayer member : session.players()) {
+                member.igniteForSeconds(OVERLOAD_FIRE_SECONDS);
+                member.hurt(level.damageSources().onFire(), OVERLOAD_FIRE_DAMAGE);
+            }
             return;
         }
 
-        double slotOffset = (double) session.slot() * session.definition().spacing();
+        Vec3 slotOffset = session.center().subtract(0.0, 70.0, 2250.0);
         int firstSpawnIndex = waveStep * MONSTERS_PER_WAVE;
         for (int index = firstSpawnIndex; index < firstSpawnIndex + MONSTERS_PER_WAVE; index++) {
             Mob mob = MONSTER_TYPES.get(index).create(level);
@@ -209,7 +215,7 @@ public final class ZhuqueController implements InstanceController {
             CompoundTag entityNbt = mob.saveWithoutId(new CompoundTag());
             entityNbt.merge(nbtFor(index).copy());
             mob.load(entityNbt);
-            mob.setPos(BASE_MONSTER_POSITIONS.get(index).add(slotOffset, 0.0, 0.0));
+            mob.setPos(BASE_MONSTER_POSITIONS.get(index).add(slotOffset));
             if (level.addFreshEntity(mob)) spawnedEntities.add(mob);
         }
         waveStep = (waveStep + 1) % 4;
@@ -251,8 +257,8 @@ public final class ZhuqueController implements InstanceController {
         if (level.addFreshEntity(meteor)) spawnedEntities.add(meteor);
 
         int fallTicks = estimateFallTicks(METEOR_SPAWN_Y, targetY, METEOR_INITIAL_VELOCITY);
-        PacketDistributor.sendToPlayer(
-                player,
+        for (ServerPlayer member : session.players()) PacketDistributor.sendToPlayer(
+                member,
                 new ZhuqueMeteorWarningPayload(
                         new Vec3(targetX, targetY, targetZ),
                         METEOR_WARNING_RADIUS,
@@ -326,7 +332,7 @@ public final class ZhuqueController implements InstanceController {
     }
 
     private static Vec3 gameplayCenter(InstanceSession session) {
-        return BASE_CENTER.add((double) session.slot() * session.definition().spacing(), 0.0, 0.0);
+        return BASE_CENTER.add(session.center().subtract(0.0, 70.0, 2250.0));
     }
 
     private static void playAtCenter(InstanceSession session, net.minecraft.sounds.SoundEvent sound,

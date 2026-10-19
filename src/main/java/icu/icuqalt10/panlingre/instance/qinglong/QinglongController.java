@@ -64,13 +64,12 @@ public final class QinglongController implements InstanceController {
     public void start(InstanceSession session) {
         for (int i = 0; i < QUESTIONS.size(); i++) order.add(i);
         Collections.shuffle(order);
-        ServerPlayer player = session.player();
         bossBar = new ServerBossEvent(
                 Component.translatable("instance.panlingre.qinglong.countdown"),
                 BossEvent.BossBarColor.GREEN,
                 BossEvent.BossBarOverlay.PROGRESS
         );
-        if (player != null) {
+        for (ServerPlayer player : session.players()) {
             player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("instance.panlingre.qinglong.preparing.1")));
             player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("instance.panlingre.qinglong.preparing.2", correct, wrong)));
             bossBar.addPlayer(player);
@@ -113,11 +112,16 @@ public final class QinglongController implements InstanceController {
     }
 
     @Override
+    public void onPlayerLeave(InstanceSession session, ServerPlayer player) {
+        if (bossBar != null) bossBar.removePlayer(player);
+        PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
+    }
+
+    @Override
     public void stop(InstanceSession session, InstanceResult result) {
         clearAnswers();
         if (bossBar != null) bossBar.removeAllPlayers();
-        ServerPlayer player = session.player();
-        if (player != null) PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
+        for (ServerPlayer player : session.players()) PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
     }
 
     private void beginQuestion(InstanceSession session) {
@@ -137,9 +141,9 @@ public final class QinglongController implements InstanceController {
             return;
         }
         playAtCenter(session, SoundEvents.ENDER_DRAGON_GROWL, SoundSource.HOSTILE, 4.0F, 1.0F);
-        double slotOffset = (double) session.slot() * session.definition().spacing();
+        Vec3 slotOffset = session.center().subtract(0.0, 70.0, 2000.0);
         List<Vec3> positions = BASE_ANSWER_POSITIONS.stream()
-                .map(pos -> pos.add(slotOffset, 0.0, 0.0))
+                .map(pos -> pos.add(slotOffset))
                 .toList();
         List<Integer> randomizedAnswers = new ArrayList<>(List.of(0, 1, 2, 3));
         Collections.shuffle(randomizedAnswers);
@@ -169,22 +173,21 @@ public final class QinglongController implements InstanceController {
         boolean isCorrect = selectedAnswer == question.correctAnswer;
         clearAnswers();
 
-        ServerPlayer player = session.player();
         if (isCorrect) {
             correct++;
             playForPlayer(session, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
-            if (player != null) player.sendSystemMessage(Component.translatable("instance.panlingre.qinglong.correct", correct, wrong));
+            for (ServerPlayer player : session.players()) player.sendSystemMessage(Component.translatable("instance.panlingre.qinglong.correct", correct, wrong));
         } else {
             wrong++;
             playForPlayer(session, SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
-            if (player != null) player.sendSystemMessage(Component.translatable("instance.panlingre.qinglong.wrong", correct, wrong));
+            for (ServerPlayer player : session.players()) player.sendSystemMessage(Component.translatable("instance.panlingre.qinglong.wrong", correct, wrong));
         }
 
         if (correct >= REQUIRED_CORRECT) {
             bossBar.setName(Component.translatable("instance.panlingre.qinglong.completed"));
             bossBar.setProgress(1.0F);
             playForPlayer(session, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0F, 1.0F);
-            if (player != null) PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
+            for (ServerPlayer player : session.players()) PacketDistributor.sendToPlayer(player, new SiShouMusicPayload(false));
             successDelayTicks = SUCCESS_DELAY_TICKS;
         } else if (wrong >= MAX_WRONG) {
             session.finish(InstanceResult.FAILURE);

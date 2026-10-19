@@ -24,6 +24,9 @@ public class ModNetworks {
 
     public static void register(RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar registrar = event.registrar(PanlingRE.MODID);
+        registrar.playToClient(HuanHunEffectsPayload.TYPE, HuanHunEffectsPayload.STREAM_CODEC,
+                ClientPayloadHandlers::handleHuanHunEffects);
+        registrar.playToClient(TombLightPayload.TYPE, TombLightPayload.STREAM_CODEC, TombLightPayload::handle);
 
         registrar.playToServer(
                 LdPayload.TYPE,

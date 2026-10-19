@@ -73,7 +73,7 @@
 	"pl.item.lore.newrenb":"§7§o沿着阶梯往上走,在隧道前右转沿路往上",
 	"pl.item.lore.newrenc":"§7§o看到的第一间红色屋瓦的房子就是村长家哦",
 	
-	"pl.scene.shenmiao.fail":"§c主线未解锁到此,不可进入",
+	"pl.scene.shenmiao.fail":"§c剧情未解锁到此,不可进入",
 	
 	"pl.dialog.misson.ren.1":"哎,这可真晒啊",
 	"pl.dialog.misson.ren.1.option":"我要做什么？",

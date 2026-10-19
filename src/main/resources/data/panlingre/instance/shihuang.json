@@ -1,16 +1,21 @@
 {
   "controller": "panlingre:shihuang",
-  
   "template": "panlingre:instance/shihuang",
 
-  "center_pos": [0.0, 112.5, 3600.0],
-  "player_spawn_pos": [0.5, 72.0, 3224.5],
+  "center_pos": [256, 112.5, 4608],
+  "player_spawn_pos": [256.5, 72.0, 4232.5],
+  "rotation":[0,0],
+  "safe_distance":3,
 
-  "spacing": 1024,
+  "player_limit_count":5,
 
+  "spacing": 512,
+  "region_depth": 2,
   "prewarm_slots": 10,
-  "arena_version": 1,
+  "arena_version": 2,
 
-  "success": "panlingre:instances/shihuang/success",
+  "into_function":"plre:instances/shihuang/into",
+  
+  "success": "plre:instances/shihuang/success",
   "failure": "plre:instances/shihuang/failure"
 }

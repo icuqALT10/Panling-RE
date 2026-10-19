@@ -47,13 +47,22 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     /** 当前动画名。用字符串而不是下标，因为 animationNames() 的遍历顺序不保证稳定。 */
     private static final EntityDataAccessor<String> ANIMATION = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Boolean> FAST_LANDING = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> PHASE_ENTRY_TICKS = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> TURN_TICKS = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> FROZEN = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> EMPEROR_CLOCK=SynchedEntityData.defineId(GraveDragonEntity.class,EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Long> EMPEROR_STARTED=SynchedEntityData.defineId(GraveDragonEntity.class,EntityDataSerializers.LONG);
+    private static final EntityDataAccessor<Float> EMPEROR_FRACTION=SynchedEntityData.defineId(GraveDragonEntity.class,EntityDataSerializers.FLOAT);
     private boolean frozenWasNoAi;
     /** 形态：0 = 地面，1 = 空中。 */
     private static final EntityDataAccessor<Integer> FORM = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> BODY_PITCH = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> HEAD_BROKEN = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> SCENE_CONTROL = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Long> SCENE_LANDED = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.LONG);
     private static final EntityDataAccessor<Integer> BROKEN_MASK = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<org.joml.Vector3f> LOOK = SynchedEntityData.defineId(GraveDragonEntity.class, EntityDataSerializers.VECTOR3);
+    private float lookYaw,lookPitch,lookYawO,lookPitchO,lookWeight,lookWeightO;
 
     /** 龙首俯仰的限幅（度）。身体水平长 46 格，再大就会大面积戳进地形。 */
     private static final float MAX_BODY_PITCH = 22.0F;
@@ -67,6 +76,10 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private double blendFromSeconds;
     private String blendTarget = "";
     private long blendStart;
+    private static final net.minecraft.network.syncher.EntityDataAccessor<Boolean> ARENA_AUDIO =
+            net.minecraft.network.syncher.SynchedEntityData.defineId(GraveDragonEntity.class, net.minecraft.network.syncher.EntityDataSerializers.BOOLEAN);
+    public void setArenaAudio() { entityData.set(ARENA_AUDIO,true); }
+    public boolean arenaAudio() { return entityData.get(ARENA_AUDIO); }
 
     /**
      * {@link #ANIMATION_START} 的未初始化哨兵。
@@ -81,11 +94,17 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         builder.define(ANIMATION_START, UNINITIALISED_ANIMATION_START);
         builder.define(ANIMATION, "idle_air");
         builder.define(FAST_LANDING, false);
-        builder.define(FROZEN, false);
+        builder.define(TURN_TICKS, 20);
+        builder.define(PHASE_ENTRY_TICKS, 80);
+        builder.define(FROZEN, false);builder.define(EMPEROR_CLOCK,-1);builder.define(EMPEROR_STARTED,0L);builder.define(EMPEROR_FRACTION,0F);
         builder.define(FORM, FORM_GROUND);
         builder.define(BODY_PITCH, 0.0F);
         builder.define(HEAD_BROKEN, false);
         builder.define(BROKEN_MASK, 0);
+        builder.define(SCENE_CONTROL, false);
+        builder.define(SCENE_LANDED, Long.MIN_VALUE);
+        builder.define(ARENA_AUDIO, false);
+        builder.define(LOOK,new org.joml.Vector3f());
     }
 
     /** 地面 / 空中两种形态。 */
@@ -117,7 +136,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     private static final int TAKEOFF_RETRY_TICKS = 20 * 5;
 
     /** 循环播放的动画；其余按一次性处理（播完停在末帧，由 takeoff/land/turn_* 这类过渡用）。 */
-    private static final Set<String> LOOPING_ANIMATIONS = Set.of("idle_air", "idle_ground", "fly", "run", "into_1", "escape_wait", "escape_flight");
+    private static final Set<String> LOOPING_ANIMATIONS = Set.of("idle_air", "idle_ground", "fly", "run", "into_1",
+            "ally_orbit", "ally_command_idle");
 
     /** 飞行时每 tick 最多抬升多少格，用来维持离地高度。 */
     /** 是否正在移动，决定播 fly/run 还是 idle_*。 */
@@ -148,17 +168,36 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         return entityData.get(ANIMATION);
     }
 
+    public static final double ALLY_CHARGE_SPEED=1.5;
+
+    public Vec3 emperorBreathTarget(){
+        if(animation().equals("ally_combo_breath")&&level().getEntity(entityData.get(EMPEROR_CLOCK)) instanceof icu.icuqalt10.panlingre.entity.boss.ShiHuang.ShiHuangEntity emperor)
+            return emperor.position().add(Vec3.directionFromRotation(0,emperor.yBodyRot).scale(15+emperor.getBbWidth()/2));
+        return null;
+    }
+
     /** 当前动画已播放的秒数；{@code partialTick} 用于渲染插值。 */
     public double animationSeconds(float partialTick) {
         if (entityData.get(FROZEN)) return 0;
+        if(animation().startsWith("ally_")&&level().getEntity(entityData.get(EMPEROR_CLOCK)) instanceof icu.icuqalt10.panlingre.entity.boss.ShiHuang.ShiHuangEntity emperor){
+            if(entityData.get(SCENE_LANDED)!=Long.MIN_VALUE)return Math.max(0,entityData.get(SCENE_LANDED)-entityData.get(ANIMATION_START))/20.0;
+            return Math.max(0,emperor.actionClock(partialTick)-entityData.get(EMPEROR_STARTED)-entityData.get(EMPEROR_FRACTION))/20.0*(animation().equals("ally_combo_charge")?ALLY_CHARGE_SPEED:1);
+        }
         long start = entityData.get(ANIMATION_START);
         if (start == UNINITIALISED_ANIMATION_START) return 0;
-        return Math.max(0, level().getGameTime() - start + partialTick) / 20.0 * animationSpeed();
+        long landed=entityData.get(SCENE_LANDED);
+        double elapsed=landed==Long.MIN_VALUE || animation().equals("escape_wall_impact") ? level().getGameTime()-start+partialTick : landed-start;
+        return Math.max(0,elapsed) / 20.0 * animationSpeed();
     }
 
     private double animationSpeed() {
+        if (entityData.get(SCENE_CONTROL) && animation().equals("takeoff"))
+            return GraveDragonPose.duration(animation()) * 20 / entityData.get(TURN_TICKS);
+        if (animation().startsWith("phase50_enter_"))
+            return GraveDragonPose.duration(animation()) * 20 / entityData.get(PHASE_ENTRY_TICKS);
+        if (entityData.get(SCENE_CONTROL) && animation().equals("idle_air_to_fly")) return 2;
         if (animation().startsWith("turn_ground_") || animation().startsWith("turn_air_"))
-            return GraveDragonPose.duration(animation()) * 4;
+            return GraveDragonPose.duration(animation()) * 20 / entityData.get(TURN_TICKS);
         return entityData.get(FAST_LANDING) && animation().equals("land") ? GraveDragonPose.duration("land") * 2 : 1;
     }
 
@@ -189,9 +228,29 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         entityData.set(ANIMATION_START, level().getGameTime());
     }
 
+    private GraveDragonDivePath divePath;
+
+    void lockDivePath(Vec3 origin, float yaw, Vec3 landing) {
+        divePath = new GraveDragonDivePath(origin, yaw, getScale(), landing);
+    }
+
+    Vec3 diveLanding() { return divePath == null ? null : divePath.landing; }
+
+    void advanceDiveRoot(double seconds) { if (divePath != null) setPos(divePath.rootAt(seconds)); }
+
     void beginCombatAnimation(String name) {
+        divePath = null;
         pendingLoopAnimation = null;
         playAnimation(name, true);
+    }
+
+    public static int turnTicks(double distance) {
+        return 20 + (int)Math.round(Mth.clamp(distance / 48, 0, 1) * 60);
+    }
+
+    void beginTurnAnimation(String name, int ticks) {
+        entityData.set(TURN_TICKS, ticks);
+        beginCombatAnimation(name);
     }
 
     ShiHuangController tombController() {
@@ -201,7 +260,10 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /** The owning instance controls all motion until removal; combat cannot restart. */
     public void beginSceneAnimation(String name) {
-        if (!name.startsWith("escape_")) throw new IllegalArgumentException("Not a tomb scene animation: " + name);
+        if (!name.startsWith("escape_") && !Set.of("takeoff","idle_air_to_fly","fly").contains(name))
+            throw new IllegalArgumentException("Not a tomb scene animation: " + name);
+        entityData.set(SCENE_CONTROL,true);
+        entityData.set(SCENE_LANDED,Long.MIN_VALUE);
         pendingForm = null;
         moving = false;
         disableAutomaticFormSwitch();
@@ -212,28 +274,107 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         setInvulnerable(true);
         setDeltaMovement(Vec3.ZERO);
         getNavigation().stop();
-        beginCombatAnimation(name);
+        beginBlendedCombatAnimation(name);
         combat.announceAnimation(name);
         updateDragonParts();
     }
 
+    public void beginSceneTakeoff(int ticks) {
+        entityData.set(TURN_TICKS,ticks);
+        beginSceneAnimation("takeoff");
+    }
+
+    /** 始皇助战实体使用同一骨架与时钟，但不恢复墓龙本体战斗 AI。 */
+    public void setEmperorClock(icu.icuqalt10.panlingre.entity.boss.ShiHuang.ShiHuangEntity emperor){entityData.set(EMPEROR_CLOCK,emperor.getId());}
+    public void setEmperorAnimationStart(double time){entityData.set(EMPEROR_STARTED,(long)Math.floor(time));entityData.set(EMPEROR_FRACTION,(float)(time-Math.floor(time)));}
+    public void shiftEmperorAnimationStart(double ticks){setEmperorAnimationStart(emperorAnimationStart()+ticks);}
+    int emperorClockId(){return entityData.get(EMPEROR_CLOCK);}
+    double emperorAnimationStart(){return entityData.get(EMPEROR_STARTED)+(double)entityData.get(EMPEROR_FRACTION);}
+    long sceneLandedTick(){return entityData.get(SCENE_LANDED);}
+    public void beginEmperorAllyAnimation(String name) {
+        double start=level().getEntity(emperorClockId()) instanceof icu.icuqalt10.panlingre.entity.boss.ShiHuang.ShiHuangEntity emperor
+                ?emperor.actionClock(0):level().getGameTime();
+        beginEmperorAllyAnimation(name,start);
+    }
+    public void beginEmperorAllyAnimation(String name,double start) {
+        if(!name.startsWith("ally_")||!GraveDragonPose.animationNames().contains(name))
+            throw new IllegalArgumentException("Not an emperor ally animation: "+name);
+        if(animation().equals(name))return;
+        double previousSeconds=animationSeconds(0);
+        previousSeconds=loopingAnimation()?previousSeconds%GraveDragonPose.duration(animation()):Math.min(previousSeconds,GraveDragonPose.duration(animation()));
+        entityData.set(SCENE_CONTROL,true);entityData.set(FORM,FORM_AIR);entityData.set(BODY_PITCH,0F);
+        entityData.set(FROZEN,false);entityData.set(SCENE_LANDED,Long.MIN_VALUE);
+        setNoAi(true);setNoGravity(true);setInvulnerable(true);noPhysics=true;
+        getNavigation().stop();setDeltaMovement(Vec3.ZERO);bossEvent.setVisible(false);
+        if(name.equals("ally_emerge"))beginCombatAnimation(name);
+        else {beginBlendedCombatAnimation(name);blendFromSeconds=previousSeconds;}
+        setEmperorAnimationStart(start);
+        combat.announceAnimation(name);
+        updateDragonParts();
+    }
+
+    public Vec3 emperorMountOffset() {
+        return GraveDragonPose.box(poseAt(animationSeconds(0)),"shihuang_mount",
+                new float[]{0,0,0,0,155.5F/16,-3F/16},GraveDragonPose.modelToEntity(yBodyRot,0,getScale()),Vec3.ZERO).center;
+    }
+    public Vec3 emperorNeckMountOffset() {
+        return emperorNeckMountOffset(0);
+    }
+    public Vec3 emperorNeckMountOffset(float partial) {
+        return GraveDragonPose.box(poseAt(animationSeconds(partial),level().isClientSide?partial:1),"neck_joint",
+                new float[]{0,0,0,0,155.5F/16,-288F/16},GraveDragonPose.modelToEntity(level().isClientSide?Mth.rotLerp(partial,yBodyRotO,yBodyRot):yBodyRot,0,getScale()),Vec3.ZERO).center;
+    }
+
+    public icu.icuqalt10.panlingre.entity.OrientedBoundingBox posedPart(int index,double seconds) {
+        return GraveDragonPose.box(poseAt(seconds),PART_LABELS[index],PART_BOUNDS[index],
+                GraveDragonPose.modelToEntity(yBodyRot,bodyPitch(),getScale()),position());
+    }
+
     public Vec3 sceneHeadOffset(String animation, double seconds, float yaw) {
-        return GraveDragonPose.box(GraveDragonPose.sample(animation, seconds, false),
+        return GraveDragonPose.box(GraveDragonPose.sample(animation, seconds, LOOPING_ANIMATIONS.contains(animation)),
                 PART_LABELS[11], PART_BOUNDS[11], GraveDragonPose.modelToEntity(yaw, 0, getScale()), Vec3.ZERO).center;
     }
 
+    public Vec3 sceneTurnPivotOffset(float yaw) {
+        return GraveDragonPose.box(GraveDragonPose.sample("dying_thrash",0,false),
+                PART_LABELS[0],PART_BOUNDS[0],GraveDragonPose.modelToEntity(yaw,0,getScale()),Vec3.ZERO).center.multiply(1,0,1);
+    }
+
     public Vec3 sceneGateOffset(double seconds, float yaw) {
-        var frame = GraveDragonPose.sample("escape_flight", seconds, true);
+        var frame = GraveDragonPose.sample("fly", seconds, true);
         var transform = GraveDragonPose.modelToEntity(yaw, 0, getScale());
         var head = GraveDragonPose.box(frame, PART_LABELS[11], PART_BOUNDS[11], transform, Vec3.ZERO);
         double front = Double.NEGATIVE_INFINITY;
-        for (int i = 0; i < PART_LABELS.length; i++)
+        for (int i : new int[]{11,12,78})
             front = Math.max(front, GraveDragonPose.box(frame, PART_LABELS[i], PART_BOUNDS[i], transform, Vec3.ZERO).enclosingAabb().maxZ);
         return new Vec3(head.center.x, head.center.y, front);
     }
 
+    /** Front of the posed skull/mouth, used to keep contact during the seal slide. */
+    public double sceneImpactFrontOffset() {
+        var frame=poseAt(animationSeconds(0));
+        var transform=GraveDragonPose.modelToEntity(yBodyRot,0,getScale());
+        double front=Double.NEGATIVE_INFINITY;
+        for(int i : new int[]{11,12,78})
+            front=Math.max(front,GraveDragonPose.box(frame,PART_LABELS[i],PART_BOUNDS[i],transform,Vec3.ZERO).enclosingAabb().maxZ);
+        return front;
+    }
+
     public boolean moveSceneTo(Vec3 destination, float yaw, double floor) {
+        return moveSceneTo(destination,yaw,floor,null);
+    }
+
+    public boolean moveSceneTo(Vec3 destination, float yaw, double floor, net.minecraft.world.phys.AABB absorption) {
+        if (roomMovementBounds() != null || combat.forcingPhase()) {
+            setYRot(yaw);
+            yBodyRot = yHeadRot = yaw;
+            setPos(destination);
+            setDeltaMovement(Vec3.ZERO);
+            updateDragonParts();
+            return true;
+        }
         Vec3 start = position();
+        var frame=poseAt(animationSeconds(0));
         int steps = Math.max(1, (int) Math.ceil(start.distanceTo(destination) * 2));
         float previousYaw = getYRot();
         steps = Math.max(steps, (int) Math.ceil(Math.abs(Mth.wrapDegrees(yaw - previousYaw)) / 3));
@@ -241,7 +382,11 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
             double weight = i / (double) steps;
             Vec3 candidate = start.lerp(destination, weight);
             float facing = previousYaw + Mth.wrapDegrees(yaw - previousYaw) * (float) weight;
-            if (!combatPoseFitsAt(animation(), animationSeconds(0), facing, 0, candidate, floor)) return false;
+            var transform=GraveDragonPose.modelToEntity(facing,0,getScale());
+            for (int part=0;part<PART_LABELS.length;part++) {
+                var box=GraveDragonPose.box(frame,PART_LABELS[part],PART_BOUNDS[part],transform,candidate.add(0,POSE_CLEARANCE_LIFT,0));
+                if (penetrationIntoBlocks(box,floor,absorption)>POSE_CLEARANCE_TOLERANCE) return false;
+            }
         }
         setYRot(yaw);
         yBodyRot = yHeadRot = yaw;
@@ -249,6 +394,37 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         setDeltaMovement(Vec3.ZERO);
         updateDragonParts();
         return true;
+    }
+
+    public long sceneLandingTick() { return entityData.get(SCENE_LANDED); }
+
+    public void holdEmperorAllyPoseAt(double seconds) {
+        entityData.set(SCENE_LANDED,entityData.get(ANIMATION_START)+Math.round(seconds*20));
+        setDeltaMovement(Vec3.ZERO);
+        updateDragonParts();
+    }
+
+    /** Mark first ground contact; the scene animation continues through the struggles. */
+    public void landScene() {
+        entityData.set(SCENE_LANDED,level().getGameTime());
+        setDeltaMovement(Vec3.ZERO);
+        hurtTime=0;
+    }
+
+    public double sceneLowestOffset() {
+        return sceneLowestOffset(poseAt(animationSeconds(0)));
+    }
+
+    public double sceneLowestOffset(String clip,double seconds) {
+        return sceneLowestOffset(GraveDragonPose.sample(clip,seconds,false));
+    }
+
+    private double sceneLowestOffset(GraveDragonPose.Frame frame) {
+        var transform=GraveDragonPose.modelToEntity(yBodyRot,0,getScale());
+        double lowest=Double.POSITIVE_INFINITY;
+        for(int i=0;i<PART_LABELS.length;i++)
+            lowest=Math.min(lowest,GraveDragonPose.box(frame,PART_LABELS[i],PART_BOUNDS[i],transform,Vec3.ZERO).enclosingAabb().minY);
+        return lowest;
     }
 
     void beginBlendedCombatAnimation(String name) {
@@ -268,11 +444,72 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /** Rendering, hitboxes and attached particles share the same two-tick transition. */
     public GraveDragonPose.Frame poseAt(double seconds) {
+        return poseAt(seconds,1);
+    }
+
+    public GraveDragonPose.Frame poseAt(double seconds,float partial) {
+        var frame=basePoseAt(seconds);
+        // The inverted dive owns its neck; even residual look weight can separate the authored joints.
+        if(animation().equals("air_dive_slam")) {
+            return divePath == null ? frame : divePath.relativePose(frame,seconds);
+        }
+        float yaw=Mth.lerp(partial,lookYawO,lookYaw),pitch=Mth.lerp(partial,lookPitchO,lookPitch);
+        return GraveDragonPose.look(frame,GraveDragonPose.modelToEntity(
+                Mth.rotLerp(partial,yBodyRotO,yBodyRot),bodyPitch(partial),getScale()),yaw,pitch,
+                Mth.lerp(partial,lookWeightO,lookWeight));
+    }
+
+    private GraveDragonPose.Frame basePoseAt(double seconds) {
         var frame = GraveDragonPose.sample(animation(), seconds, loopingAnimation());
+        double duration=animation().equals("ally_orbit_return")?1.6:animation().equals("ally_charge_rise")?.6:.1;
         if (blendFrom.isEmpty() || !blendTarget.equals(animation()) || blendStart != animationStart()
-                || seconds >= .1) return frame;
-        return GraveDragonPose.blend(GraveDragonPose.sample(blendFrom, blendFromSeconds, false),
-                frame, Math.max(0, seconds / .1));
+                || seconds >= duration) return frame;
+        double weight=Math.max(0,seconds/duration);
+        if(duration>.1)weight=weight*weight*(3-2*weight);
+        var previous=GraveDragonPose.sample(blendFrom,blendFromSeconds,false);
+        return duration>.1?GraveDragonPose.blendConnected(previous,frame,weight):GraveDragonPose.blend(previous,frame,weight);
+    }
+
+    static boolean tracksTarget(String action) {
+        return !action.equals("air_dive_slam")&&!action.contains("charge")&&!action.contains("fan")&&!action.contains("coil")
+                &&!action.contains("breath")&&!action.contains("fire")&&!action.contains("earth")
+                &&!action.contains("turn")&&!action.contains("phase")
+                &&!action.startsWith("into_")&&!action.startsWith("escape_")&&!action.startsWith("dying")
+                &&!action.contains("death");
+    }
+
+    private void tickLookTarget() {
+        lookYawO=lookYaw;lookPitchO=lookPitch;lookWeightO=lookWeight;
+        if(level().isClientSide) {
+            var synced=entityData.get(LOOK);lookYaw=synced.y;lookPitch=synced.x;lookWeight=synced.z;return;
+        }
+        if(entityData.get(FROZEN))return;
+        String action=animation();
+        boolean tracks=(!isNoAi()||action.equals("ally_orbit")||action.equals("ally_thunder"))
+                &&tracksTarget(action);
+        float yaw=0,pitch=0,weight=0;
+        if(tracks) {
+            var frame=basePoseAt(animationSeconds(0));
+            var transform=GraveDragonPose.modelToEntity(yBodyRot,bodyPitch(),getScale());
+            var matrix=new org.joml.Matrix4f(transform).mul(frame.matrices().get("head"));
+            var current=GraveDragonPose.look(frame,transform,lookYaw,lookPitch,lookWeight);
+            var head=GraveDragonPose.box(current,PART_LABELS[11],PART_BOUNDS[11],transform,position()).center;
+            var target=((net.minecraft.server.level.ServerLevel)level()).players().stream()
+                    .filter(p->p.isAlive()&&!p.isSpectator()&&!p.isCreative()&&p.distanceToSqr(head)<128*128)
+                    .min(java.util.Comparator.comparingDouble(p->p.distanceToSqr(head))).orElse(null);
+            if(target!=null) {
+                var forward=matrix.transformDirection(new org.joml.Vector3f(0,0,-1));
+                var d=target.getEyePosition().subtract(head);
+                yaw=Mth.clamp(Mth.wrapDegrees((float)Math.toDegrees(Math.atan2(-d.x,-d.z)
+                        -Math.atan2(-forward.x,-forward.z))),-70,70);
+                pitch=Mth.clamp((float)Math.toDegrees(Math.atan2(d.y,Math.hypot(d.x,d.z))
+                        -Math.atan2(forward.y,Math.hypot(forward.x,forward.z))),-35,35);
+                weight=1;
+            }
+        }
+        lookYaw=Mth.approach(lookYaw,yaw,3);lookPitch=Mth.approach(lookPitch,pitch,2);
+        lookWeight=Mth.approach(lookWeight,weight,.2F);
+        entityData.set(LOOK,new org.joml.Vector3f(lookPitch,lookYaw,lookWeight));
     }
 
     void requestCombatForm(Form wanted) {
@@ -284,18 +521,52 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     double combatGroundLevel() { return groundLevelBelow(); }
     Vec3 combatSpawnPosition() { return spawnPosition == null ? position() : spawnPosition; }
     void setCombatPitch(float pitch) { entityData.set(BODY_PITCH, pitch); }
+    private Vec3 phaseFirefieldTarget;
+    public Vec3 phaseFirefieldTarget() { return phaseFirefieldTarget; }
+
+    /** Keep the authored breath ray aimed at the arena centre; approaching it is a flight, not a teleport. */
+    Vec3 phaseFirefieldPosition(Vec3 impact) {
+        double first = GraveDragonActions.get("phase50_firefield").windows().getFirst().from();
+        var geometry = GraveDragonBreath.geometry(GraveDragonPose.sample("phase50_firefield", first, false),
+                GraveDragonPose.modelToEntity(180, 0, getScale()), Vec3.ZERO, "phase50_firefield");
+        double distance = -geometry.mouth().y / geometry.direction().y;
+        Vec3 offset = geometry.pointAt(distance);
+        return new Vec3(impact.x-offset.x,impact.y,impact.z-offset.z);
+    }
+
+    void beginPhaseEntry(String animation, int ticks, Vec3 impact) {
+        phaseFirefieldTarget=impact;
+        pendingForm=null;
+        pendingLoopAnimation=null;
+        entityData.set(FORM,FORM_AIR);
+        entityData.set(BODY_PITCH,0F);
+        entityData.set(PHASE_ENTRY_TICKS,ticks);
+        applyFormPhysics(true);
+        disableAutomaticFormSwitch();
+        beginBlendedCombatAnimation(animation);
+    }
 
     public boolean headBroken() { return entityData.get(HEAD_BROKEN); }
+    public boolean isForcingHalfHealthPhase() { return combat.forcingPhase(); }
 
     /** The action activation packet starts animation and effects on the same client tick. */
     public void applyClientAction(GraveDragonActionPayload payload) {
         if (!level().isClientSide || payload.entityId() != getId()
                 || payload.sequence() < lastClientActionSequence) return;
         lastClientActionSequence = payload.sequence();
+        if (payload.action().equals("air_dive_slam") && payload.points().size() == 3)
+            lockDivePath(payload.points().get(1), (float)payload.points().get(2).x, payload.points().getFirst());
+        else if (!payload.action().equals(animation()) || payload.startTick() != animationStart()) divePath = null;
+        if (payload.action().equals("phase50_firefield") && !payload.points().isEmpty())
+            phaseFirefieldTarget = payload.points().getFirst();
         blendFrom = payload.blendFrom();
         blendFromSeconds = payload.blendFromSeconds();
         blendTarget = payload.action();
         blendStart = payload.startTick();
+        // Apply the shared clock with the clip, before the next entity-data packet arrives.
+        entityData.set(EMPEROR_CLOCK,payload.emperorId());
+        setEmperorAnimationStart(payload.emperorStart());
+        entityData.set(SCENE_LANDED,payload.landedTick());
         if (!payload.action().equals(animation()) || payload.startTick() != animationStart()) {
             entityData.set(ANIMATION, payload.action());
             entityData.set(ANIMATION_START, payload.startTick());
@@ -429,6 +700,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /** 从实体脚下向下探测当前房间的碰撞表面；虚空中保持原高。 */
     private double groundLevelBelow() {
+        if (roomMovementBounds() != null) return tombController().scene().dragonSpawn().y;
         // 从实体下方找当前房间的地面，避免高度图把墓室屋顶当成落地高度。
         var hit = level().clip(new net.minecraft.world.level.ClipContext(
                 position().add(0, .25, 0), new Vec3(getX(), level().getMinBuildHeight(), getZ()),
@@ -541,6 +813,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      * 有 20 多格高，射线一出锚点就撞到自己身上，"地面"永远探在当前高度（实测确认过）。
      */
     private boolean poseFitsAt(String pose, double lift) {
+        if (roomMovementBounds() != null) return roomMovementBounds().contains(position().add(0, lift, 0));
         // v6 地面循环最低点约 -0.033 格；小幅抬高检测位，避免脚底贴地被当成穿透。
         Vec3 origin = new Vec3(getX(), getY() + lift + POSE_CLEARANCE_LIFT, getZ());
         double duration = GraveDragonPose.duration(pose);
@@ -571,11 +844,17 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     }
 
     private double penetrationIntoBlocks(OrientedBoundingBox box, double contactFloor) {
+        return penetrationIntoBlocks(box,contactFloor,null);
+    }
+
+    private double penetrationIntoBlocks(OrientedBoundingBox box, double contactFloor, net.minecraft.world.phys.AABB absorption) {
         net.minecraft.world.phys.AABB envelope = box.enclosingAabb();
         double deepest = 0;
         for (var shape : level().getBlockCollisions(this, envelope)) {
             for (var block : shape.toAabbs()) {
                 if (block.maxY <= contactFloor + POSE_CLEARANCE_TOLERANCE) continue;
+                // Only the authored coffin intake permits matter to phase through.
+                if (absorption!=null && absorption.contains(block.getCenter())) continue;
                 deepest = Math.max(deepest, obbBlockPenetration(box, block));
             }
         }
@@ -916,6 +1195,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
                     if (group == 0) entityData.set(HEAD_BROKEN, true);
                 }
             }
+            if (!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) combat.requestThresholds();
         }
         return applied;
     }
@@ -959,6 +1239,14 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
      */
     @Override
     public void move(MoverType type, Vec3 delta) {
+        if (!level().isClientSide && roomMovementBounds() != null) {
+            setPos(position().add(delta));
+            if (getY() <= roomMovementBounds().minY) {
+                setOnGround(true);
+                setDeltaMovement(getDeltaMovement().multiply(1, 0, 1));
+            }
+            return;
+        }
         if (!delta.equals(Vec3.ZERO) && !level().isClientSide && !noPhysics) {
             for (GraveDragonPartEntity part : worldParts) {
                 // Only blocks stop the dragon. Other child hitboxes belong to
@@ -973,10 +1261,45 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         super.move(type, delta);
     }
 
+    /** Smooth arena walls replace individual decorative block obstacles during combat. */
+    net.minecraft.world.phys.AABB roomMovementBounds() {
+        if (combat == null || entityData.get(SCENE_CONTROL)) return null;
+        var controller = tombController();
+        return controller == null ? null : controller.scene().dragonRoom().deflate(1, 0, 1);
+    }
+
+    @Override
+    public void setPos(double x, double y, double z) {
+        if (roomMovementBounds() != null) {
+            Vec3 bounded = boundRoomPose(new Vec3(x, y, z), poseAt(animationSeconds(0)));
+            x = bounded.x;
+            y = bounded.y;
+            z = bounded.z;
+        }
+        super.setPos(x, y, z);
+    }
+
+    /** Contain every body part, including the tail, without cancelling the animation or wall-parallel travel. */
+    private Vec3 boundRoomPose(Vec3 position, GraveDragonPose.Frame frame) {
+        var room = roomMovementBounds();
+        var transform = GraveDragonPose.modelToEntity(yBodyRot, bodyPitch(), getScale());
+        var extent = new net.minecraft.world.phys.AABB(Vec3.ZERO, Vec3.ZERO);
+        for (int i = 0; i < PART_LABELS.length; i++)
+            extent = extent.minmax(GraveDragonPose.box(frame, PART_LABELS[i], PART_BOUNDS[i], transform, Vec3.ZERO).enclosingAabb());
+        return new Vec3(Mth.clamp(position.x, room.minX - extent.minX, room.maxX - extent.maxX),
+                // Preserve authored foot contact and the dive's deliberate mouth impact below the floor.
+                Mth.clamp(position.y, room.minY, room.maxY - extent.maxY),
+                Mth.clamp(position.z, room.minZ - extent.minZ, room.maxZ - extent.maxZ));
+    }
+
     /** Tick poses drive server physics and initialise client parts before the first render. */
     private void updateDragonParts() {
-        updatePartPose(poseAt(animationSeconds(0)),
-                yBodyRot, position());
+        var frame = poseAt(animationSeconds(0));
+        if (!level().isClientSide && roomMovementBounds() != null) {
+            Vec3 bounded = boundRoomPose(position(), frame);
+            super.setPos(bounded.x, bounded.y, bounded.z);
+        }
+        updatePartPose(frame, yBodyRot, position());
     }
 
     void refreshCombatPose() { updateDragonParts(); }
@@ -992,9 +1315,15 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
     }
 
     boolean combatPoseFitsAt(String animation, double seconds, float yaw, float pitch, Vec3 position, double contactFloor) {
+        var frame = GraveDragonPose.sample(animation, seconds, false);
+        if (animation.equals("air_dive_slam") && divePath != null) frame = divePath.relativePose(frame, seconds);
+        return poseFitsAt(frame,yaw,pitch,position,contactFloor);
+    }
+
+    boolean poseFitsAt(GraveDragonPose.Frame frame,float yaw,float pitch,Vec3 position,double contactFloor) {
+        if (roomMovementBounds() != null) return roomMovementBounds().contains(position);
         Vec3 origin = position.add(0, POSE_CLEARANCE_LIFT, 0);
         var transform = GraveDragonPose.modelToEntity(yaw, pitch, getScale());
-        var frame = GraveDragonPose.sample(animation, seconds, false);
         for (int i = 0; i < PART_LABELS.length; i++) {
             var box = GraveDragonPose.box(frame, PART_LABELS[i], PART_BOUNDS[i], transform, origin);
             if (penetrationIntoBlocks(box, contactFloor) > POSE_CLEARANCE_TOLERANCE) return false;
@@ -1012,7 +1341,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     /** Refresh before client picking, which runs before the model is rendered. */
     public void updateClientPartPose(float partialTick) {
-        updateClientPartPose(partialTick, poseAt(animationSeconds(partialTick)));
+        updateClientPartPose(partialTick, poseAt(animationSeconds(partialTick),partialTick));
     }
 
     /** Reuse the exact bone frame applied to the visible model. */
@@ -1027,9 +1356,9 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 10000.0)
+                .add(Attributes.MAX_HEALTH, 5000.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.25)
-                .add(Attributes.ARMOR, 200)
+                .add(Attributes.ARMOR, 50)
                 .add(Attributes.ATTACK_DAMAGE, 8.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.FOLLOW_RANGE, 80.0);
@@ -1058,10 +1387,19 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
             discard();
             return;
         }
-        if (animation().startsWith("escape_")) {
+        boolean forcedPhase = !level().isClientSide && !entityData.get(SCENE_CONTROL) && combat.forcingPhase();
+        if (forcedPhase) {
+            removeEffect(icu.icuqalt10.panlingre.init.ModEffects.freeze);
+            entityData.set(FROZEN, false);
+            setNoAi(false);
+            introStarted = introComplete = true;
+            combat.requestThresholds();
+        }
+        if (entityData.get(SCENE_CONTROL)) {
             setDeltaMovement(Vec3.ZERO);
             setNoGravity(true);
             super.tick();
+            tickLookTarget();
             bodyPitchO = bodyPitch();
             updateDragonParts();
             if (!level().isClientSide) bossEvent.setProgress(getHealth() / getMaxHealth());
@@ -1074,6 +1412,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
             setDeltaMovement(0, flying() ? 0 : velocity.y, 0);
         }
         super.tick();
+        tickLookTarget();
         // 先记下上一 tick 的俯仰供渲染插值，再由服务端按新的速度方向更新（客户端用同步值）。
         this.bodyPitchO = bodyPitch();
         if (entityData.get(FROZEN) || !level().isClientSide && introComplete && isNoAi()) {
@@ -1097,7 +1436,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
                     introRoarPlayed = true;
                     updateDragonParts();
                     Vec3 head = worldParts[11].getOrientedBox().center;
-                    level().playSound(null, head.x, head.y, head.z,
+                    icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(this, level(), head.x, head.y, head.z,
                             net.minecraft.sounds.SoundEvents.ENDER_DRAGON_GROWL,
                             net.minecraft.sounds.SoundSource.HOSTILE, 5F, .8F);
                 } else if (animationSeconds(0) >= GraveDragonPose.duration("into_2")) {
@@ -1110,8 +1449,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
                 bossEvent.setProgress(getHealth() / getMaxHealth());
                 return;
             }
-            tickForm();
-            tickAnimation();
+            if (!forcedPhase) { tickForm(); tickAnimation(); }
             updateBodyPitch();
         }
         updateDragonParts();
@@ -1130,7 +1468,8 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     @Override
     public void whenFroozen() {
-        if (animation().startsWith("escape_")) return;
+        if (combat.forcingPhase()) return;
+        if (entityData.get(SCENE_CONTROL)) return;
         if (level().isClientSide || entityData.get(FROZEN)) return;
         frozenWasNoAi = isNoAi();
         entityData.set(FROZEN, true);
@@ -1150,12 +1489,12 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
 
     @Override
     public void whenUnFroozen() {
-        if (animation().startsWith("escape_")) return;
+        if (entityData.get(SCENE_CONTROL)) return;
         if (level().isClientSide || !entityData.get(FROZEN)) return;
         entityData.set(FROZEN, false);
         setNoAi(frozenWasNoAi);
         applyFormPhysics(flying());
-        combat.recoverFromFreeze();
+        if (!combat.forcingPhase()) combat.recoverFromFreeze();
     }
 
     @Override
@@ -1243,7 +1582,7 @@ public class GraveDragonEntity extends MultipartEntity implements GeoEntity, Pan
         // 这个 controller 驱动每帧的 setCustomAnimations；最终骨骼姿态由共用采样器生成。
         controllers.add(new WorldTimeAnimationController<>(this, "dragon",
                 () -> new WorldTimeAnimationController.Playback(animation(), animationStart(), true, animationSpeed()),
-                state -> entityData.get(FROZEN) ? animationStart() : level().getGameTime() + state.getPartialTick()));
+                state -> entityData.get(FROZEN) ? animationStart() : (double)level().getGameTime() + state.getPartialTick()));
     }
 
     @Override

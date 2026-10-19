@@ -1,15 +1,14 @@
 {
   "controller": "panlingre:xuanwu",
-  
   "template": "panlingre:instance/xuanwu",
 
-  "center_pos": [0.0, 70.0, 3000.0],
-  "player_spawn_pos": [0.5, 61.0, 3000.5],
+  "center_pos": [256, 70.0, 3328],
+  "player_spawn_pos": [256.5, 61.0, 3328.5],
 
-  "spacing": 128,
-
+  "spacing": 512,
+  "region_depth": 1,
   "prewarm_slots": 20,
-  "arena_version": 1,
+  "arena_version": 2,
 
   "success": "plre:instances/xuanwu/success",
   "failure": "plre:instances/xuanwu/failure"

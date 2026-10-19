@@ -44,6 +44,12 @@ public abstract class PartPickReachMixin {
             float frameTick = camera.level().tickRateManager().isEntityFrozen(dragon) ? 1.0F : partialTick;
             dragon.updateClientPartPose(frameTick);
         }
+        for(var emperor:camera.level().getEntitiesOfClass(icu.icuqalt10.panlingre.entity.boss.ShiHuang.ShiHuangEntity.class,
+                camera.getBoundingBox().inflate(32))) {
+            emperor.updateParts(emperor.pose(partialTick),net.minecraft.util.Mth.rotLerp(partialTick,emperor.yBodyRotO,emperor.yBodyRot),
+                    new Vec3(net.minecraft.util.Mth.lerp(partialTick,emperor.xOld,emperor.getX()),
+                            net.minecraft.util.Mth.lerp(partialTick,emperor.yOld,emperor.getY()),net.minecraft.util.Mth.lerp(partialTick,emperor.zOld,emperor.getZ())));
+        }
     }
 
     @Inject(method = "pick(Lnet/minecraft/world/entity/Entity;DDF)Lnet/minecraft/world/phys/HitResult;",

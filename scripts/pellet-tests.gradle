@@ -1,0 +1,17 @@
+allprojects {
+    afterEvaluate {
+        sourceSets.register('pelletTest') {
+            java.srcDir('src/sourceReviewTest/java')
+            java.include('**/entity/CustomPelletTest.java')
+            resources.srcDir('src/sourceReviewTest/resources')
+            resources.include('data/panlingre/structure/empty.nbt')
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+            runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+        }
+        neoForge.mods.named(project.mod_id) { sourceSet(sourceSets.pelletTest) }
+        neoForge.runs.named('gameTestServer') {
+            gameDirectory = project.file('build/pellet-test-run')
+            logLevel = org.slf4j.event.Level.INFO
+        }
+    }
+}

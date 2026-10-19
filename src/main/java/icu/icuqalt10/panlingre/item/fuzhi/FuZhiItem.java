@@ -1,6 +1,7 @@
 package icu.icuqalt10.panlingre.item.fuzhi;
 
 import icu.icuqalt10.panlingre.item.skill_trigger;
+import icu.icuqalt10.panlingre.attachment.ItemUnlockData;
 import icu.icuqalt10.panlingre.network.SkillWheelPayload;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
@@ -57,6 +58,7 @@ public abstract class FuZhiItem extends Item implements skill_trigger {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        if (!ItemUnlockData.canUse(player, stack)) return InteractionResultHolder.pass(stack);
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             SkillWheelPayload.requestHandUse(
                     serverPlayer,
@@ -70,7 +72,7 @@ public abstract class FuZhiItem extends Item implements skill_trigger {
 
     @Override
     public boolean skill_use(Level level, Player player, ItemStack stack, int skillIndex) {
-        if (skillIndex != 0) return false;
+        if (skillIndex != 0 || !ItemUnlockData.canUse(player, stack)) return false;
         boolean succeeded = cast(level, player);
         if (succeeded && !level.isClientSide) stack.consume(1, player);
         return succeeded;
@@ -79,6 +81,11 @@ public abstract class FuZhiItem extends Item implements skill_trigger {
     @Override
     public long getSkillCD(int skillIndex) {
         return skillIndex == 0 ? cooldown * 50L : 0L;
+    }
+
+    @Override
+    public boolean canUse(Level level, Player player, ItemStack stack, int skillIndex) {
+        return ItemUnlockData.canUse(player, stack);
     }
 
     @Override

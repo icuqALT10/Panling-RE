@@ -65,6 +65,10 @@ public final class ClientPayloadHandlers {
         if (FMLEnvironment.dist == Dist.CLIENT) ClientOnly.handleItemActivation(payload, context);
     }
 
+    public static void handleHuanHunEffects(HuanHunEffectsPayload payload, IPayloadContext context) {
+        if (FMLEnvironment.dist == Dist.CLIENT) ClientOnly.handleHuanHunEffects(payload, context);
+    }
+
     public static void handlePojunCounterAttack(PojunCounterAttackPayload payload, IPayloadContext context) {
         if (FMLEnvironment.dist == Dist.CLIENT) ClientOnly.handlePojunCounterAttack(payload, context);
     }
@@ -156,6 +160,10 @@ public final class ClientPayloadHandlers {
 
         private static void handleItemActivation(ItemActivationPayload payload, IPayloadContext context) {
             context.enqueueWork(() -> Minecraft.getInstance().gameRenderer.displayItemActivation(payload.stack()));
+        }
+
+        private static void handleHuanHunEffects(HuanHunEffectsPayload payload, IPayloadContext context) {
+            context.enqueueWork(() -> icu.icuqalt10.panlingre.client.HuanHunEffects.play(payload.entityId()));
         }
 
         private static void handlePojunCounterAttack(PojunCounterAttackPayload payload, IPayloadContext context) {

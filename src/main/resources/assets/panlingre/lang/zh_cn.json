@@ -1,14 +1,16 @@
 {
+  "command.panlingre.unlock.invalid": "物品不存在或无需解锁：%s",
+  "command.panlingre.unlock.success": "已解锁%s的合成与使用权限",
+  "command.panlingre.unlock.off": "已取消%s的合成与使用权限",
+  "block.panlingre.spawner": "盘灵刷怪笼",
   "gui.panlingre.custom_trade": "§c§l未指定的标题",
   "message.panlingre.can_interact.empty_command": "§ccan_interact 中的指令不能为空",
-  "message.panlingre.can_interact.command_failed": "§c交互指令执行失败：%s（%s）",
 
   "overlay.mode.1": "[选择并释放]",
   "overlay.mode.2": "[仅选择]",
   "overlay.lingqi": "§b灵气§f: ",
   "overlay.cd": "§6冷却§f: ",
   "overlay.cast_time": "§d前摇§f: ",
-  "overlay.cast.remaining": "§d施法§f 剩余 %s 秒",
   "overlay.panlingre.task_guide.toggle_hint": "§7按§6[%s§6]§7键开启或关闭任务指引",
 
   "curios.identifier.zhiye": "职业",
@@ -46,7 +48,6 @@
   "key.PanlingRE.skill_shortcut_16": "释放技能栏第16个技能",
 
   "description.PanlingRE.max_lingqi": "最大灵气",
-  "description.PanlingRE.current_lingqi": "§b当前灵气",
   "title.lingqi.cant_use": "§c灵气不足，施展失败！",
   "description.PanlingRE.falizhi": "法力值",
   "description.PanlingRE.arrow_damage": "箭矢强度",
@@ -58,7 +59,7 @@
   "effect.panlingre.jia_yu": "甲御",
   "effect.panlingre.po_jia": "破甲",
   "effect.panlingre.ling_qi_recovery": "灵气恢复",
-  "effect.panlingre.freeze": "无法行动",
+  "effect.panlingre.freeze": "冻结",
 
   "item.PanlingRE.lore.rare1":"§f稀有度:★",
   "item.PanlingRE.lore.rare2":"§a稀有度:★★",
@@ -121,9 +122,6 @@
   "item.panlingre.warlock": "§6炼丹师",
   "item.PanlingRE.warlock.lore1": "§7§o职业的证明",
 
-  "upgrade.PanlingRE.yuanhe.base_slot_description": "放入要强化的装备",
-  "upgrade.PanlingRE.yuanhe.additions_slot_description": "放入强化材料",
-  "upgrade.PanlingRE.yuanhe.material": "§f对应材料",
 
   "item.panlingre.tong_qian": "§f铜钱",
   "item.panlingre.yuan_bao": "§a元宝",
@@ -391,7 +389,6 @@
 
 
   "item.panlingre.fu_zhi_bao": "§9符纸包",
-  "container.panlingre.fu_zhi_bag": "§9符纸包",
   "item.PanlingRE.fu_zhi_bag.lore1": "§7§o赤绛小囊,长适纳符",
   "item.PanlingRE.fu_zhi_bag.lore2": "§7§o内蕴幽虚,视之若渊深莫及",
   "item.PanlingRE.fu_zhi_bag.lore3": "§7§o空悬之时,囊口翕然,似有灵息吐纳",
@@ -400,6 +397,16 @@
   "item.PanlingRE.fu_zhi_bag.skill2": "§f包中可放入数种符纸,佩戴后增加法力值",
   "item.PanlingRE.fu_zhi_bag.skill3": "§f法力值根据包中符纸的法力值浮动",
   "item.PanlingRE.fu_zhi_bag.skill4": "§f可消耗包中的符纸直接释放技能",
+
+  "item.panlingre.huan_hun_fu": "§c逆阴还阳符",
+  "item.PanlingRE.huan_hun_fu.lore1": "§7§o可以逆转生死的灵符",
+  "item.PanlingRE.huan_hun_fu.lore2": "§7§o会为使用者抵挡致命的一击",
+  "item.PanlingRE.huan_hun_fu.skill1.1": "§c「逆阴还阳」§7<shift查看详情>",
+  "item.PanlingRE.huan_hun_fu.skill1.2": "§c「逆阴还阳」§6冷却§f：§b%s§f秒",
+  "item.PanlingRE.huan_hun_fu.skill2": "§f濒死时消耗一张,抵挡本次致命伤害",
+  "item.PanlingRE.huan_hun_fu.skill3": "§f恢复至§a最大生命值的15%§f",
+  "item.PanlingRE.huan_hun_fu.skill4": "§f获得§a50%最大生命值§f的护盾 §e<生命恢复|贰>§b30§f秒",
+  "item.PanlingRE.huan_hun_fu.skill5": "§a置于§6<主手><副手><符纸包>§a时生效",
 
   "item.panlingre.po_di_fu_1": "§9破敌符(低级[战])",
   "item.PanlingRE.po_di_fu_1.lore1": "§7§o最常被使用的灵符",
@@ -509,6 +516,25 @@
   "item.PanlingRE.chu_xin.lore1": "§7§o初始装备",
   "item.PanlingRE.chu_xin.lore2": "§7§o可以提供简易防护",
 
+
+  "item.panlingre.wutai_helmet": "§c太初冠",
+  "item.PanlingRE.wutai_helmet.lore1": "§7§o始皇受命于天",
+  "item.PanlingRE.wutai_helmet.lore2": "§7§o天神赐冠以镇八方",
+  "item.PanlingRE.wutai_helmet.lore3": "§7§o君权神授,万世不易",
+
+  "item.panlingre.wutai_chestplate": "§c太始铠",
+  "item.PanlingRE.wutai_chestplate.lore1": "§7§o昆仑之上曾有一战,上仙折戟",
+  "item.PanlingRE.wutai_chestplate.lore2": "§7§o铠没于南疆瘴泽,藏于地火",
+
+  "item.panlingre.wutai_leggings": "§c太素缠",
+  "item.PanlingRE.wutai_leggings.lore1": "§7§o方有神鸟入海,欲纳滔天之水",
+  "item.PanlingRE.wutai_leggings.lore2": "§7§o力竭悲鸣,神族以缠相赠,镇其形魄",
+
+  "item.panlingre.wutai_boots": "§c太极履",
+  "item.PanlingRE.wutai_boots.lore1": "§7§o此履踏阴阳,镇于降魔塔底",
+  "item.PanlingRE.wutai_boots.lore2": "§7§o妖气遇之则散,万世不得超生",
+
+
   "item.panlingre.zhan_lang_helmet": "§a战狼头罩",
   "item.panlingre.zhan_lang_chestplate": "§a战狼硬甲",
   "item.panlingre.zhan_lang_leggings": "§a战狼皮裤",
@@ -615,15 +641,22 @@
 
   "item.panlingre.na_wu_ci_shi": "§9纳物磁石",
   "item.PanlingRE.na_wu_ci_shi.lore1": "§7§o能够吸引物品的奇物",
-  "item.PanlingRE.na_wu_ci_shi.skill1": "§f固定吸取十五格内的物品与经验",
-  "item.PanlingRE.na_wu_ci_shi.skill2": "§f右键切换背包或维度网络模式",
-  "item.PanlingRE.na_wu_ci_shi.skill3": "§f潜行右键绑定或解绑当前主维度网络",
-  "item.PanlingRE.na_wu_ci_shi.skill4": "§f仅放入法宝栏后生效",
+  "item.PanlingRE.na_wu_ci_shi.skill1": "§9「归纳」",
+  "item.PanlingRE.na_wu_ci_shi.skill2": "§f固定吸取十五格内的物品与经验",
+  "item.PanlingRE.na_wu_ci_shi.skill3": "§f右键切换背包或维度网络模式",
+  "item.PanlingRE.na_wu_ci_shi.skill4": "§f潜行右键绑定或解绑当前主维度网络",
+  "item.PanlingRE.na_wu_ci_shi.skill5": "§f仅放入法宝栏后生效",
   "item.PanlingRE.na_wu_ci_shi.tip1": "§f当前模式: §a吸入网络",
   "item.PanlingRE.na_wu_ci_shi.tip2": "§f当前模式: §a吸入背包",
 
-  "item.panlingre.kong_ming_shi": "§9空明石",
-  "item.PanlingRE.kong_ming_shi.lore1": "§7§o眼眸一样的石头",
+  "item.panlingre.spawner_boost": "§c归元仪",
+  "item.PanlingRE.spawner_boost.lore1": "§7§o刻有玄奥阵法的仪器",
+  "item.PanlingRE.spawner_boost.lore2": "§7§o可以改变局部地区的灵气,吸引更多魔物",
+  "item.PanlingRE.spawner_boost.skill1": "§c「归元」",
+  "item.PanlingRE.spawner_boost.skill2": "§f改变附近§a %s §f格刷怪笼",
+  "item.PanlingRE.spawner_boost.skill3": "§f频率 ×§b%s§f 数量 ×§b%s",
+  "item.PanlingRE.spawner_boost.skill4": "§a置于副手时生效",
+
 
   "item.panlingre.shen_su_fu": "§d神速符",
   "item.PanlingRE.shen_su_fu.lore1": "§7§o用秘法绘制的灵符",
@@ -633,7 +666,6 @@
   "item.PanlingRE.ling_shi.lore1": "§7§o充满灵气的石头",
 
   "item.panlingre.wu_qi_xia": "§c百械匣",
-  "container.panlingre.weapon_case": "§c百械匣",
   "item.PanlingRE.wu_qi_xia.lore1": "§7§o曳影之剑,腾空而舒",
   "item.PanlingRE.wu_qi_xia.lore2": "§7§o若四方有兵,飞起而指其方则克伐",
   "item.PanlingRE.wu_qi_xia.lore3": "§7§o未用之时,常于匣里如龙虎之吟",
@@ -641,6 +673,7 @@
   "item.PanlingRE.wu_qi_xia.skill1.2": "§c「匣里龙吟」",
   "item.PanlingRE.wu_qi_xia.skill2": "§f放入与自己职业相同的武器后佩戴武器匣",
   "item.PanlingRE.wu_qi_xia.skill3": "§f即可快捷释放匣中存放武器的技能",
+
 
   "item.panlingre.tao_mu_jian": "§f桃木剑",
   "item.PanlingRE.tao_mu_jian.lore1": "§7§o练习用的木剑",
@@ -735,10 +768,8 @@
 
   "item.panlingre.ding_hai_shen_zhen.pojun":"§c定海神针「破军」",
   "item.panlingre.ding_hai_shen_zhen.jinzhong":"§c定海神针「金钟」",
-  "item.PanlingRE.ding_hai_shen_zhen.lore1":"§7§o传说中齐天大圣孙悟空使用的兵器",
-  "item.PanlingRE.ding_hai_shen_zhen.lore2":"§7§o为太上老君制的「定海神珍铁」",
-  "item.PanlingRE.ding_hai_shen_zhen.lore3":"§7§o重达一万三千五百斤,可自由变换长短大小",
-  "item.PanlingRE.ding_hai_shen_zhen.lore4":"§7§o大禹治水后遗留在东海,后被孙悟空取走",
+  "item.PanlingRE.ding_hai_shen_zhen.lore1":"§7§o为太上老君制的「定海神珍铁」",
+  "item.PanlingRE.ding_hai_shen_zhen.lore2":"§7§o重达一万三千五百斤,可自由变换长短大小",
   "item.PanlingRE.ding_hai_shen_zhen.skill1.1": "§c「定海齐天」§7<shift查看详情>",
   "item.PanlingRE.ding_hai_shen_zhen.skill1.2": "§c「定海齐天」§a持续：§b10§a秒",
   "item.PanlingRE.ding_hai_shen_zhen.skill2": "§6冷却§f：§b%s§f秒 §b灵气§f：%s§f点",
@@ -864,7 +895,6 @@
   "item.panlingre.zhu_ri.youxia": "§c逐日「游侠」",
   "item.PanlingRE.zhu_ri.lore1": "§7§o传说中射师羿使用的武器",
   "item.PanlingRE.zhu_ri.lore2": "§7§o射出的杀气箭拥有连太阳都惧怕的力量",
-  "item.PanlingRE.zhu_ri.lore3": "§7§o射出的箭由杀气凝结而成，快速而致命",
   "item.PanlingRE.zhu_ri.skill1.1": "§c「长虹贯日」§7<shift查看详情>",
   "item.PanlingRE.zhu_ri.skill1.2": "§c「长虹贯日」§a持续：§b10§a秒",
   "item.PanlingRE.zhu_ri.skill2": "§6冷却§f：§b%s§f秒 §b灵气§f：%s§f点",
@@ -973,9 +1003,6 @@
   "entity.panlingre.fire_tornado": "火龙卷",
   "entity.panlingre.jin_li_ren": "金元素利刃",
 
-  "entity.panlingre.grave_dragon": "§e墓龙",
-  "entity.panlingre.grave_dragon_part": "§e墓龙",
-
   "entity.panlingre.pan_gu": "§4盘古(?) §e「元神」",
   "entity.panlingre.pan_gu.creeper": "§b§l滚地雷",
   "dialog.panlingre.entity.pan_gu.intro.1": "§7随着盘古八卦阵的崩溃，代表四圣兽的柱子也一同消散……",
@@ -998,10 +1025,10 @@
   "item.panlingre.loot_key.lore2.copper": "§f可以破开对应副本中§9铜箱子§f上的部分禁制",
   "item.panlingre.loot_key.lore3": "§f以获得禁制中封存的物品",
 
-  "item.panlingre.loot_chest": "宝箱",
   "block.panlingre.loot_chest": "宝箱",
   "plre.loot_chest.broadcast": "§6§l恭喜 §e%s §6§l在 %s §6§l获得了 %s",
   "plre.loot_chest.instance_name.sheng_shan": "§b§l圣山",
+  "plre.loot_chest.instance_name.shi_huang": "§b§l始皇陵",
 
   "plre.gui.ba_fang_yi.title": "§6八方归位仪",
   "gui.panlingre.ba_fang_yi.back": "§7按 §eESC §7返回上层",
@@ -1141,6 +1168,9 @@
   "command.panlingre.instance.unknown":"§c不存在副本：%s",
   "command.panlingre.instance.not_ready":"§c副本场地正在准备或暂无空闲场地，请稍后再试",
   "command.panlingre.instance.controller_missing":"§c副本控制器未注册：%s",
+  "command.panlingre.instance.spawn_full":"§c传送范围内没有足够的安全落点容纳全队，请减少人数或调整传送范围",
+  "command.panlingre.instance.too_few_players":"§c该副本至少需要 %s 人，本次选择了 %s 人，全队未传送",
+  "command.panlingre.instance.too_many_players":"§c该副本最多允许 %s 人，本次选择了 %s 人，全队未传送",
 
   "instance.panlingre.zhuque.preparing.1":"§a试炼内容",
   "instance.panlingre.zhuque.preparing.2":"§c活到最后！",
@@ -1176,13 +1206,12 @@
   "item.panlingre.na_wu_ci_shi.no_network":"§c你当前没有可绑定的主维度网络",
   "item.panlingre.na_wu_ci_shi.tooltip.bound":"已绑定网络：#%s",
   "item.panlingre.na_wu_ci_shi.tooltip.unbound":"未绑定维度网络",
+
+
   "instance.panlingre.shihuang.abyss": "§7深渊下的特殊阵法将你送回了起点……",
   "instance.panlingre.shihuang.path_wrong": "§7路线错误，阵法将你丢了出来……",
   "instance.panlingre.shihuang.path_timeout": "§7你的速度太慢，阵法关闭后将你丢了出来……",
-  "instance.panlingre.shihuang.seal_on": "封龙结界已开启，持续二十秒。",
-  "instance.panlingre.shihuang.dragon_retreat": "墓龙濒死！十秒内点亮四处信标，开启封龙结界！",
-  "instance.panlingre.shihuang.dragon_absorbed": "墓龙已归入帝棺，始皇获得墓龙之力。",
-  "instance.panlingre.shihuang.dragon_sealed": "墓龙陨落，始皇未获得墓龙之力。",
-  "instance.panlingre.shihuang.emperor_ready": "帝棺已开启……",
-  "instance.panlingre.shihuang.complete": "始皇挑战完成！"
+  "instance.panlingre.shihuang.path_countdown": "踏板阵法：剩余 %s 秒",
+  "entity.panlingre.grave_dragon": "§e墓龙",
+  "entity.panlingre.shihuang": "§6始皇帝"
 }

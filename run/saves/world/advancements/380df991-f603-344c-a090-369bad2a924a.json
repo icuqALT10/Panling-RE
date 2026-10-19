@@ -77,9 +77,39 @@
     },
     "done": true
   },
-  "plre:biome/null": {
+  "plre:task/instance/shi_huang_ling/1": {
     "criteria": {
-      "trigger": "2026-09-20 22:49:13 +0800"
+      "trigger": "2026-10-17 22:24:44 +0800"
+    },
+    "done": true
+  },
+  "plre:task/instance/shi_huang_ling/2": {
+    "criteria": {
+      "trigger": "2026-10-17 22:25:39 +0800"
+    },
+    "done": true
+  },
+  "plre:task/instance/shi_huang_ling/3": {
+    "criteria": {
+      "trigger": "2026-10-17 22:25:48 +0800"
+    },
+    "done": true
+  },
+  "plre:task/instance/shi_huang_ling/4": {
+    "criteria": {
+      "trigger": "2026-10-17 22:45:02 +0800"
+    },
+    "done": true
+  },
+  "plre:task/instance/shi_huang_ling/5": {
+    "criteria": {
+      "trigger": "2026-10-17 22:45:14 +0800"
+    },
+    "done": true
+  },
+  "plre:biome/east": {
+    "criteria": {
+      "trigger": "2026-10-18 15:54:21 +0800"
     },
     "done": true
   },

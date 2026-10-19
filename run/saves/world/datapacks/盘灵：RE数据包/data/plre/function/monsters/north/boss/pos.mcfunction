@@ -1,1 +1,0 @@
-execute if entity @s[tag=skeleton] run return run function plre:monsters/north/boss/skeleton

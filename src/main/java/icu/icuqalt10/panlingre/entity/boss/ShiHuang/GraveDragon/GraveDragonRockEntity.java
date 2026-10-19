@@ -3,6 +3,7 @@ package icu.icuqalt10.panlingre.entity.boss.ShiHuang.GraveDragon;
 import icu.icuqalt10.panlingre.init.ModEntities;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -16,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -93,7 +93,7 @@ public final class GraveDragonRockEntity extends Projectile {
                 if (player.isAlive() && !player.isCreative() && !player.isSpectator()
                         && !contacted.contains(player.getId()) && swept.intersects(player.getBoundingBox())) {
                     contacted.add(player.getId());
-                    if (player.hurt(damageSources().thrown(this, getOwner()), damage))
+                    if (player.hurt(damageSources().thrown(this, getOwner()), damage * 2))
                         player.push(getDeltaMovement().x * .6, .35, getDeltaMovement().z * .6);
                 }
             }
@@ -158,7 +158,7 @@ public final class GraveDragonRockEntity extends Projectile {
     private void finish() {
         ((ServerLevel) level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.DIRT.defaultBlockState()),
                 getX(), getY() + 2, getZ(), 96, 2, 2, 2, .3);
-        level().playSound(null, getX(), getY() + 2, getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 5F, .7F);
+        icu.icuqalt10.panlingre.instance.shihuang.ShiHuangBossSounds.play(getOwner(), level(), getX(), getY() + 2, getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 5F, .7F);
         discard();
     }
 

@@ -6,6 +6,7 @@
 	chapter.20F008B931D29E36.title: "&b玄水湖泊篇"
 	chapter.2CEA7013772151C2.title: "&d地标"
 	chapter.3985EDDDEB3D7E17.title: "&e法宝"
+	chapter.4D41AC9D222A11F9.title: "&6始皇陵"
 	chapter.4EAEAF9B851A0ADB.title: "主线：妖族篇"
 	chapter.517E6876C82F7A90.title: "控制中心"
 	chapter.530AD7A70F09FBC6.title: "主线：仙族篇"
@@ -176,6 +177,7 @@
 		""
 		"&a由以下类型生物掉落：&r"
 		"[ \"1.在\",  { \"text\": \"圣虎迷阵\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"22161DED01D89AF0\" } } ,\"中击杀\",{text:\"焦骨战士\",color:yellow},\"概率获得\" ]"
+		"[ \"2.与\", { \"text\": \"陈大夫\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"754BFC5279074F2A\" } },\"兑换获得\" ]"
 	]
 	quest.08E32A86B1C8EC14.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
 	quest.094AD5B9402DDA08.quest_desc: ["与&a&l盟主&r交谈"]
@@ -198,6 +200,7 @@
 		""
 		"&a由以下类型生物掉落：&r"
 		"[ \"1.在\",  { \"text\": \"被抢劫的王员外\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"393280750D2786AC\" } }, \"或\", { \"text\": \"马贼团巢穴\", color:gold,\"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6C81BF24264DC1C3\" } },\"击杀\",{text:\"马贼团长\",color:yellow},\"概率获得\" ]"
+		"[ \"2.与\", { \"text\": \"被抢劫的王员外\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"393280750D2786AC\" } },\"、\", { \"text\": \"温泉客栈的大老板\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"2378FAF47966E543\" } },\"、\", { \"text\": \"篆元真人\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"0D3F450574E4C414\" } },\"兑换获得\" ]"
 	]
 	quest.0B141B2BFFC3B6EA.quest_desc: ["与&a&l白虎分魂&r交谈"]
 	quest.0B141B2BFFC3B6EA.quest_subtitle: "进入&2&o白虎神庙"
@@ -213,6 +216,18 @@
 	quest.0CA327B6AFD9A3CC.quest_subtitle: "692 33 -141"
 	quest.0CA327B6AFD9A3CC.title: "始皇陵"
 	quest.0CD367AD81DC5E4F.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.0CE6CE6620139A8D.quest_desc: ["获得&c太初冠"]
+	quest.0D1A7A0A0D586D30.quest_desc: [
+		"[ \"\",{\"text\":\"太初冠\",color:red},\"由\", { \"text\": \"始皇陵\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"0CA327B6AFD9A3CC\" } }, \"获得\" ]"
+		""
+		"[ \"\",{\"text\":\"太始铠\",color:red},\"由\", { \"text\": \"火焰魔王的巢穴\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"4D0A7A3D1E1A6213\" } }, \"获得\" ]"
+		""
+		"[ \"\",{\"text\":\"太素缠\",color:red},\"由\", { \"text\": \"哭声回荡的山谷\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"0A9E0BF1AFBD8F5A\" } }, \"获得\" ]"
+		""
+		"[ \"\",{\"text\":\"太极履\",color:red},\"由\", { \"text\": \"镇妖塔\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"28C85CC98CF4D15D\" } }, \"获得\" ]"
+	]
+	quest.0D1A7A0A0D586D30.quest_subtitle: "太初之时,天地未判,大道流转,化生四源: 曰气、曰形、曰质、曰阴阳。四者环生,混然一体"
+	quest.0D1A7A0A0D586D30.title: "四源套"
 	quest.0D3F450574E4C414.quest_desc: [
 		"&a位于通往大漠深处的沿途&r"
 		"&e因存在时间久远也被称为古石碑&r"
@@ -294,10 +309,14 @@
 	quest.12B6BEFD37535C6B.quest_subtitle: "95 48 32"
 	quest.12B6BEFD37535C6B.title: "仓库售卖处"
 	quest.132A6E80F0081E4B.title: "补领&9八方归位仪"
+	quest.1385B3934EEC0112.quest_desc: ["进入&6始皇陵"]
+	quest.1385B3934EEC0112.title: "恢弘的墓室"
 	quest.13E75928775395F7.title: "补领&d地势盾牌"
 	quest.14013C80685F20CA.quest_desc: ["与&a&l村长&r交谈"]
 	quest.14013C80685F20CA.quest_subtitle: "前往&2&o村长家"
 	quest.14013C80685F20CA.title: "见过&a&l村长"
+	quest.1432C40335754C31.quest_desc: ["通关&6始皇陵"]
+	quest.1432C40335754C31.title: "通关—&6始皇陵"
 	quest.1456D5085D618C14.quest_desc: ["触摸&2&o圣山&r中的大茧"]
 	quest.1456D5085D618C14.quest_subtitle: "进入&2&o圣山内部"
 	quest.1456D5085D618C14.title: "触摸大茧"
@@ -331,6 +350,7 @@
 		""
 		"&a由以下类型生物掉落：&r"
 		"[ \"1.在\", { \"text\": \"废弃村庄\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"1FF7309C7CC4815E\" } }, \"或\", { \"text\": \"废弃祭坛\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"7EBBB1B3AEF7B6EE\" } },\"击杀\",{text:\"蜘蛛女王\",color:yellow},\"概率获得\" ]"
+		"[ \"2.与\", { \"text\": \"山神庙\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"256DD3D99070EAA6\" } },\"兑换获得\" ]"
 	]
 	quest.158949DC15EB708B.quest_desc: [
 		"本章节的连线仅美观用处"
@@ -384,6 +404,8 @@
 	quest.1B71D20E529499A7.title: "丹药管理员"
 	quest.1B7F08B6ABF1DED3.quest_desc: ["与&a&l老丹师&r交谈"]
 	quest.1B7F08B6ABF1DED3.title: "传遍天下"
+	quest.1BAA1852924E505C.quest_desc: ["与&a&l太子&r交谈"]
+	quest.1BAA1852924E505C.title: "进入始皇陵"
 	quest.1BEBBFD630E62BEC.quest_desc: [
 		"[ \"由\", { \"text\": \"三阶装备原核\",color:blue, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"0B0FB1CF85E9D49C\" } }, \"分解而成\" ]"
 		""
@@ -584,6 +606,7 @@
 		""
 		"&a由以下类型生物掉落：&r"
 		"[ \"1.在\", { \"text\": \"水族村庄\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"005B6191BA16AE97\" } },\"两侧的路上击杀\",{text:\"千里神射手\",color:yellow},\"概率获得\" ]"
+		"[ \"2.与\", { \"text\": \"墓园的白骨精\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"150F59BE7EAB02E7\" } },\"兑换获得\" ]"
 	]
 	quest.2D20462FAAA8D29F.quest_subtitle: "大陆北方"
 	quest.2D20462FAAA8D29F.title: "&b玄水湖泊"
@@ -695,6 +718,7 @@
 		"于&6副本&r中开箱获得"
 		"副本："
 		"[ { \"text\": \"圣山\",\"color\":\"red\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"03BE9AA4FE628CD8\" } } ]"
+		"[ { \"text\": \"始皇陵\",\"color\":\"red\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"0CA327B6AFD9A3CC\" } } ]"
 	]
 	quest.37E468A1CDA537DF.quest_desc: [
 		"&a位于皇城西门靠南角落&r"
@@ -862,6 +886,11 @@
 	quest.4A736ECCB53CBFE6.title: "玄武的认可"
 	quest.4AF73B3D7D955CC6.quest_desc: ["[ \"于副本\", { \"text\": \"圣山\",\"color\":\"red\", \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"03BE9AA4FE628CD8\" } }, \"中获得\" ]"]
 	quest.4B65008BB74E1061.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
+	quest.4BAC17856E62A977.quest_desc: [
+		"[ \"\",{\"text\":\"配方与使用\",color:green},\"需完成\", { \"text\": \"相关任务\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"57EEA23083E39C3E\" } }, \"解锁\" ]"
+		""
+		"[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"
+	]
 	quest.4BCF7435C398EFEF.quest_desc: [
 		"&a位于皇宫东北侧&r"
 		""
@@ -997,6 +1026,10 @@
 		"&a急迫&r："
 		"每&61&r级提高&610%&a攻击速度&r 改为"
 		"每&61&r级提高&610%&a攻击速度&r、&65%&a冷却缩减&r"
+		""
+		"&a坎水禁锢&7（挖掘疲劳）&r："
+		"每&61&r级降低&610%&a攻击速度&r 改为"
+		"每&61&r级降低&610%&a攻击速度&r、&615%&a冷却缩减&r"
 		"{@pagebreak}"
 		"{image:panlingre:textures/mob_effect/jia_yu.png width:20 height:20 align:center}"
 		"&a甲御&r："
@@ -1019,6 +1052,8 @@
 	quest.57DB94CA574B1758.quest_desc: ["与&a&l长老&r交谈"]
 	quest.57DB94CA574B1758.quest_subtitle: "前往&2&o蓬莱&r寻找&a&l长老"
 	quest.57DB94CA574B1758.title: "前往蓬莱"
+	quest.57EEA23083E39C3E.quest_desc: ["与&a&l醉醺醺的人&r交谈"]
+	quest.57EEA23083E39C3E.title: "宿醉的太子"
 	quest.58E7EB84EF7BBC54.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
 	quest.58F22271F74F4C94.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
 	quest.58F22271F74F4C94.title: "&a战狼套"
@@ -1031,6 +1066,8 @@
 		"[ \"也可在\", { \"text\": \"灵符铺\",color:gold, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"780E7AD631AC0CC0\" } }, \"直接购买\" ]"
 	]
 	quest.5A61D1025F69289E.quest_desc: ["[ \"由\", { \"text\": \"稀世草药\",color:yellow, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"6985C7B59DEE765B\" } }, \"加\",{ \"text\": \"药引(高级)\", color:yellow,\"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"05A68C704D737E54\" } } ,\"制作\" ]"]
+	quest.5B1D80FD176AD2F9.quest_desc: ["与&a&l太子&r交谈"]
+	quest.5B1D80FD176AD2F9.title: "结束"
 	quest.5B59BCE9A09D8A53.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
 	quest.5B59BCE9A09D8A53.title: "&d灵龟套"
 	quest.5B63CF59CF160502.quest_subtitle: "由工具采集获得的材料"
@@ -1238,6 +1275,8 @@
 	]
 	quest.6DC41472095C05FF.quest_subtitle: "345 33 -541"
 	quest.6DC41472095C05FF.title: "蓬莱"
+	quest.6E228AA6CB15F091.quest_subtitle: "大陆定鼎之日，神族念人族始皇有功，赐冠，号曰“君权神授”"
+	quest.6E228AA6CB15F091.title: "&6始皇陵"
 	quest.6E585D3C33C82694.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
 	quest.6E6F3455E766D341.quest_desc: ["[ \"制作材料请自行查阅\",{text:\"JEI\",color:green},\"与\", { \"text\": \"材料图鉴\",color:green, \"underlined\": true, \"clickEvent\": { \"action\": \"change_page\", \"value\": \"14793D75CA143713\" } } ]"]
 	quest.6E88EC2809C8344E.quest_desc: ["完成对应的&a主线任务&r后后解锁"]
@@ -1424,6 +1463,7 @@
 	quest.7F89D32EE06536AA.quest_subtitle: "前往小镇中的&2&o丹药铺"
 	quest.7F89D32EE06536AA.title: "火山之神的代言人"
 	reward.01F1AB46AB6C5343.title: "解锁传送点"
+	reward.0256272ED248DBBF.title: "指引当前任务"
 	reward.02566B439FE3093B.title: "解锁传送点"
 	reward.025AAE57BB40499A.title: "定位目标位置"
 	reward.05580A252D295096.title: "定位目标位置"
@@ -1494,6 +1534,7 @@
 	reward.4CDC3A995BE61170.title: "定位目标位置"
 	reward.4D312287CE93733C.title: "指引当前任务"
 	reward.4EA67B214F138F2D.title: "定位目标位置"
+	reward.4EFDD7D7790A1428.title: "获得资格-&c逆阴还阳符"
 	reward.4F4531A9C5490EBA.title: "定位目标位置"
 	reward.4F8A942A95CBB837.title: "定位目标位置"
 	reward.512E7D39BB5886F1.title: "定位目标位置"
@@ -1549,6 +1590,7 @@
 	reward.79CB953310FB9D29.title: "解锁传送点"
 	reward.79D47094DCAFABD6.title: "解锁传送点"
 	reward.7A687747EC3B8F7F.title: "解锁传送点"
+	reward.7AFF3A0DD3AE467D.title: "开启本章节"
 	reward.7B26B8C1AD49FD26.title: "定位目标位置"
 	reward.7D1B40AA0E3CD7E6.title: "定位目标位置"
 	task.00FEBBE57990433D.title: "材料图鉴"
@@ -1638,6 +1680,7 @@
 	task.7962435726591C44.title: "法宝图鉴"
 	task.79D9192B4FA3A7F9.title: "指引位置"
 	task.7B15218E6E32BC43.title: "&a开启任务指引"
+	task.7E2DB59B5FBD1D58.title: "&a开启任务指引"
 	task.7E9F009A064AD7B6.title: "指引位置"
 	task.7FCF61138C590B48.title: "指引位置"
 }
